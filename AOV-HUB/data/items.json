@@ -1,0 +1,13 @@
+[
+    {
+        "id": 101,
+        "name": "Kiếm Fafnir",
+        "alias": "fafnir",
+        "image": "items/fafnir.png",
+        "type": "Công",
+        "price": 2040,
+        "stats": { "attack": 60, "attackSpeed": 30 },
+        "passive": "",
+        "description": ""
+    }
+]

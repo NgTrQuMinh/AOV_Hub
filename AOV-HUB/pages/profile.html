@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AOV HUB - Profile</title>
+
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body data-page="profile">
+
+    <!-- Task 36 - Guard: chặn truy cập nếu chưa đăng nhập -->
+    <script src="/js/auth.js"></script>
+    <script>requireAuth();</script>
+
+    <header id="site-header"></header>
+
+    <main class="container section">
+        <div class="profile-card">
+            <span class="profile-card__avatar" aria-hidden="true">👤</span>
+            <div>
+                <h1 class="profile-card__name" id="profile-username">-</h1>
+                <span class="profile-card__status">Đã đăng nhập</span>
+            </div>
+        </div>
+
+        <div class="section__header">
+            <h2>Bài viết của bạn</h2>
+        </div>
+        <!--
+            Community/Feed (aov_posts) chưa tồn tại trong project hiện tại
+            (không thuộc phạm vi 14 task của Người 1). Khối này chỉ hiển thị
+            placeholder, không tự viết logic Community — xem báo cáo.
+        -->
+        <div id="profile-posts"></div>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="/js/loadData.js"></script>
+    <script src="/js/components.js"></script>
+    <script src="/js/layout.js"></script>
+    <script>
+        document.getElementById('profile-username').textContent = getCurrentUser() || '';
+
+        const postsContainer = document.getElementById('profile-posts');
+        let allPosts = [];
+
+        try {
+            allPosts = JSON.parse(localStorage.getItem('aov_posts')) || [];
+        } catch (error) {
+            console.error(error);
+        }
+
+        if (!allPosts.length) {
+            postsContainer.innerHTML = renderNotFound(
+                'Chưa có bài viết nào (module Community/Feed chưa được tích hợp vào project).'
+            );
+        } else {
+            const myPosts = allPosts.filter((post) => post.author === getCurrentUser());
+            postsContainer.innerHTML = myPosts.length
+                ? myPosts.map((post) => `<div class="card" style="padding: var(--space-4); margin-bottom: var(--space-3);">${post.content || ''}</div>`).join('')
+                : renderNotFound('Bạn chưa có bài viết nào.');
+        }
+    </script>
+</body>
+</html>

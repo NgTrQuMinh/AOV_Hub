@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AOV HUB - So sánh Tướng</title>
+
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/compare.css">
+</head>
+<body data-page="compare">
+
+    <header id="site-header"></header>
+
+    <main class="container section">
+        <h1>So sánh Tướng</h1>
+
+        <!--
+            TODO (Người 4):
+            - 2 ô <select> chọn tướng (đọc data/heroes.json bằng loadData())
+            - Đọc/ghi aov_compare qua storage.js (tối đa 2 tướng)
+            - Render bảng so sánh HP/Attack/Defense/Difficulty vào #compare-table, highlight chỉ số cao hơn
+            - Hiện thông báo nếu chưa chọn đủ 2 tướng
+        -->
+        <div id="compare-select"></div>
+        <div id="compare-table"></div>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="/js/loadData.js"></script>
+    <script src="/js/components.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/layout.js"></script>
+    <script src="/js/storage.js"></script>
+    <script src="/js/compare.js"></script>
+</body>
+</html>

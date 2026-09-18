@@ -1,0 +1,182 @@
+/* =========================================
+ * home.css - Trang chủ
+ * Phụ trách: Người 1
+ * ========================================= */
+
+/* ---------- Hero banner ---------- */
+.hero-banner {
+    position: relative;
+    padding-block: var(--space-8) var(--space-7);
+    background:
+        radial-gradient(circle at 15% 20%, rgba(230, 179, 74, 0.18), transparent 45%),
+        radial-gradient(circle at 85% 0%, rgba(209, 73, 91, 0.22), transparent 50%),
+        linear-gradient(180deg, #1b1530 0%, #140f1f 100%);
+    border-bottom: 1px solid var(--color-border);
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Vệt sáng chéo mô phỏng key-art banner game, không dùng ảnh ngoài */
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    inset: -20% -10%;
+    background: repeating-linear-gradient(
+        115deg,
+        rgba(230, 179, 74, 0.05) 0px,
+        rgba(230, 179, 74, 0.05) 2px,
+        transparent 2px,
+        transparent 90px
+    );
+    pointer-events: none;
+    z-index: -1;
+}
+
+.hero-banner__tag {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    margin-bottom: var(--space-4);
+    border: 1px solid var(--color-gold);
+    border-radius: var(--radius-pill);
+    color: var(--color-gold);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.hero-banner__inner {
+    max-width: 680px;
+}
+
+.hero-banner__title {
+    font-size: var(--fs-3xl);
+}
+
+.hero-banner__title span {
+    color: var(--color-gold);
+    text-shadow: 0 0 24px rgba(230, 179, 74, 0.35);
+}
+
+.hero-banner__desc {
+    font-size: var(--fs-md);
+    margin-bottom: var(--space-6);
+}
+
+.hero-banner__actions {
+    display: flex;
+    gap: var(--space-4);
+}
+
+/* ---------- Quick nav (thanh chuyên mục nhanh) ---------- */
+.quick-nav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+    margin-top: calc(var(--space-7) * -1);
+    position: relative;
+    z-index: 2;
+}
+
+.quick-nav__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-5) var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-align: center;
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.quick-nav__item:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+    transform: translateY(-3px);
+}
+
+.quick-nav__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-pill);
+    background: var(--color-bg-elevated);
+    font-size: var(--fs-lg);
+}
+
+/* ---------- Spotlight: giới thiệu AOV HUB (dạng banner nổi bật) ---------- */
+.home-spotlight {
+    margin-top: var(--space-7);
+    padding: var(--space-7) var(--space-6);
+    border-radius: var(--radius-lg);
+    background:
+        linear-gradient(120deg, rgba(230, 179, 74, 0.14), transparent 55%),
+        linear-gradient(200deg, rgba(209, 73, 91, 0.16), transparent 60%),
+        var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+}
+
+.home-spotlight__content {
+    max-width: 560px;
+}
+
+.home-spotlight__content h2 {
+    margin-bottom: var(--space-3);
+}
+
+.home-spotlight__content p {
+    margin-bottom: var(--space-5);
+}
+
+.home-spotlight__icon {
+    font-size: 96px;
+    line-height: 1;
+    filter: drop-shadow(0 0 28px rgba(230, 179, 74, 0.4));
+    flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+    .quick-nav {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-banner__inner {
+        max-width: 100%;
+    }
+
+    .quick-nav {
+        margin-top: var(--space-6);
+    }
+
+    .home-spotlight {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .home-spotlight__content {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-banner__actions {
+        flex-direction: column;
+    }
+
+    .quick-nav {
+        grid-template-columns: 1fr 1fr;
+    }
+}
