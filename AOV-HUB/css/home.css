@@ -1,0 +1,91 @@
+/* =========================================
+ * home.css - Trang chủ
+ * Phụ trách: Người 1
+ * ========================================= */
+
+.hero-banner {
+    position: relative;
+    padding-block: var(--space-8);
+    background:
+        radial-gradient(circle at 15% 20%, rgba(230, 179, 74, 0.16), transparent 45%),
+        radial-gradient(circle at 85% 0%, rgba(209, 73, 91, 0.18), transparent 50%),
+        linear-gradient(180deg, #1b1530 0%, #140f1f 100%);
+    border-bottom: 1px solid var(--color-border);
+    overflow: hidden;
+}
+
+.hero-banner__inner {
+    max-width: 640px;
+}
+
+.hero-banner__title span {
+    color: var(--color-gold);
+}
+
+.hero-banner__desc {
+    font-size: var(--fs-md);
+    margin-bottom: var(--space-6);
+}
+
+.hero-banner__actions {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.quick-nav {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+    margin-top: calc(var(--space-8) * -1);
+    position: relative;
+    z-index: 2;
+}
+
+.quick-nav__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-5) var(--space-3);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    text-align: center;
+    font-weight: 600;
+    font-size: var(--fs-sm);
+}
+
+.quick-nav__item:hover {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+}
+
+.quick-nav__icon {
+    font-size: var(--fs-xl);
+}
+
+@media (max-width: 1024px) {
+    .quick-nav {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-banner__inner {
+        max-width: 100%;
+    }
+
+    .quick-nav {
+        margin-top: var(--space-6);
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-banner__actions {
+        flex-direction: column;
+    }
+
+    .quick-nav {
+        grid-template-columns: 1fr 1fr;
+    }
+}

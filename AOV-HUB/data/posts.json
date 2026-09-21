@@ -1,0 +1,26 @@
+[
+    {
+        "id": 9001,
+        "author": "demo",
+        "title": "Cách lên đồ Tel'Annas mùa này",
+        "content": "Mình hay lên Cung Xuyên Phá trước khi đối phương có tướng đỡ đòn lên giáp sớm. Sau đó mới tới các trang bị tốc đánh.",
+        "heroId": 1,
+        "createdAt": "2025-03-01T10:15:00.000Z"
+    },
+    {
+        "id": 9002,
+        "author": "aovfan",
+        "title": "Nakroth đi rừng có còn mạnh không?",
+        "content": "Theo mình Nakroth vẫn ổn nếu biết canh thời điểm dùng tuyệt chiêu để mở giao tranh. Mọi người thấy sao?",
+        "heroId": 4,
+        "createdAt": "2025-03-04T14:40:00.000Z"
+    },
+    {
+        "id": 9003,
+        "author": "demo",
+        "title": "Góp ý trang bị cho tướng đỡ đòn",
+        "content": "Giáp Gai rất mạnh khi đối phương có xạ thủ tốc đánh. Nếu bên kia thiên về phép thì đổi sang Áo Choàng Bóng Tối.",
+        "heroId": 10,
+        "createdAt": "2025-03-07T19:05:00.000Z"
+    }
+]

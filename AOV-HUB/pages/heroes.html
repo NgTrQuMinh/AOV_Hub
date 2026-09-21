@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AOV HUB - Danh sách Tướng</title>
+
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/hero.css">
+</head>
+<body data-page="heroes">
+
+    <header id="site-header"></header>
+
+    <main class="container section">
+        <h1>Danh sách Tướng</h1>
+
+        <!--
+            TODO (Người 2):
+            - Render filter-bar (xem views mẫu js/components.js của Người 1 để biết cách renderHeroCard)
+            - Đọc data/heroes.json bằng loadData(), lọc theo role/difficulty, tìm theo keyword
+            - Render danh sách vào #hero-list bằng renderHeroCard() (js/components.js) hoặc renderNotFound() nếu rỗng
+        -->
+        <div id="hero-filter-bar"></div>
+        <div class="grid grid--heroes" id="hero-list"></div>
+        <div id="hero-pagination"></div>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="/js/loadData.js"></script>
+    <script src="/js/components.js"></script>
+    <script src="/js/layout.js"></script>
+    <script src="/js/storage.js"></script>
+    <script src="/js/favorite.js"></script>
+    <script src="/js/search.js"></script>
+    <script src="/js/hero.js"></script>
+</body>
+</html>

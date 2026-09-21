@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AOV HUB - Đăng ký</title>
+
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body data-page="register">
+
+    <header id="site-header"></header>
+
+    <main class="container auth-section">
+        <div class="auth-card">
+            <h1>Tạo tài khoản</h1>
+            <p class="auth-card__desc">Đăng ký để lưu tài khoản và sử dụng các tính năng cá nhân của AOV HUB.</p>
+
+            <div id="register-errors"></div>
+
+            <form id="register-form" novalidate>
+                <div class="form-group">
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" name="username" autocomplete="username">
+                    <small class="form-hint">3 - 30 ký tự, không được trùng tài khoản đã có.</small>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" name="password" autocomplete="new-password">
+                    <small class="form-hint">6 - 10 ký tự.</small>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm">Confirm Password</label>
+                    <input type="password" id="register-confirm" name="confirmPassword" autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn btn-primary">Đăng ký</button>
+            </form>
+
+            <p class="auth-card__switch">Đã có tài khoản? <a href="/pages/login.html">Đăng nhập</a></p>
+        </div>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="/js/loadData.js"></script>
+    <script src="/js/components.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/layout.js"></script>
+    <script>
+        // Task 30 + 31 - Đăng ký và validate
+        // Đã đăng nhập rồi thì không cần đăng ký nữa
+        redirectIfLoggedIn();
+
+        document.getElementById('register-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            // Chờ nạp xong danh sách user để kiểm tra trùng username chính xác
+            await usersReady;
+
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm').value;
+            const errorBox = document.getElementById('register-errors');
+
+            const errors = validateRegisterForm(username, password, confirmPassword);
+            renderErrors(errorBox, errors);
+
+            if (errors.length) return;
+
+            registerUser(username, password);
+            loginUser(username.trim(), password);
+
+            renderSuccess(errorBox, 'Đăng ký thành công! Đang chuyển về trang chủ...');
+            setTimeout(() => {
+                window.location.href = '/index.html';
+            }, 800);
+        });
+    </script>
+</body>
+</html>
