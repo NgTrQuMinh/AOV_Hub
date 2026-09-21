@@ -1,0 +1,228 @@
+/* =========================================
+ * feed.css - Community Feed (bài viết, thích, bình luận)
+ * Phụ trách: Người 3 (giao diện) + Người 4 (logic)
+ * (dùng sau reset.css + variables.css + common.css)
+ * ========================================= */
+
+.feed-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: var(--space-6);
+    align-items: start;
+    margin-top: var(--space-5);
+}
+
+.feed-list {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.feed-aside {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-4));
+}
+
+/* ---------- Form đăng bài ---------- */
+.feed-form {
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.feed-form h2 {
+    font-size: var(--fs-md);
+    margin-bottom: var(--space-4);
+}
+
+.feed-form .btn {
+    width: 100%;
+}
+
+.feed-form--guest {
+    text-align: center;
+}
+
+/* ---------- Thẻ bài viết ---------- */
+.post-card {
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.post-card__head {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.post-card__avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-pill);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.post-card__title {
+    margin-bottom: 2px;
+    font-size: var(--fs-md);
+}
+
+.post-card__meta {
+    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+}
+
+.post-card__meta a {
+    color: var(--color-gold);
+}
+
+.post-card__delete {
+    margin-left: auto;
+    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+}
+
+.post-card__delete:hover {
+    color: var(--color-crimson);
+}
+
+.post-card__content {
+    color: var(--color-text);
+    margin-bottom: var(--space-4);
+    white-space: pre-line;
+}
+
+.post-card__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding-block: var(--space-3);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.post-action {
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+    font-weight: 600;
+}
+
+button.post-action:hover,
+.post-action.is-active {
+    color: var(--color-crimson);
+}
+
+/* ---------- Bình luận ---------- */
+.comment-list {
+    display: grid;
+    gap: var(--space-3);
+    margin-block: var(--space-3);
+}
+
+.comment {
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg-elevated);
+    border-radius: var(--radius-sm);
+    position: relative;
+}
+
+.comment strong {
+    font-size: var(--fs-sm);
+}
+
+.comment__time {
+    margin-left: var(--space-2);
+    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+}
+
+.comment p {
+    margin: var(--space-1) 0 0;
+    color: var(--color-text);
+    font-size: var(--fs-sm);
+}
+
+.comment__delete {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-3);
+    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+}
+
+.comment__delete:hover {
+    color: var(--color-crimson);
+}
+
+.comment-form {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.comment-form input {
+    flex: 1;
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    color: var(--color-text);
+    font-size: var(--fs-sm);
+}
+
+.comment-form input:focus {
+    outline: none;
+    border-color: var(--color-gold);
+}
+
+/* ---------- Khối xem nhanh bài viết ở Trang chủ ---------- */
+.post-preview-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+}
+
+.post-preview {
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.post-preview:hover {
+    border-color: var(--color-gold);
+    transform: translateY(-3px);
+}
+
+.post-preview h3 {
+    font-size: var(--fs-base);
+    margin-bottom: var(--space-2);
+}
+
+.post-preview__meta {
+    font-size: var(--fs-xs);
+    color: var(--color-gold);
+}
+
+@media (max-width: 900px) {
+    .feed-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .feed-aside {
+        position: static;
+        order: -1;
+    }
+
+    .post-preview-list {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,274 @@
+[
+    {
+        "id": 1,
+        "name": "Tel'Annas",
+        "alias": "telannas",
+        "image": "heroes/telannas.png",
+        "role": ["Xạ thủ"],
+        "difficulty": 2,
+        "description": "Xạ thủ tầm xa với khả năng làm chậm và gây sát thương lớn từ khoảng cách an toàn.",
+        "stats": { "hp": 3400, "attack": 180, "defense": 90, "speed": 380 },
+        "skills": [
+            { "name": "Mũi Tên Săn Mồi", "type": "Nội tại", "description": "Đòn đánh thường sau khi dùng kỹ năng gây thêm sát thương và làm chậm mục tiêu.", "cooldown": 0 },
+            { "name": "Mũi Tên Xuyên Phá", "type": "Chủ động", "description": "Bắn một mũi tên xuyên qua kẻ địch trên đường đi, gây sát thương vật lý.", "cooldown": 8 },
+            { "name": "Bẫy Băng", "type": "Chủ động", "description": "Đặt bẫy làm chậm và gây sát thương cho kẻ địch bước vào.", "cooldown": 12 },
+            { "name": "Mũi Tên Ánh Trăng", "type": "Tuyệt chiêu", "description": "Bắn mũi tên cực mạnh theo đường thẳng, gây sát thương lớn cho mục tiêu đầu tiên.", "cooldown": 30 }
+        ],
+        "recommendedBuild": [101, 104, 106, 109, 112, 116]
+    },
+    {
+        "id": 2,
+        "name": "Valhein",
+        "alias": "valhein",
+        "image": "heroes/valhein.png",
+        "role": ["Xạ thủ"],
+        "difficulty": 1,
+        "description": "Xạ thủ dễ chơi, có khả năng choáng và tăng tốc đánh, phù hợp người mới.",
+        "stats": { "hp": 3500, "attack": 172, "defense": 95, "speed": 380 },
+        "skills": [
+            { "name": "Hút Máu Bóng Đêm", "type": "Nội tại", "description": "Hồi phục một phần sát thương gây ra bằng đòn đánh thường.", "cooldown": 0 },
+            { "name": "Sóng Âm Hắc Ám", "type": "Chủ động", "description": "Phóng sóng năng lượng gây sát thương phép lên kẻ địch trên đường đi.", "cooldown": 7 },
+            { "name": "Cú Đấm Bóng Tối", "type": "Chủ động", "description": "Gây sát thương và làm choáng kẻ địch phía trước.", "cooldown": 10 },
+            { "name": "Cơn Thịnh Nộ", "type": "Tuyệt chiêu", "description": "Tăng mạnh tốc độ đánh và sát thương trong thời gian ngắn.", "cooldown": 28 }
+        ],
+        "recommendedBuild": [101, 102, 104, 109, 112, 116]
+    },
+    {
+        "id": 3,
+        "name": "Murad",
+        "alias": "murad",
+        "image": "heroes/murad.png",
+        "role": ["Sát thủ"],
+        "difficulty": 3,
+        "description": "Sát thủ cơ động bậc nhất, có thể lướt liên tục để tiếp cận và kết liễu mục tiêu.",
+        "stats": { "hp": 3300, "attack": 190, "defense": 100, "speed": 390 },
+        "skills": [
+            { "name": "Tàn Ảnh", "type": "Nội tại", "description": "Hạ gục hoặc hỗ trợ hạ gục sẽ hồi lại một phần thời gian hồi kỹ năng.", "cooldown": 0 },
+            { "name": "Thiên Kiếm", "type": "Chủ động", "description": "Lướt về phía trước gây sát thương vật lý cho kẻ địch trúng đòn.", "cooldown": 6 },
+            { "name": "Trảm Nguyệt", "type": "Chủ động", "description": "Chém xoáy gây sát thương diện rộng xung quanh.", "cooldown": 9 },
+            { "name": "Kiếm Vũ", "type": "Tuyệt chiêu", "description": "Lao tới mục tiêu và tung chuỗi đòn, có thể tái kích hoạt nhiều lần.", "cooldown": 32 }
+        ],
+        "recommendedBuild": [103, 105, 108, 110, 113, 117]
+    },
+    {
+        "id": 4,
+        "name": "Nakroth",
+        "alias": "nakroth",
+        "image": "heroes/nakroth.png",
+        "role": ["Sát thủ", "Đấu sĩ"],
+        "difficulty": 3,
+        "description": "Sát thủ rừng mạnh mẽ, tuyệt chiêu khống chế diện rộng và dọn dẹp giao tranh.",
+        "stats": { "hp": 3550, "attack": 185, "defense": 110, "speed": 385 },
+        "skills": [
+            { "name": "Ý Chí Bất Diệt", "type": "Nội tại", "description": "Tăng tốc chạy sau khi trúng đòn kỹ năng lên kẻ địch.", "cooldown": 0 },
+            { "name": "Cuồng Phong Trảm", "type": "Chủ động", "description": "Lướt tới gây sát thương, có thể dùng liên tiếp 2 lần.", "cooldown": 7 },
+            { "name": "Phi Đao", "type": "Chủ động", "description": "Ném dao gây sát thương và làm chậm mục tiêu.", "cooldown": 10 },
+            { "name": "Ma Vương Giáng Thế", "type": "Tuyệt chiêu", "description": "Nhảy tới khu vực chỉ định, gây sát thương lớn và hất tung kẻ địch.", "cooldown": 36 }
+        ],
+        "recommendedBuild": [103, 105, 108, 111, 113, 118]
+    },
+    {
+        "id": 5,
+        "name": "Butterfly",
+        "alias": "butterfly",
+        "image": "heroes/butterfly.png",
+        "role": ["Sát thủ"],
+        "difficulty": 2,
+        "description": "Sát thủ đánh đơn mục tiêu, càng đánh lâu càng nguy hiểm nhờ hút máu.",
+        "stats": { "hp": 3450, "attack": 188, "defense": 105, "speed": 380 },
+        "skills": [
+            { "name": "Khát Máu", "type": "Nội tại", "description": "Tăng hút máu khi máu bản thân xuống thấp.", "cooldown": 0 },
+            { "name": "Song Đao", "type": "Chủ động", "description": "Lướt qua kẻ địch gây sát thương vật lý.", "cooldown": 6 },
+            { "name": "Lốc Xoáy", "type": "Chủ động", "description": "Xoay người gây sát thương liên tục xung quanh.", "cooldown": 11 },
+            { "name": "Vũ Điệu Tử Thần", "type": "Tuyệt chiêu", "description": "Khóa mục tiêu và tung chuỗi đòn chí mạng.", "cooldown": 30 }
+        ],
+        "recommendedBuild": [103, 105, 110, 113, 115, 117]
+    },
+    {
+        "id": 6,
+        "name": "Arthur",
+        "alias": "arthur",
+        "image": "heroes/arthur.png",
+        "role": ["Đấu sĩ", "Đỡ đòn"],
+        "difficulty": 1,
+        "description": "Đấu sĩ cân bằng giữa sát thương và chống chịu, rất dễ làm quen.",
+        "stats": { "hp": 3800, "attack": 165, "defense": 130, "speed": 380 },
+        "skills": [
+            { "name": "Giáp Thánh", "type": "Nội tại", "description": "Nhận lá chắn khi máu xuống dưới mức nhất định.", "cooldown": 0 },
+            { "name": "Kiếm Chấn", "type": "Chủ động", "description": "Chém về phía trước gây sát thương và làm chậm.", "cooldown": 7 },
+            { "name": "Khiên Thánh", "type": "Chủ động", "description": "Tạo lá chắn hấp thụ sát thương cho bản thân.", "cooldown": 12 },
+            { "name": "Thánh Kiếm Phán Quyết", "type": "Tuyệt chiêu", "description": "Lao tới mục tiêu, gây sát thương lớn và hất tung.", "cooldown": 34 }
+        ],
+        "recommendedBuild": [107, 111, 114, 115, 118, 108]
+    },
+    {
+        "id": 7,
+        "name": "Zephys",
+        "alias": "zephys",
+        "image": "heroes/zephys.png",
+        "role": ["Đấu sĩ"],
+        "difficulty": 2,
+        "description": "Đấu sĩ mở giao tranh tốt nhờ tuyệt chiêu kéo và khống chế nhóm.",
+        "stats": { "hp": 3900, "attack": 170, "defense": 125, "speed": 380 },
+        "skills": [
+            { "name": "Linh Hồn Tử Thần", "type": "Nội tại", "description": "Hồi máu khi hạ gục kẻ địch hoặc lính.", "cooldown": 0 },
+            { "name": "Xích Tử Thần", "type": "Chủ động", "description": "Ném xích kéo bản thân tới kẻ địch trúng đòn.", "cooldown": 9 },
+            { "name": "Chém Xoáy", "type": "Chủ động", "description": "Gây sát thương diện rộng và tăng tốc chạy.", "cooldown": 8 },
+            { "name": "Vực Thẳm", "type": "Tuyệt chiêu", "description": "Kéo kẻ địch xung quanh vào giữa và gây sát thương lớn.", "cooldown": 38 }
+        ],
+        "recommendedBuild": [107, 111, 114, 118, 115, 108]
+    },
+    {
+        "id": 8,
+        "name": "Ryoma",
+        "alias": "ryoma",
+        "image": "heroes/ryoma.png",
+        "role": ["Đấu sĩ"],
+        "difficulty": 2,
+        "description": "Đấu sĩ đường tà thần với sát thương chuẩn và khả năng bám đuổi tốt.",
+        "stats": { "hp": 3850, "attack": 175, "defense": 120, "speed": 380 },
+        "skills": [
+            { "name": "Võ Sĩ Đạo", "type": "Nội tại", "description": "Đòn đánh kế tiếp sau kỹ năng gây thêm sát thương chuẩn.", "cooldown": 0 },
+            { "name": "Thiết Trảm", "type": "Chủ động", "description": "Chém mạnh về phía trước, gây sát thương và làm chậm.", "cooldown": 7 },
+            { "name": "Phi Thân", "type": "Chủ động", "description": "Lướt nhanh một đoạn, có thể xuyên địa hình.", "cooldown": 10 },
+            { "name": "Long Kiếm Trảm", "type": "Tuyệt chiêu", "description": "Tung nhát chém mạnh gây sát thương lớn theo phần trăm máu đã mất.", "cooldown": 30 }
+        ],
+        "recommendedBuild": [107, 110, 114, 115, 118, 108]
+    },
+    {
+        "id": 9,
+        "name": "Omega",
+        "alias": "omega",
+        "image": "heroes/omega.png",
+        "role": ["Đỡ đòn", "Đấu sĩ"],
+        "difficulty": 2,
+        "description": "Cỗ máy chiến đấu chống chịu tốt, hồi sinh tại chỗ khi bị hạ gục.",
+        "stats": { "hp": 4200, "attack": 150, "defense": 155, "speed": 375 },
+        "skills": [
+            { "name": "Lõi Năng Lượng", "type": "Nội tại", "description": "Tích năng lượng để tăng cường kỹ năng kế tiếp.", "cooldown": 0 },
+            { "name": "Đấm Xoáy", "type": "Chủ động", "description": "Gây sát thương diện rộng phía trước.", "cooldown": 6 },
+            { "name": "Lá Chắn Cơ Khí", "type": "Chủ động", "description": "Tạo lá chắn và giảm sát thương nhận vào.", "cooldown": 13 },
+            { "name": "Tái Khởi Động", "type": "Tuyệt chiêu", "description": "Hồi sinh tại chỗ với một phần máu sau khi bị hạ gục.", "cooldown": 60 }
+        ],
+        "recommendedBuild": [114, 115, 118, 111, 107, 108]
+    },
+    {
+        "id": 10,
+        "name": "Toro",
+        "alias": "toro",
+        "image": "heroes/toro.png",
+        "role": ["Đỡ đòn"],
+        "difficulty": 1,
+        "description": "Đỡ đòn khoẻ máu, khiêu khích kẻ địch và bảo vệ đồng đội phía sau.",
+        "stats": { "hp": 4400, "attack": 140, "defense": 160, "speed": 370 },
+        "skills": [
+            { "name": "Da Dày", "type": "Nội tại", "description": "Giảm sát thương nhận vào khi có nhiều kẻ địch xung quanh.", "cooldown": 0 },
+            { "name": "Húc Đầu", "type": "Chủ động", "description": "Lao tới gây sát thương và hất tung kẻ địch.", "cooldown": 10 },
+            { "name": "Gầm Thét", "type": "Chủ động", "description": "Khiêu khích kẻ địch xung quanh trong thời gian ngắn.", "cooldown": 14 },
+            { "name": "Cuồng Nộ", "type": "Tuyệt chiêu", "description": "Tăng giáp, kháng phép và hồi máu theo thời gian.", "cooldown": 40 }
+        ],
+        "recommendedBuild": [114, 115, 118, 111, 107, 106]
+    },
+    {
+        "id": 11,
+        "name": "Thane",
+        "alias": "thane",
+        "image": "heroes/thane.png",
+        "role": ["Đỡ đòn", "Đấu sĩ"],
+        "difficulty": 2,
+        "description": "Đỡ đòn mở giao tranh, tuyệt chiêu bay tới khống chế nhiều mục tiêu.",
+        "stats": { "hp": 4300, "attack": 155, "defense": 150, "speed": 375 },
+        "skills": [
+            { "name": "Ý Chí Thép", "type": "Nội tại", "description": "Tăng giáp tạm thời sau khi trúng kỹ năng của kẻ địch.", "cooldown": 0 },
+            { "name": "Bổ Nhào", "type": "Chủ động", "description": "Chém xuống gây sát thương và làm chậm.", "cooldown": 8 },
+            { "name": "Khiên Chắn", "type": "Chủ động", "description": "Nhận lá chắn và tăng tốc chạy về phía kẻ địch.", "cooldown": 12 },
+            { "name": "Thiên Hàng", "type": "Tuyệt chiêu", "description": "Bay tới khu vực chỉ định, gây sát thương và hất tung kẻ địch.", "cooldown": 42 }
+        ],
+        "recommendedBuild": [114, 118, 115, 111, 107, 106]
+    },
+    {
+        "id": 12,
+        "name": "Lauriel",
+        "alias": "lauriel",
+        "image": "heroes/lauriel.png",
+        "role": ["Pháp sư"],
+        "difficulty": 3,
+        "description": "Pháp sư cơ động, chuỗi kỹ năng liên hoàn và khả năng lướt liên tục.",
+        "stats": { "hp": 3300, "attack": 160, "defense": 95, "speed": 380 },
+        "skills": [
+            { "name": "Ánh Sáng Thánh", "type": "Nội tại", "description": "Đòn đánh thường sau kỹ năng gây thêm sát thương phép.", "cooldown": 0 },
+            { "name": "Thánh Quang", "type": "Chủ động", "description": "Phóng luồng sáng gây sát thương phép theo đường thẳng.", "cooldown": 6 },
+            { "name": "Vũ Điệu Ánh Sáng", "type": "Chủ động", "description": "Lướt một đoạn ngắn và gây sát thương xung quanh.", "cooldown": 9 },
+            { "name": "Phán Quyết", "type": "Tuyệt chiêu", "description": "Gây sát thương phép lớn diện rộng và làm chậm.", "cooldown": 30 }
+        ],
+        "recommendedBuild": [102, 104, 109, 112, 116, 106]
+    },
+    {
+        "id": 13,
+        "name": "Natalya",
+        "alias": "natalya",
+        "image": "heroes/natalya.png",
+        "role": ["Pháp sư"],
+        "difficulty": 2,
+        "description": "Pháp sư sát thương diện rộng, kiểm soát giao tranh bằng tuyệt chiêu.",
+        "stats": { "hp": 3250, "attack": 158, "defense": 90, "speed": 375 },
+        "skills": [
+            { "name": "Nguyền Rủa", "type": "Nội tại", "description": "Kỹ năng gây thêm sát thương theo thời gian.", "cooldown": 0 },
+            { "name": "Cầu Lửa", "type": "Chủ động", "description": "Ném cầu lửa gây sát thương phép diện rộng.", "cooldown": 6 },
+            { "name": "Trói Buộc", "type": "Chủ động", "description": "Trói chân kẻ địch trong khu vực chỉ định.", "cooldown": 11 },
+            { "name": "Bão Táp", "type": "Tuyệt chiêu", "description": "Triệu hồi cơn bão gây sát thương liên tục trong vùng rộng.", "cooldown": 34 }
+        ],
+        "recommendedBuild": [102, 104, 109, 112, 116, 117]
+    },
+    {
+        "id": 14,
+        "name": "Krixi",
+        "alias": "krixi",
+        "image": "heroes/krixi.png",
+        "role": ["Pháp sư"],
+        "difficulty": 1,
+        "description": "Pháp sư dọn lính nhanh, sát thương cao, dễ sử dụng cho người mới.",
+        "stats": { "hp": 3200, "attack": 162, "defense": 88, "speed": 375 },
+        "skills": [
+            { "name": "Phép Thuật Rừng Xanh", "type": "Nội tại", "description": "Tăng sát thương phép sau mỗi lần dùng kỹ năng.", "cooldown": 0 },
+            { "name": "Vũ Điệu Hoa", "type": "Chủ động", "description": "Gây sát thương phép cho kẻ địch phía trước.", "cooldown": 5 },
+            { "name": "Cánh Hoa Bay", "type": "Chủ động", "description": "Làm chậm và gây sát thương trong khu vực.", "cooldown": 9 },
+            { "name": "Nữ Hoàng Rừng Xanh", "type": "Tuyệt chiêu", "description": "Tung luồng năng lượng lớn gây sát thương phép mạnh.", "cooldown": 28 }
+        ],
+        "recommendedBuild": [102, 109, 112, 116, 104, 106]
+    },
+    {
+        "id": 15,
+        "name": "Ilumia",
+        "alias": "ilumia",
+        "image": "heroes/ilumia.png",
+        "role": ["Pháp sư", "Hỗ trợ"],
+        "difficulty": 2,
+        "description": "Pháp sư khống chế tầm xa, hỗ trợ đội hình mở giao tranh.",
+        "stats": { "hp": 3280, "attack": 156, "defense": 92, "speed": 375 },
+        "skills": [
+            { "name": "Ánh Sáng Dẫn Đường", "type": "Nội tại", "description": "Kỹ năng trúng mục tiêu giúp tăng tốc chạy cho bản thân.", "cooldown": 0 },
+            { "name": "Tia Sáng", "type": "Chủ động", "description": "Bắn tia sáng gây sát thương phép theo đường thẳng.", "cooldown": 6 },
+            { "name": "Xiềng Xích Ánh Sáng", "type": "Chủ động", "description": "Trói buộc kẻ địch trong khu vực chỉ định.", "cooldown": 12 },
+            { "name": "Phán Xét Ánh Sáng", "type": "Tuyệt chiêu", "description": "Gây sát thương lớn và choáng mục tiêu trúng đòn.", "cooldown": 36 }
+        ],
+        "recommendedBuild": [102, 109, 112, 116, 106, 117]
+    },
+    {
+        "id": 16,
+        "name": "Alice",
+        "alias": "alice",
+        "image": "heroes/alice.png",
+        "role": ["Hỗ trợ"],
+        "difficulty": 1,
+        "description": "Hỗ trợ hồi máu và tạo lá chắn cho đồng đội, rất hữu ích khi đi đôi.",
+        "stats": { "hp": 3600, "attack": 145, "defense": 115, "speed": 375 },
+        "skills": [
+            { "name": "Ban Phước", "type": "Nội tại", "description": "Đồng đội xung quanh được tăng nhẹ tốc độ chạy.", "cooldown": 0 },
+            { "name": "Quả Cầu Ánh Sáng", "type": "Chủ động", "description": "Gây sát thương phép và làm chậm kẻ địch.", "cooldown": 7 },
+            { "name": "Chữa Lành", "type": "Chủ động", "description": "Hồi máu cho bản thân và đồng đội gần nhất.", "cooldown": 14 },
+            { "name": "Lá Chắn Thần Thánh", "type": "Tuyệt chiêu", "description": "Tạo lá chắn lớn cho toàn bộ đồng đội xung quanh.", "cooldown": 40 }
+        ],
+        "recommendedBuild": [106, 114, 115, 118, 109, 111]
+    }
+]

@@ -1,0 +1,57 @@
+/* =========================================
+ * item.css - Trang Danh sách / Chi tiết Trang bị
+ * Phụ trách: Người 3 (TV3)
+ * (dùng sau reset.css + variables.css + common.css)
+ * ========================================= */
+
+.detail-item {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: var(--space-6);
+    align-items: start;
+    margin-bottom: var(--space-7);
+}
+
+.detail-item__media {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-elevated);
+    aspect-ratio: 1 / 1;
+}
+
+.detail-item__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.detail-item__info h1 {
+    font-size: var(--fs-2xl);
+    margin-bottom: var(--space-3);
+}
+
+.badge--price {
+    color: var(--color-gold);
+    border-color: #4a3d22;
+    font-weight: 700;
+}
+
+.item-passive {
+    padding: var(--space-3) var(--space-4);
+    background: rgba(230, 179, 74, 0.08);
+    border-left: 3px solid var(--color-gold);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-size: var(--fs-sm);
+}
+
+@media (max-width: 900px) {
+    .detail-item {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-item__media {
+        max-width: 240px;
+    }
+}
