@@ -1,0 +1,559 @@
+[
+    {
+        "id": 101,
+        "name": "Kiếm Fafnir",
+        "alias": "fafnir",
+        "image": "items/fafnir.png",
+        "type": "Công",
+        "price": 2040,
+        "stats": {
+            "attack": 60,
+            "attackSpeed": 30
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 102,
+        "name": "Vô Cực Kiếm",
+        "alias": "vo-cuc-kiem",
+        "image": "items/vo-cuc-kiem.png",
+        "type": "Công",
+        "price": 2140,
+        "stats": {
+            "attack": 65,
+            "critChance": 25
+        },
+        "passive": "Tăng 20% sát thương chí mạng gây ra",
+        "description": "Trang bị tăng mạnh chỉ số chí mạng cho xạ thủ"
+    },
+    {
+        "id": 103,
+        "name": "Ma Kiếm Sharpness",
+        "alias": "ma-kiem-sharpness",
+        "image": "items/ma-kiem-sharpness.png",
+        "type": "Công",
+        "price": 1980,
+        "stats": {
+            "attack": 55,
+            "penetration": 40
+        },
+        "passive": "Đòn đánh thường xuyên xuyên giáp",
+        "description": ""
+    },
+    {
+        "id": 104,
+        "name": "Rìu Đại Địa",
+        "alias": "riu-dai-dia",
+        "image": "items/riu-dai-dia.png",
+        "type": "Công",
+        "price": 2100,
+        "stats": {
+            "attack": 70,
+            "hp": 300
+        },
+        "passive": "Đòn đánh gây thêm sát thương theo % máu tối đa mục tiêu",
+        "description": ""
+    },
+    {
+        "id": 105,
+        "name": "Quỷ Kiếm Mãng Xà",
+        "alias": "quy-kiem-mang-xa",
+        "image": "items/quy-kiem-mang-xa.png",
+        "type": "Công",
+        "price": 2050,
+        "stats": {
+            "attack": 65,
+            "lifesteal": 15
+        },
+        "passive": "Hồi máu khi gây sát thương",
+        "description": ""
+    },
+    {
+        "id": 106,
+        "name": "Đại Bác Noxus",
+        "alias": "dai-bac-noxus",
+        "image": "items/dai-bac-noxus.png",
+        "type": "Công",
+        "price": 2020,
+        "stats": {
+            "attack": 60,
+            "critChance": 20
+        },
+        "passive": "Chí mạng gây thêm sát thương phép",
+        "description": ""
+    },
+    {
+        "id": 107,
+        "name": "Nanh Sói",
+        "alias": "nanh-soi",
+        "image": "items/nanh-soi.png",
+        "type": "Công",
+        "price": 1900,
+        "stats": {
+            "attack": 50,
+            "attackSpeed": 25,
+            "moveSpeed": 10
+        },
+        "passive": "Tăng tốc độ di chuyển khi tấn công",
+        "description": ""
+    },
+    {
+        "id": 108,
+        "name": "Găng Tay Sương Gió",
+        "alias": "gang-tay-suong-gio",
+        "image": "items/gang-tay-suong-gio.png",
+        "type": "Công",
+        "price": 1850,
+        "stats": {
+            "attackSpeed": 40,
+            "critChance": 20
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 109,
+        "name": "Búa Đá Vô Cực",
+        "alias": "bua-da-vo-cuc",
+        "image": "items/bua-da-vo-cuc.png",
+        "type": "Công",
+        "price": 2200,
+        "stats": {
+            "attack": 80,
+            "hp": 200
+        },
+        "passive": "Đòn đánh gây choáng ngắn",
+        "description": ""
+    },
+    {
+        "id": 110,
+        "name": "Cung Thần Tốc",
+        "alias": "cung-than-toc",
+        "image": "items/cung-than-toc.png",
+        "type": "Công",
+        "price": 1750,
+        "stats": {
+            "attackSpeed": 45,
+            "moveSpeed": 15
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 201,
+        "name": "Trượng Băng Giá",
+        "alias": "truong-bang-gia",
+        "image": "items/truong-bang-gia.png",
+        "type": "Phép",
+        "price": 2150,
+        "stats": {
+            "magicPower": 90,
+            "hp": 300
+        },
+        "passive": "Đòn đánh làm chậm mục tiêu",
+        "description": ""
+    },
+    {
+        "id": 202,
+        "name": "Trượng Pha Lê",
+        "alias": "truong-pha-le",
+        "image": "items/truong-pha-le.png",
+        "type": "Phép",
+        "price": 2000,
+        "stats": {
+            "magicPower": 100,
+            "cooldownReduction": 10
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 203,
+        "name": "Vương Miện Vô Cực",
+        "alias": "vuong-mien-vo-cuc",
+        "image": "items/vuong-mien-vo-cuc.png",
+        "type": "Phép",
+        "price": 2180,
+        "stats": {
+            "magicPower": 95,
+            "penetration": 35
+        },
+        "passive": "Sát thương phép xuyên kháng phép",
+        "description": ""
+    },
+    {
+        "id": 204,
+        "name": "Đũa Phép Archangel",
+        "alias": "dua-phep-archangel",
+        "image": "items/dua-phep-archangel.png",
+        "type": "Phép",
+        "price": 2100,
+        "stats": {
+            "magicPower": 70,
+            "mana": 400
+        },
+        "passive": "Tăng dần sức mạnh phép theo lượng mana tiêu hao",
+        "description": ""
+    },
+    {
+        "id": 205,
+        "name": "Trượng Hư Không",
+        "alias": "truong-hu-khong",
+        "image": "items/truong-hu-khong.png",
+        "type": "Phép",
+        "price": 1950,
+        "stats": {
+            "magicPower": 85,
+            "penetration": 25
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 206,
+        "name": "Ngọc Đại Trí Tuệ",
+        "alias": "ngoc-dai-tri-tue",
+        "image": "items/ngoc-dai-tri-tue.png",
+        "type": "Phép",
+        "price": 1800,
+        "stats": {
+            "magicPower": 75,
+            "cooldownReduction": 15
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 207,
+        "name": "Sách Phù Thủy",
+        "alias": "sach-phu-thuy",
+        "image": "items/sach-phu-thuy.png",
+        "type": "Phép",
+        "price": 1700,
+        "stats": {
+            "magicPower": 60,
+            "manaRegen": 20
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 208,
+        "name": "Trượng Hủy Diệt",
+        "alias": "truong-huy-diet",
+        "image": "items/truong-huy-diet.png",
+        "type": "Phép",
+        "price": 2050,
+        "stats": {
+            "magicPower": 90,
+            "critChance": 15
+        },
+        "passive": "Sát thương phép có thể chí mạng",
+        "description": ""
+    },
+    {
+        "id": 209,
+        "name": "Mặt Nạ Diệt Vong",
+        "alias": "mat-na-diet-vong",
+        "image": "items/mat-na-diet-vong.png",
+        "type": "Phép",
+        "price": 1650,
+        "stats": {
+            "magicPower": 55,
+            "lifesteal": 10
+        },
+        "passive": "Hồi máu theo sát thương phép gây ra",
+        "description": ""
+    },
+    {
+        "id": 210,
+        "name": "Găng Tay Băng Giá",
+        "alias": "gang-tay-bang-gia",
+        "image": "items/gang-tay-bang-gia.png",
+        "type": "Phép",
+        "price": 1600,
+        "stats": {
+            "magicPower": 50,
+            "hp": 200
+        },
+        "passive": "Làm chậm mục tiêu khi trúng chiêu",
+        "description": ""
+    },
+    {
+        "id": 301,
+        "name": "Giáp Máu",
+        "alias": "giap-mau",
+        "image": "items/giap-mau.png",
+        "type": "Giáp",
+        "price": 1900,
+        "stats": {
+            "armor": 60,
+            "hp": 400
+        },
+        "passive": "Hồi máu khi máu thấp",
+        "description": ""
+    },
+    {
+        "id": 302,
+        "name": "Giáp Thiên Thần",
+        "alias": "giap-thien-than",
+        "image": "items/giap-thien-than.png",
+        "type": "Giáp",
+        "price": 2100,
+        "stats": {
+            "armor": 70,
+            "hp": 500
+        },
+        "passive": "Hồi sinh sau khi chết nếu máu về 0",
+        "description": ""
+    },
+    {
+        "id": 303,
+        "name": "Giáp Sát Thủ",
+        "alias": "giap-sat-thu",
+        "image": "items/giap-sat-thu.png",
+        "type": "Giáp",
+        "price": 1750,
+        "stats": {
+            "armor": 55,
+            "hp": 300
+        },
+        "passive": "Giảm sát thương chí mạng nhận vào",
+        "description": ""
+    },
+    {
+        "id": 304,
+        "name": "Giáp Gai",
+        "alias": "giap-gai",
+        "image": "items/giap-gai.png",
+        "type": "Giáp",
+        "price": 1650,
+        "stats": {
+            "armor": 50,
+            "hp": 350
+        },
+        "passive": "Phản lại sát thương vật lý nhận vào",
+        "description": ""
+    },
+    {
+        "id": 305,
+        "name": "Giáp Hộ Vệ",
+        "alias": "giap-ho-ve",
+        "image": "items/giap-ho-ve.png",
+        "type": "Giáp",
+        "price": 1500,
+        "stats": {
+            "armor": 45,
+            "hp": 250
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 306,
+        "name": "Giáp Bạc",
+        "alias": "giap-bac",
+        "image": "items/giap-bac.png",
+        "type": "Giáp",
+        "price": 1400,
+        "stats": {
+            "armor": 40,
+            "hp": 200
+        },
+        "passive": "Giảm sát thương từ đòn đánh thường",
+        "description": ""
+    },
+    {
+        "id": 307,
+        "name": "Giáp Người Khổng Lồ",
+        "alias": "giap-nguoi-khong-lo",
+        "image": "items/giap-nguoi-khong-lo.png",
+        "type": "Giáp",
+        "price": 1800,
+        "stats": {
+            "armor": 50,
+            "hp": 600
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 401,
+        "name": "Bùa Hộ Mệnh Từ Tính",
+        "alias": "bua-ho-menh-tu-tinh",
+        "image": "items/bua-ho-menh-tu-tinh.png",
+        "type": "Kháng Phép",
+        "price": 1800,
+        "stats": {
+            "magicResist": 60,
+            "hp": 400
+        },
+        "passive": "Kích hoạt khiên chắn khi trúng phép",
+        "description": ""
+    },
+    {
+        "id": 402,
+        "name": "Trang Sức Thần Bí",
+        "alias": "trang-suc-than-bi",
+        "image": "items/trang-suc-than-bi.png",
+        "type": "Kháng Phép",
+        "price": 1700,
+        "stats": {
+            "magicResist": 55,
+            "hp": 300
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 403,
+        "name": "Khiên Phép",
+        "alias": "khien-phep",
+        "image": "items/khien-phep.png",
+        "type": "Kháng Phép",
+        "price": 1600,
+        "stats": {
+            "magicResist": 50,
+            "hp": 250
+        },
+        "passive": "Giảm sát thương phép nhận vào",
+        "description": ""
+    },
+    {
+        "id": 404,
+        "name": "Áo Choàng Bóng Tối",
+        "alias": "ao-choang-bong-toi",
+        "image": "items/ao-choang-bong-toi.png",
+        "type": "Kháng Phép",
+        "price": 1550,
+        "stats": {
+            "magicResist": 45,
+            "hp": 200
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 501,
+        "name": "Giày Thần Tốc",
+        "alias": "giay-than-toc",
+        "image": "items/giay-than-toc.png",
+        "type": "Giày",
+        "price": 800,
+        "stats": {
+            "moveSpeed": 60
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 502,
+        "name": "Giày Phù Phép",
+        "alias": "giay-phu-phep",
+        "image": "items/giay-phu-phep.png",
+        "type": "Giày",
+        "price": 850,
+        "stats": {
+            "moveSpeed": 45,
+            "magicResist": 20
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 503,
+        "name": "Giày Vô Ảnh",
+        "alias": "giay-vo-anh",
+        "image": "items/giay-vo-anh.png",
+        "type": "Giày",
+        "price": 850,
+        "stats": {
+            "moveSpeed": 45,
+            "armor": 20
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 504,
+        "name": "Giày Chiến Thắng",
+        "alias": "giay-chien-thang",
+        "image": "items/giay-chien-thang.png",
+        "type": "Giày",
+        "price": 900,
+        "stats": {
+            "moveSpeed": 45,
+            "attackSpeed": 20
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 601,
+        "name": "Áo Choàng Tàng Hình",
+        "alias": "ao-choang-tang-hinh",
+        "image": "items/ao-choang-tang-hinh.png",
+        "type": "Đặc Biệt",
+        "price": 1500,
+        "stats": {
+            "hp": 300
+        },
+        "passive": "Tàng hình trong vài giây khi kích hoạt",
+        "description": ""
+    },
+    {
+        "id": 602,
+        "name": "Vòng Bảo Vệ",
+        "alias": "vong-bao-ve",
+        "image": "items/vong-bao-ve.png",
+        "type": "Đặc Biệt",
+        "price": 1400,
+        "stats": {
+            "hp": 350,
+            "hpRegen": 15
+        },
+        "passive": "Tạo khiên chắn sát thương",
+        "description": ""
+    },
+    {
+        "id": 603,
+        "name": "Ngọc Sinh Mệnh",
+        "alias": "ngoc-sinh-menh",
+        "image": "items/ngoc-sinh-menh.png",
+        "type": "Đặc Biệt",
+        "price": 1300,
+        "stats": {
+            "hp": 500
+        },
+        "passive": "",
+        "description": ""
+    },
+    {
+        "id": 604,
+        "name": "Trượng Hồi Sinh",
+        "alias": "truong-hoi-sinh",
+        "image": "items/truong-hoi-sinh.png",
+        "type": "Đặc Biệt",
+        "price": 2000,
+        "stats": {
+            "hp": 400,
+            "magicPower": 40
+        },
+        "passive": "Hồi sinh đồng minh gần đó khi kích hoạt",
+        "description": ""
+    },
+    {
+        "id": 605,
+        "name": "Đồng Hồ Cát",
+        "alias": "dong-ho-cat",
+        "image": "items/dong-ho-cat.png",
+        "type": "Đặc Biệt",
+        "price": 1200,
+        "stats": {
+            "hp": 200
+        },
+        "passive": "Bất tử tạm thời khi kích hoạt",
+        "description": ""
+    }
+]
