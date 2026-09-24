@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Tra cứu toàn bộ tướng Liên Quân Mobile: vai trò, đường đi, độ khó và gợi ý xếp hạng meta. Trang con dùng chung header/footer của AOV HUB."
+    />
+    <title>Tướng — AOV HUB</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Chuyển tới nội dung chính</a>
+
+    <!-- Header dùng chung — slot nạp bởi src/pages/heroes.js qua header.js -->
+    <div id="header-root"></div>
+
+    <main id="main" class="page-main">
+      <section class="section" id="heroes">
+        <div class="container">
+          <div class="section__heading">
+            <p class="section__kicker">Kho tướng đầy đủ</p>
+            <h1 class="section__title--page">Danh sách tướng Liên Quân</h1>
+            <p class="section__subtitle">
+              Lọc theo vai trò, đường đi hoặc tìm theo tên để có build phù hợp nhất.
+            </p>
+          </div>
+          <!-- Slot render bởi src/js/heroes.js → renderHeroesGrid -->
+          <div class="heroes-grid" id="heroes-grid"></div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer dùng chung — slot nạp bởi src/pages/heroes.js qua footer.js -->
+    <div id="footer-root"></div>
+
+    <script type="module" src="/src/pages/heroes.js"></script>
+  </body>
+</html>
