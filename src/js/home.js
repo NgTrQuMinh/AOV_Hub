@@ -8,7 +8,7 @@ async function renderFeaturedHeroes() {
     const container = document.getElementById('featured-heroes');
     if (!container) return;
 
-    const heroes = await loadData(BASE_PATH + 'data/heroes.json');
+    const heroes = await loadData(BASE_PATH + 'src/data/heroes.json');
     const featured = heroes.slice(0, 8);
 
     container.innerHTML = featured.length
@@ -20,7 +20,7 @@ async function renderFeaturedItems() {
     const container = document.getElementById('featured-items');
     if (!container) return;
 
-    const items = await loadData(BASE_PATH + 'data/items.json');
+    const items = await loadData(BASE_PATH + 'src/data/items.json');
     const featured = items.slice(0, 8);
 
     container.innerHTML = featured.length

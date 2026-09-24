@@ -24,7 +24,7 @@ function renderHeroCard(hero) {
 
     return `
         <article class="card hero-card">
-            <a class="hero-card__media" href="${BASE_PATH}pages/hero-detail.html?id=${hero.id}">
+            <a class="hero-card__media" href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">
                 <img src="${BASE_PATH}assets/images/${hero.image}" alt="${hero.name}" loading="lazy">
             </a>
             <button
@@ -40,7 +40,7 @@ function renderHeroCard(hero) {
                     ${roles}
                     ${difficultyText ? `<span class="badge ${difficultyClass}">${difficultyText}</span>` : ''}
                 </div>
-                <a class="hero-card__link" href="${BASE_PATH}pages/hero-detail.html?id=${hero.id}">Xem chi tiết</a>
+                <a class="hero-card__link" href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">Xem chi tiết</a>
             </div>
         </article>
     `;
@@ -58,7 +58,7 @@ function renderItemCard(item) {
 
     return `
         <article class="card item-card">
-            <a class="item-card__media" href="${BASE_PATH}pages/item-detail.html?id=${item.id}">
+            <a class="item-card__media" href="${BASE_PATH}src/pages/item-detail.html?id=${item.id}">
                 <img src="${BASE_PATH}assets/images/${item.image}" alt="${item.name}" loading="lazy">
             </a>
             <button
@@ -74,7 +74,7 @@ function renderItemCard(item) {
                     ${item.type ? `<span class="badge">${item.type}</span>` : ''}
                     ${priceText ? `<span class="item-card__price">${priceText}</span>` : ''}
                 </div>
-                <a class="item-card__link" href="${BASE_PATH}pages/item-detail.html?id=${item.id}">Xem chi tiết</a>
+                <a class="item-card__link" href="${BASE_PATH}src/pages/item-detail.html?id=${item.id}">Xem chi tiết</a>
             </div>
         </article>
     `;
