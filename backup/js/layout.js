@@ -13,15 +13,17 @@ async function includeLayout() {
     const footerSlot = document.getElementById('site-footer');
 
     if (headerSlot) {
-        const response = await fetch('/partials/header.html');
-        headerSlot.innerHTML = await response.text();
+        const response = await fetch(BASE_PATH + 'partials/header.html');
+        // Thay {{BASE}} trong partial bằng đường dẫn gốc thật của dự án
+        headerSlot.innerHTML = (await response.text()).replaceAll('{{BASE}}', BASE_PATH);
         highlightActiveNav();
         initMobileMenu();
     }
 
     if (footerSlot) {
-        const response = await fetch('/partials/footer.html');
-        footerSlot.innerHTML = await response.text();
+        const response = await fetch(BASE_PATH + 'partials/footer.html');
+        // Thay {{BASE}} trong partial bằng đường dẫn gốc thật của dự án
+        footerSlot.innerHTML = (await response.text()).replaceAll('{{BASE}}', BASE_PATH);
         setFooterYear();
     }
 }

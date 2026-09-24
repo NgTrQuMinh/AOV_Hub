@@ -1,6 +1,6 @@
 <!-- Header dùng chung — Phụ trách: Người 1 — nạp bằng js/layout.js -->
 <div class="container site-header__inner">
-    <a class="site-logo" href="/index.html">
+    <a class="site-logo" href="{{BASE}}index.html">
         <span class="site-logo__mark">AOV</span><span class="site-logo__text">HUB</span>
     </a>
 
@@ -11,15 +11,15 @@
 
     <nav class="site-nav" aria-label="Điều hướng chính">
         <ul>
-            <li><a class="site-nav__link" data-page="home" href="/index.html">Trang chủ</a></li>
-            <li><a class="site-nav__link" data-page="heroes" href="/pages/heroes.html">Tướng</a></li>
-            <li><a class="site-nav__link" data-page="items" href="/pages/items.html">Trang bị</a></li>
-            <li><a class="site-nav__link" data-page="compare" href="/pages/compare.html">So sánh</a></li>
-            <li><a class="site-nav__link" data-page="favorite" href="/pages/favorite.html">Yêu thích</a></li>
+            <li><a class="site-nav__link" data-page="home" href="{{BASE}}index.html">Trang chủ</a></li>
+            <li><a class="site-nav__link" data-page="heroes" href="{{BASE}}pages/heroes.html">Tướng</a></li>
+            <li><a class="site-nav__link" data-page="items" href="{{BASE}}pages/items.html">Trang bị</a></li>
+            <li><a class="site-nav__link" data-page="compare" href="{{BASE}}pages/compare.html">So sánh</a></li>
+            <li><a class="site-nav__link" data-page="favorite" href="{{BASE}}pages/favorite.html">Yêu thích</a></li>
         </ul>
     </nav>
 
-    <form class="header-search" action="/pages/heroes.html" method="get">
+    <form class="header-search" action="{{BASE}}pages/heroes.html" method="get">
         <input class="header-search__input" type="text" name="keyword" placeholder="Tìm tướng, trang bị...">
         <button class="header-search__btn" type="submit" aria-label="Tìm kiếm">🔍</button>
     </form>

@@ -76,7 +76,7 @@ Không tự ý đổi tên các key trên khi thêm tính năng mới — các f
   <footer id="site-footer"></footer>
   ```
   và khai báo `<body data-page="...">` để menu tự highlight đúng trang (`home`, `heroes`, `items`, `compare`, `favorite`).
-- Đọc dữ liệu JSON luôn qua `loadData(path)` (đường dẫn tuyệt đối từ gốc, vd `/data/heroes.json`), không gọi `fetch()` trực tiếp trong từng trang.
+- Đọc dữ liệu JSON luôn qua `loadData(path)` (dùng `BASE_PATH + 'data/heroes.json'`, `BASE_PATH` khai báo trong `js/config.js`), không gọi `fetch()` trực tiếp trong từng trang.
 - Card Tướng/Trang bị luôn dùng `renderHeroCard(hero)` / `renderItemCard(item)` trong `js/components.js` — không viết lại HTML card ở nơi khác để tránh lệch giao diện.
 - Rỗng dữ liệu/không tìm thấy → dùng `renderNotFound(message)`.
 

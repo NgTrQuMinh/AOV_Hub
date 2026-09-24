@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AOV HUB - Đăng ký</title>
 
-    <link rel="stylesheet" href="/css/reset.css">
-    <link rel="stylesheet" href="/css/variables.css">
-    <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/auth.css">
 </head>
 <body data-page="register">
 
@@ -39,16 +39,17 @@
                 <button type="submit" class="btn btn-primary">Đăng ký</button>
             </form>
 
-            <p class="auth-card__switch">Đã có tài khoản? <a href="/pages/login.html">Đăng nhập</a></p>
+            <p class="auth-card__switch">Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
         </div>
     </main>
 
     <footer id="site-footer"></footer>
 
-    <script src="/js/loadData.js"></script>
-    <script src="/js/components.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/layout.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/loadData.js"></script>
+    <script src="../js/components.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/layout.js"></script>
     <script>
         // Task 30 + 31 - Đăng ký và validate
         // Đã đăng nhập rồi thì không cần đăng ký nữa
@@ -75,7 +76,7 @@
 
             renderSuccess(errorBox, 'Đăng ký thành công! Đang chuyển về trang chủ...');
             setTimeout(() => {
-                window.location.href = '/index.html';
+                window.location.href = BASE_PATH + 'index.html';
             }, 800);
         });
     </script>
