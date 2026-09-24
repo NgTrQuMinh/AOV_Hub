@@ -1,0 +1,58 @@
+{
+  "source": "mock-data",
+  "description": "Dữ liệu Feed cộng đồng (mock) cho trang chủ AOV HUB.",
+  "posts": [
+    {
+      "id": 1,
+      "title": "Thử sức Meta Rừng 5v5 mới — Murad 'Hắc Ám' đang cực khỏe",
+      "author": "Quang Minh",
+      "avatar": "🦁",
+      "date": "2025-12-18",
+      "views": 12840,
+      "likes": 986,
+      "comments": 132,
+      "tag": "Meta",
+      "color": "#f5b301",
+      "excerpt": "Sau bản cập nhật rồng hắc ám, combo rút đao của Murad đang đứng top winrate. Cùng phân tích cách xây dựng."
+    },
+    {
+      "id": 2,
+      "title": "Hướng dẫn Tel'Annas cho người mới: giữ vị trí là thắng 80%",
+      "author": "Lan Anh",
+      "avatar": "🦊",
+      "date": "2025-12-15",
+      "views": 9632,
+      "likes": 741,
+      "comments": 98,
+      "tag": "Hướng dẫn",
+      "color": "#00b8d9",
+      "excerpt": "Xạ thủ không chỉ là bắn — biết giữ tầm và né combo sẽ giúp bạn thắng đường một cách dễ dàng."
+    },
+    {
+      "id": 3,
+      "title": "Top 5 trang bị thần thánh cho Pháp sư đầu trận mùa 25",
+      "author": "Thu Anh",
+      "avatar": "🐉",
+      "date": "2025-12-12",
+      "views": 8210,
+      "likes": 655,
+      "comments": 71,
+      "tag": "Trang bị",
+      "color": "#7c4dff",
+      "excerpt": "Đừng lãng phí vàng vào những món không hợp pha. Đây là bộ khởi đầu lý tưởng cho mọi pháp sư."
+    },
+    {
+      "id": 4,
+      "title": "Build đồ mẫu Raz 'Điện Từ Vũ Bão' — combo giữ chân Siêu Thần",
+      "author": "Bảo Nam",
+      "avatar": "🚀",
+      "date": "2025-12-08",
+      "views": 7156,
+      "likes": 512,
+      "comments": 64,
+      "tag": "Build",
+      "color": "#ff5470",
+      "excerpt": "Một bộ build tối ưu giúp Raz trở thành cỗ máy khống chế, mở giao tranh và giữ chân kẻ địch thần thánh."
+    }
+  ]
+}

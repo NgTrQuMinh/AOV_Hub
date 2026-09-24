@@ -1,0 +1,61 @@
+/* ============================================
+   VARIABLES.CSS — Biến thiết kế chung toàn site
+   Light theme trắng – vàng. Mọi trang dùng chung.
+   KHÔNG hard-code giá trị ngoài file này.
+   ============================================ */
+
+:root {
+  /* ---------- Nền ---------- */
+  --bg-primary: #ffffff;      /* Nền chính */
+  --bg-secondary: #fff9ec;    /* Nền section xen kẽ: kem nhạt */
+  --bg-soft: #fffcf5;         /* Kem rất nhạt cho hero */
+
+  /* ---------- Màu vàng nhấn ---------- */
+  --gold: #f5b301;            /* Vàng chính */
+  --gold-dark: #d99a00;       /* Vàng đậm: hover, viền */
+  --gold-light: #ffe9a8;      /* Vàng nhạt: badge, nền icon */
+  --gold-faint: #fff6d8;      /* Vàng rất nhạt: hover nền */
+  --gold-grad: linear-gradient(135deg, #ffd54a 0%, #f5b301 100%);
+  --gold-grad-soft: linear-gradient(135deg, rgba(255, 213, 74, 0.18) 0%, rgba(245, 179, 1, 0.06) 100%);
+
+  /* ---------- Chữ ---------- */
+  --text-primary: #2b2416;    /* Chữ chính: nâu than */
+  --text-secondary: #7a6f5a;  /* Chữ phụ */
+  --text-on-gold: #3a2e12;    /* Chữ nâu đậm trên nút vàng */
+
+  /* ---------- Viền, đường kẻ ---------- */
+  --border: #f0e6cc;
+  --border-hover: #e5cf9a;
+
+  /* ---------- Bóng ---------- */
+  --shadow-card:
+    0 6px 20px rgba(212, 173, 0, 0.08),
+    0 2px 6px rgba(43, 36, 22, 0.04);
+  --shadow-hover:
+    0 14px 32px rgba(245, 179, 1, 0.22),
+    0 4px 10px rgba(43, 36, 22, 0.06);
+  --shadow-header: 0 6px 24px rgba(43, 36, 22, 0.06);
+  --shadow-btn: 0 8px 20px rgba(245, 179, 1, 0.35);
+
+  /* ---------- Bo góc ---------- */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* ---------- Chuyển động ---------- */
+  --transition-fast: 0.2s ease;
+  --transition: 0.25s ease;
+  --transition-slow: 0.3s ease;
+
+  /* ---------- Layout ---------- */
+  --container: 1200px;
+  --gutter: 20px;
+  --space-section: 88px;
+  --space-section-sm: 60px;
+
+  /* ---------- Font ---------- */
+  --font-primary: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}

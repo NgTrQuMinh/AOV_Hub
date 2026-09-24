@@ -1,16 +1,127 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AOV_HUB</title>
+    <meta
+      name="description"
+      content="AOV HUB — Cổng thông tin tra cứu tướng, trang bị và cộng đồng Liên Quân Mobile cho game thủ Việt. Light theme trắng - vàng, hiện đại và dễ đọc."
+    />
+    <title>AOV HUB — Tra cứu tướng &amp; trang bị Liên Quân Mobile</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/src/data/heroes.json" as="fetch" crossorigin />
+    <link rel="preload" href="/src/data/feed.json" as="fetch" crossorigin />
+    <link rel="stylesheet" href="/src/style.css" />
+
+    <!-- Font hiển thị (đã ghi trong @font-face của variables.css) -->
   </head>
+
   <body>
+    <!-- ===== Header dùng chung — slot nạp bởi src/js/header.js ===== -->
+    <div id="header-root"></div>
 
-    <div id="app"></div>
+    <main id="main-content">
+      <!-- ============ HERO / BANNER ============ -->
+      <section class="hero">
+        <div class="hero__deco hero__deco--1" aria-hidden="true"></div>
+        <div class="hero__deco hero__deco--2" aria-hidden="true"></div>
+        <div class="container hero__inner">
+          <div class="hero__content">
+            <p class="hero__kicker">Cổng thông tin Liên Quân Mobile</p>
+            <h1 class="hero__title">
+              Tra cứu <span class="hero__accent">tướng</span> &amp;
+              <span class="hero__accent">trang bị</span> nhanh nhất cho game thủ Việt
+            </h1>
+            <p class="hero__subtitle">
+              Một nguồn duy nhất cho mọi thứ bạn cần: tổng hợp tướng siêu hot,
+              bộ trang bị thần thánh và những cập nhật mới nhất từ cộng đồng.
+            </p>
+            <div class="hero__actions">
+              <a href="heroes.html" class="btn btn--primary btn--lg">Khám phá tướng</a>
+              <a href="items.html" class="btn btn--outline btn--lg">Xem trang bị</a>
+            </div>
+          </div>
+
+          <div class="hero__card" aria-hidden="true">
+            <span class="hero__card-badge">🔥 Meta Rồng 5v5</span>
+            <span class="hero__card-title">Murad "Hắc Ám"</span>
+            <span class="hero__card-rank">SS</span>
+            <span class="hero__card-stars">★ ★ ★ ★</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 4 CARD GIỚI THIỆU CHỨC NĂNG ============ -->
+      <section class="section section--alt" id="features">
+        <div class="container">
+          <div class="section__heading">
+            <p class="section__kicker">Khám phá ngay</p>
+            <h2 class="section__title">Mọi thứ bạn cần cho Liên Quân</h2>
+          </div>
+
+          <div class="features-grid">
+            <a href="heroes.html" class="feature-card">
+              <span class="feature-card__icon" aria-hidden="true">🦸‍♂️</span>
+              <h3 class="feature-card__title">Tra cứu tướng</h3>
+              <p class="feature-card__desc">Tìm hiểu sức mạnh, vai trò, độ khó và cách chơi của từng tướng.</p>
+              <span class="feature-card__cta">Xem thêm<span class="feature-card__arrow" aria-hidden="true">→</span></span>
+            </a>
+
+            <a href="items.html" class="feature-card">
+              <span class="feature-card__icon" aria-hidden="true">🛡️</span>
+              <h3 class="feature-card__title">Tra cứu trang bị</h3>
+              <p class="feature-card__desc">Danh sách đầy đủ trang bị tấn công, phòng thủ và phép thuật.</p>
+              <span class="feature-card__cta">Xem thêm<span class="feature-card__arrow" aria-hidden="true">→</span></span>
+            </a>
+
+            <a href="feed.html" class="feature-card">
+              <span class="feature-card__icon" aria-hidden="true">📰</span>
+              <h3 class="feature-card__title">Feed cộng đồng</h3>
+              <p class="feature-card__desc">Cập nhật tin tức, mẹo chơi và chia sẻ từ game thủ mỗi ngày.</p>
+              <span class="feature-card__cta">Xem thêm<span class="feature-card__arrow" aria-hidden="true">→</span></span>
+            </a>
+
+            <a href="builds.html" class="feature-card">
+              <span class="feature-card__icon" aria-hidden="true">⚙️</span>
+              <h3 class="feature-card__title">Build đồ mẫu</h3>
+              <p class="feature-card__desc">Kho build đồ hoàn chỉnh theo từng tướng, dễ áp dụng thực chiến.</p>
+              <span class="feature-card__cta">Xem thêm<span class="feature-card__arrow" aria-hidden="true">→</span></span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ TƯỚNG NỔI BẬT ============ -->
+      <section class="section" id="heroes">
+        <div class="container">
+          <div class="section__heading section__heading--split">
+            <div>
+              <p class="section__kicker">Nâng cấp trình độ</p>
+              <h2 class="section__title">Tướng nổi bật tuần này</h2>
+            </div>
+            <a href="heroes.html" class="btn btn--outline">Xem tất cả tướng</a>
+          </div>
+          <!-- Slot render bởi src/js/heroes.js -->
+          <div class="heroes-grid" id="heroes-grid"></div>
+        </div>
+      </section>
+
+      <!-- ============ FEED MỚI NHẤT ============ -->
+      <section class="section section--alt" id="feed">
+        <div class="container">
+          <div class="section__heading">
+            <p class="section__kicker">Cộng đồng nói gì</p>
+            <h2 class="section__title">Feed mới nhất</h2>
+          </div>
+          <!-- Slot render bởi src/js/feed.js -->
+          <ul class="feed-list" id="feed-list"></ul>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===== Footer dùng chung — slot nạp bởi src/js/footer.js ===== -->
+    <div id="footer-root"></div>
+
     <script type="module" src="/src/main.js"></script>
-
-  
   </body>
 </html>

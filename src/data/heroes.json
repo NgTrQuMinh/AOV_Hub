@@ -1,0 +1,90 @@
+{
+  "source": "mock-data",
+  "description": "Dữ liệu tướng nổi bật (mock) cho AOV HUB light theme. Ảnh dùng placeholder gradient + emoji, không cần file ảnh thật.",
+  "heroes": [
+    {
+      "id": 1,
+      "name": "Violet",
+      "role": "Xạ thủ",
+      "lane": "Đường Rồng",
+      "tag": "Cuồng nộ Hỏa Tiễn",
+      "rank": "SS",
+      "difficulty": 2,
+      "emoji": "🎯",
+      "color": "#f23b3b",
+      "desc": "Xạ thủ biểu tượng với nội tại bắn xuyên thủng, dễ chơi mà mạnh."
+    },
+    {
+      "id": 2,
+      "name": "Murad",
+      "role": "Sát thủ",
+      "lane": "Rừng",
+      "tag": "Huyền thoại bóng đêm",
+      "rank": "SS",
+      "difficulty": 4,
+      "emoji": "🗡️",
+      "color": "#2f6df6",
+      "desc": "Kẻ săn mồi lướt trong bóng tối, dồn sát thương khủng sau mỗi combo."
+    },
+    {
+      "id": 3,
+      "name": "Tel'Annas",
+      "role": "Xạ thủ",
+      "lane": "Đường Rồng",
+      "tag": "Huyền thư băng giá",
+      "rank": "S",
+      "difficulty": 3,
+      "emoji": "🏹",
+      "color": "#00b8d9",
+      "desc": "Xạ thủ huyền thoại với nhịp đánh nhanh và tầm bắn vượt trội."
+    },
+    {
+      "id": 4,
+      "name": "Zephys",
+      "role": "Sát thủ",
+      "lane": "Rừng",
+      "tag": "Quỷ ẩn thân",
+      "rank": "S",
+      "difficulty": 4,
+      "emoji": "🌑",
+      "color": "#7c4dff",
+      "desc": "Từ bóng tối lao tới, gây bất ngờ rồi thoát thân không dấu vết."
+    },
+    {
+      "id": 5,
+      "name": "Airi",
+      "role": "Sát thủ",
+      "lane": "Đường Kinh",
+      "tag": "Kunoichi lửa",
+      "rank": "A",
+      "difficulty": 3,
+      "emoji": "🌸",
+      "color": "#ff5470",
+      "desc": "Nữ ninja bốc lửa, cơ động cao, dồn ép đơn mục tiêu hiệu quả."
+    },
+    {
+      "id": 6,
+      "name": "Raz",
+      "role": "Pháp sư",
+      "lane": "Đường Giữa",
+      "tag": "Pháp sư điện từ",
+      "rank": "S",
+      "difficulty": 4,
+      "emoji": "⚡",
+      "color": "#ffb301",
+      "desc": "Lướt siêu nhanh, dồn combo phép thuật hạ gục mục tiêu ăn vận (tên gợi ý)."
+    },
+    {
+      "id": 7,
+      "name": "Alice",
+      "role": "Trợ thủ",
+      "lane": "Đường Rồng",
+      "tag": "Phép thuật thiếu nữ",
+      "rank": "A",
+      "difficulty": 2,
+      "emoji": "🔮",
+      "color": "#ff8a65",
+      "desc": "Trợ thủ kiểu mới, biến hình Hỏa Long, cấu rỉa và cung cấp khống chế."
+    }
+  ]
+}
