@@ -18,7 +18,7 @@ const USERS_KEY = 'aov_users';
 const CURRENT_USER_KEY = 'aov_current_user';
 
 /* Các trang bắt buộc đăng nhập (Task 36). Muốn thêm trang thì bổ sung vào đây. */
-const PROTECTED_PAGES = ['/pages/profile.html'];
+const PROTECTED_PAGES = [BASE_PATH + 'pages/profile.html'];
 
 /* ---------- Đọc/ghi danh sách user ---------- */
 
@@ -49,7 +49,7 @@ async function seedUsersFromJson() {
     if (getUsers().length) return;
 
     try {
-        const response = await fetch('/data/users.json');
+        const response = await fetch(BASE_PATH + 'data/users.json');
         if (!response.ok) return;
 
         const users = await response.json();
@@ -89,7 +89,7 @@ function logout() {
     localStorage.removeItem(CURRENT_USER_KEY);
 
     // Nếu đang đứng ở trang cần đăng nhập thì quay về trang chủ.
-    window.location.href = '/index.html';
+    window.location.href = BASE_PATH + 'index.html';
 }
 
 /* ---------- Task 36 - Guard chặn trang cần đăng nhập ---------- */
@@ -103,7 +103,7 @@ function requireAuth() {
     if (isLoggedIn()) return true;
 
     const redirect = encodeURIComponent(window.location.pathname + window.location.search);
-    window.location.href = `/pages/login.html?redirect=${redirect}`;
+    window.location.href = `${BASE_PATH}pages/login.html?redirect=${redirect}`;
     return false;
 }
 
@@ -112,7 +112,7 @@ function requireAuth() {
  */
 function redirectIfLoggedIn() {
     if (isLoggedIn()) {
-        window.location.href = '/index.html';
+        window.location.href = BASE_PATH + 'index.html';
     }
 }
 
@@ -214,7 +214,7 @@ function updateAccountUI() {
     if (username) {
         area.innerHTML = `
             <div class="account-area__session">
-                <a class="account-area__username" href="/pages/profile.html">
+                <a class="account-area__username" href="${BASE_PATH}pages/profile.html">
                     <span class="account-area__avatar" aria-hidden="true">👤</span>
                     ${escapeHtml(username)}
                 </a>
@@ -229,8 +229,8 @@ function updateAccountUI() {
     } else {
         area.innerHTML = `
             <div class="account-area__guest">
-                <a class="btn btn-outline btn-sm" href="/pages/login.html">Đăng nhập</a>
-                <a class="btn btn-primary btn-sm" href="/pages/register.html">Đăng ký</a>
+                <a class="btn btn-outline btn-sm" href="${BASE_PATH}pages/login.html">Đăng nhập</a>
+                <a class="btn btn-primary btn-sm" href="${BASE_PATH}pages/register.html">Đăng ký</a>
             </div>
         `;
     }

@@ -3,8 +3,8 @@
  * Phụ trách: Người 1
  *
  * Dùng chung cho mọi trang cần đọc data/heroes.json, data/items.json, data/builds.json.
- * Dùng đường dẫn tuyệt đối từ gốc site (bắt đầu bằng "/") để hoạt động đúng
- * dù trang nằm ở "/index.html" hay "/pages/heroes.html".
+ * Truyền đường dẫn dạng BASE_PATH + 'data/heroes.json' (BASE_PATH khai báo trong js/config.js)
+ * để hoạt động đúng dù trang nằm ở index.html, pages/heroes.html hay thư mục con của server.
  *
  * Lưu ý: phải chạy qua server (Live Server / http-server / XAMPP...),
  * mở trực tiếp file HTML (file://) sẽ khiến fetch() bị chặn bởi trình duyệt.

@@ -88,8 +88,8 @@ function renderBuildCard(build) {
         .map((itemId) => buildItems.find((item) => item.id === itemId))
         .filter(Boolean)
         .map((item) => `
-            <a class="build-item" href="/pages/item-detail.html?id=${item.id}" title="${escapeHtml(item.name)}">
-                <img src="/assets/images/${item.image}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="handleImageError(this)">
+            <a class="build-item" href="${BASE_PATH}pages/item-detail.html?id=${item.id}" title="${escapeHtml(item.name)}">
+                <img src="${BASE_PATH}assets/images/${item.image}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="handleImageError(this)">
                 <span>${escapeHtml(item.name)}</span>
             </a>
         `).join('');
@@ -98,8 +98,8 @@ function renderBuildCard(build) {
         <article class="build-card">
             <div class="build-card__hero">
                 ${hero ? `
-                    <a href="/pages/hero-detail.html?id=${hero.id}">
-                        <img src="/assets/images/${hero.image}" alt="${escapeHtml(hero.name)}" loading="lazy" onerror="handleImageError(this)">
+                    <a href="${BASE_PATH}pages/hero-detail.html?id=${hero.id}">
+                        <img src="${BASE_PATH}assets/images/${hero.image}" alt="${escapeHtml(hero.name)}" loading="lazy" onerror="handleImageError(this)">
                         <h3>${escapeHtml(hero.name)}</h3>
                     </a>
                     <span class="badge">${escapeHtml((hero.role || []).join(', '))}</span>
