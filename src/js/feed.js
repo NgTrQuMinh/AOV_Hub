@@ -156,7 +156,7 @@ function renderPostForm() {
         formBox.innerHTML = `
             <div class="feed-form feed-form--guest">
                 <p>Bạn cần đăng nhập để đăng bài và bình luận.</p>
-                <a class="btn btn-primary" href="${BASE_PATH}pages/login.html?redirect=${BASE_PATH}pages/feed.html">Đăng nhập</a>
+                <a class="btn btn-primary" href="${BASE_PATH}src/pages/login.html?redirect=${BASE_PATH}src/pages/feed.html">Đăng nhập</a>
             </div>
         `;
         return;
@@ -249,7 +249,7 @@ function renderPostCard(post) {
                     <h3 class="post-card__title">${escapeHtml(post.title)}</h3>
                     <span class="post-card__meta">
                         ${escapeHtml(post.author)} · ${formatDateTime(post.createdAt)}
-                        ${hero ? ` · <a href="${BASE_PATH}pages/hero-detail.html?id=${hero.id}">${escapeHtml(hero.name)}</a>` : ''}
+                        ${hero ? ` · <a href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">${escapeHtml(hero.name)}</a>` : ''}
                     </span>
                 </div>
                 ${canDelete ? `<button type="button" class="post-card__delete" data-post-delete="${post.id}">Xoá bài</button>` : ''}
