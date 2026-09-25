@@ -1,15 +1,1237 @@
 [
     {
         "id": 1,
+        "name": "Valhein",
+        "alias": "valhein",
+        "image": "assets/heroes/valhein.png",
+        "role": [
+            "Xạ thủ"
+        ],
+        "difficulty": 1,
+        "stats": {
+            "hp": 3399,
+            "attack": 178,
+            "defense": 136,
+            "speed": 360
+        },
+        "skills": [
+            {
+                "name": "Chuyến Hàng Đặc Biệt",
+                "type": "Chiêu 1",
+                "description": "Valhein ném một đoản đao màu đỏ vào mục tiêu, gây sát thương phép lên kẻ địch trong vùng ảnh hưởng và giúp bản thân tăng tốc chạy.",
+                "cooldown": 9
+            },
+            {
+                "name": "Trừ Tà",
+                "type": "Chiêu 2",
+                "description": "Valhein ném một đoản đao màu vàng vào mục tiêu, gây sát thương phép và làm choáng nạn nhân.",
+                "cooldown": 10
+            },
+            {
+                "name": "Bão Đạn",
+                "type": "Chiêu 3",
+                "description": "Valhein bắn ra 6 viên đạn bạc về phía trước, mỗi viên đạn gây sát thương phép. Nếu trúng nhiều đạn, kẻ địch sẽ chịu thêm sát thương.",
+                "cooldown": 24
+            }
+        ],
+        "recommendedBuild": [
+            101,
+            102,
+            103
+        ]
+    },
+    {
+        "id": 2,
         "name": "Tel'Annas",
         "alias": "telannas",
-        "image": "heroes/telannas.png",
-        "role": ["Xạ thủ"],
-        "difficulty": 2,
-        "stats": { "hp": 3400, "attack": 180, "defense": 90, "speed": 380 },
-        "skills": [
-            { "name": "", "type": "", "description": "", "cooldown": 0 }
+        "image": "assets/heroes/telannas.png",
+        "role": [
+            "Xạ thủ"
         ],
-        "recommendedBuild": [101, 102, 103]
+        "difficulty": 2,
+        "stats": {
+            "hp": 3400,
+            "attack": 180,
+            "defense": 90,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Ưng Nhãn",
+                "type": "Chiêu 1",
+                "description": "Tăng tầm đánh, bắn ra mũi tên mang sát thương phép và sát thương vật lý.",
+                "cooldown": 8
+            },
+            {
+                "name": "Ám Đạn",
+                "type": "Chiêu 2",
+                "description": "Bắn ra 3 mũi tên gây sát thương vật lý và làm chậm mục tiêu.",
+                "cooldown": 6
+            },
+            {
+                "name": "Hỗn Vương Tiễn",
+                "type": "Chiêu 3",
+                "description": "Bắn ra mũi tên xuyên thấu gây sát thương vật lý và làm choáng kẻ địch.",
+                "cooldown": 35
+            }
+        ],
+        "recommendedBuild": [
+            101,
+            102,
+            103
+        ]
+    },
+    {
+        "id": 3,
+        "name": "Nakroth",
+        "alias": "nakroth",
+        "image": "assets/heroes/nakroth.png",
+        "role": [
+            "Sát thủ"
+        ],
+        "difficulty": 4,
+        "stats": {
+            "hp": 3100,
+            "attack": 172,
+            "defense": 92,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Bồi Thẩm Đoàn",
+                "type": "Chiêu 1",
+                "description": "Nakroth lướt về phía trước hất văng mục tiêu và gây sát thương vật lý. Chiêu thức này có thể tái kích hoạt trong vòng 5 giây.",
+                "cooldown": 9
+            },
+            {
+                "name": "Nguồn Cơn Rắc Rối",
+                "type": "Chiêu 2",
+                "description": "Nakroth nhảy lùi về phía sau và biến đòn đánh thường tiếp theo thành đòn quét gây sát thương vật lý.",
+                "cooldown": 5
+            },
+            {
+                "name": "Gươm Hành Quyết",
+                "type": "Chiêu 3",
+                "description": "Nakroth vung gươm liên tục gây sát thương vật lý và miễn khống chế. Đòn đánh cuối hất văng kẻ địch.",
+                "cooldown": 36
+            }
+        ],
+        "recommendedBuild": [
+            104,
+            105,
+            106
+        ]
+    },
+    {
+        "id": 4,
+        "name": "Murad",
+        "alias": "murad",
+        "image": "assets/heroes/murad.png",
+        "role": [
+            "Sát thủ"
+        ],
+        "difficulty": 5,
+        "stats": {
+            "hp": 3050,
+            "attack": 178,
+            "defense": 88,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Tàn Ảnh Đao",
+                "type": "Chiêu 1",
+                "description": "Murad lướt về phía trước gây sát thương vật lý và làm choáng. Tái kích hoạt lần 3 sẽ quay về vị trí ban đầu.",
+                "cooldown": 8
+            },
+            {
+                "name": "Vô Ảnh Vực",
+                "type": "Chiêu 2",
+                "description": "Murad tạo ra một vùng không gian khiến bản thân không thể bị chọn làm mục tiêu, gây sát thương và giảm giáp kẻ địch chạm mép.",
+                "cooldown": 12
+            },
+            {
+                "name": "Ảo Ảnh Trảm",
+                "type": "Chiêu 3",
+                "description": "Murad lướt đi liên tục tung ra 5 đòn đánh gây sát thương vật lý diện rộng và không thể bị chọn làm mục tiêu.",
+                "cooldown": 30
+            }
+        ],
+        "recommendedBuild": [
+            104,
+            105,
+            107
+        ]
+    },
+    {
+        "id": 5,
+        "name": "Raz",
+        "alias": "raz",
+        "image": "assets/heroes/raz.png",
+        "role": [
+            "Pháp sư"
+        ],
+        "difficulty": 4,
+        "stats": {
+            "hp": 3250,
+            "attack": 165,
+            "defense": 95,
+            "speed": 370
+        },
+        "skills": [
+            {
+                "name": "Cú Đấm Chân Lý",
+                "type": "Chiêu 1",
+                "description": "Raz lao đến tung cú đấm móc hất văng kẻ địch và gây sát thương phép.",
+                "cooldown": 10
+            },
+            {
+                "name": "Cú Đấm Chân Sóng",
+                "type": "Chiêu 2",
+                "description": "Raz tung đấm văng ra một luồng khí gây sát thương phép, làm chậm và giảm giáp phép của mục tiêu.",
+                "cooldown": 4
+            },
+            {
+                "name": "Cú Đấm Bộc Phá",
+                "type": "Chiêu 3",
+                "description": "Raz ủi về phía trước tung đấm bộc phá, hất lùi kẻ địch, gây sát thương phép và giảm công vật lý của chúng.",
+                "cooldown": 25
+            }
+        ],
+        "recommendedBuild": [
+            108,
+            109,
+            110
+        ]
+    },
+    {
+        "id": 6,
+        "name": "Liliana",
+        "alias": "liliana",
+        "image": "assets/heroes/liliana.png",
+        "role": [
+            "Pháp sư"
+        ],
+        "difficulty": 5,
+        "stats": {
+            "hp": 3220,
+            "attack": 168,
+            "defense": 90,
+            "speed": 360
+        },
+        "skills": [
+            {
+                "name": "Hồ Quang Đạn",
+                "type": "Chiêu 1",
+                "description": "Ở dạng người: Xả đạn phép thuật gây sát thương. Ở dạng hồ cáo: Cào liên tiếp gây sát thương vật lý.",
+                "cooldown": 6
+            },
+            {
+                "name": "Hồ Quang Lực",
+                "type": "Chiêu 2",
+                "description": "Ở dạng người: Bắn ra đạn đạn phép làm choáng. Ở dạng hồ cáo: Nhảy vồ và ngưng tụ đạn hồ quang cực mạnh.",
+                "cooldown": 9
+            },
+            {
+                "name": "Biến Hình Hồi Xuân",
+                "type": "Chiêu 3",
+                "description": "Chuyển đổi giữa dạng người và dạng hồ cáo, tăng thuộc tính và làm mới bộ kỹ năng.",
+                "cooldown": 6
+            }
+        ],
+        "recommendedBuild": [
+            108,
+            109,
+            111
+        ]
+    },
+    {
+        "id": 7,
+        "name": "Krixi",
+        "alias": "krixi",
+        "image": "assets/heroes/krixi.png",
+        "role": [
+            "Pháp sư"
+        ],
+        "difficulty": 1,
+        "stats": {
+            "hp": 3088,
+            "attack": 170,
+            "defense": 85,
+            "speed": 350
+        },
+        "skills": [
+            {
+                "name": "Bướm Ảo",
+                "type": "Chiêu 1",
+                "description": "Krixi gọi bướm ảo bay đi bay về gây sát thương phép cho kẻ địch trên đường bay.",
+                "cooldown": 6
+            },
+            {
+                "name": "Bão Lá",
+                "type": "Chiêu 2",
+                "description": "Krixi gọi một cơn bão lá hất văng kẻ địch trong vùng chỉ định và gây sát thương phép.",
+                "cooldown": 10
+            },
+            {
+                "name": "Mưa Sao Băng",
+                "type": "Chiêu 3",
+                "description": "Krixi gọi mưa sao băng tấn công ngẫu nhiên các kẻ địch xung quanh, gây sát thương phép.",
+                "cooldown": 42
+            }
+        ],
+        "recommendedBuild": [
+            108,
+            109,
+            110
+        ]
+    },
+    {
+        "id": 8,
+        "name": "Florentino",
+        "alias": "florentino",
+        "image": "assets/heroes/florentino.png",
+        "role": [
+            "Đấu sĩ"
+        ],
+        "difficulty": 5,
+        "stats": {
+            "hp": 3535,
+            "attack": 170,
+            "defense": 120,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Hào Hoa",
+                "type": "Chiêu 1",
+                "description": "Florentino phóng hoa gây sát thương, làm choáng và phân tán 3 bông hoa. Nhặt hoa giúp hồi năng lượng và nhặt kiếm.",
+                "cooldown": 8
+            },
+            {
+                "name": "Thưởng Trà",
+                "type": "Chiêu 2",
+                "description": "Florentino tung 3 nhát kiếm liên tiếp gây sát thương chuẩn dựa trên % HP tối đa của kẻ địch.",
+                "cooldown": 4
+            },
+            {
+                "name": "Tài Hoa",
+                "type": "Chiêu 3",
+                "description": "Florentino quyết đấu với một mục tiêu, được miễn khống chế từ các mục tiêu khác và tăng hút máu.",
+                "cooldown": 35
+            }
+        ],
+        "recommendedBuild": [
+            112,
+            113,
+            114
+        ]
+    },
+    {
+        "id": 9,
+        "name": "Lu Bu",
+        "alias": "lubu",
+        "image": "assets/heroes/lubu.png",
+        "role": [
+            "Đấu sĩ"
+        ],
+        "difficulty": 2,
+        "stats": {
+            "hp": 3622,
+            "attack": 170,
+            "defense": 128,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Xích Thố Mã",
+                "type": "Chiêu 1",
+                "description": "Lữ Bố xông về phía trước 3 lần liên tiếp, lần thứ ba sẽ hất văng kẻ địch.",
+                "cooldown": 10
+            },
+            {
+                "name": "Tàn Huyết Khống",
+                "type": "Chiêu 2",
+                "description": "Lữ Bố phóng ra thương khí làm chậm tốc chạy của kẻ địch và gây sát thương vật lý.",
+                "cooldown": 6
+            },
+            {
+                "name": "Chiến Thần",
+                "type": "Chiêu 3",
+                "description": "Lữ Bố giải khống chế, tăng công vật lý, kháng khống chế và khả năng hồi phục cực mạnh trên mỗi đòn đánh.",
+                "cooldown": 30
+            }
+        ],
+        "recommendedBuild": [
+            112,
+            113,
+            115
+        ]
+    },
+    {
+        "id": 10,
+        "name": "Zuka",
+        "alias": "zuka",
+        "image": "assets/heroes/zuka.png",
+        "role": [
+            "Đấu sĩ",
+            "Sát thủ"
+        ],
+        "difficulty": 3,
+        "stats": {
+            "hp": 3418,
+            "attack": 175,
+            "defense": 105,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Loạn Đả Bổng",
+                "type": "Chiêu 1",
+                "description": "Zuka lướt về phía trước vung gậy gây sát thương vật lý. Chiêu này có thể tái kích hoạt trong 5 giây.",
+                "cooldown": 9
+            },
+            {
+                "name": "Phi Hổ Quyền",
+                "type": "Chiêu 2",
+                "description": "Zuka lộn vòng về phía trước, tạo lá chắn và cường hóa đòn đánh tiếp theo làm choáng kẻ địch.",
+                "cooldown": 8
+            },
+            {
+                "name": "Trầm Trọng Lực",
+                "type": "Chiêu 3",
+                "description": "Zuka nhảy lên không trung rồi giáng xuống gây sát thương vật lý diện rộng và làm choáng kẻ địch.",
+                "cooldown": 32
+            }
+        ],
+        "recommendedBuild": [
+            112,
+            105,
+            107
+        ]
+    },
+    {
+        "id": 11,
+        "name": "Thane",
+        "alias": "thane",
+        "image": "assets/heroes/thane.png",
+        "role": [
+            "Đỡ đòn"
+        ],
+        "difficulty": 2,
+        "stats": {
+            "hp": 3889,
+            "attack": 160,
+            "defense": 145,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Xung Phong",
+                "type": "Chiêu 1",
+                "description": "Thane lao đến đẩy lùi kẻ địch liên tục và hất văng chúng ở đòn cuối cùng.",
+                "cooldown": 12
+            },
+            {
+                "name": "Gươm Thần",
+                "type": "Chiêu 2",
+                "description": "Thane dậm mạnh gươm xuống đất, hất văng kẻ địch xung quanh và làm chậm chúng.",
+                "cooldown": 9
+            },
+            {
+                "name": "Ma Phong Trảm",
+                "type": "Chiêu 3",
+                "description": "Thane chém ra một nhát kiếm năng lượng gây sát thương chuẩn kèm % máu đã mất của mục tiêu và nhận miễn khống.",
+                "cooldown": 40
+            }
+        ],
+        "recommendedBuild": [
+            116,
+            117,
+            118
+        ]
+    },
+    {
+        "id": 12,
+        "name": "Mina",
+        "alias": "mina",
+        "image": "assets/heroes/mina.png",
+        "role": [
+            "Đỡ đòn"
+        ],
+        "difficulty": 1,
+        "stats": {
+            "hp": 3910,
+            "attack": 158,
+            "defense": 140,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Vũ Điệu Lưỡi Hái",
+                "type": "Chiêu 1",
+                "description": "Mina vung lưỡi hái gây sát thương vật lý lên tất cả kẻ địch xung quanh.",
+                "cooldown": 6
+            },
+            {
+                "name": "Lưỡi Hái Tử Thần",
+                "type": "Chiêu 2",
+                "description": "Mina vung lưỡi hái kéo tất cả kẻ địch phía trước lại gần và làm chậm chúng.",
+                "cooldown": 12
+            },
+            {
+                "name": "Thôi Miên",
+                "type": "Chiêu 3",
+                "description": "Mina khiêu khích kẻ địch xung quanh khiến chúng buộc phải tấn công cô trong thời gian ngắn.",
+                "cooldown": 40
+            }
+        ],
+        "recommendedBuild": [
+            116,
+            117,
+            118
+        ]
+    },
+    {
+        "id": 13,
+        "name": "Arum",
+        "alias": "arum",
+        "image": "assets/heroes/arum.png",
+        "role": [
+            "Đỡ đòn"
+        ],
+        "difficulty": 2,
+        "stats": {
+            "hp": 3850,
+            "attack": 155,
+            "defense": 135,
+            "speed": 370
+        },
+        "skills": [
+            {
+                "name": "Thú Thần Linh",
+                "type": "Chiêu 1",
+                "description": "Arum triệu hồi thú linh quanh bản thân gây sát thương phép và hồi máu khi chạm phải kẻ địch.",
+                "cooldown": 5
+            },
+            {
+                "name": "Thú Thần Oán",
+                "type": "Chiêu 2",
+                "description": "Arum phóng các thú linh tấn công khu vực chỉ định gây sát thương, làm chậm và làm choáng.",
+                "cooldown": 7
+            },
+            {
+                "name": "Thú Thần Xích",
+                "type": "Chiêu 3",
+                "description": "Arum trói chặt một tướng địch khiến cả hai cùng chịu sát thương tương đương nhau, không thể giải khống chế.",
+                "cooldown": 50
+            }
+        ],
+        "recommendedBuild": [
+            116,
+            117,
+            119
+        ]
+    },
+    {
+        "id": 14,
+        "name": "Capheny",
+        "alias": "capheny",
+        "image": "assets/heroes/capheny.png",
+        "role": [
+            "Xạ thủ"
+        ],
+        "difficulty": 2,
+        "stats": {
+            "hp": 3200,
+            "attack": 172,
+            "defense": 95,
+            "speed": 360
+        },
+        "skills": [
+            {
+                "name": "Đại Bác / Liên Thanh",
+                "type": "Chiêu 1",
+                "description": "Capheny chuyển đổi giữa chế độ Đại bác (bắn xuyên, tầm xa) và Liên thanh (bắn di động liên tục).",
+                "cooldown": 1
+            },
+            {
+                "name": "Pha Động Lực / Pha Siêu Hành",
+                "type": "Chiêu 2",
+                "description": "Chế độ Liên thanh giúp tăng tốc chạy và tích tầng xuyên giáp. Chế độ Đại bác giúp lướt ngắn và tăng tỷ lệ chí mạng.",
+                "cooldown": 9
+            },
+            {
+                "name": "Mưa Đạn",
+                "type": "Chiêu 3",
+                "description": "Capheny xả một cơn mưa đạn theo hướng chỉ định, gây sát thương liên tục và giảm giáp kẻ địch.",
+                "cooldown": 40
+            }
+        ],
+        "recommendedBuild": [
+            101,
+            102,
+            103
+        ]
+    },
+    {
+        "id": 15,
+        "name": "Elsu",
+        "alias": "elsu",
+        "image": "assets/heroes/elsu.png",
+        "role": [
+            "Xạ thủ"
+        ],
+        "difficulty": 4,
+        "stats": {
+            "hp": 3300,
+            "attack": 190,
+            "defense": 90,
+            "speed": 370
+        },
+        "skills": [
+            {
+                "name": "Ưng Trạm",
+                "type": "Chiêu 1",
+                "description": "Elsu đặt thiết bị cung cấp tầm nhìn trong một khu vực rộng và tăng xuyên giáp khi đứng yên.",
+                "cooldown": 1
+            },
+            {
+                "name": "Viễn Trình Kích",
+                "type": "Chiêu 2",
+                "description": "Elsu ngắm bắn một phát đạn cực xa gây sát thương vật lý siêu lớn và làm chậm mục tiêu.",
+                "cooldown": 1
+            },
+            {
+                "name": "Giật Bắn",
+                "type": "Chiêu 3",
+                "description": "Elsu nhảy lùi về phía sau và bắn ra một viên đạn về phía trước, gây sát thương và tăng tốc chạy.",
+                "cooldown": 25
+            }
+        ],
+        "recommendedBuild": [
+            101,
+            102,
+            103
+        ]
+    },
+    {
+        "id": 16,
+        "name": "Lauriel",
+        "alias": "lauriel",
+        "image": "assets/heroes/lauriel.png",
+        "role": [
+            "Pháp sư"
+        ],
+        "difficulty": 3,
+        "stats": {
+            "hp": 3100,
+            "attack": 162,
+            "defense": 90,
+            "speed": 350
+        },
+        "skills": [
+            {
+                "name": "Con Đường Sám Hối",
+                "type": "Chiêu 1",
+                "description": "Lauriel vẽ ra một con đường ánh sáng gây sát thương phép và phát nổ sau thời gian ngắn.",
+                "cooldown": 5
+            },
+            {
+                "name": "Đôi Cánh Thuần Khiết",
+                "type": "Chiêu 2",
+                "description": "Lauriel lướt về hướng chỉ định và bắn ra 3 luồng năng lượng. Bản thân trở nên không thể bị chọn làm mục tiêu trong khoảnh khắc.",
+                "cooldown": 6
+            },
+            {
+                "name": "Đại Phán Xét",
+                "type": "Chiêu 3",
+                "description": "Lauriel vẽ ra một pháp trận lớn. Khi đứng trong pháp trận, Chiêu 1 và Chiêu 2 của cô được giảm hồi chiêu cực nhanh.",
+                "cooldown": 45
+            }
+        ],
+        "recommendedBuild": [
+            108,
+            109,
+            120
+        ]
+    },
+    {
+        "id": 17,
+        "name": "Tulen",
+        "alias": "tulen",
+        "image": "assets/heroes/tulen.png",
+        "role": [
+            "Pháp sư"
+        ],
+        "difficulty": 3,
+        "stats": {
+            "hp": 3200,
+            "attack": 165,
+            "defense": 88,
+            "speed": 360
+        },
+        "skills": [
+            {
+                "name": "Lôi Quang",
+                "type": "Chiêu 1",
+                "description": "Tulen bắn ra 3 tia sét về phía trước, mỗi tia gây sát thương phép và tích luỹ tầng nội đạn.",
+                "cooldown": 8
+            },
+            {
+                "name": "Lôi Động",
+                "type": "Chiêu 2",
+                "description": "Tulen biến ảo theo hướng chỉ định, gây sát thương phép tại điểm biến mất và điểm xuất hiện.",
+                "cooldown": 2
+            },
+            {
+                "name": "Lôi Điểu",
+                "type": "Chiêu 3",
+                "description": "Tulen tích tụ và bắn ra một chú chim sét gây sát thương phép cực lớn dựa trên lượng máu đã mất của mục tiêu.",
+                "cooldown": 35
+            }
+        ],
+        "recommendedBuild": [
+            108,
+            109,
+            111
+        ]
+    },
+    {
+        "id": 18,
+        "name": "Ryoma",
+        "alias": "ryoma",
+        "image": "assets/heroes/ryoma.png",
+        "role": [
+            "Đấu sĩ",
+            "Sát thủ"
+        ],
+        "difficulty": 3,
+        "stats": {
+            "hp": 3350,
+            "attack": 182,
+            "defense": 102,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Thần Hành Bách Biến",
+                "type": "Chiêu 1",
+                "description": "Ryoma nhảy lùi về phía sau và vung kiếm gây sát thương vật lý lên kẻ địch xung quanh.",
+                "cooldown": 8
+            },
+            {
+                "name": "Nhất Thần Thương",
+                "type": "Chiêu 2",
+                "description": "Ryoma đâm thương về phía trước. Kẻ địch trúng rìa chiêu thức sẽ bị làm choáng.",
+                "cooldown": 10
+            },
+            {
+                "name": "Loạn Trảm",
+                "type": "Chiêu 3",
+                "description": "Ryoma đâm liên tiếp 4 nhát thương về phía trước, gây sát thương vật lý và hồi máu cho bản thân.",
+                "cooldown": 12
+            }
+        ],
+        "recommendedBuild": [
+            112,
+            105,
+            107
+        ]
+    },
+    {
+        "id": 19,
+        "name": "Hayate",
+        "alias": "hayate",
+        "image": "assets/heroes/hayate.png",
+        "role": [
+            "Xạ thủ"
+        ],
+        "difficulty": 3,
+        "stats": {
+            "hp": 3250,
+            "attack": 170,
+            "defense": 92,
+            "speed": 370
+        },
+        "skills": [
+            {
+                "name": "Chuỗi Phi Tiêu",
+                "type": "Chiêu 1",
+                "description": "Hayate liên tục phóng phi tiêu về phía trước trong khi vẫn có thể di chuyển tự do.",
+                "cooldown": 5
+            },
+            {
+                "name": "Ảnh Biến",
+                "type": "Chiêu 2",
+                "description": "Hayate lướt về hướng chỉ định. Tăng sát thương và tốc chạy khi có tướng địch ở gần.",
+                "cooldown": 6
+            },
+            {
+                "name": "Bão Phi Tiêu",
+                "type": "Chiêu 3",
+                "description": "Hayate biến đến vị trí chỉ định và xả mưa phi tiêu ra xung quanh, gây sát thương diện rộng.",
+                "cooldown": 40
+            }
+        ],
+        "recommendedBuild": [
+            101,
+            102,
+            103
+        ]
+    },
+    {
+        "id": 20,
+        "name": "Violet",
+        "alias": "violet",
+        "image": "assets/heroes/violet.png",
+        "role": [
+            "Xạ thủ"
+        ],
+        "difficulty": 2,
+        "stats": {
+            "hp": 3280,
+            "attack": 175,
+            "defense": 88,
+            "speed": 370
+        },
+        "skills": [
+            {
+                "name": "Đạn Lộn Nhào",
+                "type": "Chiêu 1",
+                "description": "Violet lộn về phía trước, cường hóa đòn đánh tiếp theo gia tăng tầm bắn và sát thương cực lớn.",
+                "cooldown": 5
+            },
+            {
+                "name": "Khai Hỏa",
+                "type": "Chiêu 2",
+                "description": "Violet ném lựu đạn gây sát thương vật lý và làm chậm kẻ địch trong vùng ảnh hưởng.",
+                "cooldown": 9
+            },
+            {
+                "name": "Pháo Đại Đạn",
+                "type": "Chiêu 3",
+                "description": "Violet bắn ra một viên đạn pháo hạng nặng gây sát thương vật lý diện rộng từ khoảng cách xa.",
+                "cooldown": 30
+            }
+        ],
+        "recommendedBuild": [
+            101,
+            102,
+            103
+        ]
+    },
+    {
+        "id": 21,
+        "name": "Superman",
+        "alias": "superman",
+        "image": "assets/heroes/superman.png",
+        "role": [
+            "Đấu sĩ",
+            "Đỡ đòn"
+        ],
+        "difficulty": 5,
+        "stats": {
+            "hp": 3700,
+            "attack": 170,
+            "defense": 130,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Siêu Năng Lực",
+                "type": "Chiêu 1",
+                "description": "Trạng thái bộ: Bắn hơi lạnh làm chậm. Trạng thái bay: Lao đến húc văng và xả tia la-ze.",
+                "cooldown": 8
+            },
+            {
+                "name": "Người Đàn Ông Thép",
+                "type": "Chiêu 2",
+                "description": "Giải mọi hiệu ứng khống chế. Ở trạng thái bay sẽ nện xuống đất hất văng kẻ địch.",
+                "cooldown": 12
+            },
+            {
+                "name": "Sức Mạnh Vô Song",
+                "type": "Chiêu 3",
+                "description": "Tăng tốc độ tích lũy trạng thái phi hành và giúp Superman húc lùi kẻ địch liên tục.",
+                "cooldown": 50
+            }
+        ],
+        "recommendedBuild": [
+            112,
+            116,
+            117
+        ]
+    },
+    {
+        "id": 22,
+        "name": "Richter",
+        "alias": "richter",
+        "image": "assets/heroes/richter.png",
+        "role": [
+            "Đấu sĩ"
+        ],
+        "difficulty": 4,
+        "stats": {
+            "hp": 3520,
+            "attack": 175,
+            "defense": 115,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Chặt & Chém",
+                "type": "Chiêu 1",
+                "description": "Richter lướt về phía trước chém kẻ địch, hiệu ứng thay đổi tùy theo môi trường (Bụi cỏ, Sông, Đất bằng).",
+                "cooldown": 9
+            },
+            {
+                "name": "Công Thủ Toàn Diện",
+                "type": "Chiêu 2",
+                "description": "Richter bật trạng thái miễn nhiễm mọi sát thương và khống chế trong thời gian ngắn rồi phản công.",
+                "cooldown": 3
+            },
+            {
+                "name": "Vùng Ma Trận",
+                "type": "Chiêu 3",
+                "description": "Richter tạo ra một vùng ma trận xung quanh gây sát thương chuẩn liên tục và làm câm lặng kẻ địch.",
+                "cooldown": 45
+            }
+        ],
+        "recommendedBuild": [
+            112,
+            113,
+            107
+        ]
+    },
+    {
+        "id": 23,
+        "name": "Omen",
+        "alias": "omen",
+        "image": "assets/heroes/omen.png",
+        "role": [
+            "Đấu sĩ"
+        ],
+        "difficulty": 3,
+        "stats": {
+            "hp": 3600,
+            "attack": 172,
+            "defense": 125,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Sát Kiếm",
+                "type": "Chiêu 1",
+                "description": "Omen giật kiếm kéo kẻ địch về phía mình, gây sát thương vật lý và làm chậm.",
+                "cooldown": 9
+            },
+            {
+                "name": "Sát Niệm",
+                "type": "Chiêu 2",
+                "description": "Omen tăng tốc chạy, miễn giảm cực lớn sát thương nhận vào và phản lại đòn đánh thường của đối thủ.",
+                "cooldown": 11
+            },
+            {
+                "name": "Sát Vực",
+                "type": "Chiêu 3",
+                "description": "Omen lao đến trói chặt một tướng địch vào đấu trường xích, khiến mục tiêu không thể thoát ra ngoài.",
+                "cooldown": 40
+            }
+        ],
+        "recommendedBuild": [
+            112,
+            113,
+            115
+        ]
+    },
+    {
+        "id": 24,
+        "name": "Veera",
+        "alias": "veera",
+        "image": "assets/heroes/veera.png",
+        "role": [
+            "Pháp sư"
+        ],
+        "difficulty": 1,
+        "stats": {
+            "hp": 3150,
+            "attack": 165,
+            "defense": 85,
+            "speed": 350
+        },
+        "skills": [
+            {
+                "name": "Dơi Đêm",
+                "type": "Chiêu 1",
+                "description": "Veera triệu hồi đàn dơi cắn xé về phía trước gây sát thương phép.",
+                "cooldown": 7
+            },
+            {
+                "name": "Hôn Gió",
+                "type": "Chiêu 2",
+                "description": "Veera ném ra một nụ hôn gây sát thương phép và làm choáng mục tiêu trong thời gian dài.",
+                "cooldown": 10
+            },
+            {
+                "name": "Tiểu Quỷ",
+                "type": "Chiêu 3",
+                "description": "Veera triệu hồi 5 tiểu quỷ liên tục tấn công kẻ địch xung quanh gây sát thương phép lớn.",
+                "cooldown": 18
+            }
+        ],
+        "recommendedBuild": [
+            108,
+            109,
+            110
+        ]
+    },
+    {
+        "id": 25,
+        "name": "Zill",
+        "alias": "zill",
+        "image": "assets/heroes/zill.png",
+        "role": [
+            "Sát thủ",
+            "Pháp sư"
+        ],
+        "difficulty": 3,
+        "stats": {
+            "hp": 3200,
+            "attack": 168,
+            "defense": 92,
+            "speed": 370
+        },
+        "skills": [
+            {
+                "name": "Phong Đao",
+                "type": "Chiêu 1",
+                "description": "Zill ném ra cặp phong đao gây sát thương phép và làm chậm kẻ địch trên đường bay.",
+                "cooldown": 6
+            },
+            {
+                "name": "Phong Dịch",
+                "type": "Chiêu 2",
+                "description": "Zill dịch chuyển đến vị trí chỉ định gây sát thương phép diện rộng lên kẻ địch xung quanh.",
+                "cooldown": 10
+            },
+            {
+                "name": "Phong Ba",
+                "type": "Chiêu 3",
+                "description": "Zill hóa thành một cơn bão tấn công liên tục 5 lần vào các mục tiêu xung quanh và không thể bị chọn làm mục tiêu.",
+                "cooldown": 40
+            }
+        ],
+        "recommendedBuild": [
+            108,
+            109,
+            111
+        ]
+    },
+    {
+        "id": 26,
+        "name": "Alice",
+        "alias": "alice",
+        "image": "assets/heroes/alice.png",
+        "role": [
+            "Trợ thủ"
+        ],
+        "difficulty": 1,
+        "stats": {
+            "hp": 3380,
+            "attack": 150,
+            "defense": 100,
+            "speed": 360
+        },
+        "skills": [
+            {
+                "name": "Thần Giao Cách Cảm",
+                "type": "Chiêu 1",
+                "description": "Alice định vị một khu vực, gây sát thương phép và làm choáng tất cả kẻ địch trong đó.",
+                "cooldown": 9
+            },
+            {
+                "name": "Lá Chắn Thời Gian",
+                "type": "Chiêu 2",
+                "description": "Alice tạo lá chắn bảo vệ bản thân và các đồng minh xung quanh, đồng thời tăng tốc chạy cho họ.",
+                "cooldown": 11
+            },
+            {
+                "name": "Dòng Dòng Thời Gian",
+                "type": "Chiêu 3",
+                "description": "Alice tạo ra một vùng không gian ma thuật làm chậm, câm lặng và giảm giáp phép của kẻ địch.",
+                "cooldown": 30
+            }
+        ],
+        "recommendedBuild": [
+            121,
+            108,
+            116
+        ]
+    },
+    {
+        "id": 27,
+        "name": "Aya",
+        "alias": "aya",
+        "image": "assets/heroes/aya.png",
+        "role": [
+            "Trợ thủ"
+        ],
+        "difficulty": 1,
+        "stats": {
+            "hp": 3250,
+            "attack": 145,
+            "defense": 95,
+            "speed": 350
+        },
+        "skills": [
+            {
+                "name": "Nốt Nhạc Vui Nhộn",
+                "type": "Chiêu 1",
+                "description": "Aya bắn ra một sóng âm mở rộng, gây sát thương phép, làm chậm và hiện tầm nhìn kẻ địch.",
+                "cooldown": 7
+            },
+            {
+                "name": "Rừng Rậm Lắc Lư",
+                "type": "Chiêu 2",
+                "description": "Aya nhảy lên đầu đồng minh, ám vào họ và tạo ra một lượng lớn lá chắn bảo vệ.",
+                "cooldown": 12
+            },
+            {
+                "name": "Khúc Nhạc Mặt Trời",
+                "type": "Chiêu 3",
+                "description": "Aya tạo ma trận xung quanh đồng minh được ám, biến tất cả kẻ địch xung quanh thành sinh vật nhỏ.",
+                "cooldown": 45
+            }
+        ],
+        "recommendedBuild": [
+            121,
+            108,
+            116
+        ]
+    },
+    {
+        "id": 28,
+        "name": "Baldum",
+        "alias": "baldum",
+        "image": "assets/heroes/baldum.png",
+        "role": [
+            "Đỡ đòn"
+        ],
+        "difficulty": 2,
+        "stats": {
+            "hp": 3950,
+            "attack": 158,
+            "defense": 150,
+            "speed": 370
+        },
+        "skills": [
+            {
+                "name": "Vật Thù Thù",
+                "type": "Chiêu 1",
+                "description": "Baldum lao về phía trước, hất văng kẻ địch trúng phải ra sau lưng và làm chậm chúng.",
+                "cooldown": 10
+            },
+            {
+                "name": "Địa Chấn",
+                "type": "Chiêu 2",
+                "description": "Baldum giậm chân xuống đất liên tục gây sát thương và giảm khả năng gây sát thương của kẻ địch.",
+                "cooldown": 9
+            },
+            {
+                "name": "Địa Giam",
+                "type": "Chiêu 3",
+                "description": "Baldum tạo ra một vùng địa giam. Sau thời gian ngắn, mặt đất sụp xuống giam cầm mọi kẻ địch bên trong.",
+                "cooldown": 50
+            }
+        ],
+        "recommendedBuild": [
+            116,
+            117,
+            118
+        ]
+    },
+    {
+        "id": 29,
+        "name": "Cresht",
+        "alias": "cresht",
+        "image": "assets/heroes/cresht.png",
+        "role": [
+            "Đỡ đòn"
+        ],
+        "difficulty": 2,
+        "stats": {
+            "hp": 3860,
+            "attack": 162,
+            "defense": 142,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Đinh Ba Thủy Thần",
+                "type": "Chiêu 1",
+                "description": "Cresht quạt đinh ba đẩy lùi kẻ địch xung quanh. Dạng Thủy Thần sẽ đập mạnh gây sát thương lớn.",
+                "cooldown": 6
+            },
+            {
+                "name": "Bọt Biển",
+                "type": "Chiêu 2",
+                "description": "Cresht nhảy đến vùng chỉ định tạo lá chắn cho bản thân và đồng minh.",
+                "cooldown": 10
+            },
+            {
+                "name": "Thủy Thần",
+                "type": "Chiêu 3",
+                "description": "Cresht hóa thành Thủy Thần khổng lồ, tạo ra một cơn sóng cuộn đẩy lùi làm choáng kẻ địch và nhận lượng lớn lá chắn.",
+                "cooldown": 40
+            }
+        ],
+        "recommendedBuild": [
+            116,
+            117,
+            118
+        ]
+    },
+    {
+        "id": 30,
+        "name": "Maloch",
+        "alias": "maloch",
+        "image": "assets/heroes/maloch.png",
+        "role": [
+            "Đỡ đòn",
+            "Đấu sĩ"
+        ],
+        "difficulty": 2,
+        "stats": {
+            "hp": 3800,
+            "attack": 170,
+            "defense": 135,
+            "speed": 380
+        },
+        "skills": [
+            {
+                "name": "Quỷ Vương Trảm",
+                "type": "Chiêu 1",
+                "description": "Maloch vung đao vương miện gây sát thương vật lý. Nếu đao được cường hóa sẽ gây sát thương chuẩn và hồi máu.",
+                "cooldown": 5
+            },
+            {
+                "name": "Đoạt Hồn",
+                "type": "Chiêu 2",
+                "description": "Maloch tước đoạt linh hồn kẻ địch xung quanh, gây làm chậm và tạo cho bản thân một lớp lá chắn dày.",
+                "cooldown": 12
+            },
+            {
+                "name": "Luyện Ngục",
+                "type": "Chiêu 3",
+                "description": "Maloch phóng lên không trung rồi giáng xuống khu vực chỉ định, hất văng tất cả kẻ địch và tạo ra vùng luyện ngục làm chậm.",
+                "cooldown": 50
+            }
+        ],
+        "recommendedBuild": [
+            112,
+            116,
+            117
+        ]
     }
 ]

@@ -7,8 +7,8 @@
  * hero.js / item.js / favorite.js / compare.js sẽ gọi trực tiếp các hàm này.
  */
 
-const DIFFICULTY_LABEL = { 1: 'Dễ', 2: 'Trung bình', 3: 'Khó' };
-const DIFFICULTY_BADGE_CLASS = { 1: 'badge--easy', 2: 'badge--medium', 3: 'badge--hard' };
+const DIFFICULTY_LABEL = { 1: 'Dễ', 2: 'Trung bình', 3: 'Khó', 4: 'Rất khó', 5: 'Cực khó' };
+const DIFFICULTY_BADGE_CLASS = { 1: 'badge--easy', 2: 'badge--medium', 3: 'badge--hard', 4: 'badge--hard', 5: 'badge--hard' };
 
 /**
  * Render 1 thẻ Tướng.
@@ -21,11 +21,14 @@ function renderHeroCard(hero) {
     const roles = (hero.role || [])
         .map((role) => `<span class="badge">${role}</span>`)
         .join('');
+    const heroImage = (hero.image || '').startsWith('assets/')
+        ? hero.image
+        : 'assets/images/' + hero.image;
 
     return `
         <article class="card hero-card">
             <a class="hero-card__media" href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">
-                <img src="${BASE_PATH}assets/images/${hero.image}" alt="${hero.name}" loading="lazy">
+                <img src="${BASE_PATH}${heroImage}" alt="${hero.name}" loading="lazy">
             </a>
             <button
                 type="button"
