@@ -11,7 +11,12 @@
             "attackSpeed": 30
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            103,
+            102,
+            107
+        ]
     },
     {
         "id": 102,
@@ -25,7 +30,12 @@
             "critChance": 25
         },
         "passive": "Tăng 20% sát thương chí mạng gây ra",
-        "description": "Trang bị tăng mạnh chỉ số chí mạng cho xạ thủ"
+        "description": "Trang bị tăng mạnh chỉ số chí mạng cho xạ thủ",
+        "related": [
+            101,
+            105,
+            109
+        ]
     },
     {
         "id": 103,
@@ -39,7 +49,12 @@
             "penetration": 40
         },
         "passive": "Đòn đánh thường xuyên xuyên giáp",
-        "description": ""
+        "description": "",
+        "related": [
+            101,
+            104,
+            203
+        ]
     },
     {
         "id": 104,
@@ -53,7 +68,12 @@
             "hp": 300
         },
         "passive": "Đòn đánh gây thêm sát thương theo % máu tối đa mục tiêu",
-        "description": ""
+        "description": "",
+        "related": [
+            109,
+            302,
+            601
+        ]
     },
     {
         "id": 105,
@@ -67,7 +87,12 @@
             "lifesteal": 15
         },
         "passive": "Hồi máu khi gây sát thương",
-        "description": ""
+        "description": "",
+        "related": [
+            102,
+            208,
+            209
+        ]
     },
     {
         "id": 106,
@@ -81,7 +106,12 @@
             "critChance": 20
         },
         "passive": "Chí mạng gây thêm sát thương phép",
-        "description": ""
+        "description": "",
+        "related": [
+            109,
+            208,
+            203
+        ]
     },
     {
         "id": 107,
@@ -96,7 +126,12 @@
             "moveSpeed": 10
         },
         "passive": "Tăng tốc độ di chuyển khi tấn công",
-        "description": ""
+        "description": "",
+        "related": [
+            110,
+            501,
+            504
+        ]
     },
     {
         "id": 108,
@@ -110,7 +145,12 @@
             "critChance": 20
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            110,
+            208,
+            504
+        ]
     },
     {
         "id": 109,
@@ -124,7 +164,12 @@
             "hp": 200
         },
         "passive": "Đòn đánh gây choáng ngắn",
-        "description": ""
+        "description": "",
+        "related": [
+            104,
+            106,
+            302
+        ]
     },
     {
         "id": 110,
@@ -138,7 +183,12 @@
             "moveSpeed": 15
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            107,
+            108,
+            504
+        ]
     },
     {
         "id": 201,
@@ -152,7 +202,12 @@
             "hp": 300
         },
         "passive": "Đòn đánh làm chậm mục tiêu",
-        "description": ""
+        "description": "",
+        "related": [
+            202,
+            203,
+            403
+        ]
     },
     {
         "id": 202,
@@ -166,7 +221,12 @@
             "cooldownReduction": 10
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            201,
+            206,
+            204
+        ]
     },
     {
         "id": 203,
@@ -180,7 +240,12 @@
             "penetration": 35
         },
         "passive": "Sát thương phép xuyên kháng phép",
-        "description": ""
+        "description": "",
+        "related": [
+            201,
+            205,
+            208
+        ]
     },
     {
         "id": 204,
@@ -194,7 +259,12 @@
             "mana": 400
         },
         "passive": "Tăng dần sức mạnh phép theo lượng mana tiêu hao",
-        "description": ""
+        "description": "",
+        "related": [
+            202,
+            207,
+            604
+        ]
     },
     {
         "id": 205,
@@ -208,7 +278,12 @@
             "penetration": 25
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            203,
+            206,
+            403
+        ]
     },
     {
         "id": 206,
@@ -222,7 +297,12 @@
             "cooldownReduction": 15
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            202,
+            207,
+            205
+        ]
     },
     {
         "id": 207,
@@ -236,7 +316,12 @@
             "manaRegen": 20
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            206,
+            204,
+            208
+        ]
     },
     {
         "id": 208,
@@ -250,7 +335,12 @@
             "critChance": 15
         },
         "passive": "Sát thương phép có thể chí mạng",
-        "description": ""
+        "description": "",
+        "related": [
+            209,
+            203,
+            106
+        ]
     },
     {
         "id": 209,
@@ -264,7 +354,12 @@
             "lifesteal": 10
         },
         "passive": "Hồi máu theo sát thương phép gây ra",
-        "description": ""
+        "description": "",
+        "related": [
+            208,
+            210,
+            105
+        ]
     },
     {
         "id": 210,
@@ -278,7 +373,12 @@
             "hp": 200
         },
         "passive": "Làm chậm mục tiêu khi trúng chiêu",
-        "description": ""
+        "description": "",
+        "related": [
+            209,
+            402,
+            302
+        ]
     },
     {
         "id": 301,
@@ -292,7 +392,12 @@
             "hp": 400
         },
         "passive": "Hồi máu khi máu thấp",
-        "description": ""
+        "description": "",
+        "related": [
+            302,
+            303,
+            307
+        ]
     },
     {
         "id": 302,
@@ -306,7 +411,12 @@
             "hp": 500
         },
         "passive": "Hồi sinh sau khi chết nếu máu về 0",
-        "description": ""
+        "description": "",
+        "related": [
+            301,
+            307,
+            601
+        ]
     },
     {
         "id": 303,
@@ -320,7 +430,12 @@
             "hp": 300
         },
         "passive": "Giảm sát thương chí mạng nhận vào",
-        "description": ""
+        "description": "",
+        "related": [
+            304,
+            306,
+            305
+        ]
     },
     {
         "id": 304,
@@ -334,7 +449,12 @@
             "hp": 350
         },
         "passive": "Phản lại sát thương vật lý nhận vào",
-        "description": ""
+        "description": "",
+        "related": [
+            303,
+            305,
+            306
+        ]
     },
     {
         "id": 305,
@@ -348,7 +468,12 @@
             "hp": 250
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            306,
+            304,
+            401
+        ]
     },
     {
         "id": 306,
@@ -362,7 +487,12 @@
             "hp": 200
         },
         "passive": "Giảm sát thương từ đòn đánh thường",
-        "description": ""
+        "description": "",
+        "related": [
+            305,
+            303,
+            404
+        ]
     },
     {
         "id": 307,
@@ -376,7 +506,12 @@
             "hp": 600
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            301,
+            302,
+            603
+        ]
     },
     {
         "id": 401,
@@ -390,7 +525,12 @@
             "hp": 400
         },
         "passive": "Kích hoạt khiên chắn khi trúng phép",
-        "description": ""
+        "description": "",
+        "related": [
+            402,
+            403,
+            602
+        ]
     },
     {
         "id": 402,
@@ -404,7 +544,12 @@
             "hp": 300
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            403,
+            404,
+            305
+        ]
     },
     {
         "id": 403,
@@ -418,7 +563,12 @@
             "hp": 250
         },
         "passive": "Giảm sát thương phép nhận vào",
-        "description": ""
+        "description": "",
+        "related": [
+            401,
+            402,
+            201
+        ]
     },
     {
         "id": 404,
@@ -432,7 +582,12 @@
             "hp": 200
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            402,
+            403,
+            601
+        ]
     },
     {
         "id": 501,
@@ -445,7 +600,12 @@
             "moveSpeed": 60
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            502,
+            503,
+            504
+        ]
     },
     {
         "id": 502,
@@ -459,7 +619,12 @@
             "magicResist": 20
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            501,
+            504,
+            403
+        ]
     },
     {
         "id": 503,
@@ -473,7 +638,12 @@
             "armor": 20
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            501,
+            504,
+            306
+        ]
     },
     {
         "id": 504,
@@ -487,7 +657,12 @@
             "attackSpeed": 20
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            501,
+            502,
+            107
+        ]
     },
     {
         "id": 601,
@@ -500,7 +675,12 @@
             "hp": 300
         },
         "passive": "Tàng hình trong vài giây khi kích hoạt",
-        "description": ""
+        "description": "",
+        "related": [
+            602,
+            604,
+            404
+        ]
     },
     {
         "id": 602,
@@ -514,7 +694,12 @@
             "hpRegen": 15
         },
         "passive": "Tạo khiên chắn sát thương",
-        "description": ""
+        "description": "",
+        "related": [
+            603,
+            605,
+            301
+        ]
     },
     {
         "id": 603,
@@ -527,7 +712,12 @@
             "hp": 500
         },
         "passive": "",
-        "description": ""
+        "description": "",
+        "related": [
+            602,
+            301,
+            307
+        ]
     },
     {
         "id": 604,
@@ -541,7 +731,12 @@
             "magicPower": 40
         },
         "passive": "Hồi sinh đồng minh gần đó khi kích hoạt",
-        "description": ""
+        "description": "",
+        "related": [
+            601,
+            204,
+            602
+        ]
     },
     {
         "id": 605,
@@ -554,6 +749,11 @@
             "hp": 200
         },
         "passive": "Bất tử tạm thời khi kích hoạt",
-        "description": ""
+        "description": "",
+        "related": [
+            603,
+            602,
+            601
+        ]
     }
 ]
