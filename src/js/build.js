@@ -5,8 +5,10 @@
  * Đọc data/builds.json và ghép với data/heroes.json + data/items.json
  * để hiển thị: tướng nào - build tên gì - gồm những trang bị nào.
  *
- * Dùng lại của TV1: loadData() (loadData.js), escapeHtml()/renderNotFound() (components.js).
- * Dùng lại của TV4: matchKeyword()/debounce() (search.js).
+ * Dùng lại của TV1: loadData() (loadData.js), escapeHtml()/renderNotFound()/imageUrl()/
+ * handleImageError() (components.js), DATA_PATH (config.js).
+ * Dùng lại của TV4: matchKeyword()/debounce()/getQueryParam() (search.js),
+ * refreshFavoriteButtons() (favorite.js).
  */
 
 let allBuilds = [];
@@ -89,7 +91,7 @@ function renderBuildCard(build) {
         .filter(Boolean)
         .map((item) => `
             <a class="build-item" href="${BASE_PATH}src/pages/item-detail.html?id=${item.id}" title="${escapeHtml(item.name)}">
-                <img src="${BASE_PATH}assets/images/${item.image}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="handleImageError(this)">
+                <img src="${imageUrl(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="handleImageError(this)">
                 <span>${escapeHtml(item.name)}</span>
             </a>
         `).join('');
@@ -99,7 +101,7 @@ function renderBuildCard(build) {
             <div class="build-card__hero">
                 ${hero ? `
                     <a href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">
-                        <img src="${BASE_PATH}assets/images/${hero.image}" alt="${escapeHtml(hero.name)}" loading="lazy" onerror="handleImageError(this)">
+                        <img src="${imageUrl(hero.image)}" alt="${escapeHtml(hero.name)}" loading="lazy" onerror="handleImageError(this)">
                         <h3>${escapeHtml(hero.name)}</h3>
                     </a>
                     <span class="badge">${escapeHtml((hero.role || []).join(', '))}</span>

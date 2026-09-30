@@ -309,6 +309,31 @@ main {
     color: var(--color-text-muted);
 }
 
+/* ---------- 6.1 ACCOUNT AREA (điền bởi updateAccountUI - js/auth.js) ---------- */
+.account-area {
+    flex-shrink: 0;
+}
+
+.account-area__session,
+.account-area__guest {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.account-area__username {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.account-area__avatar {
+    font-size: var(--fs-lg);
+}
+
 .nav-toggle__btn {
     display: none;
     flex-direction: column;
@@ -429,6 +454,11 @@ main {
 @media (max-width: 1024px) {
     .grid {
         grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Menu đã dài thêm mục Build/Cộng đồng nên nhường chỗ cho khu vực tài khoản */
+    .header-search {
+        display: none;
     }
 
     .site-footer__inner {
