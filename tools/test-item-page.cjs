@@ -208,7 +208,7 @@ function fire(node, type) {
 
 /* ================= Load trang vào VM ================= */
 
-function loadPage(page, search) {
+function loadPage(page, search, options = {}) {
     const html = fs.readFileSync(path.join(ROOT, page), 'utf8');
     const scripts = [...html.matchAll(/<script src="\/src\/js\/([^"]+)"><\/script>/g)].map((m) => m[1]);
     const inlineScripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
@@ -216,6 +216,7 @@ function loadPage(page, search) {
     const errors = [];
     const byId = new Map();
     const localStorageStore = new Map();
+    let reloadCount = 0;
 
     const document = {
         body: makeNode('body', { 'data-page': 'items' }),
@@ -262,7 +263,12 @@ function loadPage(page, search) {
             setItem: (key, value) => localStorageStore.set(key, String(value)),
             removeItem: (key) => localStorageStore.delete(key),
         },
-        location: { pathname: '/' + page, search: search || '', href: '/' + page + (search || '') },
+        location: {
+            pathname: '/' + page,
+            search: search || '',
+            href: '/' + page + (search || ''),
+            reload: () => { reloadCount++; },
+        },
         history: {},
         navigator: { userAgent: 'node' },
         URLSearchParams,
@@ -273,6 +279,11 @@ function loadPage(page, search) {
         fetch: async (url) => {
             const name = path.basename(String(url));
             const file = path.join(ROOT, 'src', 'data', name);
+            // Cho phép mô phỏng JSON lỗi / không tải được (options.failData = 'items.json')
+            if (options.failData === name) {
+                errors.push('console.error: (mô phỏng) không tải được ' + name);
+                return { ok: false, status: 500, json: async () => { throw new Error('bad json'); }, text: async () => '' };
+            }
             if (fs.existsSync(file)) {
                 return { ok: true, status: 200, json: async () => JSON.parse(fs.readFileSync(file, 'utf8')), text: async () => '' };
             }
@@ -297,6 +308,8 @@ function loadPage(page, search) {
     return {
         errors,
         run,
+        runInPage: (code) => vm.runInContext(code, ctx),
+        reloadCount: () => reloadCount,
         doc: document,
         el: (id) => document.getElementById(id),
         settled: () => new Promise((resolve) => setTimeout(resolve, 60)),
@@ -329,6 +342,47 @@ function stripAccents(text) {
 /** renderNotFound() escape HTML nên dấu " thành &quot; — giải mã lại để so khớp. */
 function decodeEntities(text) {
     return unescapeHtml(text);
+}
+
+function stripTags(text) {
+    return String(text).replace(/<[^>]+>/g, '').trim();
+}
+
+/** Đọc nội dung đã render của trang chi tiết (item-detail.html). */
+function readDetail(containerEl) {
+    const html = containerEl.innerHTML;
+    const relatedHtml = (html.match(/<section class="item-related"[\s\S]*?<\/section>/) || [''])[0];
+    // Mỗi card có 2 link về cùng 1 id (ảnh + "Xem chi tiết") -> lấy id của từng card.
+    const relatedBlocks = relatedHtml.split('<article class="card item-card">').slice(1);
+
+    return {
+        html,
+        relatedHtml,
+        isEmptyState: html.includes('item-detail-empty'),
+        name: decodeEntities((html.match(/item-detail__name">([^<]*)</) || [])[1] || ''),
+        type: decodeEntities((html.match(/item-detail__type"[^>]*>([^<]*)</) || [])[1] || ''),
+        price: decodeEntities((html.match(/item-detail__price[^"]*">([^<]*)</) || [])[1] || ''),
+        image: (html.match(/item-detail__media">[\s\S]*?<img[\s\S]*?src="([^"]*)"/) || [])[1] || '',
+        imageAlt: decodeEntities((html.match(/item-detail__media">[\s\S]*?alt="([^"]*)"/) || [])[1] || ''),
+        hasImageFallback: /onerror="handleImageError\(this\)"/.test(html),
+        desc: decodeEntities(stripTags((html.match(/item-detail__desc">([^<]*)</) || [])[1] || '')),
+        passive: decodeEntities(stripTags((html.match(/item-detail__passive">[\s\S]*?<p>([\s\S]*?)<\/p>/) || [])[1] || '')),
+        stats: [...html.matchAll(/item-detail__stat-label">([^<]*)<\/span>\s*<span class="item-detail__stat-value">([^<]*)</g)]
+            .map((match) => [decodeEntities(match[1]), decodeEntities(match[2])]),
+        breadcrumb: decodeEntities(stripTags((html.match(/<nav class="item-detail__breadcrumb"[\s\S]*?<\/nav>/) || [''])[0])),
+        relatedCount: relatedBlocks.length,
+        relatedIds: relatedBlocks.map((block) => (block.match(/item-detail\.html\?id=(\d+)/) || [])[1] || ''),
+        relatedNames: relatedBlocks.map((block) => decodeEntities((block.match(/item-card__name">([^<]*)</) || [])[1] || '')),
+    };
+}
+
+/** Mở trang chi tiết và chờ render xong. */
+async function openDetailPage(query) {
+    const page = loadPage(DETAIL_PAGE, query);
+    page.run();
+    await page.settled();
+    page.detail = readDetail(page.el('item-detail'));
+    return page;
 }
 
 function countByType(items) {
@@ -387,6 +441,19 @@ async function clickPage(page, number) {
 (async () => {
     console.log('Dữ liệu src/data/items.json: ' + ITEMS_JSON.length + ' item');
     console.log('Số loại: ' + JSON.stringify(countByType(ITEMS_JSON)));
+
+    /* ---------- 0. Toàn vẹn dữ liệu ---------- */
+    section('0. Dữ liệu items.json');
+    const allIds = new Set(ITEMS_JSON.map((row) => row.id));
+    check('mọi item đều có trường "related" khác rỗng',
+        ITEMS_JSON.every((row) => Array.isArray(row.related) && row.related.length > 0));
+    check('mọi id trong "related" đều tồn tại trong items.json',
+        ITEMS_JSON.every((row) => row.related.every((id) => allIds.has(id))),
+        ITEMS_JSON.flatMap((row) => row.related.filter((id) => !allIds.has(id)).map((id) => `${row.id}->${id}`)).join(', '));
+    check('"related" không tự tham chiếu và không trùng id',
+        ITEMS_JSON.every((row) => new Set(row.related).size === row.related.length && !row.related.includes(row.id)));
+    check('id item là duy nhất', allIds.size === ITEMS_JSON.length);
+    check('mọi item đều có đủ name/image/type/price', ITEMS_JSON.every((row) => row.name && row.image && row.type && typeof row.price === 'number'));
 
     /* ---------- 1. Render đủ item ---------- */
     section('1. Render danh sách từ items.json');
@@ -573,17 +640,164 @@ async function clickPage(page, number) {
     check('card có link sang item-detail.html?id=101', linkHref.includes('src/pages/item-detail.html?id=101'), linkHref);
     check('card hiển thị đúng tên/loại/giá của item 101', card.name === 'Kiếm Fafnir' && card.type === 'Công' && card.price === '2.040 Bạc', JSON.stringify(card));
 
-    const detail = loadPage(DETAIL_PAGE, '?id=101');
-    detail.run();
-    await detail.settled();
-    const detailHtml = detail.el('item-detail').innerHTML;
-    check('item-detail.html?id=101 render đủ thông tin', ['Kiếm Fafnir', 'Công', '2.040 Bạc', '+60', '+30', 'items/fafnir.png'].every((text) => detailHtml.includes(text)), detailHtml.slice(0, 200));
+    // Bấm card = đi theo href -> mở đúng trang chi tiết
+    const clickedId = (linkHref.match(/id=(\d+)/) || [])[1];
+    const clicked = await openDetailPage(`?id=${clickedId}`);
+    check('bấm card -> mở đúng trang chi tiết của item đó', clicked.detail.name === 'Kiếm Fafnir', clicked.detail.name);
 
-    const missing = loadPage(DETAIL_PAGE, '?id=99999');
-    missing.run();
-    await missing.settled();
-    check('id không tồn tại -> renderNotFound', missing.el('item-detail').innerHTML.includes('Không tìm thấy trang bị này.'));
-    check('các trang item không ném lỗi', page.errors.length === 0 && detail.errors.length === 0 && missing.errors.length === 0, [...page.errors, ...detail.errors, ...missing.errors].join(' | '));
+    /* ---------- 7. Trang chi tiết: item đầu / giữa / cuối ---------- */
+    section('7. Trang chi tiết: item đầu tiên, ở giữa, cuối cùng');
+    const firstItem = ITEMS_JSON[0];
+    const midItem = ITEMS_JSON[Math.floor(ITEMS_JSON.length / 2)];
+    const lastItem = ITEMS_JSON[ITEMS_JSON.length - 1];
+
+    // Nhãn tiếng Việt của chỉ số nằm trong item.js -> đọc từ context của trang
+    const statLabels = (await openDetailPage(`?id=${firstItem.id}`)).runInPage('ITEM_STAT_LABEL');
+    const humanizeKey = (await openDetailPage(`?id=${firstItem.id}`)).runInPage('humanizeStatKey');
+
+    for (const [position, target] of [['đầu tiên', firstItem], ['ở giữa', midItem], ['cuối cùng', lastItem]]) {
+        const opened = await openDetailPage(`?id=${target.id}`);
+        const view = opened.detail;
+        const tag = `item ${position} (id=${target.id} "${target.name}")`;
+
+        check(`${tag}: render đủ tên/loại/giá`,
+            view.name === target.name && view.type === target.type && view.price === `${target.price.toLocaleString('vi-VN')} Bạc`,
+            JSON.stringify({ name: view.name, type: view.type, price: view.price }));
+
+        check(`${tag}: ảnh lấy từ image("${target.image}")`,
+            view.image === `/assets/images/items/${target.image.replace('items/', '')}` && view.imageAlt === target.name && view.hasImageFallback,
+            view.image);
+
+        check(`${tag}: render đủ ${Object.keys(target.stats).length} chỉ số`,
+            view.stats.length === Object.keys(target.stats).length
+                && Object.keys(target.stats).every((key) => {
+                    const expectedLabel = statLabels[key] || humanizeKey(key);
+                    const entry = view.stats.find(([text]) => text === expectedLabel);
+                    return entry && entry[1] === `+${target.stats[key]}`;
+                }),
+            JSON.stringify(view.stats));
+
+        check(`${tag}: nội tại ${target.passive ? 'đúng dữ liệu' : 'hiện dòng báo không có nội tại'}`,
+            target.passive ? view.passive === target.passive : view.passive === 'Trang bị này không có nội tại.',
+            view.passive);
+
+        check(`${tag}: mô tả ${target.description ? 'đúng dữ liệu' : 'hiện dòng báo chưa có mô tả'}`,
+            target.description ? view.desc === target.description : view.desc === 'Trang bị này chưa có mô tả.',
+            view.desc);
+
+        check(`${tag}: breadcrumb có đường về trang danh sách + lọc theo loại`,
+            view.breadcrumb.includes('Trang bị') && view.breadcrumb.includes(target.type) && view.breadcrumb.includes(target.name),
+            view.breadcrumb);
+
+        /* ---- Trang bị liên quan ---- */
+        // Card render đúng thứ tự trong mảng "related"
+        const expectedRelated = target.related
+            .map((id) => ITEMS_JSON.find((row) => String(row.id) === String(id)))
+            .filter(Boolean);
+
+        check(`${tag}: render ${expectedRelated.length} card trang bị liên quan`,
+            view.relatedCount === expectedRelated.length
+                && JSON.stringify(view.relatedIds) === JSON.stringify(expectedRelated.map((row) => String(row.id)))
+                && JSON.stringify(view.relatedNames) === JSON.stringify(expectedRelated.map((row) => row.name)),
+            `thực tế: ${JSON.stringify(view.relatedIds)} / cần: ${JSON.stringify(expectedRelated.map((r) => r.id))}`);
+
+        check(`${tag}: card liên quan có ảnh + giá + link đúng id`,
+            view.relatedCount > 0 && expectedRelated.every((row, index) => {
+                const block = view.relatedHtml.split('<article class="card item-card">')[index + 1] || '';
+                return block.includes(`/assets/images/items/${row.image.replace('items/', '')}`)
+                    && block.includes(`${row.price.toLocaleString('vi-VN')} Bạc`)
+                    && block.includes(`item-detail.html?id=${row.id}`);
+            }));
+
+        check(`${tag}: không tự liên kết tới chính nó`, !view.relatedIds.includes(String(target.id)));
+        check(`${tag}: mọi id liên quan đều tồn tại trong items.json`,
+            view.relatedIds.every((id) => ITEMS_JSON.some((row) => String(row.id) === id)));
+    }
+
+    // Bấm vào card "trang bị liên quan" -> mở đúng item
+    const withRelated = await openDetailPage(`?id=${firstItem.id}`);
+    const firstRelatedId = withRelated.detail.relatedIds[0];
+    const expectedRelatedName = ITEMS_JSON.find((row) => String(row.id) === firstRelatedId).name;
+    const openedRelated = await openDetailPage(`?id=${firstRelatedId}`);
+    check(`bấm card liên quan -> mở đúng item "${expectedRelatedName}"`,
+        openedRelated.detail.name === expectedRelatedName && !openedRelated.detail.relatedIds.includes(firstRelatedId),
+        `${firstRelatedId} -> ${openedRelated.detail.name}`);
+
+    /* ---------- 8. Các trường hợp lỗi của trang chi tiết ---------- */
+    section('8. Xử lý lỗi: thiếu id / id sai / JSON hỗng');
+
+    const noId = await openDetailPage('');
+    check('thiếu id -> báo rõ cần id trên URL',
+        noId.detail.isEmptyState && decodeEntities(noId.detail.html).includes('Thiếu mã trang bị trên đường dẫn'),
+        decodeEntities(noId.detail.html).slice(0, 220));
+    check('thiếu id -> vẫn có link về danh sách trang bị', noId.detail.html.includes('src/pages/items.html'));
+
+    const blankId = await openDetailPage('?id=%20%20');
+    check('id rỗng (chỉ khoảng trắng) -> cũng báo thiếu mã', decodeEntities(blankId.detail.html).includes('Thiếu mã trang bị'));
+
+    const notFound = await openDetailPage('?id=99999');
+    check('id không tồn tại -> báo đúng mã id cần tìm',
+        notFound.detail.isEmptyState && decodeEntities(notFound.detail.html).includes('Không tìm thấy trang bị có mã "99999".'),
+        decodeEntities(notFound.detail.html).slice(0, 220));
+    check('id không tồn tại -> không render card item nào', (notFound.detail.html.match(/class="card item-card"/g) || []).length === 0);
+
+    const stringId = await openDetailPage('?id=605');
+    check('id dạng chuỗi vẫn tìm thấy item', stringId.detail.name === 'Đồng Hồ Cát');
+
+    const brokenJson = loadPage(DETAIL_PAGE, '?id=101', { failData: 'items.json' });
+    brokenJson.run();
+    await brokenJson.settled();
+    const brokenHtml = brokenJson.el('item-detail').innerHTML;
+    check('JSON lỗi / tải hỏng -> báo lỗi tải dữ liệu',
+        brokenHtml.includes('item-detail-empty') && decodeEntities(brokenHtml).includes('Không tải được dữ liệu trang bị'),
+        decodeEntities(brokenHtml).slice(0, 220));
+    const reloadBtn = brokenJson.el('item-detail').querySelector('[data-reload-item-detail]');
+    check('JSON lỗi -> có nút tải lại trang', Boolean(reloadBtn));
+    fire(reloadBtn, 'click');
+    check('bấm tải lại trang -> gọi location.reload()', brokenJson.reloadCount() === 1, `reloadCount=${brokenJson.reloadCount()}`);
+
+    // Item không có related hợp lệ -> báo rõ, không vỡ trang
+    const badRelated = await openDetailPage('?id=101');
+    badRelated.runInPage(`var __testItems = ${JSON.stringify(ITEMS_JSON)}; true;`);
+
+    const filteredRelated = JSON.parse(badRelated.runInPage(
+        'JSON.stringify(getRelatedItems({ id: 101, related: [99999, "abc", null] }, __testItems))',
+    ));
+    check('related chứa id không tồn tại -> bỏ qua hết', Array.isArray(filteredRelated) && filteredRelated.length === 0, JSON.stringify(filteredRelated));
+
+    const dedupRelated = JSON.parse(badRelated.runInPage(
+        'JSON.stringify(getRelatedItems({ id: 101, related: [101, 102, 102, 103, 101] }, __testItems).map((i) => i.id))',
+    ));
+    check('related trùng lặp + tự tham chiếu -> chỉ giữ id hợp lệ, mỗi id 1 lần',
+        JSON.stringify(dedupRelated) === '[102,103]', JSON.stringify(dedupRelated));
+
+    const missingRelatedHtml = badRelated.runInPage(`
+        (function () {
+            const container = document.getElementById('item-detail');
+            renderItemDetail(container, Object.assign({}, __testItems[0], { related: [99999, 'abc'] }), __testItems);
+            return container.innerHTML;
+        })()
+    `);
+    check('related rỗng sau khi lọc -> hiện dòng "Chưa có trang bị liên quan"',
+        !/class="card item-card"/.test(missingRelatedHtml)
+            && decodeEntities(missingRelatedHtml).includes('Chưa có trang bị liên quan cho trang bị này.'),
+        decodeEntities(missingRelatedHtml).slice(-240));
+
+    // Ảnh hỏng -> fallback placeholder
+    const imageFallback = badRelated.runInPage('imageUrl("")');
+    check('item không có ảnh -> dùng placeholder.svg', imageFallback === '/assets/images/placeholder.svg', imageFallback);
+    const imageError = badRelated.runInPage(`
+        (function () {
+            const img = { dataset: {}, src: '/assets/images/items/giap-mau.png' };
+            handleImageError(img);
+            return img.src + '|' + img.dataset.fallbackApplied;
+        })()
+    `);
+    check('ảnh lỗi (onerror) -> đổi sang placeholder', imageError === '/assets/images/placeholder.svg|true', imageError);
+
+    check('các trang item không ném lỗi',
+        page.errors.length === 0 && detailPage.errors.length === 0 && notFound.errors.length === 0 && noId.errors.length === 0,
+        [...page.errors, ...detailPage.errors, ...notFound.errors, ...noId.errors].join(' | '));
 
     /* ---------- Kết quả ---------- */
     console.log(`\n${passed} test PASS, ${failures.length} test FAIL`);

@@ -12,6 +12,11 @@
  *   - Tìm theo tên (không phân biệt hoa/thường + không dấu tiếng Việt)
  *   - Lọc theo loại (lấy type từ chính dữ liệu), search và filter chạy đồng thời
  *   - Card hiển thị ảnh / tên / loại / giá / vài chỉ số chính, bấm vào sang item-detail.html?id=
+ *
+ * Trang Chi tiết (item-detail.html):
+ *   - Lấy ?id= trên URL, tra trong items.json (thiếu id / id sai / JSON lỗi đều có thông báo)
+ *   - Render tên, ảnh, loại, giá, mô tả, nội tại, toàn bộ chỉ số
+ *   - Render "trang bị liên quan" theo trường related của items.json, mỗi card bấm được
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -404,45 +409,117 @@ function renderItemStatList(item, limit) {
 
 /* ---------- Trang Chi tiết trang bị (item-detail.html) ---------- */
 
+/**
+ * Trang chi tiết: đọc ?id= trên URL, tra items.json, render đầy đủ
+ * tên / ảnh / loại / giá / mô tả / nội tại / chỉ số / trang bị liên quan.
+ */
 function initItemDetailPage(items) {
     const detailContainer = document.getElementById('item-detail');
 
     if (!detailContainer) return;
 
-    const itemId = getQueryParam('id');
-    const item = items.find((row) => String(row.id) === String(itemId));
-
-    if (!item) {
-        detailContainer.innerHTML = `
-            ${renderNotFound('Không tìm thấy trang bị này.')}
-            <p class="item-detail__back-wrap">
-                <a class="btn btn-outline" href="${BASE_PATH}src/pages/items.html">← Về danh sách trang bị</a>
-            </p>
-        `;
+    // 1. JSON hỏng / tải lỗi -> loadData() trả về mảng rỗng, báo lỗi + cho tải lại.
+    if (!Array.isArray(items) || items.length === 0) {
+        detailContainer.innerHTML = renderItemDetailPlaceholder(
+            'Không tải được dữ liệu trang bị. Vui lòng kiểm tra kết nối rồi tải lại trang.',
+            '<button type="button" class="btn btn-outline" data-reload-item-detail>Tải lại trang</button>',
+        );
+        initReloadItemDetailButton(detailContainer);
         return;
     }
 
-    const priceText = typeof item.price === 'number'
-        ? `${item.price.toLocaleString('vi-VN')} Bạc`
-        : 'Không rõ';
-    const stats = getItemStatEntries(item);
+    // 2. Thiếu id trên URL
+    const itemId = String(getQueryParam('id')).trim();
 
-    detailContainer.innerHTML = `
-        <nav class="item-detail__breadcrumb">
-            <a href="${BASE_PATH}src/pages/items.html">← Danh sách trang bị</a>
+    if (!itemId) {
+        detailContainer.innerHTML = renderItemDetailPlaceholder(
+            'Thiếu mã trang bị trên đường dẫn. Ví dụ hợp lệ: item-detail.html?id=101',
+        );
+        return;
+    }
+
+    // 3. id không tồn tại trong items.json
+    const item = items.find((row) => String(row.id) === itemId);
+
+    if (!item) {
+        detailContainer.innerHTML = renderItemDetailPlaceholder(
+            `Không tìm thấy trang bị có mã "${itemId}".`,
+        );
+        return;
+    }
+
+    renderItemDetail(detailContainer, item, items);
+
+    if (typeof refreshFavoriteButtons === 'function') refreshFavoriteButtons();
+}
+
+/**
+ * Khối thông báo dùng chung cho các trường hợp lỗi của trang chi tiết.
+ * @param {string} message
+ * @param {string} [extraHtml] nút hành động bổ sung (vd nút tải lại trang)
+ * @returns {string} HTML string
+ */
+function renderItemDetailPlaceholder(message, extraHtml = '') {
+    return `
+        <div class="item-detail-empty">
+            ${renderNotFound(message)}
+            <p class="item-detail-empty__actions">
+                <a class="btn btn-outline" href="${BASE_PATH}src/pages/items.html">← Về danh sách trang bị</a>
+                ${extraHtml}
+            </p>
+        </div>
+    `;
+}
+
+/**
+ * Gắn sự kiện cho nút "Tải lại trang" (dùng event delegation vì render lại innerHTML).
+ * @param {HTMLElement} container
+ */
+function initReloadItemDetailButton(container) {
+    container.addEventListener('click', (event) => {
+        const reloadBtn = event.target.closest('[data-reload-item-detail]');
+        if (!reloadBtn) return;
+
+        window.location.reload();
+    });
+}
+
+/**
+ * Render trang chi tiết của 1 trang bị.
+ * @param {HTMLElement} container - #item-detail
+ * @param {object} item - object trong items.json
+ * @param {object[]} items - toàn bộ items.json (để tra related)
+ */
+function renderItemDetail(container, item, items) {
+    const stats = getItemStatEntries(item);
+    const relatedItems = getRelatedItems(item, items);
+
+    container.innerHTML = `
+        <nav class="item-detail__breadcrumb" aria-label="Đường dẫn">
+            <a href="${BASE_PATH}src/pages/items.html">Trang bị</a>
+            <span aria-hidden="true">/</span>
+            ${item.type ? `<a href="${BASE_PATH}src/pages/items.html?type=${encodeURIComponent(item.type)}">${escapeHtml(item.type)}</a>` : ''}
+            <span aria-hidden="true">/</span>
+            <span class="item-detail__breadcrumb-current">${escapeHtml(item.name)}</span>
         </nav>
 
         <article class="item-detail">
             <div class="item-detail__media">
-                <img src="${imageUrl(item.image)}" alt="${escapeHtml(item.name)}" onerror="handleImageError(this)">
+                <img
+                    src="${imageUrl(item.image)}"
+                    alt="${escapeHtml(item.name)}"
+                    onerror="handleImageError(this)"
+                >
             </div>
 
             <div class="item-detail__body">
                 <h1 class="item-detail__name">${escapeHtml(item.name)}</h1>
 
                 <div class="item-detail__meta">
-                    ${item.type ? `<span class="badge">${escapeHtml(item.type)}</span>` : ''}
-                    <span class="item-detail__price">${escapeHtml(priceText)}</span>
+                    ${item.type ? `
+                        <a class="badge item-detail__type" href="${BASE_PATH}src/pages/items.html?type=${encodeURIComponent(item.type)}">${escapeHtml(item.type)}</a>
+                    ` : ''}
+                    ${renderItemPrice(item)}
                     <button
                         type="button"
                         class="btn-favorite"
@@ -452,14 +529,12 @@ function initItemDetailPage(items) {
                     ><span aria-hidden="true">♥</span></button>
                 </div>
 
-                <p class="item-detail__desc">${escapeHtml(item.description || 'Chưa có mô tả cho trang bị này.')}</p>
+                <p class="item-detail__desc">${escapeHtml(item.description || 'Trang bị này chưa có mô tả.')}</p>
 
-                ${item.passive ? `
-                    <div class="item-detail__passive">
-                        <h2>Nội tại</h2>
-                        <p>${escapeHtml(item.passive)}</p>
-                    </div>
-                ` : ''}
+                <div class="item-detail__passive">
+                    <h2>Nội tại</h2>
+                    <p>${item.passive ? escapeHtml(item.passive) : '<em>Trang bị này không có nội tại.</em>'}</p>
+                </div>
 
                 <div class="item-detail__stats">
                     <h2>Chỉ số</h2>
@@ -472,11 +547,58 @@ function initItemDetailPage(items) {
                                 </li>
                             `).join('')}
                         </ul>
-                    ` : renderNotFound('Trang bị này không có chỉ số nào.')}
+                    ` : '<p class="item-detail__empty-note">Trang bị này không có chỉ số nào.</p>'}
                 </div>
             </div>
         </article>
-    `;
 
-    if (typeof refreshFavoriteButtons === 'function') refreshFavoriteButtons();
+        <section class="item-related" aria-labelledby="item-related-title">
+            <div class="item-related__head">
+                <h2 id="item-related-title">Trang bị liên quan</h2>
+                <a class="item-related__all" href="${BASE_PATH}src/pages/items.html${item.type ? `?type=${encodeURIComponent(item.type)}` : ''}">
+                    Xem tất cả trang bị${item.type ? ` ${escapeHtml(item.type)}` : ''}
+                </a>
+            </div>
+
+            ${relatedItems.length
+                ? `<div class="grid grid--items item-related__grid">${relatedItems.map(renderItemCardWithStats).join('')}</div>`
+                : '<p class="item-detail__empty-note">Chưa có trang bị liên quan cho trang bị này.</p>'}
+        </section>
+    `;
+}
+
+/**
+ * Giá của trang bị (đã format kiểu Việt Nam).
+ * @param {object} item
+ * @returns {string} HTML string
+ */
+function renderItemPrice(item) {
+    if (typeof item.price !== 'number' || !Number.isFinite(item.price)) {
+        return '<span class="item-detail__price item-detail__price--empty">Không rõ giá</span>';
+    }
+
+    return `<span class="item-detail__price">${escapeHtml(item.price.toLocaleString('vi-VN'))} Bạc</span>`;
+}
+
+/**
+ * Tra danh sách trang bị liên quan từ trường "related" của items.json.
+ * Bỏ qua id không tồn tại, id trùng với chính nó và id trùng lặp.
+ * @param {object} item
+ * @param {object[]} items
+ * @returns {object[]}
+ */
+function getRelatedItems(item, items) {
+    const list = Array.isArray(items) ? items : [];
+    const relatedIds = Array.isArray(item.related) ? item.related : [];
+    const used = new Set();
+
+    return relatedIds
+        .filter((id) => {
+            if (used.has(id) || String(id) === String(item.id)) return false;
+
+            used.add(id);
+            return list.some((row) => String(row.id) === String(id));
+        })
+        .map((id) => list.find((row) => String(row.id) === String(id)))
+        .filter(Boolean);
 }
