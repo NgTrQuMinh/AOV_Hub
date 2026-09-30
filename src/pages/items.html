@@ -15,14 +15,15 @@
     <header id="site-header"></header>
 
     <main class="container section">
-        <h1>Danh sách Trang bị</h1>
+        <div class="item-page-head">
+            <h1>Danh sách Trang bị</h1>
+            <span class="item-page-head__count" id="item-count"></span>
+        </div>
+        <p class="item-page-desc">
+            Dữ liệu đọc động từ <code>src/data/items.json</code> — tìm theo tên và lọc theo loại trang bị.
+        </p>
 
-        <!--
-            TODO (Người 3):
-            - Render filter-bar theo loại trang bị (ITEM_TYPES tương đương)
-            - Đọc data/items.json bằng loadData(), lọc theo type, tìm theo keyword
-            - Render danh sách vào #item-list bằng renderItemCard() (js/components.js) hoặc renderNotFound() nếu rỗng
-        -->
+        <!-- Ô tìm kiếm + nút lọc loại do item.js sinh ra -->
         <div id="item-filter-bar"></div>
         <div class="grid grid--items" id="item-list"></div>
         <div id="item-pagination"></div>

@@ -2,5 +2,389 @@
  * item.css - Style trang Danh sách/Chi tiết Trang bị
  * Phụ trách: Người 3
  *
- * TODO: layout items.html (filter-bar + grid), item-detail.html (ảnh, stats, passive, giá)
+ * Mục lục:
+ *   1. Page head (tiêu đề + số kết quả)
+ *   2. Filter bar: ô tìm kiếm + nút lọc loại
+ *   3. Grid item-card + khối chỉ số
+ *   4. Trạng thái rỗng (không có kết quả)
+ *   5. Trang chi tiết item-detail.html
+ *   6. Responsive: 1024 / 768 / 480
  * ========================================= */
+
+/* ---------- 1. PAGE HEAD ---------- */
+.item-page-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-2);
+    padding-left: var(--space-3);
+    border-left: 4px solid var(--color-gold);
+}
+
+.item-page-head h1 {
+    margin: 0;
+}
+
+.item-page-head__count {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--color-gold);
+    white-space: nowrap;
+}
+
+.item-page-desc {
+    margin-bottom: var(--space-5);
+    font-size: var(--fs-sm);
+}
+
+/* ---------- 2. FILTER BAR ---------- */
+.item-filter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.item-filter__row {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.item-filter__keyword,
+#item-search {
+    width: 100%;
+    max-width: 420px;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    color: var(--color-text);
+    font-size: var(--fs-sm);
+}
+
+.item-filter__keyword::placeholder {
+    color: var(--color-text-muted);
+}
+
+.item-filter__keyword:focus-visible,
+#item-search:focus-visible {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px rgba(230, 179, 74, 0.2);
+}
+
+.item-filter__types {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.item-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    color: var(--color-text-muted);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.item-chip:hover {
+    color: var(--color-text);
+    border-color: var(--color-gold);
+}
+
+.item-chip:focus-visible {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px rgba(230, 179, 74, 0.2);
+}
+
+.item-chip.is-active {
+    background: var(--color-gold);
+    border-color: var(--color-gold);
+    color: #241a0a;
+}
+
+.item-chip__count {
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-pill);
+    background: rgba(20, 15, 31, 0.35);
+    font-size: var(--fs-xs);
+    font-weight: 700;
+}
+
+.item-chip.is-active .item-chip__count {
+    background: rgba(36, 26, 10, 0.18);
+}
+
+/* ---------- 3. GRID ITEM-CARD ---------- */
+.grid--items {
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: var(--space-2);
+}
+
+.item-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.item-card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.item-card__name {
+    font-size: var(--fs-base);
+    line-height: 1.35;
+}
+
+.item-card__meta {
+    margin-bottom: var(--space-2);
+}
+
+.item-card__price {
+    margin-left: auto;
+}
+
+.item-card__stats {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-bottom: var(--space-3);
+    padding: var(--space-3);
+    background: var(--color-bg-elevated);
+    border-radius: var(--radius-sm);
+    font-size: var(--fs-xs);
+}
+
+.item-card__stat {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2);
+}
+
+.item-card__stat-label {
+    color: var(--color-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.item-card__stat-value {
+    flex-shrink: 0;
+    font-weight: 700;
+    color: var(--color-gold);
+}
+
+.item-card__link {
+    margin-top: auto;
+}
+
+/* ---------- 4. TRẠNG THÁI RỖNG ---------- */
+.item-empty {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-6) var(--space-4);
+    background: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.item-empty .not-found {
+    padding: 0;
+}
+
+/* ---------- 5. TRANG CHI TIẾT ---------- */
+.item-detail__breadcrumb {
+    margin-bottom: var(--space-4);
+    font-size: var(--fs-sm);
+}
+
+.item-detail__breadcrumb a {
+    color: var(--color-text-muted);
+}
+
+.item-detail__breadcrumb a:hover {
+    color: var(--color-gold);
+}
+
+.item-detail {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: var(--space-6);
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+.item-detail__media {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.item-detail__media img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+.item-detail__name {
+    margin-bottom: var(--space-3);
+}
+
+.item-detail__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-4);
+}
+
+.item-detail__price {
+    font-size: var(--fs-md);
+    font-weight: 700;
+    color: var(--color-gold);
+}
+
+/* .btn-favorite mặc định position:absolute (dùng trong card) — ở trang chi tiết
+   nó nằm trong .item-detail__meta nên cần trả về luồng bình thường. */
+.item-detail__meta .btn-favorite {
+    position: static;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+}
+
+.item-detail__desc {
+    margin-bottom: var(--space-5);
+}
+
+.item-detail__passive,
+.item-detail__stats {
+    margin-bottom: var(--space-5);
+}
+
+.item-detail__passive {
+    padding: var(--space-4);
+    background: var(--color-bg-elevated);
+    border-left: 3px solid var(--color-gold);
+    border-radius: var(--radius-sm);
+}
+
+.item-detail__passive h2,
+.item-detail__stats h2 {
+    font-size: var(--fs-md);
+    margin-bottom: var(--space-2);
+}
+
+.item-detail__passive p {
+    margin: 0;
+}
+
+.item-detail__stats ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-5);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.item-detail__stat {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--fs-sm);
+}
+
+.item-detail__stat-label {
+    color: var(--color-text-muted);
+}
+
+.item-detail__stat-value {
+    font-weight: 700;
+    color: var(--color-gold);
+}
+
+.item-detail__back-wrap {
+    margin-top: var(--space-3);
+    text-align: center;
+}
+
+/* ---------- 6. RESPONSIVE ---------- */
+@media (max-width: 1024px) {
+    .grid--items {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .item-detail {
+        grid-template-columns: 240px 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .grid--items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .item-filter__keyword,
+    #item-search {
+        max-width: none;
+    }
+
+    .item-detail {
+        grid-template-columns: 1fr;
+        padding: var(--space-4);
+    }
+
+    .item-detail__media {
+        max-width: 220px;
+        margin-inline: auto;
+    }
+
+    .item-detail__stats ul {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .item-filter {
+        padding: var(--space-3);
+    }
+
+    .item-chip {
+        padding: var(--space-1) var(--space-3);
+        font-size: var(--fs-xs);
+    }
+
+    .item-card__name {
+        font-size: var(--fs-sm);
+    }
+
+    .item-card__stats {
+        padding: var(--space-2);
+    }
+}
