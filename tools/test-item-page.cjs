@@ -1,320 +1,37 @@
 /**
  * Test cho trang Danh sách Trang bị (src/pages/items.html + src/js/item.js).
  *
- * Mô phỏng DOM tối giảu trong Node để kiểm tra thật sự hành vi render/tìm kiếm/lọc:
+ * Mô phỏng DOM tối giản trong Node để kiểm tra thật sự hành vi render/tìm kiếm/lọc:
  *   - render đủ item từ src/data/items.json
  *   - tìm theo tên (không dấu, không phân biệt hoa thường)
  *   - lọc theo loại
  *   - search + filter cùng lúc
  *   - trường hợp không có kết quả + nút xóa lọc
  *   - click item sang trang chi tiết
+ *   - trang chi tiết: item đầu / giữa / cuối + trang bị liên quan + xử lý lỗi
+ *
+ * Phần DOM giả + bộ nạp trang nằm chung ở tools/mini-dom.cjs.
  *
  * Chạy: node tools/test-item-page.cjs
  */
 const fs = require('fs');
 const path = require('path');
-const vm = require('vm');
 
-const ROOT = path.resolve(__dirname, '..');
+const { ROOT, loadPage: loadPageShared, unescapeHtml, fire } = require('./mini-dom.cjs');
+
 const PAGE = 'src/pages/items.html';
 const DETAIL_PAGE = 'src/pages/item-detail.html';
 const ITEMS_JSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/items.json'), 'utf8'));
 
-const VOID_TAGS = new Set(['img', 'br', 'input', 'hr', 'meta', 'link']);
 const WAIT_RENDER_MS = 320; // > debounce 200ms trong item.js
 
-/* ================= Mini DOM ================= */
+/** Bọc lại hàm của mini-dom cho đúng kiểu gọi (page, search, options) của bộ test này. */
+function loadPage(page, search, options) {
+    const loaded = loadPageShared(Object.assign({ page, search }, options));
 
-function parseAttrs(text) {
-    const attrs = {};
-
-    // Chấp nhận cả attribute không có giá trị (vd data-reset-item-filter).
-    for (const match of String(text).matchAll(/([a-zA-Z_:][-\w:.]*)(?:\s*=\s*"([^"]*)")?/g)) {
-        attrs[match[1].toLowerCase()] = match[2] === undefined ? '' : unescapeHtml(match[2]);
-    }
-
-    return attrs;
-}
-
-function unescapeHtml(text) {
-    return String(text)
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'")
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&amp;/g, '&');
-}
-
-function parseHtmlInto(host, html) {
-    host.children = [];
-    const stack = [host];
-    // Chấp nhận cả attribute không có giá trị (vd data-reset-item-filter).
-    const re = /<(\/?)([a-zA-Z][\w-]*)((?:\s+[\w:-]+(?:="[^"]*")?)*)\s*(\/?)>/g;
-
-    let match;
-    while ((match = re.exec(String(html))) !== null) {
-        const [, closing, rawTag, rawAttrs, selfClosing] = match;
-        const tag = rawTag.toLowerCase();
-
-        if (closing) {
-            for (let i = stack.length - 1; i > 0; i--) {
-                if (stack[i].tag === tag) { stack.length = i; break; }
-            }
-            continue;
-        }
-
-        const node = makeNode(tag, parseAttrs(rawAttrs), match[0]);
-        node.parent = stack[stack.length - 1];
-        node.parent.children.push(node);
-
-        if (!selfClosing && !VOID_TAGS.has(tag)) stack.push(node);
-    }
-}
-
-function makeNode(tag, attrs = {}, rawHtml = '') {
-    const node = {
-        tag,
-        attrs,
-        dataset: {},
-        children: [],
-        parent: null,
-        value: attrs.value === undefined ? '' : attrs.value,
-        textContent: '',
-        listeners: {},
-        scrollIntoView() {},
-        setAttribute(name, value) { this.attrs[name.toLowerCase()] = String(value); },
-        getAttribute(name) { return name.toLowerCase() in this.attrs ? this.attrs[name.toLowerCase()] : null; },
-        addEventListener(type, fn) { (this.listeners[type] = this.listeners[type] || []).push(fn); },
-        matches(selector) {
-            return selector.split(',').map((s) => s.trim()).filter(Boolean).some((s) => matchesOne(this, s));
-        },
-        closest(selector) {
-            let current = this;
-            while (current) {
-                if (current.matches && current.matches(selector)) return current;
-                current = current.parent;
-            }
-            return null;
-        },
-        querySelectorAll(selector) {
-            const out = [];
-            const walk = (element) => {
-                for (const child of element.children) {
-                    if (child.matches(selector)) out.push(child);
-                    walk(child);
-                }
-            };
-            walk(this);
-            return out;
-        },
-        querySelector(selector) {
-            return this.querySelectorAll(selector)[0] || null;
-        },
-    };
-
-    const classList = {
-        add(...names) {
-            const current = new Set(String(node.attrs.class || '').split(/\s+/).filter(Boolean));
-            names.forEach((name) => current.add(name));
-            node.attrs.class = [...current].join(' ');
-        },
-        remove(...names) {
-            const current = new Set(String(node.attrs.class || '').split(/\s+/).filter(Boolean));
-            names.forEach((name) => current.delete(name));
-            node.attrs.class = [...current].join(' ');
-        },
-        toggle(name, force) {
-            const has = classList.contains(name);
-            const shouldAdd = force === undefined ? !has : Boolean(force);
-            if (shouldAdd) classList.add(name); else classList.remove(name);
-            return shouldAdd;
-        },
-        contains(name) {
-            return String(node.attrs.class || '').split(/\s+/).includes(name);
-        },
-    };
-
-    node.classList = classList;
-    node.className = attrs.class || '';
-    node.id = attrs.id || '';
-
-    for (const [name, value] of Object.entries(attrs)) {
-        if (name.startsWith('data-')) {
-            node.dataset[name.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = value;
-        }
-    }
-
-    let htmlText = rawHtml;
-
-    Object.defineProperty(node, 'innerHTML', {
-        get: () => htmlText,
-        set: (value) => {
-            htmlText = String(value);
-            parseHtmlInto(node, htmlText);
-        },
-    });
-
-    Object.defineProperty(node, 'className', {
-        get: () => node.attrs.class || '',
-        set: (value) => { node.attrs.class = String(value); },
-    });
-
-    return node;
-}
-
-function matchesOne(node, selector) {
-    if (selector.startsWith('.')) return classListOf(node).includes(selector.slice(1));
-
-    const attrMatch = selector.match(/^\[([\w-]+)(?:="?([^"\]]*)"?)?\]$/);
-    if (attrMatch) {
-        const [, name, value] = attrMatch;
-        if (name.startsWith('data-')) {
-            const key = name.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase());
-            const actual = node.dataset[key];
-            if (value === undefined) return actual !== undefined;
-            return String(actual) === value;
-        }
-        if (!(name.toLowerCase() in node.attrs)) return false;
-        return value === undefined ? true : String(node.attrs[name.toLowerCase()]) === value;
-    }
-
-    if (selector.startsWith('#')) return node.attrs.id === selector.slice(1);
-
-    return node.tag === selector.toLowerCase();
-}
-
-function classListOf(node) {
-    return String(node.attrs.class || '').split(/\s+/).filter(Boolean);
-}
-
-function walkAll(root, visit) {
-    for (const child of root.children) {
-        visit(child);
-        walkAll(child, visit);
-    }
-}
-
-/** Bắn sự kiện và nối bong bóng lên các phần tử cha. */
-function fire(node, type) {
-    let current = node;
-
-    while (current) {
-        const handlers = current.listeners[type] || [];
-        const event = { type, target: node, preventDefault() {}, stopPropagation() {} };
-        handlers.forEach((fn) => fn(event));
-        current = current.parent;
-    }
-}
-
-/* ================= Load trang vào VM ================= */
-
-function loadPage(page, search, options = {}) {
-    const html = fs.readFileSync(path.join(ROOT, page), 'utf8');
-    const scripts = [...html.matchAll(/<script src="\/src\/js\/([^"]+)"><\/script>/g)].map((m) => m[1]);
-    const inlineScripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
-
-    const errors = [];
-    const byId = new Map();
-    const localStorageStore = new Map();
-    let reloadCount = 0;
-
-    const document = {
-        body: makeNode('body', { 'data-page': 'items' }),
-        documentElement: makeNode('html'),
-        listeners: {},
-        getElementById(id) {
-            if (byId.has(id)) return byId.get(id);
-
-            for (const el of byId.values()) {
-                let found = null;
-                walkAll(el, (node) => { if (!found && node.attrs.id === id) found = node; });
-                if (found) {
-                    byId.set(id, found);
-                    return found;
-                }
-            }
-
-            const created = makeNode('div', { id });
-            byId.set(id, created);
-            return created;
-        },
-        querySelector(selector) { return document.querySelectorAll(selector)[0] || null; },
-        querySelectorAll(selector) {
-            const out = [];
-            for (const el of byId.values()) {
-                if (el.matches(selector)) out.push(el);
-                walkAll(el, (node) => { if (node.matches(selector)) out.push(node); });
-            }
-            return out;
-        },
-        addEventListener(type, fn) { (document.listeners[type] = document.listeners[type] || []).push(fn); },
-        createElement: () => makeNode('div'),
-    };
-
-    const ctx = {
-        console: {
-            log() {},
-            warn() {},
-            error(...args) { errors.push('console.error: ' + args.map(String).join(' ')); },
-        },
-        document,
-        localStorage: {
-            getItem: (key) => (localStorageStore.has(key) ? localStorageStore.get(key) : null),
-            setItem: (key, value) => localStorageStore.set(key, String(value)),
-            removeItem: (key) => localStorageStore.delete(key),
-        },
-        location: {
-            pathname: '/' + page,
-            search: search || '',
-            href: '/' + page + (search || ''),
-            reload: () => { reloadCount++; },
-        },
-        history: {},
-        navigator: { userAgent: 'node' },
-        URLSearchParams,
-        alert() {},
-        confirm: () => true,
-        setTimeout,
-        clearTimeout,
-        fetch: async (url) => {
-            const name = path.basename(String(url));
-            const file = path.join(ROOT, 'src', 'data', name);
-            // Cho phép mô phỏng JSON lỗi / không tải được (options.failData = 'items.json')
-            if (options.failData === name) {
-                errors.push('console.error: (mô phỏng) không tải được ' + name);
-                return { ok: false, status: 500, json: async () => { throw new Error('bad json'); }, text: async () => '' };
-            }
-            if (fs.existsSync(file)) {
-                return { ok: true, status: 200, json: async () => JSON.parse(fs.readFileSync(file, 'utf8')), text: async () => '' };
-            }
-            return { ok: true, status: 200, json: async () => [], text: async () => '' };
-        },
-    };
-    ctx.window = ctx;
-    ctx.globalThis = ctx;
-    vm.createContext(ctx);
-
-    const run = () => {
-        for (const file of scripts) {
-            vm.runInContext(fs.readFileSync(path.join(ROOT, 'src', 'js', file), 'utf8'), ctx, { filename: file });
-        }
-        inlineScripts.forEach((code, i) => vm.runInContext(code, ctx, { filename: `${page}#inline${i}` }));
-        for (const fn of document.listeners.DOMContentLoaded || []) {
-            const result = fn();
-            if (result && typeof result.then === 'function') result.catch((e) => errors.push('DOMContentLoaded: ' + e.message));
-        }
-    };
-
-    return {
-        errors,
-        run,
-        runInPage: (code) => vm.runInContext(code, ctx),
-        reloadCount: () => reloadCount,
-        doc: document,
-        el: (id) => document.getElementById(id),
-        settled: () => new Promise((resolve) => setTimeout(resolve, 60)),
+    return Object.assign(loaded, {
         afterSearch: () => new Promise((resolve) => setTimeout(resolve, WAIT_RENDER_MS)),
-    };
+    });
 }
 
 /* ================= Đọc kết quả render ================= */
