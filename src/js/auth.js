@@ -49,7 +49,7 @@ async function seedUsersFromJson() {
     if (getUsers().length) return;
 
     try {
-        const response = await fetch(BASE_PATH + 'src/data/users.json');
+        const response = await fetch(DATA_PATH.users);
         if (!response.ok) return;
 
         const users = await response.json();

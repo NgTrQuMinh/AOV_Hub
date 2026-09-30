@@ -18,6 +18,8 @@ async function includeLayout() {
         headerSlot.innerHTML = (await response.text()).replaceAll('{{BASE}}', BASE_PATH);
         highlightActiveNav();
         initMobileMenu();
+        // Khu vực tài khoản (Đăng nhập/Đăng ký hoặc username + Đăng xuất) do auth.js lo.
+        if (typeof updateAccountUI === 'function') updateAccountUI();
     }
 
     if (footerSlot) {

@@ -108,7 +108,7 @@
     "id": 8,
     "name": "Florentino",
     "alias": "florentino",
-    "image": "assets/heroes/florentino.png",
+    "image": "assets/heroes/Florentino.jpg",
     "role": ["Đấu sĩ"],
     "difficulty": 5,
     "stats": { "hp": 3535, "attack": 170, "defense": 120, "speed": 380 },

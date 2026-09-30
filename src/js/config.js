@@ -14,3 +14,16 @@
  *   BASE_PATH + 'src/data/...'       -> /src/data/...        (src)
  */
 const BASE_PATH = '/';
+
+/**
+ * Đường dẫn tới các file JSON trong src/data/.
+ * Dùng chung cho mọi trang gọi loadData() (feed.js, build.js, profile.html...)
+ * nên không phải tự chế lại "src/data/xxx.json" ở từng file.
+ */
+const DATA_PATH = {
+    heroes: BASE_PATH + 'src/data/heroes.json',
+    items: BASE_PATH + 'src/data/items.json',
+    builds: BASE_PATH + 'src/data/builds.json',
+    posts: BASE_PATH + 'src/data/posts.json',
+    users: BASE_PATH + 'src/data/users.json',
+};
