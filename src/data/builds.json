@@ -5,5 +5,89 @@
         "name": "Build sát thương chuẩn",
         "items": [101, 102, 103, 104, 105, 106],
         "description": ""
+    },
+    {
+        "id": 2,
+        "heroId": 3,
+        "name": "Build hồi máu bất tử",
+        "items": [107, 501, 104, 105, 301, 302],
+        "description": "Sát thủ tận dụng hút máu từ Quỷ Kiếm Mãng Xà, kết hợp thêm giáp máu và giáp thiên thần để đánh lâu."
+    },
+    {
+        "id": 3,
+        "heroId": 5,
+        "name": "Build phép xuyên giáp",
+        "items": [502, 207, 201, 203, 401, 208],
+        "description": "Raz dồn công phép, xuyên kháng phép bằng Vương Miện Vô Cực và chí mạng phép bằng Trượng Hủy Diệt."
+    },
+    {
+        "id": 4,
+        "heroId": 6,
+        "name": "Build chí mạng phép hồi máu",
+        "items": [502, 206, 202, 203, 404, 209],
+        "description": "Liliana tận dụng hồi máu theo sát thương phép, tăng tốc hồi chiêu và đảm bảo giáp phép với Trang Sức Áo Choàng Bóng Tối."
+    },
+    {
+        "id": 5,
+        "heroId": 8,
+        "name": "Build đấu sĩ hồi máu",
+        "items": [504, 107, 104, 109, 304, 603],
+        "description": "Florentino bù máu bằng Búa Đá Vô Cực, Ngọc Sinh Mệnh và Giáp Gai để trụ được trong các đấu đấu kéo dài."
+    },
+    {
+        "id": 6,
+        "heroId": 11,
+        "name": "Build đỡ đòn cứng nhất",
+        "items": [501, 306, 303, 103, 302, 307],
+        "description": "Thane đánh bộc khi bị ép vào chân tướng, cần ưu tiên máu và giáp kết hợp một món công xuyên giáp."
+    },
+    {
+        "id": 7,
+        "heroId": 12,
+        "name": "Build lá chắn và hồi máu",
+        "items": [502, 305, 209, 403, 306, 602],
+        "description": "Mina đánh đầm chủ động nên chọn trang bị vừa hồi máu vừa kháng phép để chống chịu phép bất ngờ."
+    },
+    {
+        "id": 8,
+        "heroId": 15,
+        "name": "Build chí mạng xuyên giáp",
+        "items": [504, 103, 102, 108, 106, 303],
+        "description": "Elsu đứng bắn từ tầm xa, ưu tiên chí mạng và xuyên giáp, chỉ cần một món giáp để tránh lật điểm cực nhanh."
+    },
+    {
+        "id": 9,
+        "heroId": 20,
+        "name": "Build tấn công nhanh",
+        "items": [501, 110, 107, 105, 306, 304],
+        "description": "Violet dùng tốc độ đánh và tốc chạy để áp chế ở cấp độ thấp, bổ sung hút máu để bù lại sức bền thấp."
+    },
+    {
+        "id": 10,
+        "heroId": 23,
+        "name": "Build phản công giữ team",
+        "items": [503, 104, 304, 109, 302, 605],
+        "description": "Omen phản công giữ vùng, Giáp Gai giảm sát thương mới phản lại thêm và Đồng Hồ Cát là lá chắn cứu thế."
+    },
+    {
+        "id": 11,
+        "heroId": 25,
+        "name": "Build pháp sư hồi máu",
+        "items": [502, 205, 209, 404, 403, 208],
+        "description": "Zill là đấu sĩ mang sát thương phép nên cần trang bị vừa xuyên kháng phép vừa hồi máu để đánh bền."
+    },
+    {
+        "id": 12,
+        "heroId": 27,
+        "name": "Build trợ thủ bảo vệ đồng minh",
+        "items": [501, 207, 210, 402, 601, 604],
+        "description": "Aya ở tuyến sau nên tích trang bị hồi mana, kháng phép và Trượng Hồi Sinh để kéo cả team về chỗ an toàn."
+    },
+    {
+        "id": 13,
+        "heroId": 30,
+        "name": "Build hồi sinh và kháng công",
+        "items": [501, 103, 301, 302, 109, 604],
+        "description": "Maloch đánh trực diện giữa team, dựng giáp dày rồi thêm Trượng Hồi Sinh cho chắc chắn trong các trận kéo dài."
     }
 ]
