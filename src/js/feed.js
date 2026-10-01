@@ -182,30 +182,134 @@ function findPostById(postId) {
 
 /* ---------- CRUD bài viết ---------- */
 
+const POST_TITLE_MIN = 5;
+const POST_CONTENT_MIN = 10;
+
 /**
- * Đăng bài mới. Bài mới luôn lên đầu danh sách.
- * @returns {object|null} bài vừa tạo, null nếu chưa đăng nhập, thiếu nội dung hoặc lưu thất bại.
+ * Kiểm tra dữ liệu form đăng bài.
+ * Tách riêng khỏi createPost() để cùng một bộ quy tắc dùng cho form và cho test.
+ *
+ * author lấy từ session (getCurrentUser), phải có trong danh sách tài khoản
+ * của dự án (aov_users nạp từ data/users.json) thì mới coi là hợp lệ.
+ *
+ * @returns {{ valid: boolean, errors: string[], values: { title: string, content: string, heroId: *, author: string } }}
  */
-function createPost(title, content, heroId) {
-    const author = getCurrentUser();
+function validatePostForm(title, content, heroId) {
+    const errors = [];
     const cleanTitle = String(title || '').trim();
     const cleanContent = String(content || '').trim();
+    const author = String(getCurrentUser() || '').trim();
 
-    if (!author || !cleanTitle || !cleanContent) return null;
+    if (!author) {
+        errors.push('Bạn cần đăng nhập để đăng bài.');
+    } else if (typeof findUser === 'function' && !findUser(author)) {
+        errors.push('Tài khoản của bạn không còn tồn tại. Hãy đăng nhập lại.');
+    }
+
+    if (!cleanTitle) errors.push('Tiêu đề không được để trống.');
+    else if (cleanTitle.length < POST_TITLE_MIN) errors.push(`Tiêu đề phải có ít nhất ${POST_TITLE_MIN} ký tự.`);
+
+    if (!cleanContent) errors.push('Nội dung không được để trống.');
+    else if (cleanContent.length < POST_CONTENT_MIN) errors.push(`Nội dung phải có ít nhất ${POST_CONTENT_MIN} ký tự.`);
+
+    return {
+        valid: !errors.length,
+        errors,
+        values: { title: cleanTitle, content: cleanContent, heroId: toStorageId(heroId), author },
+    };
+}
+
+/**
+ * Đăng bài mới. Bài mới luôn lên đầu danh sách.
+ *
+ * Bài chỉ nằm trong aov_posts (LocalStorage), KHÔNG ghi vào data/posts.json
+ * vì file đó là dữ liệu tĩnh của project.
+ *
+ * Cùng lúc khởi tạo sẵn lượt thích và bình luận rỗng cho bài mới để
+ * mọi trang đọc cùng một cấu trúc dữ liệu, không phải tự xử lý vắng mặt.
+ *
+ * @returns {object|null} bài vừa tạo, null nếu dữ liệu không hợp lệ hoặc lưu thất bại.
+ */
+function createPost(title, content, heroId) {
+    const checked = validatePostForm(title, content, heroId);
+    if (!checked.valid) return null;
 
     const posts = getPosts();
+    const id = nextFeedId(posts.map((row) => row.id));
     const post = {
-        id: nextFeedId(posts.map((row) => row.id)),
-        author,
-        title: cleanTitle,
-        content: cleanContent,
-        heroId: toStorageId(heroId),
+        id,
+        author: checked.values.author,
+        title: checked.values.title,
+        content: checked.values.content,
+        heroId: checked.values.heroId,
         createdAt: new Date().toISOString(),
     };
 
     posts.unshift(post);
 
-    return setPosts(posts) ? post : null;
+    if (!setPosts(posts)) return null;
+
+    // Khởi tạo lượt thích rỗng cho bài mới (bình luận thì vốn đã rỗng:
+    // đọc theo postId mà không có bản ghi nào thì ra mảng rỗng).
+    const likes = getLikes();
+    if (!(id in likes)) {
+        likes[id] = [];
+        setLikes(likes);
+    }
+
+    return post;
+}
+
+/**
+ * Người dùng hiện tại có quyền sửa bài viết này không.
+ * Dùng chung cho nút "Sửa" ở Feed và ở trang chi tiết, và cả updatePost() bên dưới
+ * để không lộ nút sửa cho bài của người khác.
+ * @param {object} post
+ * @returns {boolean}
+ */
+function canEditPost(post) {
+    if (!post || !isLoggedIn()) return false;
+
+    return String(post.author || '').trim() === String(getCurrentUser() || '').trim();
+}
+
+/**
+ * Sửa bài viết đã có: giữ nguyên id và createdAt, chỉ cập nhật nội dung và updatedAt.
+ *
+ * Chỉ tác giả của bài mới sửa được. Không tạo bài mới và không đụng data/posts.json.
+ *
+ * @param {number|string} postId
+ * @param {string} title
+ * @param {string} content
+ * @param {*} heroId
+ * @returns {object|null} bài sau khi sửa, null nếu không tìm thấy bài,
+ *         không phải tác giả, dữ liệu không hợp lệ hoặc lưu thất bại.
+ */
+function updatePost(postId, title, content, heroId) {
+    const id = normalizeId(postId);
+    const posts = getPosts();
+    const index = posts.findIndex((post) => normalizeId(post.id) === id);
+
+    if (index === -1) return null;
+
+    const current = posts[index];
+
+    if (!canEditPost(current)) return null;
+
+    const checked = validatePostForm(title, content, heroId);
+    if (!checked.valid) return null;
+
+    // Giữ nguyên id + createdAt, chỉ đổi phần nội dung và ghi thời điểm sửa.
+    const updated = Object.assign({}, current, {
+        title: checked.values.title,
+        content: checked.values.content,
+        heroId: checked.values.heroId,
+        updatedAt: new Date().toISOString(),
+    });
+
+    posts[index] = updated;
+
+    return setPosts(posts) ? updated : null;
 }
 
 /**
@@ -336,12 +440,25 @@ async function initFeedPage() {
     renderFeedList();
 }
 
-function renderPostForm() {
-    const formBox = document.getElementById('feed-form');
-    if (!formBox) return;
+/**
+ * Render form đăng/sửa bài viết.
+ *
+ * Dùng chung cho cả hai chế độ nên không có form riêng cho việc sửa:
+ * - renderPostForm()           -> form đăng bài mới (trống)
+ * - renderPostForm(postToEdit) -> form sửa, tự điền sẵn dữ liệu cũ
+ *
+ * Trạng thái đang sửa được ghi ở data-edit-id của chính thẻ <form>,
+ * nên handler submit chỉ cần đọc lại thuộc tính này, không cần biến global.
+ *
+ * @param {object} [editingPost] bài viết cần sửa, bỏ trống nếu đang đăng bài mới
+ * @param {Element} [formBox] vùng chứa form, mặc định là #feed-form
+ */
+function renderPostForm(editingPost, formBox) {
+    const box = formBox || document.getElementById('feed-form');
+    if (!box) return;
 
     if (!isLoggedIn()) {
-        formBox.innerHTML = `
+        box.innerHTML = `
             <div class="feed-form feed-form--guest">
                 <p>Bạn cần đăng nhập để đăng bài và bình luận.</p>
                 <a class="btn btn-primary" href="${BASE_PATH}src/pages/login.html?redirect=${BASE_PATH}src/pages/feed.html">Đăng nhập</a>
@@ -350,21 +467,24 @@ function renderPostForm() {
         return;
     }
 
+    // Bài đang sửa phải thuộc về người dùng hiện tại, nếu không thì coi như đăng bài mới.
+    const editing = canEditPost(editingPost) ? editingPost : null;
     const heroOptions = feedHeroes
         .map((hero) => `<option value="${hero.id}">${escapeHtml(hero.name)}</option>`)
         .join('');
 
-    formBox.innerHTML = `
-        <form class="feed-form" id="post-form" novalidate>
-            <h2>Đăng bài mới</h2>
+    box.innerHTML = `
+        <form class="feed-form ${editing ? 'is-editing' : ''}" id="post-form" novalidate${editing ? ` data-edit-id="${escapeHtml(editing.id)}"` : ''}>
+            <h2>${editing ? 'Sửa bài viết' : 'Đăng bài mới'}</h2>
+            ${editing ? `<p class="feed-form__hint">Đang sửa bài “${escapeHtml(editing.title)}”. Thay đổi sẽ ghi đè bài cũ, không tạo bài mới.</p>` : ''}
             <div id="post-errors"></div>
             <div class="form-group">
                 <label for="post-title">Tiêu đề</label>
-                <input type="text" id="post-title" placeholder="Ví dụ: Cách lên đồ cho xạ thủ">
+                <input type="text" id="post-title" placeholder="Ví dụ: Cách lên đồ cho xạ thủ" value="${editing ? escapeHtml(editing.title) : ''}">
             </div>
             <div class="form-group">
                 <label for="post-content">Nội dung</label>
-                <textarea id="post-content" rows="4" placeholder="Chia sẻ kinh nghiệm của bạn..."></textarea>
+                <textarea id="post-content" rows="4" placeholder="Chia sẻ kinh nghiệm của bạn...">${editing ? escapeHtml(editing.content) : ''}</textarea>
             </div>
             <div class="form-group">
                 <label for="post-hero">Gắn với tướng (không bắt buộc)</label>
@@ -373,12 +493,18 @@ function renderPostForm() {
                     ${heroOptions}
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Đăng bài</button>
+            <div class="feed-form__actions">
+                <button type="submit" class="btn btn-primary">${editing ? 'Lưu thay đổi' : 'Đăng bài'}</button>
+                ${editing ? `<button type="button" class="btn btn-outline" data-post-edit-cancel>Huỷ</button>` : ''}
+            </div>
         </form>
     `;
 
-    const form = formBox.querySelector('#post-form');
+    const form = box.querySelector('#post-form');
     if (!form) return;
+
+    // Chọn lại tướng đang gắn của bài cũ (đặt sau innerHTML để option đã tồn tại).
+    if (editing && editing.heroId) form.querySelector('#post-hero').value = editing.heroId;
 
     form.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -387,16 +513,41 @@ function renderPostForm() {
         const content = form.querySelector('#post-content').value;
         const heroId = form.querySelector('#post-hero').value;
         const errorBox = form.querySelector('#post-errors');
-        const errors = [];
+        const checked = validatePostForm(title, content, heroId);
 
-        if (!title.trim()) errors.push('Tiêu đề không được để trống.');
-        else if (title.trim().length < 5) errors.push('Tiêu đề phải có ít nhất 5 ký tự.');
+        renderErrors(errorBox, checked.errors);
+        if (!checked.valid) return;
 
-        if (!content.trim()) errors.push('Nội dung không được để trống.');
-        else if (content.trim().length < 10) errors.push('Nội dung phải có ít nhất 10 ký tự.');
+        const editId = form.dataset.editId;
 
-        renderErrors(errorBox, errors);
-        if (errors.length) return;
+        if (editId) {
+            // Sửa bài cũ: giữ nguyên id và createdAt, chỉ đổi nội dung + ghi updatedAt.
+            const updated = updatePost(editId, title, content, heroId);
+            if (!updated) {
+                renderErrors(errorBox, ['Không lưu được bài viết. Bạn chỉ có thể sửa bài của chính mình.']);
+                return;
+            }
+
+            // Vẽ lại form ở chế độ sửa với dữ liệu vừa lưu để người dùng thấy kết quả.
+            renderPostForm(updated, box);
+
+            // renderPostForm() đã thay thế thẻ <form> cũ nên phải tra lại form mới,
+            // nếu không thông báo sẽ ghi vào node đã bị tách khỏi DOM và không hiện được.
+            const updatedForm = box.querySelector('#post-form');
+            renderSuccess(
+                updatedForm.querySelector('#post-errors'),
+                `Đã lưu bài "${checked.values.title}".`,
+            );
+            updatedForm.querySelector('#post-errors').insertAdjacentHTML(
+                'beforeend',
+                ` <a href="${BASE_PATH}src/pages/post-detail.html?id=${encodeURIComponent(updated.id)}">Xem bài vừa sửa</a>`,
+            );
+
+            rerenderFeedView(updated.id);
+            if (typeof renderProfilePosts === 'function') renderProfilePosts();
+
+            return;
+        }
 
         const newPost = createPost(title, content, heroId);
         if (!newPost) {
@@ -404,9 +555,46 @@ function renderPostForm() {
             return;
         }
 
+        // Bài mới lên đầu danh sách nên Feed hiển thị ngay,
+        // đồng thời báo kèm link để mở trang chi tiết của chính bài vừa đăng.
         form.reset();
+        renderSuccess(
+            form.querySelector('#post-errors'),
+            `Đã đăng bài "${checked.values.title}".`,
+        );
+        form.querySelector('#post-errors').insertAdjacentHTML(
+            'beforeend',
+            ` <a href="${BASE_PATH}src/pages/post-detail.html?id=${encodeURIComponent(newPost.id)}">Xem bài vừa đăng</a>`,
+        );
+
         rerenderFeedView();
+        if (typeof renderProfilePosts === 'function') renderProfilePosts();
     });
+
+    form.addEventListener('click', (event) => {
+        if (!event.target.closest('[data-post-edit-cancel]')) return;
+
+        event.preventDefault();
+        renderPostForm(null, box);
+    });
+}
+
+/**
+ * Mở form sửa cho một bài viết: tìm bài trong aov_posts rồi đổi form hiện tại sang chế độ sửa.
+ * Chạy được từ cả Feed lẫn trang chi tiết vì chỉ cần một vùng chứa form.
+ * @param {number|string} postId
+ * @param {Element} formBox
+ * @returns {boolean} đã mở được form sửa hay không
+ */
+function openPostEditForm(postId, formBox) {
+    const post = findPostById(postId);
+
+    if (!post || !canEditPost(post)) return false;
+
+    renderPostForm(post, formBox);
+    if (formBox && formBox.scrollIntoView) formBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    return true;
 }
 
 /**
@@ -437,6 +625,7 @@ function renderPostCard(post) {
     const liked = isLikedByCurrentUser(post.id);
     const comments = getCommentsOfPost(post.id);
     const canDelete = isLoggedIn() && post.author === getCurrentUser();
+    const canEdit = canEditPost(post);
 
     const commentsHtml = comments.map((comment) => `
         <li class="comment">
@@ -457,10 +646,14 @@ function renderPostCard(post) {
                     <h3 class="post-card__title">${escapeHtml(post.title)}</h3>
                     <span class="post-card__meta">
                         ${escapeHtml(post.author)} · ${formatDateTime(post.createdAt)}
+                        ${post.updatedAt ? ` · <span class="post-card__updated" title="${escapeHtml(formatDateTime(post.updatedAt))}">đã sửa</span>` : ''}
                         ${hero ? ` · <a href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">${escapeHtml(hero.name)}</a>` : ''}
                     </span>
                 </div>
-                ${canDelete ? `<button type="button" class="post-card__delete" data-post-delete="${escapeHtml(post.id)}">Xoá bài</button>` : ''}
+                <div class="post-card__owner-actions">
+                    ${canEdit ? `<button type="button" class="post-card__edit" data-post-edit="${escapeHtml(post.id)}">Sửa</button>` : ''}
+                    ${canDelete ? `<button type="button" class="post-card__delete" data-post-delete="${escapeHtml(post.id)}">Xoá bài</button>` : ''}
+                </div>
             </header>
 
             <p class="post-card__content">${escapeHtml(post.content)}</p>
@@ -568,6 +761,7 @@ function renderPostDetailView() {
                     <span class="post-detail__author">👤 ${escapeHtml(post.author)}</span>
                     <span class="post-detail__time">
                         <time datetime="${escapeHtml(post.createdAt)}">${formatDateTime(post.createdAt)}</time>
+                        ${post.updatedAt ? `<span class="post-detail__updated" title="${escapeHtml(formatDateTime(post.updatedAt))}">đã sửa</span>` : ''}
                     </span>
                     ${hero ? `<a href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">${escapeHtml(hero.name)}</a>` : ''}
                 </p>
@@ -583,6 +777,7 @@ function renderPostDetailView() {
                     ♥ Thích (${likeUsers.length})
                 </button>
                 <span class="post-action">💬 ${comments.length} bình luận</span>
+                ${canEditPost(post) ? `<button type="button" class="post-card__edit" data-post-edit="${escapeHtml(post.id)}">Sửa bài</button>` : ''}
                 ${canDelete ? `<button type="button" class="post-card__delete" data-post-delete="${escapeHtml(post.id)}">Xoá bài</button>` : ''}
             </div>
 
@@ -640,6 +835,18 @@ document.addEventListener('click', (event) => {
         rerenderFeedView(postId);
         // Trang Profile cũng hiển thị bài viết nên phải vẽ lại cho khớp
         if (typeof renderProfilePosts === 'function') renderProfilePosts();
+        return;
+    }
+
+    const editBtn = event.target.closest('[data-post-edit]');
+    if (editBtn) {
+        // Tái sử dụng đúng form đăng bài: chỉ đổi sang chế độ sửa và điền sẵn dữ liệu cũ.
+        const editBox = document.getElementById('feed-form') || document.getElementById('post-edit-form');
+
+        if (!openPostEditForm(editBtn.dataset.postEdit, editBox)) {
+            alert('Bạn chỉ có thể sửa bài viết của chính mình.');
+        }
+
         return;
     }
 

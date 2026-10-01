@@ -43,16 +43,27 @@ function classListOf(node) {
 function parseHtmlInto(host, html) {
     host.children = [];
     const stack = [host];
+    const source = String(html);
     const re = /<(\/?)([a-zA-Z][\w-]*)((?:\s+[\w:-]+(?:="[^"]*")?)*)\s*(\/?)>/g;
 
     let match;
-    while ((match = re.exec(String(html))) !== null) {
+    while ((match = re.exec(source)) !== null) {
         const [, closing, rawTag, rawAttrs, selfClosing] = match;
         const tag = rawTag.toLowerCase();
 
         if (closing) {
             for (let i = stack.length - 1; i > 0; i--) {
-                if (stack[i].tag === tag) { stack.length = i; break; }
+                if (stack[i].tag === tag) {
+                    // <textarea>Nội dung</textarea> lấy value từ text bên trong,
+                    // đúng như trình duyệt. Không có thì form edit sẽ mất sẵn nội dung.
+                    if (tag === 'textarea') {
+                        const inner = source.slice(stack[i].lastIndex, match.index);
+                        stack[i].value = decodeEntities(inner);
+                        stack[i].textContent = stack[i].value;
+                    }
+                    stack.length = i;
+                    break;
+                }
             }
             continue;
         }
@@ -60,9 +71,20 @@ function parseHtmlInto(host, html) {
         const node = makeNode(tag, parseAttrs(rawAttrs), match[0]);
         node.parent = stack[stack.length - 1];
         node.parent.children.push(node);
+        node.lastIndex = re.lastIndex;
 
         if (!selfClosing && !VOID_TAGS.has(tag)) stack.push(node);
     }
+}
+
+/** Giải mã các entity HTML cơ bản để value của textarea/input khớp với trình duyệt. */
+function decodeEntities(text) {
+    return String(text)
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&amp;/g, '&');
 }
 
 /** Tách selector thành các nhóm, mỗi nhóm là chuỗi phần tử con: 'a b, c' -> [['a','b'],['c']]. */
@@ -172,6 +194,21 @@ function makeNode(tag, attrs = {}, rawHtml = '') {
         },
         querySelector(selector) {
             return this.querySelectorAll(selector)[0] || null;
+        },
+        /**
+         * Chèn HTML vào trong phần tử. Mới hỗ trợ 'beforeend' và 'afterbegin'
+         * (đúng hai vị trí mà test cần), vì innerHTML ở đây lưu dạng chuỗi.
+         */
+        insertAdjacentHTML(position, html) {
+            const text = String(html);
+
+            if (position === 'beforeend') htmlText += text;
+            else if (position === 'afterbegin') htmlText = text + htmlText;
+            else throw new Error('mini-dom: insertAdjacentHTML chỉ hỗ trợ beforeend/afterbegin, nhận "' + position + '"');
+
+            parseHtmlInto(node, htmlText);
+
+            return null;
         },
     };
 
@@ -289,7 +326,28 @@ function loadPage(options) {
     const local = new Map(storage);
 
     // auth.js lưu session dạng chuỗi thô (không JSON) trong aov_current_user.
-    if (login) local.set('aov_current_user', String(login));
+    // Trong thực tế session luôn đi kèm tài khoản có thật trong aov_users
+    // (registerUser/loginUser đảm bảo điều đó), nên ở đây cũng vậy để các trang
+    // kiểm tra findUser() chạy đúng như trình duyệt.
+    if (login) {
+        local.set('aov_current_user', String(login));
+
+        const usersFile = path.join(ROOT, 'src', 'data', 'users.json');
+        const users = local.has('aov_users')
+            ? JSON.parse(local.get('aov_users'))
+            : (fs.existsSync(usersFile) ? JSON.parse(fs.readFileSync(usersFile, 'utf8')) : []);
+
+        if (!users.some((user) => user.username === String(login))) {
+            users.push({
+                username: String(login),
+                password: 'test123',
+                displayName: String(login),
+                joinedAt: '2025-01-01T00:00:00.000Z',
+            });
+        }
+
+        local.set('aov_users', JSON.stringify(users));
+    }
 
     const document = {
         body: makeNode('body', { 'data-page': 'page' }),

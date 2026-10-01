@@ -43,6 +43,64 @@
     text-align: center;
 }
 
+/* ---------- Trạng thái sửa bài viết ---------- */
+.feed-form.is-editing {
+    border: 1px solid var(--color-primary);
+    background: var(--color-bg-elevated);
+}
+
+.feed-form__hint {
+    margin: 0 0 var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    background: var(--color-bg);
+    border-left: 3px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+}
+
+.feed-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.post-edit-form:empty {
+    display: none;
+}
+
+.post-edit-form:not(:empty) {
+    margin-top: var(--space-5);
+}
+
+.post-card__owner-actions {
+    display: flex;
+    gap: var(--space-2);
+    margin-left: auto;
+}
+
+.post-card__edit {
+    padding: var(--space-1) var(--space-3);
+    font-size: 0.85rem;
+    color: var(--color-primary);
+    background: transparent;
+    border: 1px solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.post-card__edit:hover {
+    color: var(--color-surface);
+    background: var(--color-primary);
+}
+
+.post-card__updated,
+.post-detail__updated {
+    margin-left: var(--space-2);
+    font-style: italic;
+    color: var(--color-text-muted);
+}
+
 /* ---------- Thẻ bài viết ---------- */
 .post-card {
     padding: var(--space-5);
