@@ -80,6 +80,29 @@ function isLoggedIn() {
     return Boolean(getCurrentUser());
 }
 
+/**
+ * Tài khoản đang đăng nhập có quyền quản trị (admin) không.
+ *
+ * Quy ước: tài khoản trong aov_users có thêm trường role === 'admin' thì được
+ * coi là admin. Tài khoản không có trường role (đa số tài khoản đăng ký bình thường)
+ * thì không phải admin.
+ *
+ * Lưu ý: role nằm trong aov_users nên hàm này phụ thuộc danh sách tài khoản đã nạp.
+ * Lần đầu mở web, aov_users được nạp từ data/users.json bởi usersReady; trước khi
+ * nạp xong thì findUser() trả undefined và hàm trả false (fail-closed) — không
+ * bao giờ cho quyền khi chưa xác minh được tài khoản.
+ *
+ * @returns {boolean}
+ */
+function isAdmin() {
+    const username = getCurrentUser();
+    if (!username) return false;
+
+    const user = findUser(username);
+
+    return Boolean(user) && user.role === 'admin';
+}
+
 /* ---------- Task 34 - Đăng xuất ---------- */
 
 /**
