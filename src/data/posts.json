@@ -1,26 +1,92 @@
 [
     {
-        "id": 9001,
-        "author": "demo",
-        "title": "Cách lên đồ Tel'Annas mùa này",
-        "content": "Mình hay lên Cung Xuyên Phá trước khi đối phương có tướng đỡ đòn lên giáp sớm. Sau đó mới tới các trang bị tốc đánh.",
-        "heroId": 1,
-        "createdAt": "2025-03-01T10:15:00.000Z"
+        "id":  9001,
+        "author":  "demo",
+        "title":  "Cách lên đồ Tel\u0027Annas mùa này",
+        "content":  "Mình hay lên Cung Xuyên Phá trước khi đối phương có tướng đỡ đòn lên giáp sớm. Sau đó mới tới các trang bị tốc đánh.",
+        "heroId":  1,
+        "category":  "Mẹo chơi",
+        "createdAt":  "2025-03-01T10:15:00.000Z"
     },
     {
-        "id": 9002,
-        "author": "aovfan",
-        "title": "Nakroth đi rừng có còn mạnh không?",
-        "content": "Theo mình Nakroth vẫn ổn nếu biết canh thời điểm dùng tuyệt chiêu để mở giao tranh. Mọi người thấy sao?",
-        "heroId": 4,
-        "createdAt": "2025-03-04T14:40:00.000Z"
+        "id":  9002,
+        "author":  "aovfan",
+        "title":  "Nakroth đi rừng có còn mạnh không?",
+        "content":  "Theo mình Nakroth vẫn ổn nếu biết canh thời điểm dùng tuyệt chiêu để mở giao tranh. Mọi người thấy sao?",
+        "heroId":  4,
+        "category":  "Thảo luận",
+        "createdAt":  "2025-03-04T14:40:00.000Z"
     },
     {
-        "id": 9003,
-        "author": "demo",
-        "title": "Góp ý trang bị cho tướng đỡ đòn",
-        "content": "Giáp Gai rất mạnh khi đối phương có xạ thủ tốc đánh. Nếu bên kia thiên về phép thì đổi sang Áo Choàng Bóng Tối.",
-        "heroId": 10,
-        "createdAt": "2025-03-07T19:05:00.000Z"
+        "id":  9003,
+        "author":  "demo",
+        "title":  "Góp ý trang bị cho tướng đỡ đòn",
+        "content":  "Giáp Gai rất mạnh khi đối phương có xạ thủ tốc đánh. Nếu bên kia thiên về phép thì đổi sang Áo Choàng Bóng Tối.",
+        "heroId":  10,
+        "category":  "Build trang bị",
+        "createdAt":  "2025-03-07T19:05:00.000Z"
+    },
+    {
+        "id":  9004,
+        "author":  "aovfan",
+        "title":  "Mẹo canh rừng với tướng điều hướng",
+        "content":  "Tướng điều hướng thì cứ út mình đẩy tạm rừng trước, rồi kéo đối phương vào bụi rồi mới bật Khiên Pháp. Nhớ canh nguồn hồi máu vì hồi xong mới có thể đánh tiếp.",
+        "heroId":  5,
+        "category":  "Mẹo chơi",
+        "createdAt":  "2025-03-10T09:20:00.000Z"
+    },
+    {
+        "id":  9005,
+        "author":  "demo",
+        "title":  "Sử dụng Khiên Pháp có tốn năng lượng không?",
+        "content":  "Ai đó bảo Khiên Pháp hồi năng lượng theo thời gian chờ nhưng mình thấy không rõ ràng. Bên nhà cứ giữ một chút cho chắc có hay không?",
+        "heroId":  11,
+        "category":  "Hỏi đáp",
+        "createdAt":  "2025-03-13T20:05:00.000Z"
+    },
+    {
+        "id":  9006,
+        "author":  "aovfan",
+        "title":  "Build xạ thủ cho Valhein giai đoạn đầu",
+        "content":  "Mình lên Kiếm Fafnir và Giày Chiến Thắng là đủ sát thương rồi. Sang giai đoạn sau mới chuyển sang Trường Pha Lũ, đừng vội gộp đồ mà hết tiền.",
+        "heroId":  15,
+        "category":  "Build trang bị",
+        "createdAt":  "2025-03-16T11:30:00.000Z"
+    },
+    {
+        "id":  9007,
+        "author":  "demo",
+        "title":  "Nên chọn Krixi hay Liliana ở giữa trận?",
+        "content":  "Hai bạn cùng thuộc loại pháp sư nhưng mình thấy Krixi đẩy được cả đội còn Liliana thì an toàn hơn ở bậc xếp. Mọi người chọn ai?",
+        "heroId":  7,
+        "category":  "Thảo luận",
+        "createdAt":  "2025-03-19T15:45:00.000Z"
+    },
+    {
+        "id":  9008,
+        "author":  "aovfan",
+        "title":  "Kỹ năng né đòn của Thane dùng thế nào?",
+        "content":  "Thane có kỹ năng né khá hay, bạn cứ nhấn đúng thời điểm để tránh đòn tập trung. Quan trọng nhất là không né sớm quá mà bỏ mất thời cơ phản công.",
+        "heroId":  12,
+        "category":  "Mẹo chơi",
+        "createdAt":  "2025-03-22T08:00:00.000Z"
+    },
+    {
+        "id":  9009,
+        "author":  "demo",
+        "title":  "Maloch nên lên đồ chống lại phép không?",
+        "content":  "Đối phương toàn pháp sư thì mình thường ưu tiên Áo Choàng Bóng Tối và Nhẫn Phù Phép để kéo dài thời gian sống. Sau đó mới bổ sung giáp máu.",
+        "heroId":  30,
+        "category":  "Build trang bị",
+        "createdAt":  "2025-03-25T13:15:00.000Z"
+    },
+    {
+        "id":  9010,
+        "author":  "aovfan",
+        "title":  "Đi rừng 3 đường có cần chỉ huy không?",
+        "content":  "Trong map 5v5, việc chia kèo gank rất quan trọng. Mình nghĩ cần có người gọi gank rõ ràng để không bị chồng thời gian, ai đồng ý không?",
+        "heroId":  18,
+        "category":  "Thảo luận",
+        "createdAt":  "2025-03-28T17:50:00.000Z"
     }
 ]
