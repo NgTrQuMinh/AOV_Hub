@@ -43,16 +43,27 @@ function classListOf(node) {
 function parseHtmlInto(host, html) {
     host.children = [];
     const stack = [host];
+    const source = String(html);
     const re = /<(\/?)([a-zA-Z][\w-]*)((?:\s+[\w:-]+(?:="[^"]*")?)*)\s*(\/?)>/g;
 
     let match;
-    while ((match = re.exec(String(html))) !== null) {
+    while ((match = re.exec(source)) !== null) {
         const [, closing, rawTag, rawAttrs, selfClosing] = match;
         const tag = rawTag.toLowerCase();
 
         if (closing) {
             for (let i = stack.length - 1; i > 0; i--) {
-                if (stack[i].tag === tag) { stack.length = i; break; }
+                if (stack[i].tag === tag) {
+                    // <textarea>Nội dung</textarea> lấy value từ text bên trong,
+                    // đúng như trình duyệt. Không có thì form edit sẽ mất sẵn nội dung.
+                    if (tag === 'textarea') {
+                        const inner = source.slice(stack[i].lastIndex, match.index);
+                        stack[i].value = decodeEntities(inner);
+                        stack[i].textContent = stack[i].value;
+                    }
+                    stack.length = i;
+                    break;
+                }
             }
             continue;
         }
@@ -60,9 +71,20 @@ function parseHtmlInto(host, html) {
         const node = makeNode(tag, parseAttrs(rawAttrs), match[0]);
         node.parent = stack[stack.length - 1];
         node.parent.children.push(node);
+        node.lastIndex = re.lastIndex;
 
         if (!selfClosing && !VOID_TAGS.has(tag)) stack.push(node);
     }
+}
+
+/** Giải mã các entity HTML cơ bản để value của textarea/input khớp với trình duyệt. */
+function decodeEntities(text) {
+    return String(text)
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&amp;/g, '&');
 }
 
 /** Tách selector thành các nhóm, mỗi nhóm là chuỗi phần tử con: 'a b, c' -> [['a','b'],['c']]. */
