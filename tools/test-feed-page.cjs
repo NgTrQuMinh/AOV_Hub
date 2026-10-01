@@ -193,13 +193,14 @@ async function createPost(page, title, content, heroId = '') {
     check('không có lỗi JS khi reload', reloaded.errors.length === 0, reloaded.errors.join(' | '));
 
     // posts.json thêm bài mới giữa hai lần mở trang -> phải merge thêm, không nhân bản bài cũ
+    // (id cố ý nằm ngoài dải id đang có trong posts.json để mô phỏng "file thêm bài mới")
     const extraPost = {
-        id: 9004,
+        id: 9011,
         author: 'aovfan',
         title: 'Bài mới thêm vào posts.json',
         content: 'Bài này xuất hiện sau khi cập nhật data/posts.json.',
         heroId: 2,
-        createdAt: '2025-03-10T08:00:00.000Z',
+        createdAt: '2025-04-01T08:00:00.000Z',
     };
     const merged = await reloadFeed(reloaded, { data: { 'posts.json': POSTS_JSON.concat(extraPost) } });
     const mergedPosts = readPosts(merged.el('feed-list'));
