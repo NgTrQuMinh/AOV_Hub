@@ -3,12 +3,21 @@
         "username": "demo",
         "password": "123456",
         "displayName": "Người dùng Demo",
+        "role": "user",
         "joinedAt": "2025-01-10T08:00:00.000Z"
     },
     {
         "username": "aovfan",
         "password": "aov123",
         "displayName": "Fan Liên Quân",
+        "role": "user",
         "joinedAt": "2025-02-02T09:30:00.000Z"
+    },
+    {
+        "username": "admin",
+        "password": "admin1",
+        "displayName": "Quản trị viên",
+        "role": "admin",
+        "joinedAt": "2025-01-05T07:00:00.000Z"
     }
 ]

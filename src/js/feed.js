@@ -35,6 +35,14 @@
  *   - chuyên mục và cách sắp xếp được ghi lên URL (?category=...&sort=...) nên F5
  *     không mất bộ lọc; đọc lại bằng getQueryParam()
  *   - bài đăng trước khi có trường category thì hiển thị và lọc như "Khác"
+ *
+ * Ẩn bài viết (trang Quản trị src/pages/admin.html):
+ *   - bài bị ẩn có thêm trường hidden: true trong aov_posts (xem setPostHidden)
+ *   - mọi nơi hiển thị bài cho người đọc (Feed, trang chi tiết, Profile của người
+ *     khác) đều lọc qua isPostVisibleForViewer() nên bài ẩn biến mất khỏi giao diện
+ *     mà dữ liệu vẫn còn, bấm "Hiện" là bài hiện lại nguyên trạng
+ *   - tác giả vẫn thấy bài của mình (kèm nhãn "Đã bị ẩn") để còn biết mình đã đăng gì
+ *   - admin thao tác ở trang quản trị, không cần xem bài ẩn trong Feed
  */
 
 const POSTS_KEY = 'aov_posts';
@@ -312,7 +320,7 @@ function createPost(title, content, heroId, category) {
 function canEditPost(post) {
     if (!post || !isLoggedIn()) return false;
 
-    return String(post.author || '').trim() === String(getCurrentUser() || '').trim();
+    return isPostAuthor(post);
 }
 
 /**
@@ -428,11 +436,97 @@ function deletePost(postId) {
     return true;
 }
 
+/**
+ * Người dùng hiện tại có phải tác giả của bài viết này không.
+ * Tách riêng khỏi canEditPost() vì cần dùng cả khi bài chưa tới bước sửa:
+ * tác giả vẫn xem được bài của chính mình kể cả khi bài đã bị admin ẩn.
+ *
+ * @param {object} post
+ * @returns {boolean}
+ */
+function isPostAuthor(post) {
+    const username = getCurrentUser();
+    if (!post || !username) return false;
+
+    return String(post.author || '').trim() === String(username).trim();
+}
+
+/**
+ * Bài viết đã bị quản trị viên ẩn hay chưa (trường hidden: true trong aov_posts).
+ * Bài đăng từ trước khi có tính năng ẩn thì không có trường này -> coi như đang hiện.
+ *
+ * @param {object} post
+ * @returns {boolean}
+ */
+function isPostHidden(post) {
+    return Boolean(post && post.hidden);
+}
+
+/**
+ * Bài viết này có hiện với người đang xem không.
+ *
+ * Quy tắc: bài đang hiện thì ai cũng thấy; bài đã ẩn thì chỉ tác giả thấy
+ * (kèm nhãn "Đã bị ẩn"), mọi người khác kể cả admin đều không thấy trên
+ * Feed / trang chi tiết / Profile — bảng ở trang Quản trị mới là nơi duy nhất
+ * admin nhìn thấy bài ẩn.
+ *
+ * Dùng hàm này ở MỌI nơi vẽ danh sách bài cho người đọc, không tự viết lại điều kiện,
+ * để không sót chỗ nào bài ẩn vẫn lọt ra giao diện.
+ *
+ * @param {object} post
+ * @returns {boolean}
+ */
+function isPostVisibleForViewer(post) {
+    if (!isPostHidden(post)) return true;
+
+    return isPostAuthor(post);
+}
+
+/**
+ * Ẩn / hiện một bài viết: bật hoặc tắt trường hidden của bài đó trong aov_posts.
+ *
+ * Chỉ admin mới gọi được (kiểm tra isAdmin(), giống cách canDeletePost() chặn quyền xoá),
+ * nên giao diện không cần tự tin rằng nút bấm là của admin — tầng dữ liệu vẫn chặn lại.
+ * Không xoá bài, không đụng bình luận/lượt thích: ẩn xong bấm "Hiện" là bài trở lại nguyên trạng.
+ *
+ * @param {number|string} postId
+ * @param {boolean} hidden true = ẩn, false = hiện lại
+ * @returns {boolean} true nếu đã cập nhật aov_posts.
+ */
+function setPostHidden(postId, hidden) {
+    const id = normalizeId(postId);
+    if (!id) return false;
+
+    // Trang nào không nạp auth.js (hoặc không đăng nhập) thì không có quyền admin.
+    if (!isLoggedIn() || typeof isAdmin !== 'function' || !isAdmin()) return false;
+
+    const posts = getPosts();
+    const index = posts.findIndex((post) => normalizeId(post.id) === id);
+    if (index === -1) return false;
+
+    const updated = Object.assign({}, posts[index]);
+
+    if (hidden) {
+        updated.hidden = true;
+    } else {
+        // Hiện lại thì xoá hẳn trường hidden cho khớp với bài chưa từng bị ẩn.
+        delete updated.hidden;
+    }
+
+    posts[index] = updated;
+
+    return setPosts(posts);
+}
+
 function getPostsByUser(username) {
     const name = String(username || '').trim();
     if (!name) return [];
 
-    return getPosts().filter((post) => String(post.author || '').trim() === name);
+    // Lọc cả bài ẩn: tác giả xem trang Profile của chính mình thì vẫn thấy bài của mình
+    // (kèm nhãn "Đã bị ẩn"), còn Profile của người khác thì không lộ bài ẩn của họ.
+    return getPosts().filter((post) => (
+        String(post.author || '').trim() === name && isPostVisibleForViewer(post)
+    ));
 }
 
 /* ---------- Thích ---------- */
@@ -797,6 +891,9 @@ function syncFeedFilterUrl(state) {
 function getVisiblePosts(state) {
     const keyword = String(state.keyword || '').trim();
     const list = getPosts().filter((post) => {
+        // Bài đã bị ẩn thì không hiện trong Feed (trừ bài của chính tác giả đang xem).
+        if (!isPostVisibleForViewer(post)) return false;
+
         const matchesCategory = state.category === POST_CATEGORY_ALL || getPostCategory(post) === state.category;
         const matchesKeyword = !keyword || matchKeyword(post.title, keyword);
 
@@ -935,6 +1032,11 @@ function renderPostCard(post) {
     const canDelete = canDeletePost(post);
     const canEdit = canEditPost(post);
 
+    // Bài bị admin ẩn chỉ hiện với chính tác giả, kèm nhãn để tác giả biết bài đang bị ẩn.
+    const hiddenBadge = isPostHidden(post)
+        ? '<span class="badge post-card__hidden">Đã bị ẩn</span>'
+        : '';
+
     const commentsHtml = comments.map((comment) => `
         <li class="comment">
             <strong>${escapeHtml(comment.author)}</strong>
@@ -958,6 +1060,7 @@ function renderPostCard(post) {
                         ${hero ? ` · <a href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">${escapeHtml(hero.name)}</a>` : ''}
                         · <span class="post-card__category">${escapeHtml(getPostCategory(post))}</span>
                     </span>
+                    ${hiddenBadge}
                 </div>
                 <div class="post-card__owner-actions">
                     ${canEdit ? `<button type="button" class="post-card__edit" data-post-edit="${escapeHtml(post.id)}">Sửa</button>` : ''}
@@ -1045,6 +1148,15 @@ function renderPostDetailView() {
         return;
     }
 
+    // Bài đã bị quản trị viên ẩn: mọi người khác không mở được, tác giả vẫn xem được
+    // (để kiểm tra bài của mình) và sẽ thấy nhãn "Đã bị ẩn" bên dưới.
+    if (!isPostVisibleForViewer(post)) {
+        detailContainer.innerHTML = renderPostDetailPlaceholder(
+            'Bài viết này đã bị ẩn bởi quản trị viên.',
+        );
+        return;
+    }
+
     const hero = feedHeroes.find((record) => record.id === post.heroId);
     const likeUsers = getLikeUsers(post.id);
     const liked = isLikedByCurrentUser(post.id);
@@ -1074,6 +1186,7 @@ function renderPostDetailView() {
                     </span>
                     ${hero ? `<a href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">${escapeHtml(hero.name)}</a>` : ''}
                     <span class="post-card__category">${escapeHtml(getPostCategory(post))}</span>
+                    ${isPostHidden(post) ? '<span class="badge post-detail__hidden">Đã bị ẩn</span>' : ''}
                 </p>
             </header>
 

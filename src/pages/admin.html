@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AOV HUB - Quản trị bài viết</title>
+
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/feed.css">
+</head>
+<body data-page="admin">
+
+    <!--
+        Guard quản trị: nạp config.js + auth.js trước mọi thứ và gọi requireAdmin()
+        ngay trong thẻ body để chặn sớm, trước khi admin.js kịp vẽ bảng bài viết.
+        requireAdmin() là hàm async vì phải chờ usersReady nạp aov_users từ
+        data/users.json rồi mới biết tài khoản có role 'admin' hay không.
+    -->
+    <script src="/src/js/config.js"></script>
+    <script src="/src/js/auth.js"></script>
+    <script>requireAdmin();</script>
+
+    <header id="site-header"></header>
+
+    <main class="container section">
+        <h1>Quản trị bài viết</h1>
+        <p>
+            Dành cho quản trị viên: theo dõi toàn bộ bài viết của cộng đồng,
+            ẩn bài vi phạm (bài bị ẩn sẽ không hiện trên Cộng đồng, trang chi tiết
+            và trang cá nhân của người khác) hoặc xoá hẳn bài viết.
+        </p>
+
+        <!-- Ô tìm theo tiêu đề / tác giả: do admin.js vẽ và gắn sự kiện gõ -->
+        <div id="admin-toolbar" class="feed-filter"></div>
+
+        <!-- Số bài đang hiện / tổng số bài trong hệ thống -->
+        <p id="admin-count" class="feed-count" aria-live="polite"></p>
+
+        <!-- Bảng bài viết: do admin.js vẽ từ aov_posts (feed.js) -->
+        <div id="admin-list" class="card"></div>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="/src/js/loadData.js"></script>
+    <script src="/src/js/components.js"></script>
+    <!-- search.js: matchKeyword() tìm theo tiêu đề/tác giả, debounce() khi gõ -->
+    <script src="/src/js/search.js"></script>
+    <script src="/src/js/layout.js"></script>
+    <script src="/src/js/storage.js"></script>
+    <!-- feed.js: lớp dữ liệu bài viết (getPosts/setPosts/setPostHidden/deletePost...) -->
+    <script src="/src/js/feed.js"></script>
+    <script src="/src/js/admin.js"></script>
+</body>
+</html>
