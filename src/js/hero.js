@@ -28,21 +28,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-const HERO_PAGE_SIZE = 12;
-
 /**
- * Trang Danh sách tướng (heroes.html)
+ * Trang Danh sách tướng (heroes.html) - render toàn bộ tướng trong heroes.json
  */
 function initHeroListPage(heroes) {
     const filterBarEl = document.getElementById("hero-filter-bar");
     const gridContainer = document.getElementById("hero-list");
-    const paginationEl = document.getElementById("hero-pagination");
 
     if (!gridContainer) return;
 
     // Từ khoá có thể đến từ ô tìm kiếm trên header: heroes.html?keyword=valhein
-    const state = { role: "all", difficulty: "all", keyword: getQueryParam("keyword"), page: 1 };
-
+    const state = { role: "all", difficulty: "all", keyword: getQueryParam("keyword") };
 
     if (filterBarEl) {
         const roles = [...new Set(heroes.flatMap((h) => h.role || []))];
@@ -93,42 +89,18 @@ function initHeroListPage(heroes) {
         if (typeof refreshFavoriteButtons === "function") refreshFavoriteButtons();
     };
 
-    const renderPagination = (total) => {
-        if (!paginationEl) return;
-        const totalPages = Math.max(1, Math.ceil(total / HERO_PAGE_SIZE));
-        state.page = Math.min(state.page, totalPages);
-
-        paginationEl.innerHTML = totalPages > 1
-            ? Array.from({ length: totalPages }, (_, i) => {
-                const page = i + 1;
-                return `<button type="button" class="pagination__item${page === state.page ? " is-active" : ""}" data-page="${page}" aria-label="Trang ${page}">${page}</button>`;
-            }).join("")
-            : "";
-    };
-
     const render = () => {
-        const list = getFilteredHeroes();
-        renderPagination(list.length);
-        renderGrid(list.slice((state.page - 1) * HERO_PAGE_SIZE, state.page * HERO_PAGE_SIZE));
+        renderGrid(getFilteredHeroes());
     };
 
     if (searchInput) {
-        searchInput.addEventListener("input", () => { state.keyword = searchInput.value; state.page = 1; render(); });
+        searchInput.addEventListener("input", () => { state.keyword = searchInput.value; render(); });
     }
     if (roleFilter) {
-        roleFilter.addEventListener("change", () => { state.role = roleFilter.value; state.page = 1; render(); });
+        roleFilter.addEventListener("change", () => { state.role = roleFilter.value; render(); });
     }
     if (difficultyFilter) {
-        difficultyFilter.addEventListener("change", () => { state.difficulty = difficultyFilter.value; state.page = 1; render(); });
-    }
-    if (paginationEl) {
-        paginationEl.addEventListener("click", (event) => {
-            const btn = event.target.closest("[data-page]");
-            if (!btn) return;
-            state.page = Number(btn.dataset.page);
-            render();
-            gridContainer.scrollIntoView({ behavior: "smooth", block: "start" });
-        });
+        difficultyFilter.addEventListener("change", () => { state.difficulty = difficultyFilter.value; render(); });
     }
 
     render();
