@@ -49,7 +49,7 @@ const ITEM_PAGE_SIZE = 12;
  * luôn được lấy từ dữ liệu items.json (xem getItemTypes()), nên nếu items.json
  * thêm/bớt loại thì bộ lọc tự đổi theo, không bị cứng.
  */
-const ITEM_TYPE_ORDER = ['Công', 'Phép', 'Giáp', 'Kháng Phép', 'Giày', 'Đặc Biệt'];
+const ITEM_TYPE_ORDER = ['Công', 'Phép', 'Thủ', 'Tốc chạy', 'Phụ trợ', 'Rừng'];
 
 /** Nhãn tiếng Việt cho key trong item.stats (xem data/items.json). */
 const ITEM_STAT_LABEL = {

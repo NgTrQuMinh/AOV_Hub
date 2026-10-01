@@ -22,6 +22,17 @@ const { ROOT, loadPage: loadPageShared, unescapeHtml, fire } = require('./mini-d
 const PAGE = 'src/pages/items.html';
 const DETAIL_PAGE = 'src/pages/item-detail.html';
 const ITEMS_JSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/items.json'), 'utf8'));
+const ITEM_PAGE_SIZE = 12; // khớp ITEM_PAGE_SIZE trong src/js/item.js
+
+/** Đọc hằng số ITEM_TYPE_ORDER từ chính item.js để không lặp lại danh sách loại ở đây. */
+function readItemTypeOrder() {
+    const source = fs.readFileSync(path.join(ROOT, 'src/js/item.js'), 'utf8');
+    const block = source.match(/const ITEM_TYPE_ORDER = \[([\s\S]*?)\]/);
+
+    return block ? [...block[1].matchAll(/'([^']+)'/g)].map((match) => match[1]) : [];
+}
+
+const ITEM_PAGE_TYPES = readItemTypeOrder();
 
 const WAIT_RENDER_MS = 320; // > debounce 200ms trong item.js
 
@@ -108,6 +119,54 @@ function countByType(items) {
     return counts;
 }
 
+/* ================= Kỳ vọng tính từ chính items.json =================
+ * Bộ test không hard-code tên/loại/số lượng của bộ trang bị, mọi kỳ vọng đều suy ra
+ * từ src/data/items.json nên đổi bộ dữ liệu thì test vẫn kiểm đúng hành vi.
+ */
+
+/** item nào trong items.json khớp từ khoá (không dấu, không phân biệt hoa thường). */
+function itemsMatching(keyword) {
+    const needle = stripAccents(keyword);
+
+    return ITEMS_JSON.filter((item) => stripAccents(`${item.name} ${item.alias || ''}`).includes(needle));
+}
+
+/** Từ khoá chỉ khớp đúng 1 item trong toàn bộ items.json — dùng làm dữ liệu vào cho các phép tìm kiếm. */
+function findUniqueKeyword(target) {
+    const candidates = [...stripAccents(target.name).split(/\s+/), ...stripAccents(target.alias || '').split('-')]
+        .filter((word) => word.length >= 3);
+
+    for (const word of candidates) {
+        const hits = itemsMatching(word);
+        if (hits.length === 1 && hits[0].id === target.id) return word;
+    }
+
+    return stripAccents(target.name).split(/\s+/).pop();
+}
+
+/** Escape regex để ghép chuỗi vào RegExp. */
+function escapeForRegex(text) {
+    return String(text).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/** Thứ tự loại mà item.js sẽ dựng ra từ dữ liệu (xem ITEM_TYPE_ORDER + getItemTypes). */
+function expectedChipTypes() {
+    const order = ITEM_PAGE_TYPES;
+    const found = [...new Set(ITEMS_JSON.map((item) => item.type).filter(Boolean))];
+
+    return ['all', ...order.filter((type) => found.includes(type)), ...found.filter((type) => !order.includes(type)).sort()];
+}
+
+/** Loại có nhiều item nhất — dùng làm ví dụ đại diện cho các phép lọc theo loại. */
+const BIGGEST_TYPE = Object.entries(countByType(ITEMS_JSON)).sort((a, b) => b[1] - a[1])[0][0];
+
+/** Loại có ít item nhất — dùng để thử search + filter không có kết quả. */
+const RAREST_TYPE = Object.entries(countByType(ITEMS_JSON)).sort((a, b) => a[1] - b[1])[0][0];
+const RAREST_ITEMS = ITEMS_JSON.filter((item) => item.type === RAREST_TYPE);
+
+/** Từ khoá chắc chắn không khớp item nào (dùng để kiểm tra trạng thái rỗng). */
+const KEYWORD_NO_MATCH = 'vunghiemkhongton';
+
 /* ================= Test runner ================= */
 
 let passed = 0;
@@ -182,12 +241,13 @@ async function clickPage(page, number) {
     check('không có lỗi JS khi khởi tạo', page.errors.length === 0, page.errors.join(' | '));
 
     const page1 = readCards(listEl);
-    check('trang 1 render đúng 12 card (phân trang)', page1.length === 12, `thực tế: ${page1.length}`);
+    check(`trang 1 render đúng ${ITEM_PAGE_SIZE} card (phân trang)`, page1.length === ITEM_PAGE_SIZE, `thực tế: ${page1.length}`);
     check('ô đếm kết quả hiển thị tổng số item', countEl.textContent === `${ITEMS_JSON.length} trang bị`, countEl.textContent);
 
-    // Gom tất cả card qua các trang để chứng minh render đủ 40 item
+    // Gom tất cả card qua các trang để chứng minh render đủ item
     const totalPages = (listEl.innerHTML, page.el('item-pagination').querySelectorAll('.pagination__item').length);
-    check('có phân trang 4 trang cho 40 item', totalPages === Math.ceil(ITEMS_JSON.length / 12), `thực tế: ${totalPages}`);
+    const expectedPages = Math.max(1, Math.ceil(ITEMS_JSON.length / ITEM_PAGE_SIZE));
+    check(`có phân trang ${expectedPages} trang cho ${ITEMS_JSON.length} item`, totalPages === expectedPages, `thực tế: ${totalPages}`);
 
     const allCards = [];
     for (let p = 1; p <= totalPages; p++) {
@@ -197,7 +257,7 @@ async function clickPage(page, number) {
     check('render đủ 40 card qua các trang', allCards.length === ITEMS_JSON.length, `thực tế: ${allCards.length}`);
 
     const ids = new Set(allCards.map((card) => card.detailId));
-    check('40 id item khác nhau, đúng với items.json', ids.size === ITEMS_JSON.length, `id khác nhau: ${ids.size}`);
+    check(`${ITEMS_JSON.length} id item khác nhau, đúng với items.json`, ids.size === ITEMS_JSON.length, `id khác nhau: ${ids.size}`);
     check(
         'tên card khớp với items.json',
         allCards.every((card) => ITEMS_JSON.some((item) => item.name === card.name)),
@@ -213,10 +273,11 @@ async function clickPage(page, number) {
     );
     check('mỗi card có ít nhất 1 chỉ số chính', allCards.every((card) => card.statsCount >= 1));
     check(
-        'chỉ số trên card lấy đúng từ items.json (ví dụ Kiếm Fafnir: +60/+30)',
+        `chỉ số trên card lấy đúng từ items.json (ví dụ ${ITEMS_JSON[0].name}: ${Math.min(3, Object.keys(ITEMS_JSON[0].stats).length)} chỉ số)`,
         (() => {
-            const card = allCards.find((c) => c.name === 'Kiếm Fafnir');
-            return card && card.statsCount === 2;
+            const card = allCards.find((c) => c.name === ITEMS_JSON[0].name);
+            const expectedStats = Math.min(3, Object.keys(ITEMS_JSON[0].stats).length);
+            return card && card.statsCount === expectedStats;
         })(),
     );
 
@@ -224,109 +285,146 @@ async function clickPage(page, number) {
     section('2. Bộ lọc theo loại');
     const chips = filterEl.querySelectorAll('.item-chip');
     const chipTypes = chips.map((chip) => chip.dataset.type);
+    const typeCounts = countByType(ITEMS_JSON);
+    const expectedTypes = expectedChipTypes();
+
     check(
-        'thanh filter có đủ 6 loại + "Tất cả"',
-        JSON.stringify(chipTypes) === JSON.stringify(['all', 'Công', 'Phép', 'Giáp', 'Kháng Phép', 'Giày', 'Đặc Biệt']),
+        `thanh filter có đủ ${expectedTypes.length - 1} loại lấy từ items.json + "Tất cả"`,
+        JSON.stringify(chipTypes) === JSON.stringify(expectedTypes),
         JSON.stringify(chipTypes),
     );
+    check('mọi loại có trong data đều có nút lọc tương ứng',
+        Object.keys(typeCounts).every((type) => chipTypes.includes(type)),
+        JSON.stringify(Object.keys(typeCounts)));
+    check('không còn loại của bộ dữ liệu cũ trong bộ lọc',
+        !chipTypes.some((type) => ['Giáp', 'Kháng Phép', 'Giày', 'Đặc Biệt'].includes(type)),
+        JSON.stringify(chipTypes));
     check('nút "Tất cả" mặc định được đánh dấu active', chips[0].classList.contains('is-active'));
     check(
         'chip hiển thị số lượng item tương ứng',
-        /Phép <span class="item-chip__count">10<\/span>/.test(filterEl.innerHTML),
+        expectedTypes.slice(1).every((type) => filterEl.innerHTML.includes(`${escapeForRegex(type)} <span class="item-chip__count">${typeCounts[type]}</span>`)),
+        filterEl.innerHTML.slice(0, 400),
     );
 
-    const typeCounts = countByType(ITEMS_JSON);
     for (const [type, expected] of Object.entries(typeCounts)) {
         await clickChip(page, type);
         const cards = readCards(listEl);
         check(`lọc "${type}" ra đúng ${expected} item`, cards.length === expected && cards.every((card) => card.type === type), `thực tế: ${cards.length}`);
     }
-    await clickChip(page, 'Công');
+    await clickChip(page, BIGGEST_TYPE);
     check(
-        'lọc "Công" (10 item) hiện đủ 10 card, không phân trang',
-        readCards(listEl).length === 10 && page.el('item-pagination').innerHTML === '',
+        `lọc "${BIGGEST_TYPE}" (${typeCounts[BIGGEST_TYPE]} item) hiện đủ ${typeCounts[BIGGEST_TYPE]} card, không phân trang`,
+        readCards(listEl).length === typeCounts[BIGGEST_TYPE] && page.el('item-pagination').innerHTML === '',
         readCards(listEl).length,
     );
 
     await clickChip(page, 'all');
-    check('bấm "Tất cả" trả lại đủ 40 item qua 4 trang', readCards(listEl).length === 12 && page.el('item-pagination').querySelectorAll('.pagination__item').length === 4);
+    check(
+        `bấm "Tất cả" trả lại đủ ${ITEMS_JSON.length} item qua ${expectedPages} trang`,
+        readCards(listEl).length === ITEM_PAGE_SIZE
+            && page.el('item-pagination').querySelectorAll('.pagination__item').length === expectedPages,
+    );
 
     /* ---------- 3. Tìm kiếm theo tên ---------- */
     section('3. Tìm kiếm theo tên');
-    await search(page, 'kiem');
+    // Từ khoá lấy từ chính items.json: luôn tồn tại và luôn chỉ khớp đúng 1 item.
+    const sampleItem = ITEMS_JSON[0];
+    const sampleKeyword = findUniqueKeyword(sampleItem);
+    const sampleHits = itemsMatching(sampleKeyword);
+
+    await search(page, sampleKeyword);
     let cards = readCards(listEl);
-    check('tìm "kiem" (không dấu) ra 4 trang bị', cards.length === 4, `thực tế: ${cards.length}: ${cards.map((c) => c.name).join(', ')}`);
-    check('kết quả "kiem" đều chứa "kiếm" khi bỏ dấu', cards.every((card) => stripAccents(card.name).includes('kiem')));
-    check('tìm "kiem" không lọc nhầm loại khác', cards.every((card) => card.type === 'Công'));
+    check(`tìm "${sampleKeyword}" (không dấu) ra ${sampleHits.length} trang bị`,
+        cards.length === sampleHits.length,
+        `thực tế: ${cards.length}: ${cards.map((c) => c.name).join(', ')}`);
+    check(`kết quả "${sampleKeyword}" đều là item khớp từ khoá`,
+        cards.every((card) => sampleHits.some((item) => item.name === card.name)),
+        cards.map((c) => c.name).join(', '));
 
-    await search(page, 'kiếm');
+    await search(page, sampleItem.name);
     const cardsWithMarks = readCards(listEl);
-    check('tìm "kiếm" (có dấu) cho kết quả giống "kiem"', cardsWithMarks.length === cards.length, `${cardsWithMarks.length} vs ${cards.length}`);
+    check(`tìm "${sampleItem.name}" (có dấu) cho kết quả giống "${sampleKeyword}"`,
+        cardsWithMarks.length === cards.length,
+        `${cardsWithMarks.length} vs ${cards.length}`);
 
-    await search(page, 'KIẾM');
-    check('tìm "KIẾM" ( HOA) cho kết quả giống "kiem"', readCards(listEl).length === cards.length);
+    await search(page, sampleItem.name.toUpperCase());
+    check(`tìm "${sampleItem.name.toUpperCase()}" (HOA) cho kết quả giống "${sampleKeyword}"`,
+        readCards(listEl).length === cards.length);
 
-    await search(page, 'GIAP');
-    const armorCards = readCards(listEl);
-    check('tìm "GIAP" (không dấu + hoa) ra 7 trang bị Giáp', armorCards.length === 7 && armorCards.every((card) => card.type === 'Giáp'), armorCards.map((c) => c.name).join(', '));
+    // Tìm theo tên của chính item đầu tiên -> phải ra đúng 1 card
+    check(`tìm "${sampleItem.name}" ra đúng 1 card đúng tên`,
+        cards.length === 1 && cards[0].name === sampleItem.name && cards[0].type === sampleItem.type,
+        JSON.stringify(cards));
 
-    await search(page, 'phep');
-    const magicCards = readCards(listEl);
-    check(
-        'tìm "phep" (không dấu) ra 3 item có chữ "Phép" trong tên',
-        magicCards.length === 3 && magicCards.every((card) => stripAccents(card.name).includes('phep')),
-        magicCards.map((c) => `${c.name} [${c.type}]`).join(', '),
-    );
+    // Tìm bằng từ trong tên của item thuộc loại ít item nhất -> không lẫn sang loại khác
+    const rarestKeyword = findUniqueKeyword(RAREST_ITEMS[RAREST_ITEMS.length - 1]);
+    const rarestHits = itemsMatching(rarestKeyword);
 
-    await search(page, 'giay');
-    check('tìm "giay" (không dấu) ra 4 trang bị Giày', readCards(listEl).every((card) => card.type === 'Giày') && readCards(listEl).length === 4);
+    await search(page, rarestKeyword);
+    const rarestCards = readCards(listEl);
+    check(`tìm "${rarestKeyword}" (không dấu) ra ${rarestHits.length} item thuộc loại "${RAREST_TYPE}"`,
+        rarestCards.length === rarestHits.length && rarestCards.every((card) => card.type === RAREST_TYPE),
+        rarestCards.map((c) => `${c.name} [${c.type}]`).join(', '));
 
     await search(page, '');
-    check('xóa từ khoá hiển thị lại 40 item', page.el('item-pagination').querySelectorAll('.pagination__item').length === 4);
+    check(`xóa từ khoá hiển thị lại ${ITEMS_JSON.length} item qua ${expectedPages} trang`,
+        page.el('item-pagination').querySelectorAll('.pagination__item').length === expectedPages);
 
     /* ---------- 4. Search + filter đồng thời ---------- */
     section('4. Search và filter hoạt động đồng thời');
-    await clickChip(page, 'Giày');
-    await search(page, 'giay');
+    await clickChip(page, RAREST_TYPE);
+    await search(page, rarestKeyword);
     cards = readCards(listEl);
-    check('search "giay" + filter "Giày" -> 4 item', cards.length === 4 && cards.every((card) => card.type === 'Giày'), `thực tế: ${cards.length}`);
+    check(`search "${rarestKeyword}" + filter "${RAREST_TYPE}" -> ${rarestHits.length} item`,
+        cards.length === rarestHits.length && cards.every((card) => card.type === RAREST_TYPE),
+        `thực tế: ${cards.length}`);
 
-    await search(page, 'giap');
+    await search(page, KEYWORD_NO_MATCH);
     const emptyCombo = listEl.innerHTML;
-    check('search "giap" + filter "Giày" -> không có kết quả', emptyCombo.includes('item-empty') && readCards(listEl).length === 0);
+    check(`search "${KEYWORD_NO_MATCH}" + filter "${RAREST_TYPE}" -> không có kết quả`,
+        emptyCombo.includes('item-empty') && readCards(listEl).length === 0);
     check(
         'thông báo rỗng nêu rõ cả từ khoá lẫn loại',
-        decodeEntities(emptyCombo).includes('Không tìm thấy trang bị nào khớp với từ khoá "giap" và loại "Giày".'),
+        decodeEntities(emptyCombo).includes(`Không tìm thấy trang bị nào khớp với từ khoá "${KEYWORD_NO_MATCH}" và loại "${RAREST_TYPE}".`),
         emptyCombo.slice(0, 300),
     );
 
-    await clickChip(page, 'Công');
-    await search(page, 'kiem');
+    await clickChip(page, BIGGEST_TYPE);
+    await search(page, sampleKeyword);
     cards = readCards(listEl);
-    check('search "kiem" + filter "Công" -> chỉ item thỏa cả 2 điều kiện', cards.length === 4 && cards.every((card) => card.type === 'Công' && stripAccents(card.name).includes('kiem')));
+    const bothMatch = cards.filter((card) => card.type === BIGGEST_TYPE);
+    check(`search "${sampleKeyword}" + filter "${BIGGEST_TYPE}" -> chỉ item thỏa cả 2 điều kiện`,
+        cards.length > 0 && cards.length === bothMatch.length,
+        `thực tế: ${cards.length}`);
 
-    await search(page, 'giay');
-    check('search "giay" + filter "Công" -> 0 kết quả (loại sai)', listEl.innerHTML.includes('item-empty'));
+    await search(page, rarestKeyword);
+    check(`search "${rarestKeyword}" + filter "${BIGGEST_TYPE}" -> 0 kết quả (loại sai)`,
+        rarestCards.every((card) => card.type !== BIGGEST_TYPE) && listEl.innerHTML.includes('item-empty'),
+        rarestCards.map((c) => c.type).join(', '));
 
-    // URL: items.html?keyword=kiem&type=Công
-    const fromUrl = await openListPage('?keyword=kiem&type=C%C3%B4ng');
+    // URL: items.html?keyword=<kw>&type=<type>
+    const fromUrl = await openListPage(`?keyword=${encodeURIComponent(sampleKeyword)}&type=${encodeURIComponent(BIGGEST_TYPE)}`);
     await fromUrl.settled();
     const urlCards = readCards(fromUrl.el('item-list'));
     check(
-        'URL ?keyword=kiem&type=Công -> 4 item Công chứa kiếm',
-        urlCards.length === 4 && urlCards.every((card) => card.type === 'Công' && stripAccents(card.name).includes('kiem')),
-        urlCards.map((c) => c.name).join(', '),
+        `URL ?keyword=${sampleKeyword}&type=${BIGGEST_TYPE} -> chỉ item thỏa cả từ khoá lẫn loại`,
+        urlCards.length > 0
+            && urlCards.length === bothMatch.length
+            && urlCards.every((card) => card.type === BIGGEST_TYPE && card.name === sampleItem.name),
+        urlCards.map((c) => `${c.name} [${c.type}]`).join(', '),
     );
-    check('ô tìm kiếm được điền sẵn từ URL', fromUrl.el('item-search').value === 'kiem');
-    check('nút lọc "Công" được đánh dấu active', fromUrl.el('item-filter-bar').querySelector('[data-type="Công"]').classList.contains('is-active'));
+    check('ô tìm kiếm được điền sẵn từ URL', fromUrl.el('item-search').value === sampleKeyword);
+    check(`nút lọc "${BIGGEST_TYPE}" được đánh dấu active`,
+        fromUrl.el('item-filter-bar').querySelector(`[data-type="${BIGGEST_TYPE}"]`).classList.contains('is-active'));
 
     /* ---------- 5. Trường hợp không có kết quả ---------- */
     section('5. Không có kết quả');
     await clickChip(page, 'all');
-    await search(page, 'vunghiemkhongton');
+    await search(page, KEYWORD_NO_MATCH);
     const emptyHtml = listEl.innerHTML;
     check('hiển thị khối thông báo không có kết quả', emptyHtml.includes('not-found') && emptyHtml.includes('item-empty'));
-    check('thông báo nhắc lại từ khoá đã tìm', decodeEntities(emptyHtml).includes('Không tìm thấy trang bị nào khớp với từ khoá "vunghiemkhongton".'));
+    check('thông báo nhắc lại từ khoá đã tìm',
+        decodeEntities(emptyHtml).includes(`Không tìm thấy trang bị nào khớp với từ khoá "${KEYWORD_NO_MATCH}".`));
     check('không còn card item nào', readCards(listEl).length === 0);
     check('ẩn thanh phân trang khi rỗng', fromUrl.el('item-pagination').innerHTML === '' && page.el('item-pagination').innerHTML === '');
 
@@ -334,33 +432,43 @@ async function clickPage(page, number) {
     check('có nút "Xóa tìm kiếm & bộ lọc"', Boolean(resetBtn));
     fire(resetBtn, 'click');
     await page.settled();
-    check('bấm nút xóa lọc -> hiển thị lại 12 card/trang', readCards(listEl).length === 12);
+    check(`bấm nút xóa lọc -> hiển thị lại ${ITEM_PAGE_SIZE} card/trang`, readCards(listEl).length === ITEM_PAGE_SIZE);
     check('bấm nút xóa lọc -> xóa luôn từ khoá trong ô nhập', page.el('item-search').value === '');
 
     // Không có kết quả do chỉ lọc loại không tồn tại trong dữ liệu
+    const FAKE_TYPE = 'Không Có Loại Này';
     const fakeChip = page.el('item-filter-bar').querySelectorAll('.item-chip')[0];
-    fakeChip.dataset.type = 'Không Có Loại Này';
+    fakeChip.dataset.type = FAKE_TYPE;
     fire(fakeChip, 'click');
     await page.settled();
     check(
         'lọc 1 loại không có trong dữ liệu -> thông báo rõ ràng',
-        decodeEntities(listEl.innerHTML).includes('Không tìm thấy trang bị nào khớp với loại "Không Có Loại Này".'),
+        decodeEntities(listEl.innerHTML).includes(`Không tìm thấy trang bị nào khớp với loại "${FAKE_TYPE}".`),
         listEl.innerHTML.slice(0, 260),
     );
 
     /* ---------- 6. Click item sang trang chi tiết ---------- */
     section('6. Click item sang trang chi tiết');
-    const detailPage = await openListPage('?keyword=fafnir');
+    const clickItem = ITEMS_JSON[0];
+    const detailPage = await openListPage(`?keyword=${encodeURIComponent(sampleKeyword)}`);
     await detailPage.settled();
     const card = readCards(detailPage.el('item-list'))[0];
-    const linkHref = (detailPage.el('item-list').innerHTML.match(/href="([^"]*item-detail\.html\?id=101)"/) || [])[1] || '';
-    check('card có link sang item-detail.html?id=101', linkHref.includes('src/pages/item-detail.html?id=101'), linkHref);
-    check('card hiển thị đúng tên/loại/giá của item 101', card.name === 'Kiếm Fafnir' && card.type === 'Công' && card.price === '2.040 Bạc', JSON.stringify(card));
+    const linkHref = (detailPage.el('item-list').innerHTML.match(new RegExp(`href="([^"]*item-detail\\.html\\?id=${clickItem.id})"`)) || [])[1] || '';
+    check(`card có link sang item-detail.html?id=${clickItem.id}`,
+        linkHref.includes(`src/pages/item-detail.html?id=${clickItem.id}`),
+        linkHref);
+    check(`card hiển thị đúng tên/loại/giá của item ${clickItem.id}`,
+        card.name === clickItem.name
+            && card.type === clickItem.type
+            && card.price === `${clickItem.price.toLocaleString('vi-VN')} Bạc`,
+        JSON.stringify(card));
 
     // Bấm card = đi theo href -> mở đúng trang chi tiết
     const clickedId = (linkHref.match(/id=(\d+)/) || [])[1];
     const clicked = await openDetailPage(`?id=${clickedId}`);
-    check('bấm card -> mở đúng trang chi tiết của item đó', clicked.detail.name === 'Kiếm Fafnir', clicked.detail.name);
+    check(`bấm card -> mở đúng trang chi tiết của item đó`,
+        clicked.detail.name === clickItem.name,
+        clicked.detail.name);
 
     /* ---------- 7. Trang chi tiết: item đầu / giữa / cuối ---------- */
     section('7. Trang chi tiết: item đầu tiên, ở giữa, cuối cùng');
@@ -458,8 +566,8 @@ async function clickPage(page, number) {
         decodeEntities(notFound.detail.html).slice(0, 220));
     check('id không tồn tại -> không render card item nào', (notFound.detail.html.match(/class="card item-card"/g) || []).length === 0);
 
-    const stringId = await openDetailPage('?id=605');
-    check('id dạng chuỗi vẫn tìm thấy item', stringId.detail.name === 'Đồng Hồ Cát');
+    const stringId = await openDetailPage(`?id=${lastItem.id}`);
+    check(`id dạng chuỗi (id=${lastItem.id}) vẫn tìm thấy item`, stringId.detail.name === lastItem.name, stringId.detail.name);
 
     const brokenJson = loadPage(DETAIL_PAGE, '?id=101', { failData: 'items.json' });
     brokenJson.run();

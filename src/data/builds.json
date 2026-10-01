@@ -11,28 +11,28 @@
         "heroId": 3,
         "name": "Build hồi máu bất tử",
         "items": [107, 501, 104, 105, 301, 302],
-        "description": "Sát thủ tận dụng hút máu từ Quỷ Kiếm Mãng Xà, kết hợp thêm giáp máu và giáp thiên thần để đánh lâu."
+        "description": "Sát thủ tận dụng hút máu từ Thương Xuyên Phá, kết hợp thêm Giáp Hộ Mệnh và Giáp Gaia để đánh lâu."
     },
     {
         "id": 3,
         "heroId": 5,
         "name": "Build phép xuyên giáp",
         "items": [502, 207, 201, 203, 401, 208],
-        "description": "Raz dồn công phép, xuyên kháng phép bằng Vương Miện Vô Cực và chí mạng phép bằng Trượng Hủy Diệt."
+        "description": "Raz dồn công phép, xuyên kháng phép bằng Trượng Bùng Nổ và chí mạng phép bằng Trượng Hỗn Mang."
     },
     {
         "id": 4,
         "heroId": 6,
         "name": "Build chí mạng phép hồi máu",
         "items": [502, 206, 202, 203, 404, 209],
-        "description": "Liliana tận dụng hồi máu theo sát thương phép, tăng tốc hồi chiêu và đảm bảo giáp phép với Trang Sức Áo Choàng Bóng Tối."
+        "description": "Liliana tận dụng hồi máu theo sát thương phép, tăng tốc hồi chiêu và đảm bảo giáp phép với Băng Nhẫn Skadi."
     },
     {
         "id": 5,
         "heroId": 8,
         "name": "Build đấu sĩ hồi máu",
         "items": [504, 107, 104, 109, 304, 603],
-        "description": "Florentino bù máu bằng Búa Đá Vô Cực, Ngọc Sinh Mệnh và Giáp Gai để trụ được trong các đấu đấu kéo dài."
+        "description": "Florentino bù máu bằng Thương Xuyên Phá, Phức Hợp Kiếm và Khiên Thất Truyền để trụ được trong các đấu đấu kéo dài."
     },
     {
         "id": 6,
@@ -66,8 +66,8 @@
         "id": 10,
         "heroId": 23,
         "name": "Build phản công giữ team",
-        "items": [503, 104, 304, 109, 302, 605],
-        "description": "Omen phản công giữ vùng, Giáp Gai giảm sát thương mới phản lại thêm và Đồng Hồ Cát là lá chắn cứu thế."
+        "items": [503, 104, 304, 109, 302, 307],
+        "description": "Omen phản công giữ vùng, Khiên Thất Truyền giảm sát thương mới phản lại thêm và Nham Thuẫn là lá chắn cứu thế."
     },
     {
         "id": 11,
@@ -81,13 +81,13 @@
         "heroId": 27,
         "name": "Build trợ thủ bảo vệ đồng minh",
         "items": [501, 207, 210, 402, 601, 604],
-        "description": "Aya ở tuyến sau nên tích trang bị hồi mana, kháng phép và Trượng Hồi Sinh để kéo cả team về chỗ an toàn."
+        "description": "Aya ở tuyến sau nên tích trang bị hồi mana, kháng phép và Gươm Hiền Triết để kéo cả team về chỗ an toàn."
     },
     {
         "id": 13,
         "heroId": 30,
         "name": "Build hồi sinh và kháng công",
         "items": [501, 103, 301, 302, 109, 604],
-        "description": "Maloch đánh trực diện giữa team, dựng giáp dày rồi thêm Trượng Hồi Sinh cho chắc chắn trong các trận kéo dài."
+        "description": "Maloch đánh trực diện giữa team, dựng giáp dày với Giáp Gaia rồi thêm Giáp Hộ Mệnh cho chắc chắn trong các trận kéo dài."
     }
 ]
