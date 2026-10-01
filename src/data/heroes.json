@@ -87,7 +87,7 @@
       { "name": "Hồ Quang Lực", "type": "Chiêu 2", "description": "Ở dạng người: Bắn ra đạn đạn phép làm choáng. Ở dạng hồ cáo: Nhảy vồ và ngưng tụ đạn hồ quang cực mạnh.", "cooldown": 9 },
       { "name": "Biến Hình Hồi Xuân", "type": "Chiêu 3", "description": "Chuyển đổi giữa dạng người và dạng hồ cáo, tăng thuộc tính và làm mới bộ kỹ năng.", "cooldown": 6 }
     ],
-    "recommendedBuild": [108, 109, 111]
+    "recommendedBuild": [108, 109, 110]
   },
   {
     "id": 7,
@@ -117,7 +117,7 @@
       { "name": "Thưởng Trà", "type": "Chiêu 2", "description": "Florentino tung 3 nhát kiếm liên tiếp gây sát thương chuẩn dựa trên % HP tối đa của kẻ địch.", "cooldown": 4 },
       { "name": "Tài Hoa", "type": "Chiêu 3", "description": "Florentino quyết đấu với một mục tiêu, được miễn khống chế từ các mục tiêu khác và tăng hút máu.", "cooldown": 35 }
     ],
-    "recommendedBuild": [112, 113, 114]
+    "recommendedBuild": [203, 204, 205]
   },
   {
     "id": 9,
@@ -132,7 +132,7 @@
       { "name": "Tàn Huyết Khống", "type": "Chiêu 2", "description": "Lữ Bố phóng ra thương khí làm chậm tốc chạy của kẻ địch và gây sát thương vật lý.", "cooldown": 6 },
       { "name": "Chiến Thần", "type": "Chiêu 3", "description": "Lữ Bố giải khống chế, tăng công vật lý, kháng khống chế và khả năng hồi phục cực mạnh trên mỗi đòn đánh.", "cooldown": 30 }
     ],
-    "recommendedBuild": [112, 113, 115]
+    "recommendedBuild": [203, 204, 206]
   },
   {
     "id": 10,
@@ -147,7 +147,7 @@
       { "name": "Phi Hổ Quyền", "type": "Chiêu 2", "description": "Zuka lộn vòng về phía trước, tạo lá chắn và cường hóa đòn đánh tiếp theo làm choáng kẻ địch.", "cooldown": 8 },
       { "name": "Trầm Trọng Lực", "type": "Chiêu 3", "description": "Zuka nhảy lên không trung rồi giáng xuống gây sát thương vật lý diện rộng và làm choáng kẻ địch.", "cooldown": 32 }
     ],
-    "recommendedBuild": [112, 105, 107]
+    "recommendedBuild": [203, 105, 107]
   },
   {
     "id": 11,
@@ -162,7 +162,7 @@
       { "name": "Gươm Thần", "type": "Chiêu 2", "description": "Thane dậm mạnh gươm xuống đất, hất văng kẻ địch xung quanh và làm chậm chúng.", "cooldown": 9 },
       { "name": "Ma Phong Trảm", "type": "Chiêu 3", "description": "Thane chém ra một nhát kiếm năng lượng gây sát thương chuẩn kèm % máu đã mất của mục tiêu và nhận miễn khống.", "cooldown": 40 }
     ],
-    "recommendedBuild": [116, 117, 118]
+    "recommendedBuild": [303, 304, 305]
   },
   {
     "id": 12,
@@ -177,7 +177,7 @@
       { "name": "Lưỡi Hái Tử Thần", "type": "Chiêu 2", "description": "Mina vung lưỡi hái kéo tất cả kẻ địch phía trước lại gần và làm chậm chúng.", "cooldown": 12 },
       { "name": "Thôi Miên", "type": "Chiêu 3", "description": "Mina khiêu khích kẻ địch xung quanh khiến chúng buộc phải tấn công cô trong thời gian ngắn.", "cooldown": 40 }
     ],
-    "recommendedBuild": [116, 117, 118]
+    "recommendedBuild": [303, 304, 305]
   },
   {
     "id": 13,
@@ -192,7 +192,7 @@
       { "name": "Thú Thần Oán", "type": "Chiêu 2", "description": "Arum phóng các thú linh tấn công khu vực chỉ định gây sát thương, làm chậm và làm choáng.", "cooldown": 7 },
       { "name": "Thú Thần Xích", "type": "Chiêu 3", "description": "Arum trói chặt một tướng địch khiến cả hai cùng chịu sát thương tương đương nhau, không thể giải khống chế.", "cooldown": 50 }
     ],
-    "recommendedBuild": [116, 117, 119]
+    "recommendedBuild": [303, 304, 306]
   },
   {
     "id": 14,
@@ -237,7 +237,7 @@
       { "name": "Đôi Cánh Thuần Khiết", "type": "Chiêu 2", "description": "Lauriel lướt về hướng chỉ định và bắn ra 3 luồng năng lượng. Bản thân trở nên không thể bị chọn làm mục tiêu trong khoảnh khắc.", "cooldown": 6 },
       { "name": "Đại Phán Xét", "type": "Chiêu 3", "description": "Lauriel vẽ ra một pháp trận lớn. Khi đứng trong pháp trận, Chiêu 1 và Chiêu 2 của cô được giảm hồi chiêu cực nhanh.", "cooldown": 45 }
     ],
-    "recommendedBuild": [108, 109, 120]
+    "recommendedBuild": [108, 109, 307]
   },
   {
     "id": 17,
@@ -252,7 +252,7 @@
       { "name": "Lôi Động", "type": "Chiêu 2", "description": "Tulen biến ảo theo hướng chỉ định, gây sát thương phép tại điểm biến mất và điểm xuất hiện.", "cooldown": 2 },
       { "name": "Lôi Điểu", "type": "Chiêu 3", "description": "Tulen tích tụ và bắn ra một chú chim sét gây sát thương phép cực lớn dựa trên lượng máu đã mất của mục tiêu.", "cooldown": 35 }
     ],
-    "recommendedBuild": [108, 109, 111]
+    "recommendedBuild": [108, 109, 110]
   },
   {
     "id": 18,
@@ -267,7 +267,7 @@
       { "name": "Nhất Thần Thương", "type": "Chiêu 2", "description": "Ryoma đâm thương về phía trước. Kẻ địch trúng rìa chiêu thức sẽ bị làm choáng.", "cooldown": 10 },
       { "name": "Loạn Trảm", "type": "Chiêu 3", "description": "Ryoma đâm liên tiếp 4 nhát thương về phía trước, gây sát thương vật lý và hồi máu cho bản thân.", "cooldown": 12 }
     ],
-    "recommendedBuild": [112, 105, 107]
+    "recommendedBuild": [203, 105, 107]
   },
   {
     "id": 19,
@@ -312,7 +312,7 @@
       { "name": "Người Đàn Ông Thép", "type": "Chiêu 2", "description": "Giải mọi hiệu ứng khống chế. Ở trạng thái bay sẽ nện xuống đất hất văng kẻ địch.", "cooldown": 12 },
       { "name": "Sức Mạnh Vô Song", "type": "Chiêu 3", "description": "Tăng tốc độ tích lũy trạng thái phi hành và giúp Superman húc lùi kẻ địch liên tục.", "cooldown": 50 }
     ],
-    "recommendedBuild": [112, 116, 117]
+    "recommendedBuild": [203, 303, 304]
   },
   {
     "id": 22,
@@ -327,7 +327,7 @@
       { "name": "Công Thủ Toàn Diện", "type": "Chiêu 2", "description": "Richter bật trạng thái miễn nhiễm mọi sát thương và khống chế trong thời gian ngắn rồi phản công.", "cooldown": 3 },
       { "name": "Vùng Ma Trận", "type": "Chiêu 3", "description": "Richter tạo ra một vùng ma trận xung quanh gây sát thương chuẩn liên tục và làm câm lặng kẻ địch.", "cooldown": 45 }
     ],
-    "recommendedBuild": [112, 113, 107]
+    "recommendedBuild": [203, 204, 107]
   },
   {
     "id": 23,
@@ -342,7 +342,7 @@
       { "name": "Sát Niệm", "type": "Chiêu 2", "description": "Omen tăng tốc chạy, miễn giảm cực lớn sát thương nhận vào và phản lại đòn đánh thường của đối thủ.", "cooldown": 11 },
       { "name": "Sát Vực", "type": "Chiêu 3", "description": "Omen lao đến trói chặt một tướng địch vào đấu trường xích, khiến mục tiêu không thể thoát ra ngoài.", "cooldown": 40 }
     ],
-    "recommendedBuild": [112, 113, 115]
+    "recommendedBuild": [203, 204, 206]
   },
   {
     "id": 24,
@@ -372,7 +372,7 @@
       { "name": "Phong Dịch", "type": "Chiêu 2", "description": "Zill dịch chuyển đến vị trí chỉ định gây sát thương phép diện rộng lên kẻ địch xung quanh.", "cooldown": 10 },
       { "name": "Phong Ba", "type": "Chiêu 3", "description": "Zill hóa thành một cơn bão tấn công liên tục 5 lần vào các mục tiêu xung quanh và không thể bị chọn làm mục tiêu.", "cooldown": 40 }
     ],
-    "recommendedBuild": [108, 109, 111]
+    "recommendedBuild": [108, 109, 110]
   },
   {
     "id": 26,
@@ -387,7 +387,7 @@
       { "name": "Lá Chắn Thời Gian", "type": "Chiêu 2", "description": "Alice tạo lá chắn bảo vệ bản thân và các đồng minh xung quanh, đồng thời tăng tốc chạy cho họ.", "cooldown": 11 },
       { "name": "Dòng Dòng Thời Gian", "type": "Chiêu 3", "description": "Alice tạo ra một vùng không gian ma thuật làm chậm, câm lặng và giảm giáp phép của kẻ địch.", "cooldown": 30 }
     ],
-    "recommendedBuild": [121, 108, 116]
+    "recommendedBuild": [301, 108, 303]
   },
   {
     "id": 27,
@@ -402,7 +402,7 @@
       { "name": "Rừng Rậm Lắc Lư", "type": "Chiêu 2", "description": "Aya nhảy lên đầu đồng minh, ám vào họ và tạo ra một lượng lớn lá chắn bảo vệ.", "cooldown": 12 },
       { "name": "Khúc Nhạc Mặt Trời", "type": "Chiêu 3", "description": "Aya tạo ma trận xung quanh đồng minh được ám, biến tất cả kẻ địch xung quanh thành sinh vật nhỏ.", "cooldown": 45 }
     ],
-    "recommendedBuild": [121, 108, 116]
+    "recommendedBuild": [301, 108, 303]
   },
   {
     "id": 28,
@@ -417,7 +417,7 @@
       { "name": "Địa Chấn", "type": "Chiêu 2", "description": "Baldum giậm chân xuống đất liên tục gây sát thương và giảm khả năng gây sát thương của kẻ địch.", "cooldown": 9 },
       { "name": "Địa Giam", "type": "Chiêu 3", "description": "Baldum tạo ra một vùng địa giam. Sau thời gian ngắn, mặt đất sụp xuống giam cầm mọi kẻ địch bên trong.", "cooldown": 50 }
     ],
-    "recommendedBuild": [116, 117, 118]
+    "recommendedBuild": [303, 304, 305]
   },
   {
     "id": 29,
@@ -432,7 +432,7 @@
       { "name": "Bọt Biển", "type": "Chiêu 2", "description": "Cresht nhảy đến vùng chỉ định tạo lá chắn cho bản thân và đồng minh.", "cooldown": 10 },
       { "name": "Thủy Thần", "type": "Chiêu 3", "description": "Cresht hóa thành Thủy Thần khổng lồ, tạo ra một cơn sóng cuộn đẩy lùi làm choáng kẻ địch và nhận lượng lớn lá chắn.", "cooldown": 40 }
     ],
-    "recommendedBuild": [116, 117, 118]
+    "recommendedBuild": [303, 304, 305]
   },
   {
     "id": 30,
@@ -447,6 +447,6 @@
       { "name": "Đoạt Hồn", "type": "Chiêu 2", "description": "Maloch tước đoạt linh hồn kẻ địch xung quanh, gây làm chậm và tạo cho bản thân một lớp lá chắn dày.", "cooldown": 12 },
       { "name": "Luyện Ngục", "type": "Chiêu 3", "description": "Maloch phóng lên không trung rồi giáng xuống khu vực chỉ định, hất văng tất cả kẻ địch và tạo ra vùng luyện ngục làm chậm.", "cooldown": 50 }
     ],
-    "recommendedBuild": [112, 116, 117]
+    "recommendedBuild": [203, 303, 304]
   }
 ]
