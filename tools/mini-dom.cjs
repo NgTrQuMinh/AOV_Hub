@@ -277,8 +277,19 @@ function loadPage(options) {
     const byId = new Map();
     let reloadCount = 0;
 
+    // Đăng ký các id có thật trong trang. Trình duyệt trả null khi id không tồn tại,
+    // nên không được tự tạo phần tử giả: nếu không, mọi trang sẽ "có" đủ container
+    // và code gọi nhầm container của trang khác sẽ không bị phát hiện.
+    for (const [, id] of html.matchAll(/\sid="([^"]+)"/g)) {
+        if (!byId.has(id)) byId.set(id, makeNode('div', { id }));
+    }
+
+    // Copy storage để không sửa bản gốc: test truyền cùng một Map cho nhiều lần mở trang
+    // với login khác nhau (vd đổi từ đã đăng nhập sang khách).
+    const local = new Map(storage);
+
     // auth.js lưu session dạng chuỗi thô (không JSON) trong aov_current_user.
-    if (login) storage.set('aov_current_user', String(login));
+    if (login) local.set('aov_current_user', String(login));
 
     const document = {
         body: makeNode('body', { 'data-page': 'page' }),
@@ -287,6 +298,7 @@ function loadPage(options) {
         getElementById(id) {
             if (byId.has(id)) return byId.get(id);
 
+            // innerHTML vừa tạo ra phần tử mới thì tìm trong cây DOM rồi đăng ký lại
             for (const el of byId.values()) {
                 let found = null;
                 walkAll(el, (node) => { if (!found && node.attrs.id === id) found = node; });
@@ -296,9 +308,7 @@ function loadPage(options) {
                 }
             }
 
-            const created = makeNode('div', { id });
-            byId.set(id, created);
-            return created;
+            return null;
         },
         querySelector(selector) { return document.querySelectorAll(selector)[0] || null; },
         querySelectorAll(selector) {
@@ -321,9 +331,9 @@ function loadPage(options) {
         },
         document,
         localStorage: {
-            getItem: (key) => (storage.has(key) ? storage.get(key) : null),
-            setItem: (key, value) => storage.set(key, String(value)),
-            removeItem: (key) => storage.delete(key),
+            getItem: (key) => (local.has(key) ? local.get(key) : null),
+            setItem: (key, value) => local.set(key, String(value)),
+            removeItem: (key) => local.delete(key),
         },
         location: {
             pathname: '/' + page,
@@ -389,7 +399,8 @@ function loadPage(options) {
         doc: document,
         errors,
         alerts,
-        storage,
+        /** Map localStorage của lần mở trang này (đã copy, không phải Map gốc truyền vào). */
+        storage: local,
         run: start,
         el: (id) => document.getElementById(id),
         settled: () => new Promise((resolve) => setTimeout(resolve, 60)),
@@ -398,7 +409,7 @@ function loadPage(options) {
         /** Số lần trang gọi location.reload() (dùng để test nút "Tải lại trang"). */
         reloadCount: () => reloadCount,
         readKey: (key) => {
-            const raw = storage.get(key);
+            const raw = local.get(key);
             if (raw === undefined) return null;
             try { return JSON.parse(raw); } catch { return raw; }
         },

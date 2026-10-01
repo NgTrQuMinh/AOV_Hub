@@ -16,6 +16,11 @@
  *   - id mới                        -> thêm vào CUỐI danh sách để không đẩy bài người dùng đã đăng
  * Nên bao giờ không render trùng hai bài cùng id.
  *
+ * Này là lớp dữ liệu duy nhất của mọi trang hiển thị bài viết:
+ *   - feed.html          : danh sách bài viết
+ *   - post-detail.html   : chi tiết một bài viết (nạp src/js/feed.js, chỉ khác phần vẽ giao diện)
+ *   - profile.html       : danh sách bài của một người dùng
+ *
  * Dùng lại của TV1: loadData(), escapeHtml(), formatDateTime(), renderNotFound(),
  * getStore()/setStore()/toStorageId() (storage.js), getCurrentUser()/isLoggedIn() (auth.js).
  */
@@ -159,6 +164,22 @@ async function seedPostsFromJson() {
     return merged;
 }
 
+/* ---------- Tìm bài viết ---------- */
+
+/**
+ * Tìm một bài viết theo id.
+ * Chuẩn hoá id trước khi so sánh để "9001" trong URL và 9001 trong JSON là một.
+ * @param {number|string} postId
+ * @returns {object|null}
+ */
+function findPostById(postId) {
+    const id = normalizeId(postId);
+
+    if (!id) return null;
+
+    return getPosts().find((post) => normalizeId(post.id) === id) || null;
+}
+
 /* ---------- CRUD bài viết ---------- */
 
 /**
@@ -286,6 +307,23 @@ function deleteComment(commentId) {
 
 /* ---------- Giao diện trang Feed ---------- */
 
+/**
+ * Hàm vẽ lại giao diện sau khi thích / bình luận / xoá.
+ * Mặc định dùng của trang Feed; trang chi tiết bài viết (post-detail.html) ghi đè
+ * bằng setFeedRerender() để vẽ lại phần chi tiết thay vì danh sách.
+ * @param {string|number} [focusPostId] id bài cần đưa lại con trỏ vào ô bình luận.
+ * @type {function(string|number=): void}
+ */
+let rerenderFeedView = (focusPostId) => renderFeedList(focusPostId);
+
+/**
+ * Cho trang khác dùng chung bộ dữ liệu + logic của feed.js mà không phải viết lại.
+ * @param {function(string|number=): void} rerender callback vẽ lại giao diện sau khi thao tác.
+ */
+function setFeedRerender(rerender) {
+    if (typeof rerender === 'function') rerenderFeedView = rerender;
+}
+
 async function initFeedPage() {
     const listContainer = document.getElementById('feed-list');
     if (!listContainer) return;
@@ -339,13 +377,16 @@ function renderPostForm() {
         </form>
     `;
 
-    document.getElementById('post-form').addEventListener('submit', (event) => {
+    const form = formBox.querySelector('#post-form');
+    if (!form) return;
+
+    form.addEventListener('submit', (event) => {
         event.preventDefault();
 
-        const title = document.getElementById('post-title').value;
-        const content = document.getElementById('post-content').value;
-        const heroId = document.getElementById('post-hero').value;
-        const errorBox = document.getElementById('post-errors');
+        const title = form.querySelector('#post-title').value;
+        const content = form.querySelector('#post-content').value;
+        const heroId = form.querySelector('#post-hero').value;
+        const errorBox = form.querySelector('#post-errors');
         const errors = [];
 
         if (!title.trim()) errors.push('Tiêu đề không được để trống.');
@@ -363,8 +404,8 @@ function renderPostForm() {
             return;
         }
 
-        document.getElementById('post-form').reset();
-        renderFeedList();
+        form.reset();
+        rerenderFeedView();
     });
 }
 
@@ -425,6 +466,7 @@ function renderPostCard(post) {
             <p class="post-card__content">${escapeHtml(post.content)}</p>
 
             <div class="post-card__actions">
+                <a class="post-action" href="${BASE_PATH}src/pages/post-detail.html?id=${encodeURIComponent(post.id)}">Xem chi tiết</a>
                 <button type="button"
                     class="post-action ${liked ? 'is-active' : ''}"
                     data-post-like="${escapeHtml(post.id)}"
@@ -446,6 +488,144 @@ function renderPostCard(post) {
     `;
 }
 
+/* ---------- Trang Chi tiết bài viết (post-detail.html) ---------- */
+
+/**
+ * Trang chi tiết: đọc ?id= trên URL rồi tra trong aov_posts.
+ * Bài lấy từ posts.json đã được nạp vào LocalStorage nên lúc nào cũng tra được,
+ * kể cả bài người dùng tự đăng (vẫn dùng đúng một cấu trúc dữ liệu).
+ *
+ * File này KHÔNG tạo bảng dữ liệu riêng: đọc/ghi, thích và bình luận đều gọi lại
+ * đúng các hàm của trang Feed, nên thao tác ở hai trang luôn thấy cùng dữ liệu.
+ */
+async function initPostDetailPage() {
+    const detailContainer = document.getElementById('post-detail');
+    if (!detailContainer) return;
+
+    const postId = getQueryParam('id');
+
+    // Bài viết mẫu phải được nạp vào LocalStorage trước thì mới tra cứu được,
+    // nên nạp trước rồi mới render (giống hệt cách trang Feed mở).
+    await seedPostsFromJson();
+    feedHeroes = await loadData(DATA_PATH.heroes);
+    if (!Array.isArray(feedHeroes)) feedHeroes = [];
+
+    // Các nút thích / gửi bình luận trên trang chi tiết được xử lý bởi đúng
+    // event delegation của trang Feed, chỉ cần đổi hàm vẽ lại.
+    setFeedRerender(renderPostDetailView);
+
+    renderPostDetailView();
+}
+
+/**
+ * Vẽ lại trang chi tiết (cũng dùng sau mỗi lượt thích / bình luận).
+ * @param {string|number} [focusPostId] bỏ qua, trang chi tiết chỉ có một bình luận đang gõ.
+ */
+function renderPostDetailView() {
+    const detailContainer = document.getElementById('post-detail');
+    if (!detailContainer) return;
+
+    const postId = getQueryParam('id');
+
+    if (!String(postId).trim()) {
+        detailContainer.innerHTML = renderPostDetailPlaceholder(
+            'Thiếu mã bài viết trên đường dẫn. Ví dụ hợp lệ: post-detail.html?id=9001',
+        );
+        return;
+    }
+
+    const post = findPostById(postId);
+
+    if (!post) {
+        detailContainer.innerHTML = renderPostDetailPlaceholder(
+            `Không tìm thấy bài viết có mã "${String(postId).trim()}".`,
+        );
+        return;
+    }
+
+    const hero = feedHeroes.find((record) => record.id === post.heroId);
+    const likeUsers = getLikeUsers(post.id);
+    const liked = isLikedByCurrentUser(post.id);
+    const comments = getCommentsOfPost(post.id);
+    const canDelete = isLoggedIn() && post.author === getCurrentUser();
+
+    const commentsHtml = comments.map((comment) => `
+        <li class="comment">
+            <strong>${escapeHtml(comment.author)}</strong>
+            <span class="comment__time">${formatDateTime(comment.createdAt)}</span>
+            <p>${escapeHtml(comment.content)}</p>
+            ${isLoggedIn() && comment.author === getCurrentUser()
+                ? `<button type="button" class="comment__delete" data-comment-delete="${escapeHtml(comment.id)}">Xoá</button>`
+                : ''}
+        </li>
+    `).join('');
+
+    detailContainer.innerHTML = `
+        <article class="post-detail" data-post-id="${escapeHtml(post.id)}">
+            <header class="post-detail__head">
+                <h1 class="post-detail__title">${escapeHtml(post.title)}</h1>
+                <p class="post-detail__meta">
+                    <span class="post-detail__author">👤 ${escapeHtml(post.author)}</span>
+                    <span class="post-detail__time">
+                        <time datetime="${escapeHtml(post.createdAt)}">${formatDateTime(post.createdAt)}</time>
+                    </span>
+                    ${hero ? `<a href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">${escapeHtml(hero.name)}</a>` : ''}
+                </p>
+            </header>
+
+            <div class="post-detail__content">${escapeHtml(post.content)}</div>
+
+            <div class="post-detail__actions">
+                <button type="button"
+                    class="post-action ${liked ? 'is-active' : ''}"
+                    data-post-like="${escapeHtml(post.id)}"
+                    aria-pressed="${liked ? 'true' : 'false'}">
+                    ♥ Thích (${likeUsers.length})
+                </button>
+                <span class="post-action">💬 ${comments.length} bình luận</span>
+                ${canDelete ? `<button type="button" class="post-card__delete" data-post-delete="${escapeHtml(post.id)}">Xoá bài</button>` : ''}
+            </div>
+
+            <section class="post-detail__comments">
+                <h2>Bình luận (${comments.length})</h2>
+                <ul class="comment-list">${commentsHtml || '<li class="comment-list__empty">Chưa có bình luận nào.</li>'}</ul>
+
+                ${isLoggedIn() ? `
+                    <form class="comment-form" data-comment-form="${escapeHtml(post.id)}">
+                        <input type="text" placeholder="Viết bình luận..." aria-label="Nội dung bình luận">
+                        <button type="submit" class="btn btn-outline btn-sm">Gửi</button>
+                    </form>
+                ` : `
+                    <p class="post-detail__guest-note">
+                        <a href="${BASE_PATH}src/pages/login.html?redirect=${BASE_PATH}src/pages/post-detail.html?id=${encodeURIComponent(post.id)}">Đăng nhập</a>
+                        để viết bình luận.
+                    </p>
+                `}
+            </section>
+        </article>
+    `;
+
+    // Vẽ xong thì trả con trỏ về ô bình luận để người dùng viết tiếp ngay
+    const input = detailContainer.querySelector('[data-comment-form] input');
+    if (input) input.focus();
+}
+
+/**
+ * Khối thông báo dùng chung cho các trường hợp lỗi của trang chi tiết.
+ * @param {string} message
+ * @returns {string} HTML string
+ */
+function renderPostDetailPlaceholder(message) {
+    return `
+        <div class="post-detail-empty">
+            ${renderNotFound(message)}
+            <p class="post-detail-empty__actions">
+                <a class="btn btn-outline" href="${BASE_PATH}src/pages/feed.html">← Về danh sách bài viết</a>
+            </p>
+        </div>
+    `;
+}
+
 /* Event delegation: bài viết được render động nên gắn sự kiện ở cấp document */
 document.addEventListener('click', (event) => {
     const likeBtn = event.target.closest('[data-post-like]');
@@ -457,7 +637,7 @@ document.addEventListener('click', (event) => {
 
         const postId = likeBtn.dataset.postLike;
         toggleLike(postId);
-        renderFeedList();
+        rerenderFeedView(postId);
         // Trang Profile cũng hiển thị bài viết nên phải vẽ lại cho khớp
         if (typeof renderProfilePosts === 'function') renderProfilePosts();
         return;
@@ -468,7 +648,7 @@ document.addEventListener('click', (event) => {
         if (!confirm('Xoá bài viết này?')) return;
 
         deletePost(deleteBtn.dataset.postDelete);
-        renderFeedList();
+        rerenderFeedView(deleteBtn.dataset.postDelete);
         if (typeof renderProfilePosts === 'function') renderProfilePosts();
         return;
     }
@@ -477,7 +657,7 @@ document.addEventListener('click', (event) => {
     if (commentDeleteBtn) {
         const postId = commentDeleteBtn.closest('[data-post-id]')?.dataset.postId;
         deleteComment(commentDeleteBtn.dataset.commentDelete);
-        renderFeedList(postId);
+        rerenderFeedView(postId);
         if (typeof renderProfilePosts === 'function') renderProfilePosts();
     }
 });
@@ -495,8 +675,25 @@ document.addEventListener('submit', (event) => {
     if (!content || !addComment(postId, content)) return;
 
     input.value = '';
-    renderFeedList(postId);
+    rerenderFeedView(postId);
     if (typeof renderProfilePosts === 'function') renderProfilePosts();
 });
 
-document.addEventListener('DOMContentLoaded', initFeedPage);
+/**
+ * feed.js được nạp bởi cả feed.html, post-detail.html và profile.html nhưng mỗi trang
+ * chỉ có một phần giao diện, nên hai hàm khởi tạo tự thoát sớm nếu không thấy container.
+ * Chạy tuần tự và bắt lỗi để trang nào thiếu gì cũng không làm sập trang còn lại.
+ */
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        await initFeedPage();
+    } catch (error) {
+        console.error('Không khởi tạo được trang Feed', error);
+    }
+
+    try {
+        await initPostDetailPage();
+    } catch (error) {
+        console.error('Không khởi tạo được trang chi tiết bài viết', error);
+    }
+});

@@ -16,6 +16,7 @@ const PAGES = [
     'src/pages/item-detail.html',
     'src/pages/builds.html',
     'src/pages/feed.html',
+    'src/pages/post-detail.html',
     'src/pages/favorite.html',
     'src/pages/compare.html',
     'src/pages/profile.html',
@@ -57,6 +58,11 @@ function runPage(page, extraSearch) {
     const els = new Map();
     const store = new Map();
 
+    // Trình duyệt trả null cho id không tồn tại trong trang. Nếu tự tạo phần tử cho mọi id
+    // thì mỗi trang sẽ "có" đủ container và smoke test không phát hiện được trang gọi
+    // nhầm vào container của trang khác.
+    const htmlIds = new Set([...html.matchAll(/id="([^"]+)"/g)].map((m) => m[1]));
+
     const localStorage = {
         getItem: (k) => (store.has(k) ? store.get(k) : null),
         setItem: (k, v) => store.set(k, String(v)),
@@ -68,6 +74,7 @@ function runPage(page, extraSearch) {
         documentElement: {},
         listeners: { click: [], submit: [], DOMContentLoaded: [] },
         getElementById(id) {
+            if (!htmlIds.has(id)) return null;
             if (!els.has(id)) els.set(id, makeEl(id));
             return els.get(id);
         },
@@ -125,7 +132,7 @@ function runPage(page, extraSearch) {
 (async () => {
     let bad = 0;
     for (const page of PAGES) {
-        const search = page.includes('hero-detail') ? '?id=1' : '';
+        const search = page.includes('hero-detail') ? '?id=1' : page.includes('post-detail') ? '?id=9001' : '';
         const errors = runPage(page, search);
         if (errors.length) {
             bad++;
