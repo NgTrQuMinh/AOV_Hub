@@ -182,30 +182,82 @@ function findPostById(postId) {
 
 /* ---------- CRUD bài viết ---------- */
 
+const POST_TITLE_MIN = 5;
+const POST_CONTENT_MIN = 10;
+
 /**
- * Đăng bài mới. Bài mới luôn lên đầu danh sách.
- * @returns {object|null} bài vừa tạo, null nếu chưa đăng nhập, thiếu nội dung hoặc lưu thất bại.
+ * Kiểm tra dữ liệu form đăng bài.
+ * Tách riêng khỏi createPost() để cùng một bộ quy tắc dùng cho form và cho test.
+ *
+ * author lấy từ session (getCurrentUser), phải có trong danh sách tài khoản
+ * của dự án (aov_users nạp từ data/users.json) thì mới coi là hợp lệ.
+ *
+ * @returns {{ valid: boolean, errors: string[], values: { title: string, content: string, heroId: *, author: string } }}
  */
-function createPost(title, content, heroId) {
-    const author = getCurrentUser();
+function validatePostForm(title, content, heroId) {
+    const errors = [];
     const cleanTitle = String(title || '').trim();
     const cleanContent = String(content || '').trim();
+    const author = String(getCurrentUser() || '').trim();
 
-    if (!author || !cleanTitle || !cleanContent) return null;
+    if (!author) {
+        errors.push('Bạn cần đăng nhập để đăng bài.');
+    } else if (typeof findUser === 'function' && !findUser(author)) {
+        errors.push('Tài khoản của bạn không còn tồn tại. Hãy đăng nhập lại.');
+    }
+
+    if (!cleanTitle) errors.push('Tiêu đề không được để trống.');
+    else if (cleanTitle.length < POST_TITLE_MIN) errors.push(`Tiêu đề phải có ít nhất ${POST_TITLE_MIN} ký tự.`);
+
+    if (!cleanContent) errors.push('Nội dung không được để trống.');
+    else if (cleanContent.length < POST_CONTENT_MIN) errors.push(`Nội dung phải có ít nhất ${POST_CONTENT_MIN} ký tự.`);
+
+    return {
+        valid: !errors.length,
+        errors,
+        values: { title: cleanTitle, content: cleanContent, heroId: toStorageId(heroId), author },
+    };
+}
+
+/**
+ * Đăng bài mới. Bài mới luôn lên đầu danh sách.
+ *
+ * Bài chỉ nằm trong aov_posts (LocalStorage), KHÔNG ghi vào data/posts.json
+ * vì file đó là dữ liệu tĩnh của project.
+ *
+ * Cùng lúc khởi tạo sẵn lượt thích và bình luận rỗng cho bài mới để
+ * mọi trang đọc cùng một cấu trúc dữ liệu, không phải tự xử lý vắng mặt.
+ *
+ * @returns {object|null} bài vừa tạo, null nếu dữ liệu không hợp lệ hoặc lưu thất bại.
+ */
+function createPost(title, content, heroId) {
+    const checked = validatePostForm(title, content, heroId);
+    if (!checked.valid) return null;
 
     const posts = getPosts();
+    const id = nextFeedId(posts.map((row) => row.id));
     const post = {
-        id: nextFeedId(posts.map((row) => row.id)),
-        author,
-        title: cleanTitle,
-        content: cleanContent,
-        heroId: toStorageId(heroId),
+        id,
+        author: checked.values.author,
+        title: checked.values.title,
+        content: checked.values.content,
+        heroId: checked.values.heroId,
         createdAt: new Date().toISOString(),
     };
 
     posts.unshift(post);
 
-    return setPosts(posts) ? post : null;
+    if (!setPosts(posts)) return null;
+
+    // Khởi tạo lượt thích rỗng cho bài mới (bình luận thì vốn đã rỗng:
+    // đọc theo postId mà không có bản ghi nào thì ra mảng rỗng).
+    const likes = getLikes();
+    if (!(id in likes)) {
+        likes[id] = [];
+        setLikes(likes);
+    }
+
+    return post;
 }
 
 /**
@@ -387,16 +439,10 @@ function renderPostForm() {
         const content = form.querySelector('#post-content').value;
         const heroId = form.querySelector('#post-hero').value;
         const errorBox = form.querySelector('#post-errors');
-        const errors = [];
+        const checked = validatePostForm(title, content, heroId);
 
-        if (!title.trim()) errors.push('Tiêu đề không được để trống.');
-        else if (title.trim().length < 5) errors.push('Tiêu đề phải có ít nhất 5 ký tự.');
-
-        if (!content.trim()) errors.push('Nội dung không được để trống.');
-        else if (content.trim().length < 10) errors.push('Nội dung phải có ít nhất 10 ký tự.');
-
-        renderErrors(errorBox, errors);
-        if (errors.length) return;
+        renderErrors(errorBox, checked.errors);
+        if (!checked.valid) return;
 
         const newPost = createPost(title, content, heroId);
         if (!newPost) {
@@ -404,8 +450,20 @@ function renderPostForm() {
             return;
         }
 
+        // Bài mới lên đầu danh sách nên Feed hiển thị ngay,
+        // đồng thời báo kèm link để mở trang chi tiết của chính bài vừa đăng.
         form.reset();
+        renderSuccess(
+            form.querySelector('#post-errors'),
+            `Đã đăng bài "${checked.values.title}".`,
+        );
+        form.querySelector('#post-errors').insertAdjacentHTML(
+            'beforeend',
+            ` <a href="${BASE_PATH}src/pages/post-detail.html?id=${encodeURIComponent(newPost.id)}">Xem bài vừa đăng</a>`,
+        );
+
         rerenderFeedView();
+        if (typeof renderProfilePosts === 'function') renderProfilePosts();
     });
 }
 

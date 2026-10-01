@@ -173,6 +173,21 @@ function makeNode(tag, attrs = {}, rawHtml = '') {
         querySelector(selector) {
             return this.querySelectorAll(selector)[0] || null;
         },
+        /**
+         * Chèn HTML vào trong phần tử. Mới hỗ trợ 'beforeend' và 'afterbegin'
+         * (đúng hai vị trí mà test cần), vì innerHTML ở đây lưu dạng chuỗi.
+         */
+        insertAdjacentHTML(position, html) {
+            const text = String(html);
+
+            if (position === 'beforeend') htmlText += text;
+            else if (position === 'afterbegin') htmlText = text + htmlText;
+            else throw new Error('mini-dom: insertAdjacentHTML chỉ hỗ trợ beforeend/afterbegin, nhận "' + position + '"');
+
+            parseHtmlInto(node, htmlText);
+
+            return null;
+        },
     };
 
     const classList = {
@@ -289,7 +304,28 @@ function loadPage(options) {
     const local = new Map(storage);
 
     // auth.js lưu session dạng chuỗi thô (không JSON) trong aov_current_user.
-    if (login) local.set('aov_current_user', String(login));
+    // Trong thực tế session luôn đi kèm tài khoản có thật trong aov_users
+    // (registerUser/loginUser đảm bảo điều đó), nên ở đây cũng vậy để các trang
+    // kiểm tra findUser() chạy đúng như trình duyệt.
+    if (login) {
+        local.set('aov_current_user', String(login));
+
+        const usersFile = path.join(ROOT, 'src', 'data', 'users.json');
+        const users = local.has('aov_users')
+            ? JSON.parse(local.get('aov_users'))
+            : (fs.existsSync(usersFile) ? JSON.parse(fs.readFileSync(usersFile, 'utf8')) : []);
+
+        if (!users.some((user) => user.username === String(login))) {
+            users.push({
+                username: String(login),
+                password: 'test123',
+                displayName: String(login),
+                joinedAt: '2025-01-01T00:00:00.000Z',
+            });
+        }
+
+        local.set('aov_users', JSON.stringify(users));
+    }
 
     const document = {
         body: makeNode('body', { 'data-page': 'page' }),
