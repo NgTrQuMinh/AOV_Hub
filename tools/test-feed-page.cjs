@@ -23,6 +23,10 @@ const { ROOT, loadPage, fire, unescapeHtml } = require('./mini-dom.cjs');
 const PAGE = 'src/pages/feed.html';
 const POSTS_JSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
 
+/* Trang Feed mặc định sắp xếp "Mới nhất" (createdAt giảm dần) nên thứ tự hiển thị là
+ * posts.json đảo lại (posts.json đang viết theo thứ tự thời gian tăng dần). */
+const POSTS_NEWEST_FIRST = POSTS_JSON.slice().reverse();
+
 const KEYS = { posts: 'aov_posts', seeded: 'aov_posts_seeded', comments: 'aov_comments', likes: 'aov_likes' };
 
 /** id về chuỗi để so sánh: "9001" và 9001 phải bằng nhau. */
@@ -88,6 +92,7 @@ function readPosts(listEl) {
             likeCount: Number((block.match(/♥ Thích \((\d+)\)/) || [])[1]),
             commentCount: Number((block.match(/💬 (\d+) bình luận/) || [])[1]),
             heroLink: (block.match(/hero-detail\.html\?id=(\d+)/) || [])[1] || '',
+            category: unescapeHtml((block.match(/post-card__category">([^<]*)</) || [])[1] || ''),
             comments: block.split('<li class="comment">').slice(1).map((comment) => ({
                 author: unescapeHtml((comment.match(/<strong>([^<]*)<\/strong>/) || [])[1] || ''),
                 content: unescapeHtml((comment.match(/<p>([\s\S]*?)<\/p>/) || [])[1] || ''),
@@ -117,6 +122,31 @@ async function sendComment(page, postId, text) {
     form.querySelector('input').value = text;
     fire(form, 'submit', page.doc);
     await page.settled();
+}
+
+/** Chờ lâu hơn debounce của ô tìm kiếm (200ms trong feed.js). */
+function wait(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** Bấm chọn giá trị trong một <select> rồi bắn sự kiện change như trình duyệt. */
+async function selectOption(page, id, value) {
+    const select = page.el(id);
+    if (!select) throw new Error('Không tìm thấy ' + id);
+
+    select.value = value;
+    fire(select, 'change', page.doc);
+    await page.settled();
+}
+
+/** Gõ vào ô tìm kiếm rồi chờ debounce chạy xong. */
+async function typeKeyword(page, text) {
+    const input = page.el('feed-keyword');
+    if (!input) throw new Error('Không tìm thấy #feed-keyword');
+
+    input.value = text;
+    fire(input, 'input', page.doc);
+    await wait(300);
 }
 
 async function createPost(page, title, content, heroId = '') {
@@ -150,14 +180,14 @@ async function createPost(page, title, content, heroId = '') {
     const posts = readPosts(guest.el('feed-list'));
 
     check(`render đủ ${POSTS_JSON.length} bài viết từ posts.json`, posts.length === POSTS_JSON.length, `thực tế: ${posts.length}`);
-    check('thứ tự bài viết khớp posts.json',
-        posts.map((post) => post.title).join('|') === POSTS_JSON.map((post) => post.title).join('|'),
+    check('thứ tự bài viết khớp posts.json (mới nhất trước)',
+        posts.map((post) => post.title).join('|') === POSTS_NEWEST_FIRST.map((post) => post.title).join('|'),
         posts.map((post) => post.title).join(' | '));
     check('mỗi bài hiện đúng tác giả',
-        posts.every((post, index) => post.author === POSTS_JSON[index].author),
+        posts.every((post, index) => post.author === POSTS_NEWEST_FIRST[index].author),
         posts.map((post) => post.author).join(', '));
     check('mỗi bài hiện đúng nội dung',
-        posts.every((post, index) => post.content === POSTS_JSON[index].content));
+        posts.every((post, index) => post.content === POSTS_NEWEST_FIRST[index].content));
     check('mỗi bài hiện ngày đăng định dạng dd/MM/yyyy HH:mm',
         posts.every((post) => /\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}/.test(guest.el('feed-list').innerHTML)));
     check('bài gắn tướng thì có link sang hero-detail',
@@ -206,7 +236,9 @@ async function createPost(page, title, content, heroId = '') {
     const mergedPosts = readPosts(merged.el('feed-list'));
 
     check('posts.json thêm bài mới -> feed tự thêm bài đó', mergedPosts.length === POSTS_JSON.length + 1, `thực tế: ${mergedPosts.length}`);
-    check('bài mới nằm cuối danh sách, không đẩy bài cũ', mergedPosts[mergedPosts.length - 1].title === extraPost.title, mergedPosts.map((p) => p.title).join(' | '));
+    check('bài mới (đăng sau cùng) nằm đầu danh sách vì đang sắp xếp mới nhất',
+        mergedPosts[0].title === extraPost.title && mergedPosts.length === POSTS_JSON.length + 1,
+        mergedPosts.map((p) => p.title).join(' | '));
     check('bài cũ không bị nhân bản khi merge', new Set(mergedPosts.map((p) => p.id)).size === mergedPosts.length);
 
     // Xoá 1 bài rồi reload -> bài đã xoá không được "sống lại"
@@ -267,7 +299,7 @@ async function createPost(page, title, content, heroId = '') {
     check('bài mới hiện nội dung đúng', newPost.content === 'Lên level 6 rồi mới đi giao tranh, đừng đi vào rừng sớm quá.', newPost.content);
     check('bài mới gắn đúng tướng đã chọn', newPost.heroLink === '3', newPost.heroLink);
     check('tổng số bài = JSON + 1 bài của user', withNewPost.length === POSTS_JSON.length + 1);
-    check('bài trong JSON không bị mất', withNewPost.slice(1).map((p) => p.title).join('|') === POSTS_JSON.map((p) => p.title).join('|'));
+    check('bài trong JSON không bị mất', withNewPost.slice(1).map((p) => p.title).join('|') === POSTS_NEWEST_FIRST.map((p) => p.title).join('|'));
 
     const storedAfterCreate = user.readKey(KEYS.posts);
     check('bài mới được lưu vào aov_posts',
@@ -453,9 +485,298 @@ async function createPost(page, title, content, heroId = '') {
     check('người khác không thấy nút xoá bài của người này',
         !otherView.el('feed-list').innerHTML.includes('data-post-delete'));
 
-    /* ---------- 10. Chốt ---------- */
-    section('10. Không lỗi JS');
-    const allPages = [guest, reloaded, merged, user, many, liked, talker, commentReloaded, del];
+    /* ---------- 10. Phân quyền xoá: user A không xoá được dữ liệu của user B ---------- */
+    section('10. Chặn xoá trái quyền (tác giả hoặc admin)');
+
+    // Dựng sẵn dữ liệu: bài + bình luận của player1, và một tài khoản có role admin.
+    const permPostId = 8800000000001;
+    const permCommentId = 8800000000002;
+    const permAdminCommentId = 8800000000003;
+
+    const permStorage = new Map([
+        ['aov_users', JSON.stringify([
+            { username: 'player1', password: 'test123', displayName: 'Player 1', joinedAt: '2025-01-01T00:00:00.000Z' },
+            { username: 'mod', password: 'test123', displayName: 'Kiem duyet', joinedAt: '2025-01-02T00:00:00.000Z', role: 'admin' },
+        ])],
+        ['aov_posts', JSON.stringify([{
+            id: permPostId,
+            author: 'player1',
+            title: 'Bài riêng của player1',
+            content: 'Nội dung đủ dài để bài này hợp lệ trong dữ liệu mẫu.',
+            heroId: '',
+            category: 'Mẹo chơi',
+            createdAt: '2025-03-01T08:00:00.000Z',
+        }])],
+        ['aov_comments', JSON.stringify([
+            { id: permCommentId, postId: permPostId, author: 'player1', content: 'Bình luận riêng của player1', createdAt: '2025-03-01T09:00:00.000Z' },
+            { id: permAdminCommentId, postId: permPostId, author: 'mod', content: 'Bình luận của mod trên bài của player1', createdAt: '2025-03-01T10:00:00.000Z' },
+        ])],
+        ['aov_likes', JSON.stringify({ [permPostId]: ['mod'] })],
+    ]);
+
+    // ---- User B (nguoi2) thử xoá dữ liệu của user A (player1) ----
+    const intruder = await openFeed({ login: 'nguoi2', storage: new Map(permStorage) });
+    const postsBefore = JSON.stringify(intruder.readKey(KEYS.posts));
+    const commentsBefore = JSON.stringify(intruder.readKey(KEYS.comments));
+
+    check('user B thấy bài của user A nhưng không có nút Xoá',
+        readPosts(intruder.el('feed-list')).some((post) => post.id === String(permPostId))
+        && !intruder.el('feed-list').innerHTML.includes('data-post-delete'));
+    check('user B không có nút xoá bình luận của người khác',
+        !intruder.el('feed-list').innerHTML.includes('data-comment-delete'));
+
+    check('canDeletePost() trả false cho bài của người khác',
+        intruder.runInPage(`canDeletePost(findPostById(${JSON.stringify(permPostId)}))`) === false);
+    check('canDeleteComment() trả false cho bình luận của người khác',
+        intruder.runInPage(`canDeleteComment(getComments()[0])`) === false);
+    check('isAdmin() trả false cho tài khoản thường', intruder.runInPage('isAdmin()') === false);
+
+    const intruderDeletePost = intruder.runInPage(`deletePost(${JSON.stringify(permPostId)})`);
+    await intruder.settled();
+    const intruderDeleteComment = intruder.runInPage(`deleteComment(${JSON.stringify(permCommentId)})`);
+    await intruder.settled();
+
+    check('user B gọi deletePost() bài của user A -> thất bại', intruderDeletePost === false, String(intruderDeletePost));
+    check('user B gọi deleteComment() của user A -> thất bại', intruderDeleteComment === false, String(intruderDeleteComment));
+    check('sau khi bị từ chối, aov_posts không đổi',
+        JSON.stringify(intruder.readKey(KEYS.posts)) === postsBefore);
+    check('sau khi bị từ chối, aov_comments không đổi',
+        JSON.stringify(intruder.readKey(KEYS.comments)) === commentsBefore);
+    check('bài của user A vẫn còn sau khi user B thử xoá',
+        readPosts((await reloadFeed(intruder)).el('feed-list')).some((post) => post.id === String(permPostId)));
+
+    // ---- Khách cũng không xoá được ----
+    const permGuest = await openFeedAsGuest(permStorage);
+    check('khách gọi deletePost() -> thất bại',
+        permGuest.runInPage(`deletePost(${JSON.stringify(permPostId)})`) === false);
+    check('khách gọi deleteComment() -> thất bại',
+        permGuest.runInPage(`deleteComment(${JSON.stringify(permCommentId)})`) === false);
+
+    // ---- Tác giả thì xoá được bài và bình luận của chính mình ----
+    const owner = await openFeed({ login: 'player1', storage: new Map(permStorage) });
+    check('tác giả được quyền xoá bài của mình',
+        owner.runInPage(`canDeletePost(findPostById(${JSON.stringify(permPostId)}))`) === true);
+    check('tác giả xoá được bình luận của chính mình',
+        owner.runInPage(`deleteComment(${JSON.stringify(permCommentId)})`) === true);
+    await owner.settled();
+    check('xoá bình luận của mình -> bình luận còn lại nguyên vẹn',
+        owner.readKey(KEYS.comments).length === 1
+        && String(owner.readKey(KEYS.comments)[0].id) === String(permAdminCommentId),
+        JSON.stringify(owner.readKey(KEYS.comments)));
+
+    // ---- Admin xoá được của người khác ----
+    const admin = await openFeed({ login: 'mod', storage: new Map(permStorage) });
+    check('admin có isAdmin() = true', admin.runInPage('isAdmin()') === true);
+    check('admin được quyền xoá bài của người khác',
+        admin.runInPage(`canDeletePost(findPostById(${JSON.stringify(permPostId)}))`) === true);
+    check('admin thấy nút Xoá bài của người khác',
+        admin.el('feed-list').innerHTML.includes(`data-post-delete="${permPostId}"`));
+
+    check('admin gọi deletePost() bài của người khác -> thành công',
+        admin.runInPage(`deletePost(${JSON.stringify(permPostId)})`) === true);
+    await admin.settled();
+    check('xoá bài -> xoá luôn bình luận của bài đó',
+        admin.readKey(KEYS.comments).length === 0, JSON.stringify(admin.readKey(KEYS.comments)));
+    check('xoá bài -> xoá luôn lượt thích của bài đó',
+        !admin.readKey(KEYS.likes)[permPostId], JSON.stringify(admin.readKey(KEYS.likes)));
+
+    // ---- Id không tồn tại ----
+    const missing = await openFeed({ login: 'mod', storage: new Map(permStorage) });
+    check('deletePost() với id không tồn tại -> false, không lỗi',
+        missing.runInPage('deletePost(999999999)') === false);
+    check('deleteComment() với id không tồn tại -> false, không lỗi',
+        missing.runInPage('deleteComment(999999999)') === false);
+
+    /* ---------- 11. Lọc & sắp xếp ---------- */
+    section('11. Lọc & sắp xếp Feed');
+    const filtered = await openFeed();
+
+    check('thanh lọc có đủ 2 select và ô tìm theo tiêu đề',
+        Boolean(filtered.el('feed-category-filter'))
+        && Boolean(filtered.el('feed-sort-filter'))
+        && Boolean(filtered.el('feed-keyword')));
+    check('select chuyên mục có Tất cả + 4 chuyên mục',
+        filtered.el('feed-category-filter').querySelectorAll('option').length === 5,
+        String(filtered.el('feed-category-filter').querySelectorAll('option').length));
+    check('select sắp xếp có 3 lựa chọn',
+        filtered.el('feed-sort-filter').querySelectorAll('option').length === 3,
+        String(filtered.el('feed-sort-filter').querySelectorAll('option').length));
+    check('mặc định: chuyên mục = Tất cả, sắp xếp = Mới nhất',
+        filtered.el('feed-category-filter').value === 'all'
+        && filtered.el('feed-sort-filter').value === 'newest');
+    check('đầu danh sách là bài mới nhất trong posts.json',
+        readPosts(filtered.el('feed-list'))[0].id === String(POSTS_NEWEST_FIRST[0].id),
+        readPosts(filtered.el('feed-list'))[0].id);
+    check('#feed-count đếm đúng số bài viết',
+        filtered.el('feed-count').textContent === `${POSTS_JSON.length} bài viết`,
+        filtered.el('feed-count').textContent);
+
+    // Lọc theo chuyên mục
+    const buildCount = POSTS_JSON.filter((post) => post.category === 'Build trang bị').length;
+    await selectOption(filtered, 'feed-category-filter', 'Build trang bị');
+    const buildPosts = readPosts(filtered.el('feed-list'));
+
+    check(`lọc "Build trang bị" -> đúng ${buildCount} bài`, buildPosts.length === buildCount, String(buildPosts.length));
+    check('lọc chuyên mục -> mọi bài đều thuộc chuyên mục đó',
+        buildPosts.every((post) => post.category === 'Build trang bị'),
+        buildPosts.map((post) => post.category).join(', '));
+    check('lọc chuyên mục -> số bài trên đầu danh sách cũng đổi theo',
+        filtered.el('feed-count').textContent === `${buildCount} bài viết`,
+        filtered.el('feed-count').textContent);
+    check('đổi chuyên mục -> ghi vào URL (?category=)',
+        new URLSearchParams(filtered.location.search).get('category') === 'Build trang bị',
+        filtered.location.search);
+
+    // Mở lại bằng URL có sẵn bộ lọc -> giữ nguyên sau reload
+    const fromUrl = await openFeed({ search: '?category=H%E1%BB%8Fi+%C4%91%C3%A1p&sort=comments' });
+    check('mở bằng ?category= -> select chuyên mục đã chọn đúng',
+        fromUrl.el('feed-category-filter').value === 'Hỏi đáp', fromUrl.el('feed-category-filter').value);
+    check('mở bằng ?sort= -> select sắp xếp đã chọn đúng',
+        fromUrl.el('feed-sort-filter').value === 'comments', fromUrl.el('feed-sort-filter').value);
+    check('mở bằng URL có bộ lọc -> danh sách đã lọc sẵn',
+        readPosts(fromUrl.el('feed-list')).every((post) => post.category === 'Hỏi đáp')
+        && readPosts(fromUrl.el('feed-list')).length > 0,
+        readPosts(fromUrl.el('feed-list')).map((post) => post.category).join(', '));
+
+    // Chuyên mục không hợp lệ trên URL -> rơi về "Tất cả"
+    const badCategory = await openFeed({ search: '?category=khong-ton-tai' });
+    check('URL có chuyên mục lạ -> bỏ qua, vẽ tất cả bài',
+        badCategory.el('feed-category-filter').value === 'all'
+        && readPosts(badCategory.el('feed-list')).length === POSTS_JSON.length,
+        badCategory.el('feed-category-filter').value);
+
+    // Bài cũ không có trường category -> hiện và lọc như "Khác"
+    const legacyPostId = 8800000000010;
+    const legacyStorage = new Map([
+        [KEYS.posts, JSON.stringify([{
+            id: legacyPostId,
+            author: 'demo',
+            title: 'Bài cũ chưa có chuyên mục',
+            content: 'Bài này đăng trước khi thêm trường category nên không có trường này.',
+            heroId: '',
+            createdAt: '2025-02-01T08:00:00.000Z',
+        }])],
+    ]);
+    // Không nạp posts.json để danh sách chỉ có đúng bài cũ cần kiểm tra.
+    const legacy = await openFeed({ storage: legacyStorage, failData: ['posts.json'] });
+
+    check('bài cũ không có category -> hiện là "Khác"',
+        readPosts(legacy.el('feed-list'))[0].category === 'Khác',
+        readPosts(legacy.el('feed-list'))[0].category);
+    check('bài cũ không có category -> trang không báo lỗi JS',
+        legacy.errors.filter((error) => !error.startsWith('console.error')).length === 0,
+        legacy.errors.join(' | '));
+    check('thanh lọc không có mục "Khác" (chỉ Tất cả + 4 chuyên mục)',
+        legacy.el('feed-category-filter').querySelectorAll('option').length === 5
+        && !legacy.el('feed-category-filter').innerHTML.includes('>Khác<'),
+        legacy.el('feed-category-filter').querySelectorAll('option').length + ' option');
+    await selectOption(legacy, 'feed-category-filter', 'Khác');
+    check('chọn giá trị lạ trong select -> rơi về "Tất cả", không lọc hụt bài',
+        legacy.el('feed-category-filter').value === 'all'
+        && readPosts(legacy.el('feed-list')).length === 1,
+        legacy.el('feed-category-filter').value);
+
+    // Không có kết quả -> renderNotFound()
+    await selectOption(filtered, 'feed-category-filter', 'Hỏi đáp');
+    await typeKeyword(filtered, 'khong-ton-tai-bai-nao');
+    check('lọc không ra bài nào -> hiện thông báo không tìm thấy',
+        filtered.el('feed-list').innerHTML.includes('not-found')
+        && filtered.el('feed-list').innerHTML.includes('Chưa có bài viết nào khớp bộ lọc'),
+        filtered.el('feed-list').innerHTML.slice(0, 120));
+    check('lọc không ra bài nào -> số bài viết là 0',
+        filtered.el('feed-count').textContent === '0 bài viết', filtered.el('feed-count').textContent);
+
+    // Tìm theo tiêu đề: không phân biệt dấu ("meo" khớp "Mẹo"), chỉ dò tiêu đề
+    await selectOption(filtered, 'feed-category-filter', 'all');
+    await typeKeyword(filtered, 'meo');
+    const foundPosts = readPosts(filtered.el('feed-list'));
+
+    check('tìm "meo" (không dấu) ra các bài có tiêu đề "Mẹo..."',
+        foundPosts.length > 0 && foundPosts.every((post) => /Mẹo/i.test(post.title)),
+        foundPosts.map((post) => post.title).join(' | '));
+
+    await typeKeyword(filtered, 'Telen');
+    check('tìm chỉ dò tiêu đề, không dò nội dung',
+        readPosts(filtered.el('feed-list')).length === 0,
+        readPosts(filtered.el('feed-list')).map((post) => post.title).join(' | '));
+
+    // Sắp xếp theo số like / số bình luận
+    const sortPostA = 8800000000020;
+    const sortPostB = 8800000000021;
+    const sortPostC = 8800000000022;
+    const sortStorage = new Map([
+        [KEYS.posts, JSON.stringify([
+            { id: sortPostA, author: 'demo', title: 'Bài A nhiều like nhất', content: 'Nội dung bài A đủ dài để hợp lệ.', heroId: '', category: 'Thảo luận', createdAt: '2025-02-01T08:00:00.000Z' },
+            { id: sortPostB, author: 'demo', title: 'Bài B nhiều bình luận nhất', content: 'Nội dung bài B đủ dài để hợp lệ.', heroId: '', category: 'Thảo luận', createdAt: '2025-02-02T08:00:00.000Z' },
+            { id: sortPostC, author: 'demo', title: 'Bài C bình thường', content: 'Nội dung bài C đủ dài để hợp lệ.', heroId: '', category: 'Thảo luận', createdAt: '2025-02-03T08:00:00.000Z' },
+        ])],
+        [KEYS.likes, JSON.stringify({
+            [sortPostA]: ['mod', 'nguoi2', 'nguoi3'],
+            [sortPostB]: ['mod'],
+        })],
+        [KEYS.comments, JSON.stringify([
+            { id: 8800000000030, postId: sortPostA, author: 'mod', content: 'Bình luận A', createdAt: '2025-02-01T09:00:00.000Z' },
+            { id: 8800000000031, postId: sortPostB, author: 'mod', content: 'Bình luận B1', createdAt: '2025-02-02T09:00:00.000Z' },
+            { id: 8800000000032, postId: sortPostB, author: 'mod', content: 'Bình luận B2', createdAt: '2025-02-02T10:00:00.000Z' },
+        ])],
+    ]);
+
+    // Tắt posts.json để 3 bài mẫu là toàn bộ danh sách => thứ tự kiểm tra chắc chắn.
+    const sorter = await openFeed({ storage: sortStorage, failData: ['posts.json'] });
+    check('mặc định sắp xếp mới nhất: bài C (đăng sau) đứng đầu',
+        readPosts(sorter.el('feed-list')).map((post) => post.id).join(',') === `${sortPostC},${sortPostB},${sortPostA}`,
+        readPosts(sorter.el('feed-list')).map((post) => post.id).join(','));
+
+    await selectOption(sorter, 'feed-sort-filter', 'likes');
+    check('sắp xếp nhiều like nhất: bài A (3 like) đứng đầu',
+        readPosts(sorter.el('feed-list')).map((post) => post.id).join(',') === `${sortPostA},${sortPostB},${sortPostC}`,
+        readPosts(sorter.el('feed-list')).map((post) => post.id).join(','));
+
+    await selectOption(sorter, 'feed-sort-filter', 'comments');
+    check('sắp xếp nhiều bình luận nhất: bài B (2 bình luận) đứng đầu',
+        readPosts(sorter.el('feed-list')).map((post) => post.id).join(',') === `${sortPostB},${sortPostA},${sortPostC}`,
+        readPosts(sorter.el('feed-list')).map((post) => post.id).join(','));
+
+    check('đổi cách sắp xếp -> ghi vào URL (?sort=)',
+        new URLSearchParams(sorter.location.search).get('sort') === 'comments', sorter.location.search);
+
+    // Category trong form đăng bài
+    const poster = await openFeed({ login: 'player1' });
+    const categorySelect = poster.el('post-category');
+
+    check('form đăng bài có select chuyên mục với 4 lựa chọn',
+        categorySelect && categorySelect.querySelectorAll('option').length === 4,
+        categorySelect ? String(categorySelect.querySelectorAll('option').length) : 'không có');
+    check('validatePostForm() báo lỗi khi thiếu chuyên mục',
+        poster.runInPage('JSON.stringify(validatePostForm("Tieu de du", "Noi dung du lau", "", "").errors)')
+            .includes('Vui lòng chọn chuyên mục'));
+    check('validatePostForm() báo lỗi khi chuyên mục không hợp lệ',
+        poster.runInPage('JSON.stringify(validatePostForm("Tieu de du", "Noi dung du lau", "", "Sai ten").errors)')
+            .includes('Vui lòng chọn chuyên mục'));
+
+    categorySelect.value = 'Hỏi đáp';
+    await createPost(poster, 'Bài hỏi đáp mới', 'Nội dung câu hỏi mới trong bài kiểm thử.');
+    const createdPost = poster.readKey(KEYS.posts)[0];
+
+    check('bài mới được lưu kèm category đã chọn', createdPost.category === 'Hỏi đáp', String(createdPost.category));
+    check('bài mới hiện category trên thẻ bài',
+        readPosts(poster.el('feed-list'))[0].category === 'Hỏi đáp',
+        readPosts(poster.el('feed-list'))[0].category);
+
+    // Sửa bài nhưng không đổi chuyên mục thì phải giữ nguyên chuyên mục cũ
+    const editResult = poster.runInPage(
+        `JSON.stringify(updatePost(${JSON.stringify(createdPost.id)}, "Tieu de sau khi sua", "Noi dung sau khi sua da du dai.", "", "Hỏi đáp"))`,
+    );
+    await poster.settled();
+    check('sửa bài giữ nguyên chuyên mục',
+        JSON.parse(editResult).category === 'Hỏi đáp'
+        && poster.readKey(KEYS.posts)[0].category === 'Hỏi đáp',
+        JSON.parse(editResult).category);
+
+    /* ---------- 12. Chốt ---------- */
+    section('12. Không lỗi JS');
+    const allPages = [guest, reloaded, merged, user, many, liked, talker, commentReloaded, del,
+        intruder, owner, admin, filtered, fromUrl, legacy, sorter, poster];
     const jsErrors = allPages.flatMap((page) => page.errors.filter((error) => !error.startsWith('console.error')));
 
     check('không trang nào ném lỗi JavaScript', jsErrors.length === 0, jsErrors.join(' | '));

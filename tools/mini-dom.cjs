@@ -236,6 +236,27 @@ function makeNode(tag, attrs = {}, rawHtml = '') {
 
     node.classList = classList;
 
+    // Trình duyệt: <select> mà không có option nào được chọn thì .value là giá trị của
+    // option đầu tiên. Mô phỏng điều đó để form đăng bài đọc được chuyên mục mặc định
+    // y hệt ngoài trình duyệt (nếu không, .value sẽ là chuỗi rỗng và mọi bài đăng đều
+    // bị validatePostForm() báo thiếu chuyên mục).
+    if (tag === 'select') {
+        let assigned = attrs.value === undefined ? null : attrs.value;
+
+        Object.defineProperty(node, 'value', {
+            get() {
+                if (assigned !== null) return assigned;
+
+                const options = node.querySelectorAll('option');
+                const chosen = options.find((option) => option.getAttribute('selected') !== null);
+                const picked = chosen || options[0];
+
+                return picked ? (picked.getAttribute('value') || '') : '';
+            },
+            set(value) { assigned = String(value); },
+        });
+    }
+
     for (const [name, value] of Object.entries(attrs)) {
         if (name.startsWith('data-')) {
             node.dataset[name.slice(5).replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = value;
@@ -381,6 +402,15 @@ function loadPage(options) {
         createElement: () => makeNode('div'),
     };
 
+    // location tách riêng ra biến để history.replaceState() cập nhật được,
+    // đúng như trình duyệt (dùng để test trạng thái lọc trên URL của trang Feed).
+    const location = {
+        pathname: '/' + page,
+        search,
+        href: '/' + page + search,
+        reload: () => { reloadCount += 1; },
+    };
+
     const ctx = {
         console: {
             log() {},
@@ -393,13 +423,19 @@ function loadPage(options) {
             setItem: (key, value) => local.set(key, String(value)),
             removeItem: (key) => local.delete(key),
         },
-        location: {
-            pathname: '/' + page,
-            search,
-            href: '/' + page + search,
-            reload: () => { reloadCount += 1; },
+        location,
+        history: {
+            /** Ghi URL mà không tải lại trang; cập nhật cả pathname lẫn search. */
+            replaceState(_state, _title, url) {
+                const [path, query] = String(url).split('?');
+                location.pathname = path;
+                location.search = query ? '?' + query : '';
+                location.href = location.pathname + location.search;
+            },
+            pushState(_state, _title, url) {
+                this.replaceState(_state, _title, url);
+            },
         },
-        history: {},
         navigator: { userAgent: 'node' },
         URLSearchParams,
         alert(message) { alerts.push(String(message)); },
@@ -466,6 +502,8 @@ function loadPage(options) {
         runInPage: (code) => vm.runInContext(code, ctx),
         /** Số lần trang gọi location.reload() (dùng để test nút "Tải lại trang"). */
         reloadCount: () => reloadCount,
+        /** location hiện tại (đã tính cả các lần history.replaceState). */
+        location,
         readKey: (key) => {
             const raw = local.get(key);
             if (raw === undefined) return null;
