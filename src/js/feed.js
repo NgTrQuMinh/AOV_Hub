@@ -22,7 +22,12 @@
  *   - profile.html       : danh sách bài của một người dùng
  *
  * Dùng lại của TV1: loadData(), escapeHtml(), formatDateTime(), renderNotFound(),
- * getStore()/setStore()/toStorageId() (storage.js), getCurrentUser()/isLoggedIn() (auth.js).
+ * getStore()/setStore()/toStorageId() (storage.js),
+ * getCurrentUser()/isLoggedIn()/isAdmin() (auth.js).
+ *
+ * Phân quyền bài viết và bình luận (tác giả + admin) nằm ở canEditPost(),
+ * canDeletePost() và canDeleteComment(); cả deletePost()/deleteComment() đều gọi lại
+ * chính các hàm này nên không thể xoá nhầm chỉ bằng cách gọi trực tiếp từ console.
  */
 
 const POSTS_KEY = 'aov_posts';
@@ -313,14 +318,65 @@ function updatePost(postId, title, content, heroId) {
 }
 
 /**
- * Xoá bài viết kèm toàn bộ bình luận và lượt thích của bài đó.
+ * Người dùng hiện tại có quyền xoá bài viết này không.
+ * Quyền xoá rộng hơn quyền sửa: tác giả xoá được bài của mình, admin xoá được
+ * bài của bất kỳ ai (để dọn bài viết vi phạm).
+ *
+ * Dùng chung cho nút "Xoá bài" ở Feed, ở trang chi tiết và ở Profile (cả ba đều vẽ
+ * bằng renderPostCard), và cho deletePost() bên dưới — nhờ vậy giao diện không bao
+ * giờ hiện nút Xoá cho người không có quyền, nhưng quyền thật vẫn được kiểm tra
+ * lại trong deletePost() chứ không tin vào giao diện.
+ *
+ * @param {object} post
  * @returns {boolean}
+ */
+function canDeletePost(post) {
+    if (!post || !isLoggedIn()) return false;
+
+    const isAuthor = String(post.author || '').trim() === String(getCurrentUser() || '').trim();
+    if (isAuthor) return true;
+
+    // Trang nào không nạp auth.js vẫn chạy được (không có isAdmin -> không có quyền admin).
+    return typeof isAdmin === 'function' && isAdmin();
+}
+
+/**
+ * Người dùng hiện tại có quyền xoá bình luận này không.
+ * Quy tắc giống hệt canDeletePost(): tác giả của bình luận hoặc admin.
+ *
+ * @param {object} comment
+ * @returns {boolean}
+ */
+function canDeleteComment(comment) {
+    if (!comment || !isLoggedIn()) return false;
+
+    const isAuthor = String(comment.author || '').trim() === String(getCurrentUser() || '').trim();
+    if (isAuthor) return true;
+
+    return typeof isAdmin === 'function' && isAdmin();
+}
+
+/**
+ * Xoá bài viết kèm toàn bộ bình luận và lượt thích của bài đó.
+ *
+ * Chỉ tác giả của bài hoặc admin mới xoá được: không tìm thấy bài, chưa đăng nhập
+ * hoặc không đủ quyền thì trả về false và KHÔNG ghi gì đè lên LocalStorage
+ * (không chạm vào aov_posts, aov_comments, aov_likes).
+ *
+ * @param {number|string} postId
+ * @returns {boolean} true nếu bài đã bị xoá.
  */
 function deletePost(postId) {
     const id = normalizeId(postId);
     if (!id) return false;
 
-    setPosts(getPosts().filter((post) => normalizeId(post.id) !== id));
+    const posts = getPosts();
+    const target = posts.find((post) => normalizeId(post.id) === id);
+
+    // Chặn ở tầng dữ liệu: không có bài hoặc không đủ quyền thì dừng, dữ liệu giữ nguyên.
+    if (!target || !canDeletePost(target)) return false;
+
+    setPosts(posts.filter((post) => normalizeId(post.id) !== id));
     setComments(getComments().filter((comment) => normalizeId(comment.postId) !== id));
 
     const likes = getLikes();
@@ -402,11 +458,23 @@ function addComment(postId, content) {
     return setComments(comments) ? comment : null;
 }
 
+/**
+ * Xoá một bình luận.
+ * Chỉ tác giả của bình luận hoặc admin mới xoá được; thiếu quyền thì trả false
+ * và aov_comments giữ nguyên.
+ * @param {number|string} commentId
+ * @returns {boolean} true nếu bình luận đã bị xoá.
+ */
 function deleteComment(commentId) {
     const id = normalizeId(commentId);
     if (!id) return false;
 
-    return setComments(getComments().filter((comment) => normalizeId(comment.id) !== id));
+    const comments = getComments();
+    const target = comments.find((comment) => normalizeId(comment.id) === id);
+
+    if (!target || !canDeleteComment(target)) return false;
+
+    return setComments(comments.filter((comment) => normalizeId(comment.id) !== id));
 }
 
 /* ---------- Giao diện trang Feed ---------- */
@@ -624,7 +692,9 @@ function renderPostCard(post) {
     const likeUsers = getLikeUsers(post.id);
     const liked = isLikedByCurrentUser(post.id);
     const comments = getCommentsOfPost(post.id);
-    const canDelete = isLoggedIn() && post.author === getCurrentUser();
+    // Quyền xoá lấy từ canDeletePost/canDeleteComment để Feed, trang chi tiết và
+    // Profile (cùng dùng renderPostCard) luôn hiện nút theo đúng một bộ quy tắc.
+    const canDelete = canDeletePost(post);
     const canEdit = canEditPost(post);
 
     const commentsHtml = comments.map((comment) => `
@@ -632,7 +702,7 @@ function renderPostCard(post) {
             <strong>${escapeHtml(comment.author)}</strong>
             <span class="comment__time">${formatDateTime(comment.createdAt)}</span>
             <p>${escapeHtml(comment.content)}</p>
-            ${isLoggedIn() && comment.author === getCurrentUser()
+            ${canDeleteComment(comment)
                 ? `<button type="button" class="comment__delete" data-comment-delete="${escapeHtml(comment.id)}">Xoá</button>`
                 : ''}
         </li>
@@ -740,14 +810,14 @@ function renderPostDetailView() {
     const likeUsers = getLikeUsers(post.id);
     const liked = isLikedByCurrentUser(post.id);
     const comments = getCommentsOfPost(post.id);
-    const canDelete = isLoggedIn() && post.author === getCurrentUser();
+    const canDelete = canDeletePost(post);
 
     const commentsHtml = comments.map((comment) => `
         <li class="comment">
             <strong>${escapeHtml(comment.author)}</strong>
             <span class="comment__time">${formatDateTime(comment.createdAt)}</span>
             <p>${escapeHtml(comment.content)}</p>
-            ${isLoggedIn() && comment.author === getCurrentUser()
+            ${canDeleteComment(comment)
                 ? `<button type="button" class="comment__delete" data-comment-delete="${escapeHtml(comment.id)}">Xoá</button>`
                 : ''}
         </li>
@@ -854,7 +924,13 @@ document.addEventListener('click', (event) => {
     if (deleteBtn) {
         if (!confirm('Xoá bài viết này?')) return;
 
-        deletePost(deleteBtn.dataset.postDelete);
+        // deletePost() tự kiểm tra lại quyền (tác giả hoặc admin). Trả false nghĩa là
+        // bài không tồn tại hoặc người gọi không đủ quyền -> dữ liệu giữ nguyên.
+        if (!deletePost(deleteBtn.dataset.postDelete)) {
+            alert('Bạn không có quyền xoá bài viết này.');
+            return;
+        }
+
         rerenderFeedView(deleteBtn.dataset.postDelete);
         if (typeof renderProfilePosts === 'function') renderProfilePosts();
         return;
@@ -863,7 +939,13 @@ document.addEventListener('click', (event) => {
     const commentDeleteBtn = event.target.closest('[data-comment-delete]');
     if (commentDeleteBtn) {
         const postId = commentDeleteBtn.closest('[data-post-id]')?.dataset.postId;
-        deleteComment(commentDeleteBtn.dataset.commentDelete);
+
+        // Tương tự: quyền xoá bình luận do deleteComment() kiểm tra lại.
+        if (!deleteComment(commentDeleteBtn.dataset.commentDelete)) {
+            alert('Bạn không có quyền xoá bình luận này.');
+            return;
+        }
+
         rerenderFeedView(postId);
         if (typeof renderProfilePosts === 'function') renderProfilePosts();
     }
