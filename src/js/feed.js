@@ -28,6 +28,13 @@
  * Phân quyền bài viết và bình luận (tác giả + admin) nằm ở canEditPost(),
  * canDeletePost() và canDeleteComment(); cả deletePost()/deleteComment() đều gọi lại
  * chính các hàm này nên không thể xoá nhầm chỉ bằng cách gọi trực tiếp từ console.
+ *
+ * Lọc và sắp xếp (chỉ có ở trang Feed, thanh lọc nằm ở #feed-filter-bar):
+ *   - lọc theo chuyên mục và tìm theo tiêu đề (matchKeyword), sắp xếp theo
+ *     mới nhất / nhiều like / nhiều bình luận (getVisiblePosts)
+ *   - chuyên mục và cách sắp xếp được ghi lên URL (?category=...&sort=...) nên F5
+ *     không mất bộ lọc; đọc lại bằng getQueryParam()
+ *   - bài đăng trước khi có trường category thì hiển thị và lọc như "Khác"
  */
 
 const POSTS_KEY = 'aov_posts';
@@ -190,6 +197,23 @@ function findPostById(postId) {
 const POST_TITLE_MIN = 5;
 const POST_CONTENT_MIN = 10;
 
+/* ---------- Chuyên mục bài viết ---------- */
+
+/** Danh sách chuyên mục hợp lệ, dùng cho select ở form và cho thanh lọc trang Feed. */
+const POST_CATEGORIES = ['Build trang bị', 'Mẹo chơi', 'Thảo luận', 'Hỏi đáp'];
+
+/**
+ * Chuyên mục hiển thị của một bài viết.
+ * Bài đã đăng từ trước khi có trường category thì không có thuộc tính này,
+ * coi như thuộc "Khác" để hiển thị và lọc được, không làm hỏng dữ liệu cũ.
+ * @param {object} post
+ * @returns {string}
+ */
+function getPostCategory(post) {
+    const category = post && post.category;
+    return POST_CATEGORIES.includes(category) ? category : 'Khác';
+}
+
 /**
  * Kiểm tra dữ liệu form đăng bài.
  * Tách riêng khỏi createPost() để cùng một bộ quy tắc dùng cho form và cho test.
@@ -197,13 +221,17 @@ const POST_CONTENT_MIN = 10;
  * author lấy từ session (getCurrentUser), phải có trong danh sách tài khoản
  * của dự án (aov_users nạp từ data/users.json) thì mới coi là hợp lệ.
  *
- * @returns {{ valid: boolean, errors: string[], values: { title: string, content: string, heroId: *, author: string } }}
+ * category phải nằm trong POST_CATEGORIES; bỏ trống hoặc sai tên đều báo lỗi
+ * để bài mới luôn có chuyên mục, nhờ đó thanh lọc phân loại được.
+ *
+ * @returns {{ valid: boolean, errors: string[], values: { title: string, content: string, heroId: *, author: string, category: string } }}
  */
-function validatePostForm(title, content, heroId) {
+function validatePostForm(title, content, heroId, category) {
     const errors = [];
     const cleanTitle = String(title || '').trim();
     const cleanContent = String(content || '').trim();
     const author = String(getCurrentUser() || '').trim();
+    const cleanCategory = String(category || '').trim();
 
     if (!author) {
         errors.push('Bạn cần đăng nhập để đăng bài.');
@@ -217,10 +245,18 @@ function validatePostForm(title, content, heroId) {
     if (!cleanContent) errors.push('Nội dung không được để trống.');
     else if (cleanContent.length < POST_CONTENT_MIN) errors.push(`Nội dung phải có ít nhất ${POST_CONTENT_MIN} ký tự.`);
 
+    if (!POST_CATEGORIES.includes(cleanCategory)) errors.push('Vui lòng chọn chuyên mục cho bài viết.');
+
     return {
         valid: !errors.length,
         errors,
-        values: { title: cleanTitle, content: cleanContent, heroId: toStorageId(heroId), author },
+        values: {
+            title: cleanTitle,
+            content: cleanContent,
+            heroId: toStorageId(heroId),
+            author,
+            category: cleanCategory,
+        },
     };
 }
 
@@ -235,8 +271,8 @@ function validatePostForm(title, content, heroId) {
  *
  * @returns {object|null} bài vừa tạo, null nếu dữ liệu không hợp lệ hoặc lưu thất bại.
  */
-function createPost(title, content, heroId) {
-    const checked = validatePostForm(title, content, heroId);
+function createPost(title, content, heroId, category) {
+    const checked = validatePostForm(title, content, heroId, category);
     if (!checked.valid) return null;
 
     const posts = getPosts();
@@ -247,6 +283,7 @@ function createPost(title, content, heroId) {
         title: checked.values.title,
         content: checked.values.content,
         heroId: checked.values.heroId,
+        category: checked.values.category,
         createdAt: new Date().toISOString(),
     };
 
@@ -287,10 +324,12 @@ function canEditPost(post) {
  * @param {string} title
  * @param {string} content
  * @param {*} heroId
+ * @param {string} [category] chuyên mục mới. Bỏ trống thì giữ chuyên mục đang có
+ *        của bài (gọi từ test hoặc từ code cũ chỉ truyền 3 tham số vẫn chạy được).
  * @returns {object|null} bài sau khi sửa, null nếu không tìm thấy bài,
  *         không phải tác giả, dữ liệu không hợp lệ hoặc lưu thất bại.
  */
-function updatePost(postId, title, content, heroId) {
+function updatePost(postId, title, content, heroId, category) {
     const id = normalizeId(postId);
     const posts = getPosts();
     const index = posts.findIndex((post) => normalizeId(post.id) === id);
@@ -301,7 +340,7 @@ function updatePost(postId, title, content, heroId) {
 
     if (!canEditPost(current)) return null;
 
-    const checked = validatePostForm(title, content, heroId);
+    const checked = validatePostForm(title, content, heroId, category || current.category);
     if (!checked.valid) return null;
 
     // Giữ nguyên id + createdAt, chỉ đổi phần nội dung và ghi thời điểm sửa.
@@ -309,6 +348,7 @@ function updatePost(postId, title, content, heroId) {
         title: checked.values.title,
         content: checked.values.content,
         heroId: checked.values.heroId,
+        category: checked.values.category,
         updatedAt: new Date().toISOString(),
     });
 
@@ -504,6 +544,9 @@ async function initFeedPage() {
     feedHeroes = await loadData(DATA_PATH.heroes);
     if (!Array.isArray(feedHeroes)) feedHeroes = [];
 
+    // Vẽ thanh lọc trước danh sách để renderFeedList() dùng luôn trạng thái đó.
+    renderFeedFilterBar();
+
     renderPostForm();
     renderFeedList();
 }
@@ -541,6 +584,14 @@ function renderPostForm(editingPost, formBox) {
         .map((hero) => `<option value="${hero.id}">${escapeHtml(hero.name)}</option>`)
         .join('');
 
+    // Không có option rỗng: muốn đăng bài thì bắt buộc chọn chuyên mục.
+    const categoryOptions = POST_CATEGORIES
+        .map((category) => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`)
+        .join('');
+
+    // Bài cũ chưa có chuyên mục thì coi như "Khác" và chọn sẵn chuyên mục đầu tiên.
+    const editingCategory = editing ? getPostCategory(editing) : POST_CATEGORIES[0];
+
     box.innerHTML = `
         <form class="feed-form ${editing ? 'is-editing' : ''}" id="post-form" novalidate${editing ? ` data-edit-id="${escapeHtml(editing.id)}"` : ''}>
             <h2>${editing ? 'Sửa bài viết' : 'Đăng bài mới'}</h2>
@@ -553,6 +604,12 @@ function renderPostForm(editingPost, formBox) {
             <div class="form-group">
                 <label for="post-content">Nội dung</label>
                 <textarea id="post-content" rows="4" placeholder="Chia sẻ kinh nghiệm của bạn...">${editing ? escapeHtml(editing.content) : ''}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="post-category">Chuyên mục</label>
+                <select class="filter-bar__select" id="post-category">
+                    ${categoryOptions}
+                </select>
             </div>
             <div class="form-group">
                 <label for="post-hero">Gắn với tướng (không bắt buộc)</label>
@@ -574,14 +631,20 @@ function renderPostForm(editingPost, formBox) {
     // Chọn lại tướng đang gắn của bài cũ (đặt sau innerHTML để option đã tồn tại).
     if (editing && editing.heroId) form.querySelector('#post-hero').value = editing.heroId;
 
+    // Chọn lại chuyên mục của bài cũ; bài cũ không có thì để ở chuyên mục đầu tiên.
+    if (editing && POST_CATEGORIES.includes(editing.category)) {
+        form.querySelector('#post-category').value = editing.category;
+    }
+
     form.addEventListener('submit', (event) => {
         event.preventDefault();
 
         const title = form.querySelector('#post-title').value;
         const content = form.querySelector('#post-content').value;
         const heroId = form.querySelector('#post-hero').value;
+        const category = form.querySelector('#post-category').value;
         const errorBox = form.querySelector('#post-errors');
-        const checked = validatePostForm(title, content, heroId);
+        const checked = validatePostForm(title, content, heroId, category);
 
         renderErrors(errorBox, checked.errors);
         if (!checked.valid) return;
@@ -590,7 +653,7 @@ function renderPostForm(editingPost, formBox) {
 
         if (editId) {
             // Sửa bài cũ: giữ nguyên id và createdAt, chỉ đổi nội dung + ghi updatedAt.
-            const updated = updatePost(editId, title, content, heroId);
+            const updated = updatePost(editId, title, content, heroId, category);
             if (!updated) {
                 renderErrors(errorBox, ['Không lưu được bài viết. Bạn chỉ có thể sửa bài của chính mình.']);
                 return;
@@ -617,7 +680,7 @@ function renderPostForm(editingPost, formBox) {
             return;
         }
 
-        const newPost = createPost(title, content, heroId);
+        const newPost = createPost(title, content, heroId, category);
         if (!newPost) {
             renderErrors(errorBox, ['Không lưu được bài viết. Hãy thử lại hoặc kiểm tra dung lượng trình duyệt.']);
             return;
@@ -665,8 +728,178 @@ function openPostEditForm(postId, formBox) {
     return true;
 }
 
+/* ---------- Lọc & sắp xếp Feed ---------- */
+
+/** Giá trị mặc định: xem tất cả chuyên mục, sắp xếp mới nhất trước. */
+const POST_CATEGORY_ALL = 'all';
+const POST_SORT_NEWEST = 'newest';
+const POST_SORT_LIKES = 'likes';
+const POST_SORT_COMMENTS = 'comments';
+
+/** Nhãn hiển thị cho từng kiểu sắp xếp (thứ tự chính là thứ tự trong select). */
+const POST_SORT_LABELS = {
+    [POST_SORT_NEWEST]: 'Mới nhất',
+    [POST_SORT_LIKES]: 'Nhiều like nhất',
+    [POST_SORT_COMMENTS]: 'Nhiều bình luận nhất',
+};
+
 /**
- * Vẽ danh sách bài viết.
+ * Trạng thái bộ lọc của trang Feed, tạo một lần rồi giữ trong bộ nhớ.
+ * Đọc sẵn từ URL nên F5 hay copy link sang máy khác vẫn giữ nguyên bộ lọc:
+ *   feed.html?category=Mẹo%20chơi&sort=likes
+ * Chỉ chuyên mục và cách sắp xếp được ghi lên URL, từ khoá tìm kiếm thì không
+ * (để link gọn và vì từ khoá không cần chia sẻ).
+ */
+let feedFilterState = null;
+
+function getFeedFilterState() {
+    if (feedFilterState) return feedFilterState;
+
+    const categoryParam = String(getQueryParam('category') || '').trim();
+    const sortParam = String(getQueryParam('sort') || '').trim();
+
+    feedFilterState = {
+        // Chỉ nhận chuyên mục có thật trong POST_CATEGORIES, còn lại (chuyên mục lạ trên
+        // URL) thì rơi về "tất cả". Bài cũ thiếu category vẫn hiện là "Khác" trên thẻ bài
+        // nhưng không có trong danh sách lọc.
+        category: POST_CATEGORIES.includes(categoryParam) ? categoryParam : POST_CATEGORY_ALL,
+        sort: POST_SORT_LABELS[sortParam] ? sortParam : POST_SORT_NEWEST,
+        keyword: '',
+    };
+
+    return feedFilterState;
+}
+
+/**
+ * Ghi trạng thái lọc lên URL (không tải lại trang).
+ * Bỏ tham số rỗng để URL luôn gọn, và giữ lại các tham số khác của trang (vd ?id=).
+ */
+function syncFeedFilterUrl(state) {
+    const params = new URLSearchParams(window.location.search);
+
+    if (state.category && state.category !== POST_CATEGORY_ALL) params.set('category', state.category);
+    else params.delete('category');
+
+    if (state.sort && state.sort !== POST_SORT_NEWEST) params.set('sort', state.sort);
+    else params.delete('sort');
+
+    const query = params.toString();
+
+    history.replaceState(null, '', query ? `${BASE_PATH}src/pages/feed.html?${query}` : `${BASE_PATH}src/pages/feed.html`);
+}
+
+/**
+ * Lọc (chuyên mục + từ khoá trong tiêu đề) rồi sắp xếp danh sách bài viết.
+ * Lọc dùng phép AND: bài phải thỏa cả chuyên mục lẫn từ khoá.
+ * @param {object} state trạng thái lọc hiện tại.
+ * @returns {Array}
+ */
+function getVisiblePosts(state) {
+    const keyword = String(state.keyword || '').trim();
+    const list = getPosts().filter((post) => {
+        const matchesCategory = state.category === POST_CATEGORY_ALL || getPostCategory(post) === state.category;
+        const matchesKeyword = !keyword || matchKeyword(post.title, keyword);
+
+        return matchesCategory && matchesKeyword;
+    });
+
+    // createdAt là chuỗi ISO nên so sánh chuỗi cũng đúng thứ tự thời gian,
+    // nhưng dùng Date.parse để chắc chắn và để xử lý được giá trị thiếu.
+    const timeOf = (post) => {
+        const time = Date.parse(post.createdAt);
+        return Number.isNaN(time) ? 0 : time;
+    };
+
+    // Khi hai bài bằng nhau (cùng lượt like / cùng số bình luận) thì bài mới hơn đứng trước.
+    const sorted = list.slice();
+
+    if (state.sort === POST_SORT_LIKES) {
+        sorted.sort((a, b) => getLikeUsers(b.id).length - getLikeUsers(a.id).length || timeOf(b) - timeOf(a));
+    } else if (state.sort === POST_SORT_COMMENTS) {
+        sorted.sort((a, b) => getCommentsOfPost(b.id).length - getCommentsOfPost(a.id).length || timeOf(b) - timeOf(a));
+    } else {
+        sorted.sort((a, b) => timeOf(b) - timeOf(a));
+    }
+
+    return sorted;
+}
+
+/**
+ * Vẽ thanh lọc: chuyên mục, cách sắp xếp và ô tìm theo tiêu đề.
+ * Tái dùng class filter-bar / filter-bar__select / filter-bar__keyword của common.css.
+ * @returns {Element|null} vùng chứa thanh lọc, null nếu trang không có.
+ */
+function renderFeedFilterBar() {
+    const bar = document.getElementById('feed-filter-bar');
+    if (!bar) return null;
+
+    const state = getFeedFilterState();
+
+    bar.innerHTML = `
+        <div class="filter-bar">
+            <input
+                type="search"
+                class="filter-bar__keyword"
+                id="feed-keyword"
+                placeholder="Tìm bài viết theo tiêu đề..."
+                aria-label="Tìm bài viết theo tiêu đề"
+            >
+            <select class="filter-bar__select" id="feed-category-filter" aria-label="Lọc theo chuyên mục">
+                <option value="${POST_CATEGORY_ALL}">Tất cả chuyên mục</option>
+                ${POST_CATEGORIES.map((category) => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`).join('')}
+            </select>
+            <select class="filter-bar__select" id="feed-sort-filter" aria-label="Sắp xếp bài viết">
+                ${Object.keys(POST_SORT_LABELS)
+                    .map((sort) => `<option value="${sort}">${escapeHtml(POST_SORT_LABELS[sort])}</option>`)
+                    .join('')}
+            </select>
+        </div>
+    `;
+
+    const categorySelect = bar.querySelector('#feed-category-filter');
+    const sortSelect = bar.querySelector('#feed-sort-filter');
+    const keywordInput = bar.querySelector('#feed-keyword');
+
+    // Gán value sau khi đã có option trong DOM, giống cách chọn lại tướng ở form.
+    if (categorySelect) categorySelect.value = state.category;
+    if (sortSelect) sortSelect.value = state.sort;
+    if (keywordInput) keywordInput.value = state.keyword;
+
+    if (categorySelect) {
+        categorySelect.addEventListener('change', () => {
+            // Trình duyệt trả về chuỗi rỗng nếu giá trị không khớp option nào,
+            // khi đó quay về "tất cả" cho an toàn.
+            const picked = categorySelect.value;
+            state.category = POST_CATEGORIES.includes(picked) ? picked : POST_CATEGORY_ALL;
+            categorySelect.value = state.category;
+            syncFeedFilterUrl(state);
+            renderFeedList();
+        });
+    }
+
+    if (sortSelect) {
+        sortSelect.addEventListener('change', () => {
+            const picked = sortSelect.value;
+            state.sort = POST_SORT_LABELS[picked] ? picked : POST_SORT_NEWEST;
+            sortSelect.value = state.sort;
+            syncFeedFilterUrl(state);
+            renderFeedList();
+        });
+    }
+
+    if (keywordInput) {
+        // Gõ liên tục thì chỉ lọc lại sau khi ngừng gõ, tránh vẽ lại danh sách mỗi ký tự.
+        keywordInput.addEventListener('input', debounce(() => {
+            state.keyword = keywordInput.value;
+            renderFeedList();
+        }, 200));
+    }
+
+    return bar;
+}
+
+/**
+ * Vẽ danh sách bài viết theo bộ lọc hiện tại.
  * @param {number|string} [focusPostId] id bài cần đưa lại con trỏ vào ô bình luận sau khi vẽ.
  *        Cần thiết vì danh sách bị vẽ lại toàn bộ sau mỗi lượt thích / bình luận,
  *        không làm vậy thì nội dung đang gõ ở các ô khác sẽ mất sạch.
@@ -675,11 +908,16 @@ function renderFeedList(focusPostId) {
     const listContainer = document.getElementById('feed-list');
     if (!listContainer) return;
 
-    const posts = getPosts();
+    // Trang nào không có thanh lọc (vd post-detail.html) thì vẽ toàn bộ bài như cũ.
+    const state = getFeedFilterState();
+    const posts = getVisiblePosts(state);
+    const countEl = document.getElementById('feed-count');
+
+    if (countEl) countEl.textContent = `${posts.length} bài viết`;
 
     listContainer.innerHTML = posts.length
         ? posts.map(renderPostCard).join('')
-        : renderNotFound('Chưa có bài viết nào. Hãy là người đăng bài đầu tiên!');
+        : renderNotFound('Chưa có bài viết nào khớp bộ lọc. Hãy thử đổi chuyên mục hoặc xoá từ khoá.');
 
     if (focusPostId === undefined || focusPostId === null) return;
 
@@ -718,6 +956,7 @@ function renderPostCard(post) {
                         ${escapeHtml(post.author)} · ${formatDateTime(post.createdAt)}
                         ${post.updatedAt ? ` · <span class="post-card__updated" title="${escapeHtml(formatDateTime(post.updatedAt))}">đã sửa</span>` : ''}
                         ${hero ? ` · <a href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">${escapeHtml(hero.name)}</a>` : ''}
+                        · <span class="post-card__category">${escapeHtml(getPostCategory(post))}</span>
                     </span>
                 </div>
                 <div class="post-card__owner-actions">
@@ -834,6 +1073,7 @@ function renderPostDetailView() {
                         ${post.updatedAt ? `<span class="post-detail__updated" title="${escapeHtml(formatDateTime(post.updatedAt))}">đã sửa</span>` : ''}
                     </span>
                     ${hero ? `<a href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">${escapeHtml(hero.name)}</a>` : ''}
+                    <span class="post-card__category">${escapeHtml(getPostCategory(post))}</span>
                 </p>
             </header>
 
