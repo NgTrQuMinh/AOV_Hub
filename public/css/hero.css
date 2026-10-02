@@ -4,3 +4,20 @@
  *
  * TODO: layout heroes.html (filter-bar + grid), hero-detail.html (ảnh lớn, stats, skills, build đề xuất)
  * ========================================= */
+
+/* ---------- Thanh lọc & sắp xếp ---------- */
+/* Màn hình hẹp: ô tìm chiếm một dòng riêng, các select tự xuống hàng dưới
+   (giống feed.css) vì thanh lọc đã có tới 4 ô: tìm + vai trò + độ khó + sắp xếp */
+@media (max-width: 640px) {
+    .filter-bar {
+        flex-wrap: wrap;
+    }
+
+    .filter-bar__keyword {
+        flex: 1 1 100%;
+    }
+
+    .filter-bar__select {
+        flex: 1 1 auto;
+    }
+}

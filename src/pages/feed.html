@@ -18,6 +18,10 @@
         <h1>Cộng đồng AOV HUB</h1>
         <p>Chia sẻ kinh nghiệm lên đồ, lối chơi và thảo luận cùng người chơi khác.</p>
 
+        <!-- Thanh lọc + số bài viết: do feed.js vẽ, trạng thái lấy từ ?category=...&sort=... -->
+        <div id="feed-filter-bar" class="feed-filter"></div>
+        <p id="feed-count" class="feed-count" aria-live="polite"></p>
+
         <div class="feed-layout">
             <div id="feed-list" class="feed-list"></div>
             <aside id="feed-form" class="feed-aside"></aside>
@@ -30,6 +34,8 @@
     <script src="/src/js/loadData.js"></script>
     <script src="/src/js/components.js"></script>
     <script src="/src/js/auth.js"></script>
+    <!-- search.js: matchKeyword() tìm theo tiêu đề, debounce() khi gõ, getQueryParam() đọc ?category=&sort= -->
+    <script src="/src/js/search.js"></script>
     <script src="/src/js/layout.js"></script>
     <script src="/src/js/storage.js"></script>
     <script src="/src/js/feed.js"></script>

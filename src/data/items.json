@@ -1,559 +1,620 @@
 [
-    {
-        "id": 101,
-        "name": "Kiếm Fafnir",
-        "alias": "fafnir",
-        "image": "items/fafnir.png",
-        "type": "Công",
-        "price": 2040,
-        "stats": {
-            "attack": 60,
-            "attackSpeed": 30
-        },
-        "passive": "",
-        "description": ""
+  {
+    "id": 101,
+    "name": "Kiếm Fafnir",
+    "alias": "kiem-fafnir",
+    "image": "items/kiem-fafnir.png",
+    "type": "Công",
+    "price": 2040,
+    "stats": {
+      "attack": 60,
+      "attackSpeed": 30,
+      "lifesteal": 10
     },
-    {
-        "id": 102,
-        "name": "Vô Cực Kiếm",
-        "alias": "vo-cuc-kiem",
-        "image": "items/vo-cuc-kiem.png",
-        "type": "Công",
-        "price": 2140,
-        "stats": {
-            "attack": 65,
-            "critChance": 25
-        },
-        "passive": "Tăng 20% sát thương chí mạng gây ra",
-        "description": "Trang bị tăng mạnh chỉ số chí mạng cho xạ thủ"
+    "passive": "Đòn đánh thường gây thêm sát thương vật lý bằng 8% Máu hiện tại của mục tiêu.",
+    "description": "Trang bị diệt tanker hàng đầu dành cho Xạ thủ và Đấu sĩ.",
+    "related": [102, 103, 104]
+  },
+  {
+    "id": 102,
+    "name": "Thánh Kiếm",
+    "alias": "thanh-kiem",
+    "image": "items/thanh-kiem.png",
+    "type": "Công",
+    "price": 2120,
+    "stats": {
+      "attack": 100,
+      "critChance": 25
     },
-    {
-        "id": 103,
-        "name": "Ma Kiếm Sharpness",
-        "alias": "ma-kiem-sharpness",
-        "image": "items/ma-kiem-sharpness.png",
-        "type": "Công",
-        "price": 1980,
-        "stats": {
-            "attack": 55,
-            "penetration": 40
-        },
-        "passive": "Đòn đánh thường xuyên xuyên giáp",
-        "description": ""
+    "passive": "Tăng 40% sát thương chí mạng và tăng tốc chạy sau khi đòn đánh gây chí mạng.",
+    "description": "Trang bị chí mạng trấn phái cho Xạ thủ và Sát thủ.",
+    "related": [101, 105, 106]
+  },
+  {
+    "id": 103,
+    "name": "Nanh Fenrir",
+    "alias": "nanh-fenrir",
+    "image": "items/nanh-fenrir.png",
+    "type": "Công",
+    "price": 2950,
+    "stats": {
+      "attack": 200
     },
-    {
-        "id": 104,
-        "name": "Rìu Đại Địa",
-        "alias": "riu-dai-dia",
-        "image": "items/riu-dai-dia.png",
-        "type": "Công",
-        "price": 2100,
-        "stats": {
-            "attack": 70,
-            "hp": 300
-        },
-        "passive": "Đòn đánh gây thêm sát thương theo % máu tối đa mục tiêu",
-        "description": ""
+    "passive": "Khi máu của mục tiêu dưới 50%, sát thương gây ra tăng thêm 30%.",
+    "description": "Trang bị công vật lý đắt nhất, tối ưu hóa sát thương kết liễu.",
+    "related": [102, 104, 107]
+  },
+  {
+    "id": 104,
+    "name": "Phức Hợp Kiếm",
+    "alias": "phuc-hop-kiem",
+    "image": "items/phuc-hop-kiem.png",
+    "type": "Công",
+    "price": 2150,
+    "stats": {
+      "attack": 70,
+      "attackSpeed": 15,
+      "lifesteal": 10,
+      "cooldownReduction": 10,
+      "hp": 500
     },
-    {
-        "id": 105,
-        "name": "Quỷ Kiếm Mãng Xà",
-        "alias": "quy-kiem-mang-xa",
-        "image": "items/quy-kiem-mang-xa.png",
-        "type": "Công",
-        "price": 2050,
-        "stats": {
-            "attack": 65,
-            "lifesteal": 15
-        },
-        "passive": "Hồi máu khi gây sát thương",
-        "description": ""
+    "passive": "Sức mạnh nguyên tố: Sau khi tung chiêu, đòn đánh thường tiếp theo gây thêm sát thương vật lý.",
+    "description": "Trang bị toàn diện về mọi chỉ số cho Đấu sĩ và Sát thủ.",
+    "related": [101, 103, 107]
+  },
+  {
+    "id": 105,
+    "name": "Song Đao Bão Táp",
+    "alias": "song-dao-bao-tap",
+    "image": "items/song-dao-bao-tap.png",
+    "type": "Công",
+    "price": 1920,
+    "stats": {
+      "attackSpeed": 35,
+      "critChance": 25,
+      "moveSpeed": 7
     },
-    {
-        "id": 106,
-        "name": "Đại Bác Noxus",
-        "alias": "dai-bac-noxus",
-        "image": "items/dai-bac-noxus.png",
-        "type": "Công",
-        "price": 2020,
-        "stats": {
-            "attack": 60,
-            "critChance": 20
-        },
-        "passive": "Chí mạng gây thêm sát thương phép",
-        "description": ""
+    "passive": "Tăng 35% kháng hiệu ứng trong 2 giây sau khi gây đòn đánh chí mạng.",
+    "description": "Tăng tốc đánh, chí mạng và thả diều linh hoạt.",
+    "related": [102, 106, 108]
+  },
+  {
+    "id": 106,
+    "name": "Vuốt Hung Tàn",
+    "alias": "vuot-hung-tan",
+    "image": "items/vuot-hung-tan.png",
+    "type": "Công",
+    "price": 1960,
+    "stats": {
+      "attack": 30,
+      "attackSpeed": 30,
+      "critChance": 20
     },
-    {
-        "id": 107,
-        "name": "Nanh Sói",
-        "alias": "nanh-soi",
-        "image": "items/nanh-soi.png",
-        "type": "Công",
-        "price": 1900,
-        "stats": {
-            "attack": 50,
-            "attackSpeed": 25,
-            "moveSpeed": 10
-        },
-        "passive": "Tăng tốc độ di chuyển khi tấn công",
-        "description": ""
+    "passive": "Hung tàn: Các đòn đánh thường tăng 10% tốc đánh, cộng dồn tối đa 5 tầng.",
+    "description": "Trang bị dồn tốc đánh tối đa cho Xạ thủ bắn liên tục.",
+    "related": [102, 105, 108]
+  },
+  {
+    "id": 107,
+    "name": "Thương Xuyên Phá",
+    "alias": "thuong-xuyen-pha",
+    "image": "items/thuong-xuyen-pha.png",
+    "type": "Công",
+    "price": 2020,
+    "stats": {
+      "attack": 110,
+      "cooldownReduction": 10
     },
-    {
-        "id": 108,
-        "name": "Găng Tay Sương Gió",
-        "alias": "gang-tay-suong-gio",
-        "image": "items/gang-tay-suong-gio.png",
-        "type": "Công",
-        "price": 1850,
-        "stats": {
-            "attackSpeed": 40,
-            "critChance": 20
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Chinh phạt: Tăng xuyên giáp theo cấp tướng. Rời khỏi giao tranh tăng 10% tốc chạy.",
+    "description": "Xuyên giáp đầu trận và đảo đường gank cực tốt cho Sát thủ.",
+    "related": [103, 104, 109]
+  },
+  {
+    "id": 108,
+    "name": "Cung Tà Ma",
+    "alias": "cung-ta-ma",
+    "image": "items/cung-ta-ma.png",
+    "type": "Công",
+    "price": 2100,
+    "stats": {
+      "attack": 100,
+      "critChance": 15,
+      "lifesteal": 10
     },
-    {
-        "id": 109,
-        "name": "Búa Đá Vô Cực",
-        "alias": "bua-da-vo-cuc",
-        "image": "items/bua-da-vo-cuc.png",
-        "type": "Công",
-        "price": 2200,
-        "stats": {
-            "attack": 80,
-            "hp": 200
-        },
-        "passive": "Đòn đánh gây choáng ngắn",
-        "description": ""
+    "passive": "Kích hoạt Tà ma: Tăng 90% hút máu trong 3 giây (chỉ tác dụng với tướng đánh xa).",
+    "description": "Trang bị ao nhây, lật kèo siêu đỉnh cho Xạ thủ.",
+    "related": [101, 102, 106]
+  },
+  {
+    "id": 109,
+    "name": "Kiếm Muramasa",
+    "alias": "kiem-muramasa",
+    "image": "items/kiem-muramasa.png",
+    "type": "Công",
+    "price": 1980,
+    "stats": {
+      "attack": 75,
+      "cooldownReduction": 10
     },
-    {
-        "id": 110,
-        "name": "Cung Thần Tốc",
-        "alias": "cung-than-toc",
-        "image": "items/cung-than-toc.png",
-        "type": "Công",
-        "price": 1750,
-        "stats": {
-            "attackSpeed": 45,
-            "moveSpeed": 15
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Tăng 40% xuyên giáp.",
+    "description": "Trang bị xuyên giáp theo phần trăm cực mạnh về cuối trận.",
+    "related": [107, 103, 104]
+  },
+  {
+    "id": 110,
+    "name": "Liềm Đoạt Mệnh",
+    "alias": "liem-doat-menh",
+    "image": "items/liem-doat-menh.png",
+    "type": "Công",
+    "price": 2000,
+    "stats": {
+      "attack": 60,
+      "cooldownReduction": 10
     },
-    {
-        "id": 201,
-        "name": "Trượng Băng Giá",
-        "alias": "truong-bang-gia",
-        "image": "items/truong-bang-gia.png",
-        "type": "Phép",
-        "price": 2150,
-        "stats": {
-            "magicPower": 90,
-            "hp": 300
-        },
-        "passive": "Đòn đánh làm chậm mục tiêu",
-        "description": ""
+    "passive": "Thần linh can thiệp: Miễn tử vong và tăng 20% tốc chạy trong 1 giây khi nhận sát thương chí tử.",
+    "description": "Trang bị bảo hiểm outplay thần thánh trong giao tranh.",
+    "related": [102, 108, 301]
+  },
+  {
+    "id": 201,
+    "name": "Trượng Bùng Nổ",
+    "alias": "truong-bung-no",
+    "image": "items/truong-bung-no.png",
+    "type": "Phép",
+    "price": 1800,
+    "stats": {
+      "magicPower": 240,
+      "moveSpeed": 5
     },
-    {
-        "id": 202,
-        "name": "Trượng Pha Lê",
-        "alias": "truong-pha-le",
-        "image": "items/truong-pha-le.png",
-        "type": "Phép",
-        "price": 2000,
-        "stats": {
-            "magicPower": 100,
-            "cooldownReduction": 10
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Tạo ra vụ nổ gây thêm sát thương phép khi chiêu thức trúng đích.",
+    "description": "Trang bị sốc sát thương và cấu rỉa đầu trận cho Pháp sư.",
+    "related": [202, 203, 204]
+  },
+  {
+    "id": 202,
+    "name": "Vương Miện Hecate",
+    "alias": "vuong-mien-hecate",
+    "image": "items/vuong-mien-hecate.png",
+    "type": "Phép",
+    "price": 2410,
+    "stats": {
+      "magicPower": 200
     },
-    {
-        "id": 203,
-        "name": "Vương Miện Vô Cực",
-        "alias": "vuong-mien-vo-cuc",
-        "image": "items/vuong-mien-vo-cuc.png",
-        "type": "Phép",
-        "price": 2180,
-        "stats": {
-            "magicPower": 95,
-            "penetration": 35
-        },
-        "passive": "Sát thương phép xuyên kháng phép",
-        "description": ""
+    "passive": "Tăng thêm 35% công phép.",
+    "description": "Trang bị khuếch đại công phép cực mạnh ở giữa và cuối trận.",
+    "related": [201, 203, 205]
+  },
+  {
+    "id": 203,
+    "name": "Trượng Hỗn Mang",
+    "alias": "truong-hon-mang",
+    "image": "items/truong-hon-mang.png",
+    "type": "Phép",
+    "price": 2050,
+    "stats": {
+      "magicPower": 180,
+      "cooldownReduction": 10
     },
-    {
-        "id": 204,
-        "name": "Đũa Phép Archangel",
-        "alias": "dua-phep-archangel",
-        "image": "items/dua-phep-archangel.png",
-        "type": "Phép",
-        "price": 2100,
-        "stats": {
-            "magicPower": 70,
-            "mana": 400
-        },
-        "passive": "Tăng dần sức mạnh phép theo lượng mana tiêu hao",
-        "description": ""
+    "passive": "Tăng 40% xuyên giáp phép.",
+    "description": "Xuyên giáp phép phần trăm chống lại các tướng lên kháng phép.",
+    "related": [201, 202, 206]
+  },
+  {
+    "id": 204,
+    "name": "Mặt Nạ Berith",
+    "alias": "mat-na-berith",
+    "image": "items/mat-na-berith.png",
+    "type": "Phép",
+    "price": 2160,
+    "stats": {
+      "magicPower": 120,
+      "cooldownReduction": 10,
+      "armor": 300,
+      "hp": 800
     },
-    {
-        "id": 205,
-        "name": "Trượng Hư Không",
-        "alias": "truong-hu-khong",
-        "image": "items/truong-hu-khong.png",
-        "type": "Phép",
-        "price": 1950,
-        "stats": {
-            "magicPower": 85,
-            "penetration": 25
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Gây sát thương phép theo 3% máu hiện tại của mục tiêu mỗi giây trong 3 giây.",
+    "description": "Trang bị thiêu đốt theo % máu, cực tốt cho Pháp sư thi triển chiêu liên tục.",
+    "related": [201, 205, 207]
+  },
+  {
+    "id": 205,
+    "name": "Sách Thánh",
+    "alias": "sach-thanh",
+    "image": "items/sach-thanh.png",
+    "type": "Phép",
+    "price": 2990,
+    "stats": {
+      "magicPower": 400,
+      "cooldownReduction": 10
     },
-    {
-        "id": 206,
-        "name": "Ngọc Đại Trí Tuệ",
-        "alias": "ngoc-dai-tri-tue",
-        "image": "items/ngoc-dai-tri-tue.png",
-        "type": "Phép",
-        "price": 1800,
-        "stats": {
-            "magicPower": 75,
-            "cooldownReduction": 15
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Tăng 1400 máu tối đa.",
+    "description": "Trang bị phép đắt nhất game cung cấp lượng công phép và máu tối đa cực khủng.",
+    "related": [202, 203, 208]
+  },
+  {
+    "id": 206,
+    "name": "Quyền Trượng Rhea",
+    "alias": "quyen-truong-rhea",
+    "image": "items/quyen-truong-rhea.png",
+    "type": "Phép",
+    "price": 2220,
+    "stats": {
+      "magicPower": 140,
+      "cooldownReduction": 10,
+      "lifesteal": 25
     },
-    {
-        "id": 207,
-        "name": "Sách Phù Thủy",
-        "alias": "sach-phu-thuy",
-        "image": "items/sach-phu-thuy.png",
-        "type": "Phép",
-        "price": 1700,
-        "stats": {
-            "magicPower": 60,
-            "manaRegen": 20
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Tạo khiên chắn khi máu rơi xuống dưới 40%.",
+    "description": "Hút máu phép và tạo lá chắn sinh tồn cho Pháp sư.",
+    "related": [201, 203, 204]
+  },
+  {
+    "id": 207,
+    "name": "Gươm Tận Thế",
+    "alias": "guom-tan-the",
+    "image": "items/guom-tan-the.png",
+    "type": "Phép",
+    "price": 2190,
+    "stats": {
+      "magicPower": 160,
+      "cooldownReduction": 10,
+      "moveSpeed": 5
     },
-    {
-        "id": 208,
-        "name": "Trượng Hủy Diệt",
-        "alias": "truong-huy-diet",
-        "image": "items/truong-huy-diet.png",
-        "type": "Phép",
-        "price": 2050,
-        "stats": {
-            "magicPower": 90,
-            "critChance": 15
-        },
-        "passive": "Sát thương phép có thể chí mạng",
-        "description": ""
+    "passive": "Sức mạnh phép thuật: Sau khi tung chiêu, đòn đánh thường tiếp theo gây thêm sát thương phép.",
+    "description": "Dành cho Pháp sư đánh tay cường hóa như Liliana, Raz, Keera.",
+    "related": [201, 204, 208]
+  },
+  {
+    "id": 208,
+    "name": "Quả Cầu Băng Sương",
+    "alias": "qua-cau-bang-suong",
+    "image": "items/qua-cau-bang-suong.png",
+    "type": "Phép",
+    "price": 2000,
+    "stats": {
+      "magicPower": 220
     },
-    {
-        "id": 209,
-        "name": "Mặt Nạ Diệt Vong",
-        "alias": "mat-na-diet-vong",
-        "image": "items/mat-na-diet-vong.png",
-        "type": "Phép",
-        "price": 1650,
-        "stats": {
-            "magicPower": 55,
-            "lifesteal": 10
-        },
-        "passive": "Hồi máu theo sát thương phép gây ra",
-        "description": ""
+    "passive": "Kích hoạt Băng sương: Bất tử và không thể bị chọn làm mục tiêu trong 1.5 giây.",
+    "description": "Trang bị outplay sinh tồn số 1 dành cho Pháp sư.",
+    "related": [202, 205, 206]
+  },
+  {
+    "id": 209,
+    "name": "Băng Nhẫn Skadi",
+    "alias": "bang-nhan-skadi",
+    "image": "items/bang-nhan-skadi.png",
+    "type": "Phép",
+    "price": 2100,
+    "stats": {
+      "magicPower": 140,
+      "hp": 600,
+      "cooldownReduction": 5
     },
-    {
-        "id": 210,
-        "name": "Găng Tay Băng Giá",
-        "alias": "gang-tay-bang-gia",
-        "image": "items/gang-tay-bang-gia.png",
-        "type": "Phép",
-        "price": 1600,
-        "stats": {
-            "magicPower": 50,
-            "hp": 200
-        },
-        "passive": "Làm chậm mục tiêu khi trúng chiêu",
-        "description": ""
+    "passive": "Giáp băng: Nhận thêm giáp và giáp phép bằng 50% công phép, tối đa 230 điểm.",
+    "description": "Trang bị phép kết hợp giáp phép cho Pháp sư cần phòng ngự.",
+    "related": [202, 206, 208]
+  },
+  {
+    "id": 210,
+    "name": "Gươm Hiền Triết",
+    "alias": "guom-hien-triet",
+    "image": "items/guom-hien-triet.png",
+    "type": "Phép",
+    "price": 2100,
+    "stats": {
+      "magicPower": 140,
+      "hp": 600,
+      "cooldownReduction": 10
     },
-    {
-        "id": 301,
-        "name": "Giáp Máu",
-        "alias": "giap-mau",
-        "image": "items/giap-mau.png",
-        "type": "Giáp",
-        "price": 1900,
-        "stats": {
-            "armor": 60,
-            "hp": 400
-        },
-        "passive": "Hồi máu khi máu thấp",
-        "description": ""
+    "passive": "Diệt thần: Đánh trúng tướng địch cộng dồn xuyên giáp phép, tối đa 10 lần cộng dồn trong 3 giây.",
+    "description": "Trang bị xuyên phép tăng dần, càng đánh càng xuyên.",
+    "related": [203, 205, 207]
+  },
+  {
+    "id": 301,
+    "name": "Giáp Hộ Mệnh",
+    "alias": "giap-ho-menh",
+    "image": "items/giap-ho-menh.png",
+    "type": "Thủ",
+    "price": 2240,
+    "stats": {
+      "armor": 120
     },
-    {
-        "id": 302,
-        "name": "Giáp Thiên Thần",
-        "alias": "giap-thien-than",
-        "image": "items/giap-thien-than.png",
-        "type": "Giáp",
-        "price": 2100,
-        "stats": {
-            "armor": 70,
-            "hp": 500
-        },
-        "passive": "Hồi sinh sau khi chết nếu máu về 0",
-        "description": ""
+    "passive": "Hồi sinh: Sau khi chết, sống lại ngay tại chỗ với 2000 máu (tối đa 2 lần/trận).",
+    "description": "Trang bị bảo hiểm quan trọng bậc nhất ở giai đoạn cuối trận.",
+    "related": [302, 303, 110]
+  },
+  {
+    "id": 302,
+    "name": "Giáp Gaia",
+    "alias": "giap-gaia",
+    "image": "items/giap-gaia.png",
+    "type": "Thủ",
+    "price": 1960,
+    "stats": {
+      "magicResist": 240,
+      "hp": 1200,
+      "moveSpeed": 5
     },
-    {
-        "id": 303,
-        "name": "Giáp Sát Thủ",
-        "alias": "giap-sat-thu",
-        "image": "items/giap-sat-thu.png",
-        "type": "Giáp",
-        "price": 1750,
-        "stats": {
-            "armor": 55,
-            "hp": 300
-        },
-        "passive": "Giảm sát thương chí mạng nhận vào",
-        "description": ""
+    "passive": "Hồi phục: Khi chịu sát thương, hồi lại 8% máu tối đa trong 2 giây.",
+    "description": "Trang bị kháng phép và hồi máu liên tục cực khỏe.",
+    "related": [301, 303, 304]
+  },
+  {
+    "id": 303,
+    "name": "Huân Chương Troy",
+    "alias": "huan-chuong-troy",
+    "image": "items/huan-chuong-troy.png",
+    "type": "Thủ",
+    "price": 2080,
+    "stats": {
+      "magicResist": 200,
+      "hp": 1000,
+      "cooldownReduction": 10
     },
-    {
-        "id": 304,
-        "name": "Giáp Gai",
-        "alias": "giap-gai",
-        "image": "items/giap-gai.png",
-        "type": "Giáp",
-        "price": 1650,
-        "stats": {
-            "armor": 50,
-            "hp": 350
-        },
-        "passive": "Phản lại sát thương vật lý nhận vào",
-        "description": ""
+    "passive": "Tạo lớp bảo hộ hấp thụ sát thương phép mỗi khi rời giao tranh.",
+    "description": "Trang bị kháng phép khắc chế Pháp sư dồn sát thương sốc.",
+    "related": [301, 302, 305]
+  },
+  {
+    "id": 304,
+    "name": "Khiên Thất Truyền",
+    "alias": "khien-that-truyen",
+    "image": "items/khien-that-truyen.png",
+    "type": "Thủ",
+    "price": 2180,
+    "stats": {
+      "armor": 360,
+      "hp": 1200
     },
-    {
-        "id": 305,
-        "name": "Giáp Hộ Vệ",
-        "alias": "giap-ho-ve",
-        "image": "items/giap-ho-ve.png",
-        "type": "Giáp",
-        "price": 1500,
-        "stats": {
-            "armor": 45,
-            "hp": 250
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Giảm 30% tốc đánh và 15% tốc chạy của kẻ địch xung quanh.",
+    "description": "Trang bị thủ chống Xạ thủ bắn tay cực đỉnh.",
+    "related": [302, 305, 306]
+  },
+  {
+    "id": 305,
+    "name": "Giáp Thống Khổ",
+    "alias": "giap-thong-kho",
+    "image": "items/giap-thong-kho.png",
+    "type": "Thủ",
+    "price": 1940,
+    "stats": {
+      "armor": 300,
+      "hp": 1200
     },
-    {
-        "id": 306,
-        "name": "Giáp Bạc",
-        "alias": "giap-bac",
-        "image": "items/giap-bac.png",
-        "type": "Giáp",
-        "price": 1400,
-        "stats": {
-            "armor": 40,
-            "hp": 200
-        },
-        "passive": "Giảm sát thương từ đòn đánh thường",
-        "description": ""
+    "passive": "Phản lại 15% sát thương vật lý nhận vào thành sát thương phép.",
+    "description": "Khắc chế các sát thủ và xạ thủ gây sát thương vật lý dồn dập.",
+    "related": [301, 304, 306]
+  },
+  {
+    "id": 306,
+    "name": "Áo Choàng Băng Giá",
+    "alias": "ao-choang-bang-gia",
+    "image": "items/ao-choang-bang-gia.png",
+    "type": "Thủ",
+    "price": 2020,
+    "stats": {
+      "armor": 200,
+      "hp": 800,
+      "cooldownReduction": 10
     },
-    {
-        "id": 307,
-        "name": "Giáp Người Khổng Lồ",
-        "alias": "giap-nguoi-khong-lo",
-        "image": "items/giap-nguoi-khong-lo.png",
-        "type": "Giáp",
-        "price": 1800,
-        "stats": {
-            "armor": 50,
-            "hp": 600
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Sau khi dùng chiêu, đòn đánh tiếp theo làm chậm 30% tốc chạy đối thủ.",
+    "description": "Giúp Đấu sĩ/Đỡ đòn gia tăng khả năng khống chế và giữ chân kẻ địch.",
+    "related": [301, 304, 305]
+  },
+  {
+    "id": 307,
+    "name": "Nham Thuẫn",
+    "alias": "nham-thuan",
+    "image": "items/nham-thuan.png",
+    "type": "Thủ",
+    "price": 1980,
+    "stats": {
+      "armor": 240,
+      "hp": 1200
     },
-    {
-        "id": 401,
-        "name": "Bùa Hộ Mệnh Từ Tính",
-        "alias": "bua-ho-menh-tu-tinh",
-        "image": "items/bua-ho-menh-tu-tinh.png",
-        "type": "Kháng Phép",
-        "price": 1800,
-        "stats": {
-            "magicResist": 60,
-            "hp": 400
-        },
-        "passive": "Kích hoạt khiên chắn khi trúng phép",
-        "description": ""
+    "passive": "Kích hoạt: Nhận lá chắn bằng 30% máu tối đa + 10% máu đã mất trong 3 giây.",
+    "description": "Bảo hộ tạo khiên máu ảo cực lớn cho tướng tanker.",
+    "related": [301, 302, 304]
+  },
+  {
+    "id": 401,
+    "name": "Giày Kiên Cường",
+    "alias": "giay-kien-cuong",
+    "image": "items/giay-kien-cuong.png",
+    "type": "Tốc chạy",
+    "price": 700,
+    "stats": {
+      "moveSpeed": 60,
+      "magicResist": 110
     },
-    {
-        "id": 402,
-        "name": "Trang Sức Thần Bí",
-        "alias": "trang-suc-than-bi",
-        "image": "items/trang-suc-than-bi.png",
-        "type": "Kháng Phép",
-        "price": 1700,
-        "stats": {
-            "magicResist": 55,
-            "hp": 300
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Tăng 35% kháng hiệu ứng.",
+    "description": "Giày bắt buộc phải có khi đối phương có nhiều khống chế.",
+    "related": [402, 403, 404]
+  },
+  {
+    "id": 402,
+    "name": "Giày Hộ Vệ",
+    "alias": "giay-ho-ve",
+    "image": "items/giay-ho-ve.png",
+    "type": "Tốc chạy",
+    "price": 700,
+    "stats": {
+      "moveSpeed": 60,
+      "armor": 110
     },
-    {
-        "id": 403,
-        "name": "Khiên Phép",
-        "alias": "khien-phep",
-        "image": "items/khien-phep.png",
-        "type": "Kháng Phép",
-        "price": 1600,
-        "stats": {
-            "magicResist": 50,
-            "hp": 250
-        },
-        "passive": "Giảm sát thương phép nhận vào",
-        "description": ""
+    "passive": "Giảm 15% sát thương từ đòn đánh thường.",
+    "description": "Tối ưu chống lại các tướng sát thương vật lý và xạ thủ.",
+    "related": [401, 403, 405]
+  },
+  {
+    "id": 403,
+    "name": "Giày Thuật Sĩ",
+    "alias": "giay-thuat-si",
+    "image": "items/giay-thuat-si.png",
+    "type": "Tốc chạy",
+    "price": 700,
+    "stats": {
+      "moveSpeed": 60,
+      "cooldownReduction": 15
     },
-    {
-        "id": 404,
-        "name": "Áo Choàng Bóng Tối",
-        "alias": "ao-choang-bong-toi",
-        "image": "items/ao-choang-bong-toi.png",
-        "type": "Kháng Phép",
-        "price": 1550,
-        "stats": {
-            "magicResist": 45,
-            "hp": 200
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Giảm hồi chiêu kỹ năng.",
+    "description": "Dành cho các tướng phụ thuộc nhiều vào thời gian hồi chiêu.",
+    "related": [401, 402, 404]
+  },
+  {
+    "id": 404,
+    "name": "Giày Phù Thủy",
+    "alias": "giay-phu-thuy",
+    "image": "items/giay-phu-thuy.png",
+    "type": "Tốc chạy",
+    "price": 700,
+    "stats": {
+      "moveSpeed": 60,
+      "penetration": 75
     },
-    {
-        "id": 501,
-        "name": "Giày Thần Tốc",
-        "alias": "giay-than-toc",
-        "image": "items/giay-than-toc.png",
-        "type": "Giày",
-        "price": 800,
-        "stats": {
-            "moveSpeed": 60
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Tăng xuyên giáp phép.",
+    "description": "Giúp Pháp sư tối ưu sát thương phép đầu trận.",
+    "related": [401, 403, 405]
+  },
+  {
+    "id": 405,
+    "name": "Giày Du Mục",
+    "alias": "giay-du-muc",
+    "image": "items/giay-du-muc.png",
+    "type": "Tốc chạy",
+    "price": 700,
+    "stats": {
+      "moveSpeed": 60,
+      "attackSpeed": 25
     },
-    {
-        "id": 502,
-        "name": "Giày Phù Phép",
-        "alias": "giay-phu-phep",
-        "image": "items/giay-phu-phep.png",
-        "type": "Giày",
-        "price": 850,
-        "stats": {
-            "moveSpeed": 45,
-            "magicResist": 20
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Tăng tốc độ đánh.",
+    "description": "Lựa chọn quốc dân cho các Xạ thủ cần tốc độ bắn.",
+    "related": [401, 402, 404]
+  },
+  {
+    "id": 501,
+    "name": "Đại Địa Ma Nhãn",
+    "alias": "dai-dia-ma-nhan",
+    "image": "items/dai-dia-ma-nhan.png",
+    "type": "Phụ trợ",
+    "price": 1400,
+    "stats": {
+      "hp": 1200,
+      "moveSpeed": 8,
+      "cooldownReduction": 10
     },
-    {
-        "id": 503,
-        "name": "Giày Vô Ảnh",
-        "alias": "giay-vo-anh",
-        "image": "items/giay-vo-anh.png",
-        "type": "Giày",
-        "price": 850,
-        "stats": {
-            "moveSpeed": 45,
-            "armor": 20
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Kích hoạt Ma nhãn: Soi sáng khu vực xung quanh và tàng hình đối phương trong 5 giây.",
+    "description": "Trang bị phụ trợ mở tầm nhìn, khắc chế tướng tàng hình.",
+    "related": [502, 503, 301]
+  },
+  {
+    "id": 502,
+    "name": "Đại Địa Thần Khiên",
+    "alias": "dai-dia-than-khien",
+    "image": "items/dai-dia-than-khien.png",
+    "type": "Phụ trợ",
+    "price": 1400,
+    "stats": {
+      "hp": 1200,
+      "moveSpeed": 8,
+      "cooldownReduction": 10
     },
-    {
-        "id": 504,
-        "name": "Giày Chiến Thắng",
-        "alias": "giay-chien-thang",
-        "image": "items/giay-chien-thang.png",
-        "type": "Giày",
-        "price": 900,
-        "stats": {
-            "moveSpeed": 45,
-            "attackSpeed": 20
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Kích hoạt Thần khiên: Tạo lớp lá chắn cho bản thân và đồng minh ít máu nhất xung quanh.",
+    "description": "Bảo vệ chủ lực khỏi bị dồn sát thương sốc.",
+    "related": [501, 503, 302]
+  },
+  {
+    "id": 503,
+    "name": "Đại Địa Mở Trói",
+    "alias": "dai-dia-mo-troi",
+    "image": "items/dai-dia-mo-troi.png",
+    "type": "Phụ trợ",
+    "price": 1400,
+    "stats": {
+      "hp": 1200,
+      "moveSpeed": 8,
+      "cooldownReduction": 10
     },
-    {
-        "id": 601,
-        "name": "Áo Choàng Tàng Hình",
-        "alias": "ao-choang-tang-hinh",
-        "image": "items/ao-choang-tang-hinh.png",
-        "type": "Đặc Biệt",
-        "price": 1500,
-        "stats": {
-            "hp": 300
-        },
-        "passive": "Tàng hình trong vài giây khi kích hoạt",
-        "description": ""
+    "passive": "Kích hoạt Mở trói: Xóa bỏ mọi hiệu ứng khống chế cho bản thân và đồng minh xung quanh.",
+    "description": "Trang bị giải khống chế cực mạnh cho Trợ thủ.",
+    "related": [501, 502, 303]
+  },
+  {
+    "id": 504,
+    "name": "Đại Địa Thần Tốc",
+    "alias": "dai-dia-than-toc",
+    "image": "items/dai-dia-than-toc.png",
+    "type": "Phụ trợ",
+    "price": 1400,
+    "stats": {
+      "hp": 1200,
+      "moveSpeed": 8,
+      "cooldownReduction": 10
     },
-    {
-        "id": 602,
-        "name": "Vòng Bảo Vệ",
-        "alias": "vong-bao-ve",
-        "image": "items/vong-bao-ve.png",
-        "type": "Đặc Biệt",
-        "price": 1400,
-        "stats": {
-            "hp": 350,
-            "hpRegen": 15
-        },
-        "passive": "Tạo khiên chắn sát thương",
-        "description": ""
+    "passive": "Kích hoạt Thần tốc: Tăng tốc chạy cho bản thân và đồng minh lân cận trong 4 giây.",
+    "description": "Trang bị tăng tốc đồng đội, tăng tốc giao tranh cho Trợ thủ.",
+    "related": [501, 503, 302]
+  },
+  {
+    "id": 601,
+    "name": "Rìu Leviathan",
+    "alias": "riu-leviathan",
+    "image": "items/riu-leviathan.png",
+    "type": "Rừng",
+    "price": 1750,
+    "stats": {
+      "armor": 250,
+      "hp": 750
     },
-    {
-        "id": 603,
-        "name": "Ngọc Sinh Mệnh",
-        "alias": "ngoc-sinh-menh",
-        "image": "items/ngoc-sinh-menh.png",
-        "type": "Đặc Biệt",
-        "price": 1300,
-        "stats": {
-            "hp": 500
-        },
-        "passive": "",
-        "description": ""
+    "passive": "Thiêu đốt kẻ địch xung quanh và gây thêm sát thương lên quái rừng.",
+    "description": "Dành cho Đấu sĩ / Đỡ đòn đi rừng cần độ cứng cáp.",
+    "related": [602, 603, 107]
+  },
+  {
+    "id": 602,
+    "name": "Kiếm Truy Hồn",
+    "alias": "kiem-truy-hon",
+    "image": "items/kiem-truy-hon.png",
+    "type": "Rừng",
+    "price": 1750,
+    "stats": {
+      "attack": 90,
+      "cooldownReduction": 5,
+      "moveSpeed": 8
     },
-    {
-        "id": 604,
-        "name": "Trượng Hồi Sinh",
-        "alias": "truong-hoi-sinh",
-        "image": "items/truong-hoi-sinh.png",
-        "type": "Đặc Biệt",
-        "price": 2000,
-        "stats": {
-            "hp": 400,
-            "magicPower": 40
-        },
-        "passive": "Hồi sinh đồng minh gần đó khi kích hoạt",
-        "description": ""
+    "passive": "Săn bắt: Tăng sát thương gây ra lên quái rừng và nhận thêm kinh nghiệm/vàng.",
+    "description": "Trang bị sát thương vật lý chính cho Sát thủ đi rừng.",
+    "related": [601, 603, 109]
+  },
+  {
+    "id": 603,
+    "name": "Gươm Loki",
+    "alias": "guom-loki",
+    "image": "items/guom-loki.png",
+    "type": "Rừng",
+    "price": 1750,
+    "stats": {
+      "magicPower": 140,
+      "cooldownReduction": 10
     },
-    {
-        "id": 605,
-        "name": "Đồng Hồ Cát",
-        "alias": "dong-ho-cat",
-        "image": "items/dong-ho-cat.png",
-        "type": "Đặc Biệt",
-        "price": 1200,
-        "stats": {
-            "hp": 200
-        },
-        "passive": "Bất tử tạm thời khi kích hoạt",
-        "description": ""
-    }
+    "passive": "Sau khi tung chiêu, đòn đánh tiếp theo gây thêm sát thương phép lên mục tiêu.",
+    "description": "Trang bị dành riêng cho các Sát thủ / Pháp sư đi rừng.",
+    "related": [601, 602, 207]
+  },
+  {
+    "id": 604,
+    "name": "Cung Bão Tố",
+    "alias": "cung-bao-to",
+    "image": "items/cung-bao-to.png",
+    "type": "Rừng",
+    "price": 1750,
+    "stats": {
+      "attackSpeed": 30,
+      "lifesteal": 15,
+      "moveSpeed": 7
+    },
+    "passive": "Lốc xoáy: Đánh thường cộng dồn sát thương phép lên mục tiêu, đồng thời tăng tốc đánh khi hạ quái rừng.",
+    "description": "Trang bị công tốc đánh chủ lực cho Xạ thủ đi rừng.",
+    "related": [601, 602, 108]
+  }
 ]

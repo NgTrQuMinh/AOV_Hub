@@ -14,6 +14,8 @@
             <li><a class="site-nav__link" data-page="home" href="{{BASE}}index.html">Trang chủ</a></li>
             <li><a class="site-nav__link" data-page="heroes" href="{{BASE}}src/pages/heroes.html">Tướng</a></li>
             <li><a class="site-nav__link" data-page="items" href="{{BASE}}src/pages/items.html">Trang bị</a></li>
+            <li><a class="site-nav__link" data-page="builds" href="{{BASE}}src/pages/builds.html">Build</a></li>
+            <li><a class="site-nav__link" data-page="feed" href="{{BASE}}src/pages/feed.html">Cộng đồng</a></li>
             <li><a class="site-nav__link" data-page="compare" href="{{BASE}}src/pages/compare.html">So sánh</a></li>
             <li><a class="site-nav__link" data-page="favorite" href="{{BASE}}src/pages/favorite.html">Yêu thích</a></li>
         </ul>
@@ -23,4 +25,7 @@
         <input class="header-search__input" type="text" name="keyword" placeholder="Tìm tướng, trang bị...">
         <button class="header-search__btn" type="submit" aria-label="Tìm kiếm">🔍</button>
     </form>
+
+    <!-- Nội dung do updateAccountUI() (js/auth.js) điền sau khi header được nạp -->
+    <div class="account-area" id="account-area"></div>
 </div>

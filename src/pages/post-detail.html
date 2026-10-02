@@ -3,23 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AOV HUB - Danh sách Tướng</title>
+    <title>AOV HUB - Chi tiết bài viết</title>
 
     <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/variables.css">
     <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/hero.css">
+    <link rel="stylesheet" href="/css/feed.css">
 </head>
-<body data-page="heroes">
+<body data-page="feed">
 
     <header id="site-header"></header>
 
     <main class="container section">
-        <h1>Danh sách Tướng</h1>
+        <nav class="post-detail__breadcrumb" aria-label="Breadcrumb">
+            <a href="/src/pages/feed.html">← Về cộng đồng</a>
+        </nav>
 
-        <!-- Filter + tìm kiếm và danh sách được render bởi js/hero.js từ src/data/heroes.json -->
-        <div id="hero-filter-bar"></div>
-        <div class="grid grid--heroes" id="hero-list"></div>
+        <!-- Nội dung do feed.js render từ aov_posts theo ?id=, dùng chung dữ liệu với trang Feed -->
+        <div id="post-detail"></div>
+
+        <!-- Khi bấm "Sửa bài", feed.js đổi vùng này sang form sửa (tái dùng renderPostForm) -->
+        <div id="post-edit-form" class="post-edit-form"></div>
     </main>
 
     <footer id="site-footer"></footer>
@@ -28,10 +32,9 @@
     <script src="/src/js/loadData.js"></script>
     <script src="/src/js/components.js"></script>
     <script src="/src/js/auth.js"></script>
+    <script src="/src/js/search.js"></script>
     <script src="/src/js/layout.js"></script>
     <script src="/src/js/storage.js"></script>
-    <script src="/src/js/favorite.js"></script>
-    <script src="/src/js/search.js"></script>
-    <script src="/src/js/hero.js"></script>
+    <script src="/src/js/feed.js"></script>
 </body>
 </html>

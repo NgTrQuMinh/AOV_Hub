@@ -8,24 +8,28 @@ async function renderFeaturedHeroes() {
     const container = document.getElementById('featured-heroes');
     if (!container) return;
 
-    const heroes = await loadData(BASE_PATH + 'src/data/heroes.json');
+    const heroes = await loadData(DATA_PATH.heroes);
     const featured = heroes.slice(0, 8);
 
     container.innerHTML = featured.length
         ? featured.map(renderHeroCard).join('')
         : renderNotFound('Chưa có dữ liệu tướng nổi bật.');
+
+    if (typeof refreshFavoriteButtons === 'function') refreshFavoriteButtons();
 }
 
 async function renderFeaturedItems() {
     const container = document.getElementById('featured-items');
     if (!container) return;
 
-    const items = await loadData(BASE_PATH + 'src/data/items.json');
+    const items = await loadData(DATA_PATH.items);
     const featured = items.slice(0, 8);
 
     container.innerHTML = featured.length
         ? featured.map(renderItemCard).join('')
         : renderNotFound('Chưa có dữ liệu trang bị nổi bật.');
+
+    if (typeof refreshFavoriteButtons === 'function') refreshFavoriteButtons();
 }
 
 document.addEventListener('DOMContentLoaded', () => {

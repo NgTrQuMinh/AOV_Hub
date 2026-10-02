@@ -15,13 +15,7 @@
     <header id="site-header"></header>
 
     <main class="container section">
-        <!--
-            TODO (Người 3):
-            - Lấy id từ URL: new URLSearchParams(location.search).get('id')
-            - Đọc data/items.json bằng loadData(), tìm trang bị theo id
-            - Hiển thị ảnh, tên, loại, giá, stats, passive, mô tả
-            - Nếu không tìm thấy id -> renderNotFound()
-        -->
+        <!-- Nội dung do item.js render từ src/data/items.json theo ?id= -->
         <div id="item-detail"></div>
     </main>
 
@@ -30,6 +24,8 @@
     <script src="/src/js/config.js"></script>
     <script src="/src/js/loadData.js"></script>
     <script src="/src/js/components.js"></script>
+    <script src="/src/js/auth.js"></script>
+    <script src="/src/js/search.js"></script>
     <script src="/src/js/layout.js"></script>
     <script src="/src/js/storage.js"></script>
     <script src="/src/js/favorite.js"></script>

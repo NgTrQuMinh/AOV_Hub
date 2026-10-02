@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240" role="img" aria-label="Chưa có ảnh">
+    <rect width="240" height="240" fill="#1e232b"/>
+    <path d="M60 150l40-48 32 38 24-28 24 38z" fill="#3a4250"/>
+    <circle cx="88" cy="82" r="16" fill="#3a4250"/>
+    <text x="120" y="200" fill="#8b94a5" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="middle">Chưa có ảnh</text>
+</svg>

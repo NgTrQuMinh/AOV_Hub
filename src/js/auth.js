@@ -9,6 +9,12 @@
  *
  * Lần đầu mở web, danh sách user sẽ được nạp sẵn từ data/users.json (tài khoản demo).
  *
+ * Cấu trúc tài khoản: { username, password, displayName, role, joinedAt }
+ *   role = 'admin'  -> quản trị viên (được vào trang Quản trị, ẩn/xoá bài của người khác)
+ *   role = 'user'   -> tài khoản thường (mặc định của mọi tài khoản đăng ký)
+ *   isAdmin() chỉ trả true khi role đúng bằng 'admin', nên tài khoản không có
+ *   trường role (dữ liệu cũ) vẫn an toàn: không có quyền quản trị.
+ *
  * Phụ thuộc: không phụ thuộc file khác (dùng fetch trực tiếp để có thể nạp sớm
  * ở đầu trang profile.html cho Guard). js/layout.js gọi updateAccountUI() sau khi
  * nạp xong header để hiển thị đúng trạng thái đăng nhập trên mọi trang.
@@ -18,7 +24,13 @@ const USERS_KEY = 'aov_users';
 const CURRENT_USER_KEY = 'aov_current_user';
 
 /* Các trang bắt buộc đăng nhập (Task 36). Muốn thêm trang thì bổ sung vào đây. */
-const PROTECTED_PAGES = [BASE_PATH + 'src/pages/profile.html'];
+const PROTECTED_PAGES = [
+    BASE_PATH + 'src/pages/profile.html',
+    BASE_PATH + 'src/pages/admin.html',
+];
+
+/** Trang quản trị bài viết: chỉ tài khoản có role === 'admin' mới vào được. */
+const ADMIN_PAGE = BASE_PATH + 'src/pages/admin.html';
 
 /* ---------- Đọc/ghi danh sách user ---------- */
 
@@ -49,7 +61,7 @@ async function seedUsersFromJson() {
     if (getUsers().length) return;
 
     try {
-        const response = await fetch(BASE_PATH + 'src/data/users.json');
+        const response = await fetch(DATA_PATH.users);
         if (!response.ok) return;
 
         const users = await response.json();
@@ -78,6 +90,29 @@ function setCurrentUser(username) {
 
 function isLoggedIn() {
     return Boolean(getCurrentUser());
+}
+
+/**
+ * Tài khoản đang đăng nhập có quyền quản trị (admin) không.
+ *
+ * Quy ước: tài khoản trong aov_users có thêm trường role === 'admin' thì được
+ * coi là admin. Tài khoản không có trường role (đa số tài khoản đăng ký bình thường)
+ * thì không phải admin.
+ *
+ * Lưu ý: role nằm trong aov_users nên hàm này phụ thuộc danh sách tài khoản đã nạp.
+ * Lần đầu mở web, aov_users được nạp từ data/users.json bởi usersReady; trước khi
+ * nạp xong thì findUser() trả undefined và hàm trả false (fail-closed) — không
+ * bao giờ cho quyền khi chưa xác minh được tài khoản.
+ *
+ * @returns {boolean}
+ */
+function isAdmin() {
+    const username = getCurrentUser();
+    if (!username) return false;
+
+    const user = findUser(username);
+
+    return Boolean(user) && user.role === 'admin';
 }
 
 /* ---------- Task 34 - Đăng xuất ---------- */
@@ -114,6 +149,37 @@ function redirectIfLoggedIn() {
     if (isLoggedIn()) {
         window.location.href = BASE_PATH + 'index.html';
     }
+}
+
+/**
+ * Guard trang Quản trị (src/pages/admin.html): chỉ admin mới được vào.
+ *
+ * Gọi ở đầu <body> của admin.html, trước khi vẽ nội dung:
+ *   requireAdmin();
+ *
+ * Hàm là hàm bất đồng bộ (async) vì isAdmin() cần đọc role trong aov_users,
+ * mà lần đầu mở web aov_users phải chờ usersReady nạp từ data/users.json xong.
+ * Chờ nạp xong mới quyết định thì không bao giờ chặn nhầm admin thật.
+ *
+ * Hành vi khi không đủ quyền:
+ *   - chưa đăng nhập  -> về trang Login kèm ?redirect= để quay lại sau khi đăng nhập
+ *   - đã đăng nhập nhưng không phải admin -> thông báo rồi về trang chủ
+ *
+ * @returns {Promise<boolean>} true nếu người gọi là admin và được ở lại trang.
+ */
+async function requireAdmin() {
+    await usersReady;
+
+    if (isAdmin()) return true;
+
+    // Chưa đăng nhập thì đi qua requireAuth() để dùng chung cách điều hướng của Guard.
+    if (!isLoggedIn()) return requireAuth();
+
+    // Đã đăng nhập nhưng không phải admin: báo lý do rồi đưa về trang chủ.
+    alert('Bạn không có quyền truy cập trang Quản trị bài viết.');
+    window.location.href = BASE_PATH + 'index.html';
+
+    return false;
 }
 
 /**
@@ -165,6 +231,9 @@ function registerUser(username, password) {
         username: String(username).trim(),
         password,
         displayName: String(username).trim(),
+        // Mọi tài khoản tự đăng ký đều là tài khoản thường.
+        // Không cho tự chọn role khi đăng ký, nếu không ai cũng tự làm admin được.
+        role: 'user',
         joinedAt: new Date().toISOString(),
     });
 
@@ -205,19 +274,34 @@ function renderSuccess(container, message) {
 
 /* ---------- Task 8 + 33 - Khu vực Account trên Header ---------- */
 
-function updateAccountUI() {
+/**
+ * Vẽ khu vực tài khoản trên Header (Đăng nhập/Đăng ký hoặc username + Đăng xuất).
+ *
+ * @param {boolean} [isRetry=false] cờ nội bộ: đã thử lại sau khi usersReady xong thì
+ *        không chờ nữa, để tránh lặp vô hạn khi data/users.json tải lỗi.
+ */
+function updateAccountUI(isRetry = false) {
     const area = document.getElementById('account-area');
     if (!area) return;
 
     const username = getCurrentUser();
 
     if (username) {
+        // isAdmin() cần role trong aov_users. Lần đầu mở web aov_users chưa có dữ liệu
+        // thì isAdmin() trả false (fail-closed) và link Quản trị sẽ mất dù đang là admin,
+        // nên chờ usersReady nạp xong rồi vẽ lại một lần.
+        if (!isRetry && !getUsers().length) {
+            usersReady.then(() => updateAccountUI(true));
+            return;
+        }
+
         area.innerHTML = `
             <div class="account-area__session">
                 <a class="account-area__username" href="${BASE_PATH}src/pages/profile.html">
                     <span class="account-area__avatar" aria-hidden="true">👤</span>
                     ${escapeHtml(username)}
                 </a>
+                ${isAdmin() ? `<a class="btn btn-outline btn-sm" href="${ADMIN_PAGE}">Quản trị</a>` : ''}
                 <button type="button" class="btn btn-outline btn-sm" id="logout-btn">Đăng xuất</button>
             </div>
         `;
