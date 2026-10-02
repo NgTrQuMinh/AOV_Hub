@@ -5,6 +5,13 @@
  * Dùng lại của Người 1: loadData(), renderHeroCard(), renderNotFound(), imageUrl(),
  * escapeHtml(), handleImageError() (components.js), DATA_PATH (config.js).
  * Dùng lại của Người 4: matchKeyword(), getQueryParam() (search.js).
+ *
+ * Lọc và sắp xếp (chỉ có ở trang Danh sách tướng, thanh lọc nằm ở #hero-filter-bar):
+ *   - lọc theo vai trò, độ khó và tìm theo tên (getFilteredHeroes)
+ *   - sắp xếp theo tên A → Z hoặc Z → A, thêm lựa chọn "Mặc định" giữ nguyên
+ *     thứ tự trong heroes.json (sortHeroes)
+ *   - cách sắp xếp được ghi lên URL (?sort=name-asc) nên F5 không mất bộ lọc;
+ *     đọc lại bằng getQueryParam()
  */
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -28,21 +35,76 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-const HERO_PAGE_SIZE = 12;
+/* ---------- Cách sắp xếp danh sách tướng ---------- */
+const HERO_SORT_DEFAULT = "default";
+const HERO_SORT_NAME_ASC = "name-asc";
+const HERO_SORT_NAME_DESC = "name-desc";
+
+const HERO_SORT_LABELS = {
+    [HERO_SORT_DEFAULT]: "Mặc định",
+    [HERO_SORT_NAME_ASC]: "Tên A → Z",
+    [HERO_SORT_NAME_DESC]: "Tên Z → A",
+};
 
 /**
- * Trang Danh sách tướng (heroes.html)
+ * Sắp xếp danh sách tướng theo cách đã chọn.
+ * "Mặc định" thì giữ nguyên thứ tự trong heroes.json.
+ * A → Z và Z → A so tên bằng localeCompare("vi") nên không phân biệt hoa/thường
+ * và đặt chữ có dấu đúng theo thứ tự tiếng Việt (vd "Á" đứng trước "B").
+ * Hai tướng trùng tên thì giữ nguyên thứ tự cũ (Array.prototype.sort ổn định).
+ *
+ * @param {Array} list danh sách tướng cần sắp xếp (không sửa mảng gốc).
+ * @param {string} sort một trong HERO_SORT_LABELS, giá trị lạ thì coi như "mặc định".
+ * @returns {Array} mảng mới đã sắp xếp.
+ */
+function sortHeroes(list, sort) {
+    const sorted = Array.isArray(list) ? list.slice() : [];
+
+    if (sort === HERO_SORT_NAME_ASC || sort === HERO_SORT_NAME_DESC) {
+        const direction = sort === HERO_SORT_NAME_ASC ? 1 : -1;
+
+        sorted.sort((a, b) => direction * String(a?.name || "").localeCompare(String(b?.name || ""), "vi", { sensitivity: "base" }));
+    }
+
+    return sorted;
+}
+
+/**
+ * Ghi cách sắp xếp lên URL (không tải lại trang) để F5 không mất bộ lọc.
+ * Bỏ tham số rỗng cho URL gọn, và giữ lại tham số khác của trang (vd ?keyword=).
+ * Vai trò / độ khó vốn không nằm trên URL nên không đụng tới.
+ * @param {object} state trạng thái lọc hiện tại.
+ */
+function syncHeroFilterUrl(state) {
+    const params = new URLSearchParams(window.location.search);
+
+    if (state.sort && state.sort !== HERO_SORT_DEFAULT) params.set("sort", state.sort);
+    else params.delete("sort");
+
+    const query = params.toString();
+
+    history.replaceState(null, "", query ? `${BASE_PATH}src/pages/heroes.html?${query}` : `${BASE_PATH}src/pages/heroes.html`);
+}
+
+/**
+ * Trang Danh sách tướng (heroes.html) - render toàn bộ tướng trong heroes.json
  */
 function initHeroListPage(heroes) {
     const filterBarEl = document.getElementById("hero-filter-bar");
     const gridContainer = document.getElementById("hero-list");
-    const paginationEl = document.getElementById("hero-pagination");
 
     if (!gridContainer) return;
 
     // Từ khoá có thể đến từ ô tìm kiếm trên header: heroes.html?keyword=valhein
-    const state = { role: "all", difficulty: "all", keyword: getQueryParam("keyword"), page: 1 };
-
+    // Cách sắp xếp cũng đọc từ URL: heroes.html?sort=name-asc
+    const state = {
+        role: "all",
+        difficulty: "all",
+        keyword: getQueryParam("keyword"),
+        // Chỉ nhận cách sắp xếp có thật trong HERO_SORT_LABELS, giá trị lạ trên
+        // URL thì rơi về "mặc định" (giữ nguyên thứ tự trong heroes.json).
+        sort: HERO_SORT_LABELS[getQueryParam("sort")] ? getQueryParam("sort") : HERO_SORT_DEFAULT,
+    };
 
     if (filterBarEl) {
         const roles = [...new Set(heroes.flatMap((h) => h.role || []))];
@@ -65,6 +127,11 @@ function initHeroListPage(heroes) {
                     <option value="all">Tất cả độ khó</option>
                     ${difficulties.map((d) => `<option value="${d}">${DIFFICULTY_LABEL[d] || `Độ khó ${d}`}</option>`).join("")}
                 </select>
+                <select class="filter-bar__select" id="hero-sort-filter" aria-label="Sắp xếp tướng">
+                    ${Object.keys(HERO_SORT_LABELS)
+                        .map((sort) => `<option value="${sort}">${escapeHtml(HERO_SORT_LABELS[sort])}</option>`)
+                        .join("")}
+                </select>
             </div>
         `;
     }
@@ -72,17 +139,21 @@ function initHeroListPage(heroes) {
     const searchInput = document.getElementById("hero-search");
     const roleFilter = document.getElementById("hero-role-filter");
     const difficultyFilter = document.getElementById("hero-difficulty-filter");
+    const sortFilter = document.getElementById("hero-sort-filter");
 
     if (searchInput) searchInput.value = state.keyword;
+    if (sortFilter) sortFilter.value = state.sort;
 
     const getFilteredHeroes = () => {
-        return heroes.filter((hero) => {
+        const list = heroes.filter((hero) => {
             const matchesRole = state.role === "all" || (hero.role || []).includes(state.role);
             const matchesDifficulty = state.difficulty === "all" || String(hero.difficulty) === String(state.difficulty);
             const matchesSearch = matchKeyword(hero.name, state.keyword);
 
             return matchesRole && matchesDifficulty && matchesSearch;
         });
+
+        return sortHeroes(list, state.sort);
     };
 
     const renderGrid = (list) => {
@@ -93,41 +164,28 @@ function initHeroListPage(heroes) {
         if (typeof refreshFavoriteButtons === "function") refreshFavoriteButtons();
     };
 
-    const renderPagination = (total) => {
-        if (!paginationEl) return;
-        const totalPages = Math.max(1, Math.ceil(total / HERO_PAGE_SIZE));
-        state.page = Math.min(state.page, totalPages);
-
-        paginationEl.innerHTML = totalPages > 1
-            ? Array.from({ length: totalPages }, (_, i) => {
-                const page = i + 1;
-                return `<button type="button" class="pagination__item${page === state.page ? " is-active" : ""}" data-page="${page}" aria-label="Trang ${page}">${page}</button>`;
-            }).join("")
-            : "";
-    };
-
     const render = () => {
-        const list = getFilteredHeroes();
-        renderPagination(list.length);
-        renderGrid(list.slice((state.page - 1) * HERO_PAGE_SIZE, state.page * HERO_PAGE_SIZE));
+        renderGrid(getFilteredHeroes());
     };
 
     if (searchInput) {
-        searchInput.addEventListener("input", () => { state.keyword = searchInput.value; state.page = 1; render(); });
+        searchInput.addEventListener("input", () => { state.keyword = searchInput.value; render(); });
     }
     if (roleFilter) {
-        roleFilter.addEventListener("change", () => { state.role = roleFilter.value; state.page = 1; render(); });
+        roleFilter.addEventListener("change", () => { state.role = roleFilter.value; render(); });
     }
     if (difficultyFilter) {
-        difficultyFilter.addEventListener("change", () => { state.difficulty = difficultyFilter.value; state.page = 1; render(); });
+        difficultyFilter.addEventListener("change", () => { state.difficulty = difficultyFilter.value; render(); });
     }
-    if (paginationEl) {
-        paginationEl.addEventListener("click", (event) => {
-            const btn = event.target.closest("[data-page]");
-            if (!btn) return;
-            state.page = Number(btn.dataset.page);
+    if (sortFilter) {
+        sortFilter.addEventListener("change", () => {
+            // Trình duyệt trả về chuỗi rỗng nếu giá trị không khớp option nào,
+            // khi đó quay về "mặc định" cho an toàn.
+            const picked = sortFilter.value;
+            state.sort = HERO_SORT_LABELS[picked] ? picked : HERO_SORT_DEFAULT;
+            sortFilter.value = state.sort;
+            syncHeroFilterUrl(state);
             render();
-            gridContainer.scrollIntoView({ behavior: "smooth", block: "start" });
         });
     }
 
