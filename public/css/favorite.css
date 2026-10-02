@@ -1,6 +1,185 @@
 /* =========================================
  * favorite.css - Style trang Yêu thích / Lịch sử
  * Phụ trách: Người 4
+ * (nạp sau common.css, dùng lại .card / .badge / .btn / .not-found của common.css)
  *
- * TODO: 2 tab Yêu thích / Lịch sử, empty state, nút xóa
+ * Mục lục:
+ *   1. Tabs + trạng thái active
+ *   2. Bố cục danh sách, tiêu đề nhóm con
+ *   3. Lưới card
+ *   4. Thanh công cụ (nút Xóa lịch sử)
+ *   5. Responsive: 1024 / 768 / 480
  * ========================================= */
+
+/* ---------- 1. TABS ---------- */
+/* Markup do js/favorite.js vẽ: .tabs > .tabs__list > .tabs__btn.is-active */
+
+.tabs {
+    margin-bottom: var(--space-6);
+}
+
+/* Hàng chứa 2 tab, viền dưới là đường kẻ chung của cả thanh tab */
+.tabs__list {
+    display: flex;
+    gap: var(--space-5);
+    border-bottom: 1px solid var(--color-border);
+}
+
+/* Giống kiểu .site-nav__link của common.css: gạch chân, đổi màu khi active */
+.tabs__btn {
+    padding: var(--space-3) var(--space-2);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    border-bottom: 2px solid transparent;
+    /* Đẩy gạch chân xuống 1px để nằm đè lên đường kẻ của .tabs__list */
+    margin-bottom: -1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.tabs__btn:hover {
+    color: var(--color-text);
+}
+
+.tabs__btn.is-active {
+    color: var(--color-gold);
+    border-color: var(--color-gold);
+}
+
+/* Vòng focus để bàn phím vẫn thấy được tab đang chọn */
+.tabs__btn:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* ---------- 2. BỐ CỤC DANH SÁCH ---------- */
+/* #favorite-list chỉ là khung chứa, các nhóm con (Tướng / Trang bị) xếp dọc */
+
+.favorite-list {
+    display: block;
+}
+
+.favorite-section {
+    margin-bottom: var(--space-7);
+}
+
+/* Nhóm cuối không cần khoảng cách dưới vì đã hết nội dung trang */
+.favorite-section:last-child {
+    margin-bottom: 0;
+}
+
+.favorite-section__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+    padding-left: var(--space-3);
+    border-left: 4px solid var(--color-gold);
+    font-size: var(--fs-lg);
+}
+
+/* Badge đếm số lượng hiển thị cạnh tiêu đề nhóm */
+.favorite-section__count {
+    padding: 2px var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+}
+
+/* ---------- 3. LƯỚI CARD ---------- */
+/* Card do renderHeroCard()/renderItemCard() sinh, ở đây chỉ lo phần lưới */
+
+.favorite-grid {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: repeat(4, 1fr);
+    align-items: stretch;
+}
+
+/* ---------- 4. THANH CÔNG CỤ ---------- */
+/* Dùng ở tab Lịch sử: tiêu đề + nút "Xóa lịch sử" cùng hàng */
+
+.favorite-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+    padding-left: var(--space-3);
+    border-left: 4px solid var(--color-gold);
+}
+
+/* Tiêu đề nằm trong toolbar thì bỏ vạch vàng/khoảng đệm để không bị lặp */
+.favorite-toolbar .favorite-section__title {
+    margin-bottom: 0;
+    padding-left: 0;
+    border-left: none;
+}
+
+.favorite-toolbar__clear {
+    color: var(--color-crimson);
+    border-color: var(--color-crimson);
+}
+
+.favorite-toolbar__clear:hover {
+    background: var(--color-crimson);
+    color: #fff;
+}
+
+/* ---------- 5. RESPONSIVE ---------- */
+/* Cùng mốc với common.css để lưới card không bị lệch số cột với các trang khác */
+
+@media (max-width: 1024px) {
+    .favorite-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .tabs__list {
+        gap: var(--space-4);
+    }
+
+    .favorite-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    /* 2 tab vẫn vừa màn hẹp: cho tab cuộn ngang thay vì bóp chữ nhỏ lại */
+    .tabs__list {
+        gap: var(--space-3);
+        overflow-x: auto;
+    }
+
+    .tabs__btn {
+        white-space: nowrap;
+    }
+
+    .favorite-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-3);
+    }
+
+    .favorite-section {
+        margin-bottom: var(--space-6);
+    }
+
+    .favorite-section__title {
+        font-size: var(--fs-md);
+    }
+
+    /* Nút "Xóa lịch sử" chiếm hết bề ngang cho dễ bấm */
+    .favorite-toolbar {
+        align-items: stretch;
+    }
+
+    .favorite-toolbar__clear {
+        width: 100%;
+    }
+}
