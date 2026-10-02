@@ -12,6 +12,7 @@
 html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    font-size: 16px;
 }
 
 body {
@@ -20,9 +21,17 @@ body {
     background: var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-sans);
-    font-size: 16px;
-    line-height: 1.6;
+    font-size: 18px;
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
+}
+
+p, li, label, td, th, input, select, textarea, button {
+    font-size: inherit;
+}
+
+small, .text-small {
+    font-size: 15px;
 }
 
 h1, h2, h3, h4, h5, h6 {
