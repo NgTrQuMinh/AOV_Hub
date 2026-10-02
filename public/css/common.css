@@ -11,16 +11,19 @@
  *   6. Header
  *   7. Footer
  *   8. Filter bar / Pagination / Not-found
- *   9. Responsive: 1024 / 768 / 480
+ *   9. Responsive: 1200 / 1024 / 900 / 768 / 480
  * ========================================= */
 
 /* ---------- 1. BODY / TYPOGRAPHY ---------- */
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     background: var(--color-bg);
     color: var(--color-text);
-    font-family: var(--font-base);
-    font-size: var(--fs-base);
-    line-height: 1.6;
+    font-family: var(--font-sans);
+    font-size: 18px;
+    line-height: 1.65;
 }
 
 h1, h2, h3, h4 {
@@ -42,13 +45,14 @@ p {
 /* ---------- 2. LAYOUT ---------- */
 .container {
     width: 100%;
-    max-width: var(--container-max);
+    max-width: var(--container-width);
     margin-inline: auto;
-    padding-inline: var(--space-5);
+    padding-inline: 24px;
 }
 
 main {
     display: block;
+    flex: 1;
     padding-bottom: var(--space-8);
 }
 
@@ -71,7 +75,7 @@ main {
 }
 
 .section__link {
-    color: var(--color-gold);
+    color: var(--color-text-accent);
     font-size: var(--fs-sm);
     white-space: nowrap;
 }
@@ -86,12 +90,13 @@ main {
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
-    padding: var(--space-3) var(--space-5);
+    padding: 12px 24px;
     border-radius: var(--radius-pill);
     font-weight: 600;
-    font-size: var(--fs-sm);
+    font-size: 17px;
     border: 1px solid transparent;
-    transition: transform 0.15s ease, background 0.15s ease;
+    transition: transform var(--transition), background var(--transition),
+        box-shadow var(--transition), border-color var(--transition);
     white-space: nowrap;
 }
 
@@ -99,24 +104,32 @@ main {
     transform: translateY(-1px);
 }
 
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 15px;
+}
+
 .btn-primary {
-    background: var(--color-gold);
-    color: #241a0a;
+    background: var(--gradient-gold);
+    color: var(--color-on-accent);
+    box-shadow: var(--shadow-gold);
 }
 
 .btn-primary:hover {
-    background: var(--color-gold-dark);
+    filter: brightness(1.05);
+    box-shadow: var(--shadow-gold);
 }
 
 .btn-outline {
     background: transparent;
-    border-color: var(--color-border);
+    border-color: var(--color-gold);
     color: var(--color-text);
 }
 
 .btn-outline:hover {
+    background: var(--color-gold-subtle);
     border-color: var(--color-gold);
-    color: var(--color-gold);
+    color: var(--color-text);
 }
 
 /* ---------- 4. CARD / BADGE ---------- */
@@ -124,28 +137,50 @@ main {
     position: relative;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-5);
     overflow: hidden;
-    transition: border-color 0.15s ease;
+    transition: transform var(--transition), border-color var(--transition),
+        box-shadow var(--transition);
 }
 
 .card:hover {
-    border-color: var(--color-gold);
+    transform: translateY(-3px);
+    border-color: var(--color-gold-light);
+    box-shadow: var(--shadow-md);
+}
+
+/* Card có media tràn viền giữ nguyên padding nội bộ */
+.hero-card,
+.item-card {
+    padding: 0;
 }
 
 .badge {
-    display: inline-block;
-    padding: 2px var(--space-3);
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
     border-radius: var(--radius-pill);
-    font-size: var(--fs-xs);
-    background: var(--color-bg-elevated);
-    color: var(--color-text-muted);
-    border: 1px solid var(--color-border);
+    font-size: 14px;
+    font-weight: 600;
+    background: var(--color-gold-soft);
+    color: var(--color-text-accent);
+    border: 1px solid transparent;
 }
 
-.badge--easy { color: #7fd18f; border-color: #2f4a35; }
-.badge--medium { color: var(--color-gold); border-color: #4a3d22; }
-.badge--hard { color: var(--color-crimson); border-color: #4a2730; }
+.badge--easy {
+    color: var(--color-success);
+    border-color: color-mix(in srgb, var(--color-success) 35%, transparent);
+}
+.badge--medium {
+    color: var(--color-text-accent);
+    border-color: var(--color-gold-light);
+}
+.badge--hard {
+    color: var(--color-danger);
+    border-color: color-mix(in srgb, var(--color-danger) 35%, transparent);
+}
 
 .btn-favorite {
     position: absolute;
@@ -157,18 +192,19 @@ main {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: rgba(20, 15, 31, 0.65);
-    color: var(--color-text);
+    background: var(--color-surface);
+    color: var(--color-text-accent);
+    box-shadow: var(--shadow-sm);
     font-size: var(--fs-md);
     z-index: 2;
 }
 
 .btn-favorite:hover {
-    color: var(--color-crimson);
+    color: var(--color-danger);
 }
 
 .btn-favorite.is-active {
-    color: var(--color-crimson);
+    color: var(--color-danger);
 }
 
 .hero-card__media,
@@ -221,7 +257,7 @@ main {
 
 .hero-card__link:hover,
 .item-card__link:hover {
-    color: var(--color-gold);
+    color: var(--color-text-accent);
 }
 
 /* ---------- 5. GRID TIỆN ÍCH ---------- */
@@ -232,6 +268,9 @@ main {
 }
 
 /* ---------- 6. HEADER ---------- */
+/* HTML thật dùng <header id="site-header"> (layout.js chèn partial vào),
+   nên style cả #site-header lẫn .site-header để chắc chắn ăn. */
+#site-header,
 .site-header {
     position: sticky;
     top: 0;
@@ -240,94 +279,150 @@ main {
     border-bottom: 1px solid var(--color-border);
 }
 
+/* Container riêng của header: rộng hơn container nội dung để đủ chỗ */
 .site-header__inner {
     display: flex;
     align-items: center;
-    gap: var(--space-6);
+    flex-wrap: nowrap;
+    gap: 16px;
     height: var(--header-height);
+    width: 100%;
+    max-width: 1360px;
+    margin-inline: auto;
+    padding-inline: 24px;
 }
 
 .site-logo {
     display: inline-flex;
     align-items: baseline;
     gap: 2px;
-    font-size: var(--fs-lg);
+    font-size: 24px;
     font-weight: 800;
-    flex-shrink: 0;
+    flex: 0 0 auto;
 }
 
-.site-logo__mark { color: var(--color-gold); }
+.site-logo__mark { color: var(--color-text-accent); }
 .site-logo__text { color: var(--color-text); }
 
+/* Nav: co giãn theo nội dung, không chiếm hết chỗ, không đè lên search */
 .site-nav {
-    flex: 1;
+    flex: 0 1 auto;
+    min-width: 0;
 }
 
 .site-nav ul {
     display: flex;
-    gap: var(--space-5);
+    align-items: center;
+    gap: 4px;
+    flex-wrap: nowrap;
+}
+
+.site-nav li {
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
 }
 
 .site-nav__link {
-    display: inline-block;
-    padding-block: var(--space-2);
-    font-size: var(--fs-sm);
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    padding: 8px 12px;
+    font-size: 16px;
     font-weight: 600;
-    color: var(--color-text-muted);
-    border-bottom: 2px solid transparent;
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--color-text);
+    border-radius: var(--radius-pill);
+    transition: background var(--transition), color var(--transition);
 }
 
 .site-nav__link:hover {
-    color: var(--color-text);
+    background: var(--color-gold-subtle);
+    color: var(--color-text-accent);
 }
 
 .site-nav__link.is-active {
-    color: var(--color-gold);
-    border-color: var(--color-gold);
+    background: var(--color-gold-soft);
+    color: var(--color-text-accent);
+    font-weight: 700;
+    border: none;
 }
 
 .header-search {
     display: flex;
     align-items: center;
+    gap: var(--space-2);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-pill);
-    padding-left: var(--space-4);
-    flex-shrink: 0;
+    padding: 8px 16px;
+    flex: 1 1 160px;
+    min-width: 140px;
+    max-width: 260px;
+}
+
+.header-search:focus-within {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 25%, transparent);
 }
 
 .header-search__input {
     background: transparent;
     border: none;
-    padding: var(--space-2) 0;
-    width: 180px;
+    padding: 0;
+    width: 100%;
+    min-width: 0;
+    font-size: 15px;
     color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .header-search__btn {
-    padding: var(--space-2) var(--space-4);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
     color: var(--color-text-muted);
+    flex-shrink: 0;
 }
 
 /* ---------- 6.1 ACCOUNT AREA (điền bởi updateAccountUI - js/auth.js) ---------- */
 .account-area {
-    flex-shrink: 0;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    white-space: nowrap;
 }
 
 .account-area__session,
 .account-area__guest {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    flex-wrap: nowrap;
+    gap: 8px;
+}
+
+/* Nút trong khu tài khoản (Đăng nhập/Đăng ký/Quản trị/Đăng xuất) nhỏ gọn */
+.account-area .btn {
+    padding: 8px 16px;
+    font-size: 15px;
+    white-space: nowrap;
 }
 
 .account-area__username {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-    font-size: var(--fs-sm);
+    font-size: 16px;
     font-weight: 600;
     color: var(--color-text);
+    white-space: nowrap;
 }
 
 .account-area__avatar {
@@ -347,45 +442,109 @@ main {
     background: var(--color-text);
 }
 
-/* ---------- 7. FOOTER ---------- */
-.site-footer {
-    background: var(--color-bg-elevated);
-    border-top: 1px solid var(--color-border);
-    margin-top: var(--space-8);
+/* ---------- FORM (dùng chung) ---------- */
+:where(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 17px;
+    color: var(--color-text);
 }
 
+:where(input:not([type="checkbox"]):not([type="radio"]), select, textarea):focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 25%, transparent);
+}
+
+/* ---------- 7. FOOTER ---------- */
+/* HTML thật: <footer id="site-footer"> được layout.js bơm partial vào.
+   CSS cũ chỉ có .site-footer nên không khớp — nay phủ cả #site-footer. */
+#site-footer,
+.site-footer {
+    width: 100%;
+    background: #EBDDB8;
+    border-top: 3px solid #DDA532;
+    margin-top: auto;
+    padding: 48px 0 24px;
+    color: #3A2F1C;
+}
+
+/* Bên trong dùng container 1200px, grid 3 cột */
 .site-footer__inner {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
-    gap: var(--space-6);
-    padding-block: var(--space-7);
+    gap: 48px;
+    padding-block: 0;
 }
+
+.site-footer .site-logo {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.site-footer .site-logo__mark { color: #9C6F10; }
+.site-footer .site-logo__text { color: #3A2F1C; }
 
 .site-footer__brand p {
     max-width: 320px;
     margin-top: var(--space-2);
+    font-size: 16px;
+    line-height: 1.6;
+    color: #5A4A2E;
 }
 
 .site-footer__nav {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: 0;
+    list-style: none;
+}
+
+.site-footer__nav a {
+    display: block;
+    padding: 4px 0;
+    font-size: 16px;
+    color: #5A4A2E;
 }
 
 .site-footer__nav a:hover {
-    color: var(--color-gold);
+    color: #9C6F10;
+    text-decoration: underline;
 }
 
 .site-footer__meta p {
     margin: 0;
+    font-size: 16px;
+    color: #5A4A2E;
+}
+
+/* Tiêu đề cột (nếu có trong HTML) */
+.site-footer__inner h2,
+.site-footer__inner h3,
+.site-footer__title,
+.site-footer__heading {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #7A5508;
+    margin: 0 0 12px;
 }
 
 .site-footer__bottom {
-    border-top: 1px solid var(--color-border);
-    padding-block: var(--space-4);
+    border-top: 1px solid rgba(58, 47, 28, .15);
+    margin-top: 32px;
+    padding-top: 20px;
+    font-size: 15px;
     text-align: center;
-    font-size: var(--fs-xs);
-    color: var(--color-text-muted);
+    color: #5A4A2E;
+}
+
+.site-footer__bottom p {
+    margin: 0;
+    color: #5A4A2E;
 }
 
 /* ---------- 8. FILTER BAR / PAGINATION / NOT-FOUND ---------- */
@@ -400,7 +559,7 @@ main {
     padding: var(--space-3) var(--space-4);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius);
     color: var(--color-text);
 }
 
@@ -408,7 +567,7 @@ main {
     padding: var(--space-3) var(--space-4);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius);
     color: var(--color-text);
 }
 
@@ -433,8 +592,9 @@ main {
 }
 
 .pagination__item.is-active {
-    border-color: var(--color-gold);
-    color: var(--color-gold);
+    background: var(--color-gold-soft);
+    border-color: var(--color-gold-light);
+    color: var(--color-text-accent);
 }
 
 .not-found {
@@ -451,18 +611,47 @@ main {
 }
 
 /* ---------- 9. RESPONSIVE ---------- */
+@media (max-width: 1200px) {
+    /* Nav đủ dài: cuộn ngang trong lòng nav, không đè lên search/account */
+    .site-nav {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .site-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .site-nav ul {
+        flex-wrap: nowrap;
+        gap: 4px;
+    }
+
+    .header-search {
+        max-width: 180px;
+    }
+}
+
 @media (max-width: 1024px) {
     .grid {
         grid-template-columns: repeat(3, 1fr);
     }
+}
 
-    /* Menu đã dài thêm mục Build/Cộng đồng nên nhường chỗ cho khu vực tài khoản */
-    .header-search {
-        display: none;
+@media (max-width: 900px) {
+    /* Header cho phép xuống hàng; ô tìm kiếm chiếm trọn hàng thứ hai */
+    .site-header__inner {
+        flex-wrap: wrap;
+        height: auto;
+        padding-block: var(--space-3);
+        gap: var(--space-3);
     }
 
-    .site-footer__inner {
-        grid-template-columns: 1fr 1fr;
+    .header-search {
+        order: 10;
+        flex: 1 1 100%;
+        max-width: 100%;
     }
 }
 
@@ -471,22 +660,24 @@ main {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .header-search__input {
-        width: 120px;
-    }
-
     .nav-toggle__btn {
         display: flex;
+        order: 2;
+    }
+
+    .account-area {
+        order: 3;
     }
 
     .site-nav {
-        position: absolute;
-        top: var(--header-height);
-        left: 0;
-        right: 0;
-        background: var(--color-bg-elevated);
-        border-bottom: 1px solid var(--color-border);
+        order: 4;
+        position: static;
+        flex-basis: 100%;
+        max-width: 100%;
+        overflow-x: visible;
         display: none;
+        background: transparent;
+        border-top: 1px solid var(--color-border);
     }
 
     .site-nav.is-open {
@@ -495,17 +686,32 @@ main {
 
     .site-nav ul {
         flex-direction: column;
-        gap: 0;
-        padding: var(--space-3) var(--space-5);
+        align-items: stretch;
+        gap: var(--space-1);
+        padding-block: var(--space-3);
+    }
+
+    .site-nav li {
+        display: block;
     }
 
     .site-nav__link {
-        display: block;
-        padding-block: var(--space-3);
+        justify-content: flex-start;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    /* card media tràn viền vẫn giữ padding 0 */
+    .hero-card,
+    .item-card {
+        padding: 0;
     }
 
     .site-footer__inner {
         grid-template-columns: 1fr;
+        gap: var(--space-6);
     }
 }
 
@@ -516,7 +722,7 @@ main {
     }
 
     .header-search {
-        display: none;
+        flex: 1 1 100%;
     }
 
     h1 { font-size: var(--fs-2xl); }
