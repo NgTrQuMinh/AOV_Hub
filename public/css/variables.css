@@ -1,36 +1,77 @@
 /* =========================================
  * variables.css - CSS variables dùng chung toàn site
  * Phụ trách: Người 1
+ * Giao diện: sáng, tối giản, góc cạnh
  * ========================================= */
 
 :root {
-    /* Màu nền */
-    --color-bg: #140f1f;
-    --color-bg-elevated: #1b1530;
-    --color-surface: #221a38;
-    --color-border: #362a51;
+    /* -------------------------------------
+     * Màu nền & bề mặt
+     * ----------------------------------- */
+    --bg: #ffffff;
+    --bg-alt: #f6f7f9;
+    --surface: #ffffff;
 
-    /* Màu chữ */
-    --color-text: #f2eefb;
-    --color-text-muted: #a99cc7;
+    --border: #e3e6ea;
+    --border-strong: #cbd0d6;
 
-    /* Màu nhấn (vàng đồng + đỏ tía, phong cách AOV) */
-    --color-gold: #e6b34a;
-    --color-gold-dark: #c99435;
-    --color-crimson: #d1495b;
+    /* -------------------------------------
+     * Màu chữ
+     * ----------------------------------- */
+    --text: #101317;
+    --text-muted: #61676f;
+    --text-inverse: #ffffff;
 
-    /* Typography */
-    --font-base: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    --fs-xs: 0.8125rem;
-    --fs-sm: 0.9375rem;
-    --fs-base: 1rem;
-    --fs-md: 1.125rem;
-    --fs-lg: 1.375rem;
-    --fs-xl: 1.75rem;
-    --fs-2xl: 2.25rem;
-    --fs-3xl: 3rem;
+    /* -------------------------------------
+     * Màu nhấn (một màu duy nhất)
+     * ----------------------------------- */
+    --accent: #1d4ed8;
+    --accent-hover: #1a43b4;
+    --accent-soft: #eef3ff;
+    --accent-contrast: #ffffff;
 
-    /* Spacing (bội số 4px) */
+    --danger: #d92d20;
+    --danger-hover: #b42318;
+    --danger-soft: #fef3f2;
+
+    --success: #067647;
+    --success-soft: #ecfdf3;
+
+    --warning: #b54708;
+
+    /* -------------------------------------
+     * Typography
+     * ----------------------------------- */
+    --font-base: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+        "Liberation Mono", monospace;
+
+    --fs-xs: 0.75rem;   /* 12px */
+    --fs-sm: 0.8125rem; /* 13px */
+    --fs-base: 0.9375rem; /* 15px */
+    --fs-md: 1rem;      /* 16px */
+    --fs-lg: 1.125rem;  /* 18px */
+    --fs-xl: 1.375rem;  /* 22px */
+    --fs-2xl: 1.75rem;  /* 28px */
+    --fs-3xl: 2.25rem;  /* 36px */
+
+    --fw-normal: 400;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+
+    --lh-tight: 1.25;
+    --lh-normal: 1.5;
+    --lh-relaxed: 1.7;
+
+    --tracking-tight: -0.01em;
+    --tracking-normal: 0;
+    --tracking-wide: 0.02em;
+
+    /* -------------------------------------
+     * Spacing scale (bội số 4px)
+     * ----------------------------------- */
     --space-1: 4px;
     --space-2: 8px;
     --space-3: 12px;
@@ -40,13 +81,88 @@
     --space-7: 48px;
     --space-8: 64px;
 
-    /* Bo góc */
-    --radius-sm: 6px;
-    --radius-md: 12px;
-    --radius-lg: 20px;
-    --radius-pill: 999px;
+    --space-0: 0;
+    --space-9: 80px;
+    --space-10: 96px;
 
-    /* Layout */
+    /* -------------------------------------
+     * Bo góc (tối đa 2px)
+     * ----------------------------------- */
+    --radius: 0;
+    --radius-sm: 2px;
+    --radius-md: 2px;
+    --radius-lg: 2px;
+    --radius-pill: 2px;
+    --radius-full: 999px; /* chỉ dùng cho avatar */
+
+    /* -------------------------------------
+     * Viền
+     * ----------------------------------- */
+    --border-width: 1px;
+    --border-width-strong: 2px;
+
+    /* -------------------------------------
+     * Bóng đổ (rất nhẹ)
+     * ----------------------------------- */
+    --shadow: none;
+    --shadow-xs: 0 1px 1px rgba(16, 19, 23, 0.04);
+    --shadow-sm: 0 1px 2px rgba(16, 19, 23, 0.06);
+    --shadow-md: 0 2px 4px rgba(16, 19, 23, 0.05);
+    --shadow-lg: 0 4px 12px rgba(16, 19, 23, 0.07);
+    --shadow-focus: 0 0 0 3px rgba(29, 78, 216, 0.18);
+
+    /* -------------------------------------
+     * Transition
+     * ----------------------------------- */
+    --transition: 150ms ease;
+    --transition-fast: 100ms ease;
+    --transition-slow: 150ms linear;
+
+    /* -------------------------------------
+     * Z-index
+     * ----------------------------------- */
+    --z-base: 1;
+    --z-sticky: 100;
+    --z-header: 200;
+    --z-dropdown: 300;
+    --z-modal: 400;
+    --z-toast: 500;
+
+    /* -------------------------------------
+     * Layout
+     * ----------------------------------- */
     --container-max: 1180px;
-    --header-height: 72px;
+    --container-pad: var(--space-5);
+    --header-height: 64px;
+
+    /* =====================================
+     * Tương thích ngược - tên biến cũ
+     * (giữ nguyên tên để các file CSS khác không bị vỡ)
+     * ===================================== */
+    --color-bg: var(--bg);
+    --color-bg-alt: var(--bg-alt);
+    --color-bg-elevated: var(--bg-alt);
+    --color-surface: var(--surface);
+
+    --color-border: var(--border);
+    --color-border-strong: var(--border-strong);
+
+    --color-text: var(--text);
+    --color-text-muted: var(--text-muted);
+    --color-text-inverse: var(--text-inverse);
+
+    --color-primary: var(--accent);
+    --color-primary-hover: var(--accent-hover);
+    --color-primary-soft: var(--accent-soft);
+
+    /* Tên cũ "vàng đồng" / "đỏ tía" -> ánh xạ sang accent / danger */
+    --color-gold: var(--accent);
+    --color-gold-dark: var(--accent-hover);
+    --color-crimson: var(--danger);
+
+    --color-danger: var(--danger);
+    --color-success: var(--success);
+    --color-warning: var(--warning);
+
+    --font-family: var(--font-base);
 }
