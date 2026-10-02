@@ -18,14 +18,15 @@
         <h1>Yêu thích &amp; Lịch sử tra cứu</h1>
 
         <!--
-            TODO (Người 4):
-            - 2 tab: Yêu thích / Lịch sử
-            - Đọc aov_favorites / aov_history qua storage.js, đối chiếu với data/heroes.json + data/items.json
-            - Render bằng renderHeroCard()/renderItemCard() (js/components.js), có nút xóa từng mục
-            - Empty state dùng renderNotFound() (js/components.js)
+            2 tab + danh sách do js/favorite.js vẽ:
+            - #favorite-tabs: 2 tab "Yêu thích" / "Lịch sử", tab đang chọn ghi ở ?tab=
+            - #favorite-list:  tab Yêu thích chia 2 nhóm (Tướng / Trang bị),
+                               tab Lịch sử là các tướng đã xem + nút "Xóa lịch sử"
+            Dữ liệu lấy từ aov_favorites / aov_history (js/storage.js) và đối chiếu
+            với src/data/heroes.json + src/data/items.json.
         -->
         <div class="tabs" id="favorite-tabs"></div>
-        <div class="grid" id="favorite-list"></div>
+        <div class="favorite-list" id="favorite-list"></div>
     </main>
 
     <footer id="site-footer"></footer>
@@ -33,6 +34,7 @@
     <script src="/src/js/config.js"></script>
     <script src="/src/js/loadData.js"></script>
     <script src="/src/js/components.js"></script>
+    <script src="/src/js/search.js"></script>
     <script src="/src/js/auth.js"></script>
     <script src="/src/js/layout.js"></script>
     <script src="/src/js/storage.js"></script>
