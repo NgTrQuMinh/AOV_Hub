@@ -1,36 +1,52 @@
 /* =========================================
  * variables.css - CSS variables dùng chung toàn site
  * Phụ trách: Người 1
+ * Phong cách: nền kem ấm, vàng nhấn, card trắng bo góc mềm
  * ========================================= */
 
 :root {
     /* Màu nền */
-    --color-bg: #140f1f;
-    --color-bg-elevated: #1b1530;
-    --color-surface: #221a38;
-    --color-border: #362a51;
+    --color-bg: #FAF3E1;              /* nền trang (kem) */
+    --color-bg-elevated: #FFFDF8;     /* nền header / section sáng */
+    --color-surface: #FFFFFF;         /* nền card / surface */
+    --color-border: #EFE3C6;          /* viền */
 
     /* Màu chữ */
-    --color-text: #f2eefb;
-    --color-text-muted: #a99cc7;
+    --color-text: #3A2F1C;            /* chữ chính (nâu đen) */
+    --color-text-muted: #7A6A4A;      /* chữ phụ */
+    --color-text-accent: #9C6F10;     /* chữ nhấn / link / nhãn nhỏ (vàng sẫm) */
 
-    /* Màu nhấn (vàng đồng + đỏ tía, phong cách AOV) */
-    --color-gold: #e6b34a;
-    --color-gold-dark: #c99435;
-    --color-crimson: #d1495b;
+    /* Màu nhấn - vàng */
+    --color-gold: #DDA532;            /* vàng chính */
+    --color-gold-light: #EFCC72;      /* vàng sáng */
+    --color-gold-dark: #C98F1E;       /* vàng đậm khi hover */
+    --color-gold-soft: #F5E5C3;       /* nền vàng nhạt (badge, nav đang chọn) */
+    --color-gold-subtle: #FAF1DE;     /* nền vàng nhạt hơn (vùng nhấn) */
+    --color-on-accent: #3A2F1C;       /* chữ trên nền vàng (màu tối) */
+
+    /* Màu trạng thái */
+    --color-danger: #C0392B;
+    --color-success: #3B8F5A;
+    --color-crimson: #C0392B;         /* giữ tên cũ, ánh xạ sang danger */
+
+    /* Gradient */
+    --gradient-gold: linear-gradient(135deg, #EFCC72, #DDA532);
+    --gradient-accent: linear-gradient(135deg, #EFCC72, #DDA532);
 
     /* Typography */
-    --font-base: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    --fs-xs: 0.8125rem;
-    --fs-sm: 0.9375rem;
-    --fs-base: 1rem;
-    --fs-md: 1.125rem;
-    --fs-lg: 1.375rem;
-    --fs-xl: 1.75rem;
-    --fs-2xl: 2.25rem;
-    --fs-3xl: 3rem;
+    --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+    --font-base: "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+    --fs-xs: 12px;
+    --fs-sm: 14px;
+    --fs-base: 16px;
+    --fs-md: 18px;
+    --fs-lg: 22px;
+    --fs-xl: 28px;
+    --fs-2xl: 36px;
+    --fs-3xl: 48px;
+    --fs-4xl: 56px;
 
-    /* Spacing (bội số 4px) */
+    /* Spacing (thang 4/8/12/16/24/32/48/64px) */
     --space-1: 4px;
     --space-2: 8px;
     --space-3: 12px;
@@ -41,12 +57,22 @@
     --space-8: 64px;
 
     /* Bo góc */
-    --radius-sm: 6px;
+    --radius-sm: 8px;
+    --radius: 12px;
     --radius-md: 12px;
     --radius-lg: 20px;
     --radius-pill: 999px;
 
+    /* Bóng */
+    --shadow-sm: 0 2px 8px rgba(122, 90, 20, .08);
+    --shadow-md: 0 8px 24px rgba(122, 90, 20, .12);
+    --shadow-gold: 0 6px 16px rgba(221, 165, 50, .35);
+
+    /* Transition */
+    --transition: 180ms ease;
+
     /* Layout */
-    --container-max: 1180px;
+    --container-width: 1200px;
+    --container-max: 1200px;
     --header-height: 72px;
 }
