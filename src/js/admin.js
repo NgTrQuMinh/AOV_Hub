@@ -214,10 +214,14 @@ async function initAdminPage() {
     const tableBox = document.getElementById('admin-list');
     if (!tableBox) return;
 
-    // requireAdmin() tự điều hướng về trang chủ / trang Login khi không đủ quyền.
-    // Vẽ bảng thì vẫn phải tự kiểm tra để không phụ thuộc hoàn toàn vào điều hướng.
-    const allowed = await requireAdmin();
-    if (!allowed) {
+    // requireAdmin() đã được gọi sớm 1 lần trong <script> requireAdmin(); </script>
+    // ở đầu admin.html. Nếu gọi lại ở đây thì người đã đăng nhập nhưng không phải admin
+    // sẽ bị bắn alert "không có quyền" 2 lần liên tiếp, nên chỉ tự kiểm tra bằng
+    // isAdmin() sau khi chờ usersReady (tức aov_users chắc chắn đã có role).
+    // Vẫn fail-closed: không xác minh được là admin thì không vẽ bảng, không đụng dữ liệu.
+    await usersReady;
+
+    if (typeof isAdmin !== 'function' || !isAdmin()) {
         renderAdminDenied();
         return;
     }

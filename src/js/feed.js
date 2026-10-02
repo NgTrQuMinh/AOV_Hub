@@ -160,7 +160,8 @@ async function seedPostsFromJson() {
     const stored = getPosts();
 
     // Mọi id từng nạp + mọi id đang lưu đều được coi là "đã biết".
-    const known = new Set(getSeededPostIds());
+    const seeded = getSeededPostIds();
+    const known = new Set(seeded);
     stored.forEach((post) => known.add(normalizeId(post.id)));
 
     const added = normalizePosts(jsonPosts).filter((post) => {
@@ -173,7 +174,7 @@ async function seedPostsFromJson() {
 
     if (!added.length) {
         // Ghi lại danh sách id đã nạp (lần đầu chưa có ghi, hoặc posts.json vừa thêm id mới).
-        if (known.size > getSeededPostIds().length) setStore(POSTS_SEEDED_KEY, [...known]);
+        if (known.size > seeded.length) setStore(POSTS_SEEDED_KEY, [...known]);
         return stored;
     }
 
@@ -204,6 +205,9 @@ function findPostById(postId) {
 
 const POST_TITLE_MIN = 5;
 const POST_CONTENT_MIN = 10;
+
+/** Độ dài tối đa của một bình luận (ký tự), để aov_comments không bị phình quá lớn. */
+const COMMENT_MAX = 500;
 
 /* ---------- Chuyên mục bài viết ---------- */
 
@@ -522,8 +526,8 @@ function getPostsByUser(username) {
     const name = String(username || '').trim();
     if (!name) return [];
 
-    // Lọc cả bài ẩn: tác giả xem trang Profile của chính mình thì vẫn thấy bài của mình
-    // (kèm nhãn "Đã bị ẩn"), còn Profile của người khác thì không lộ bài ẩn của họ.
+    // Bài ẩn của chính mình vẫn thấy (kèm nhãn "Đã bị ẩn") nhờ isPostVisibleForViewer();
+    // bài ẩn của người khác thì không lộ ra Profile của họ.
     return getPosts().filter((post) => (
         String(post.author || '').trim() === name && isPostVisibleForViewer(post)
     ));
@@ -543,12 +547,16 @@ function isLikedByCurrentUser(postId) {
 
 /**
  * Bật/tắt lượt thích của người dùng đang đăng nhập.
- * @returns {boolean} true nếu vừa thích, false nếu vừa bỏ thích hoặc chưa đăng nhập.
+ * @returns {boolean} true nếu vừa thích, false nếu vừa bỏ thích, chưa đăng nhập
+ *         hoặc bài viết không còn tồn tại.
  */
 function toggleLike(postId) {
     const id = normalizeId(postId);
     const username = getCurrentUser();
     if (!id || !username) return false;
+
+    // Bài không còn trong hệ thống (đã bị xoá) thì không ghi rác vào aov_likes.
+    if (!findPostById(id)) return false;
 
     const likes = getLikes();
     const users = getLikeUsers(id);
@@ -569,7 +577,8 @@ function getCommentsOfPost(postId) {
 
 /**
  * Thêm bình luận cho một bài viết.
- * @returns {object|null} bình luận vừa tạo, null nếu chưa đăng nhập hoặc nội dung rỗng.
+ * @returns {object|null} bình luận vừa tạo, null nếu chưa đăng nhập, nội dung rỗng,
+ *         quá COMMENT_MAX ký tự, bài viết không còn tồn tại hoặc lưu thất bại.
  */
 function addComment(postId, content) {
     const id = normalizeId(postId);
@@ -577,6 +586,12 @@ function addComment(postId, content) {
     const author = getCurrentUser();
 
     if (!id || !text || !author) return null;
+
+    // Không bình luận vào bài không tồn tại (đã bị xoá) để aov_comments không sinh rác.
+    if (!findPostById(id)) return null;
+
+    // Chặn bình luận quá dài để một bình luận không làm phình toàn bộ aov_comments.
+    if (text.length > COMMENT_MAX) return null;
 
     const comments = getComments();
     const comment = {
@@ -666,7 +681,7 @@ function renderPostForm(editingPost, formBox) {
         box.innerHTML = `
             <div class="feed-form feed-form--guest">
                 <p>Bạn cần đăng nhập để đăng bài và bình luận.</p>
-                <a class="btn btn-primary" href="${BASE_PATH}src/pages/login.html?redirect=${BASE_PATH}src/pages/feed.html">Đăng nhập</a>
+                <a class="btn btn-primary" href="${BASE_PATH}src/pages/login.html?redirect=${encodeURIComponent(BASE_PATH + 'src/pages/feed.html')}">Đăng nhập</a>
             </div>
         `;
         return;
@@ -813,11 +828,14 @@ function renderPostForm(editingPost, formBox) {
  */
 function openPostEditForm(postId, formBox) {
     const post = findPostById(postId);
+    const box = formBox || document.getElementById('feed-form') || document.getElementById('post-edit-form');
 
-    if (!post || !canEditPost(post)) return false;
+    // Trang không có vùng để vẽ form (vd profile.html) thì báo thất bại để handler
+    // hiện alert, thay vì im lặng rồi trả true khiến người dùng tưởng đã mở form sửa.
+    if (!post || !canEditPost(post) || !box) return false;
 
-    renderPostForm(post, formBox);
-    if (formBox && formBox.scrollIntoView) formBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    renderPostForm(post, box);
+    if (box.scrollIntoView) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     return true;
 }
@@ -907,18 +925,62 @@ function getVisiblePosts(state) {
         return Number.isNaN(time) ? 0 : time;
     };
 
-    // Khi hai bài bằng nhau (cùng lượt like / cùng số bình luận) thì bài mới hơn đứng trước.
     const sorted = list.slice();
 
-    if (state.sort === POST_SORT_LIKES) {
-        sorted.sort((a, b) => getLikeUsers(b.id).length - getLikeUsers(a.id).length || timeOf(b) - timeOf(a));
-    } else if (state.sort === POST_SORT_COMMENTS) {
-        sorted.sort((a, b) => getCommentsOfPost(b.id).length - getCommentsOfPost(a.id).length || timeOf(b) - timeOf(a));
-    } else {
+    // Sắp xếp theo mới nhất không cần đọc thêm dữ liệu nào nên sort thẳng.
+    if (state.sort !== POST_SORT_LIKES && state.sort !== POST_SORT_COMMENTS) {
         sorted.sort((a, b) => timeOf(b) - timeOf(a));
+        return sorted;
     }
 
+    // Đếm sẵn một lần cho toàn bộ danh sách trước khi sort.
+    // Nếu gọi getLikeUsers()/getCommentsOfPost() ngay trong hàm so sánh thì mỗi lần gọi
+    // sẽ đọc + JSON.parse TOÀN BỘ aov_likes / aov_comments, tức O(n log n) lần parse
+    // mỗi lần vẽ lại danh sách (đo được: 200 bài -> 2251 lần đọc, ~96 ms chặn trình duyệt).
+    const countOf = state.sort === POST_SORT_LIKES
+        ? buildLikeCountMap(getLikes())
+        : buildCommentCountMap(getComments());
+
+    // Khi hai bài bằng nhau (cùng lượt like / cùng số bình luận) thì bài mới hơn đứng trước.
+    sorted.sort((a, b) => (
+        (countOf.get(normalizeId(b.id)) || 0) - (countOf.get(normalizeId(a.id)) || 0)
+        || timeOf(b) - timeOf(a)
+    ));
+
     return sorted;
+}
+
+/**
+ * Gom sẵn số người đã thích theo id bài (Map<id, số lượt>) để lúc sort tra cứu O(1)
+ * thay vì đọc lại LocalStorage mỗi lần so sánh.
+ * @param {object} likes dữ liệu aov_likes đã đọc sẵn.
+ * @returns {Map<string, number>}
+ */
+function buildLikeCountMap(likes) {
+    const counts = new Map();
+
+    Object.keys(likes || {}).forEach((id) => {
+        const users = likes[id];
+        counts.set(normalizeId(id), Array.isArray(users) ? users.length : 0);
+    });
+
+    return counts;
+}
+
+/**
+ * Gom sẵn số bình luận theo id bài (Map<id, số lượt>), đọc aov_comments đúng 1 lần.
+ * @param {Array} comments dữ liệu aov_comments đã đọc sẵn.
+ * @returns {Map<string, number>}
+ */
+function buildCommentCountMap(comments) {
+    const counts = new Map();
+
+    comments.forEach((comment) => {
+        const id = normalizeId(comment.postId);
+        counts.set(id, (counts.get(id) || 0) + 1);
+    });
+
+    return counts;
 }
 
 /**
@@ -1124,9 +1186,10 @@ async function initPostDetailPage() {
 
 /**
  * Vẽ lại trang chi tiết (cũng dùng sau mỗi lượt thích / bình luận).
- * @param {string|number} [focusPostId] bỏ qua, trang chi tiết chỉ có một bình luận đang gõ.
+ * @param {string|number} [focusPostId] id bài cần đưa con trỏ về ô bình luận sau khi vẽ.
+ *        Bỏ trống (lúc mới mở trang) thì KHÔNG tự ý giành focus vào ô bình luận.
  */
-function renderPostDetailView() {
+function renderPostDetailView(focusPostId) {
     const detailContainer = document.getElementById('post-detail');
     if (!detailContainer) return;
 
@@ -1215,7 +1278,7 @@ function renderPostDetailView() {
                     </form>
                 ` : `
                     <p class="post-detail__guest-note">
-                        <a href="${BASE_PATH}src/pages/login.html?redirect=${BASE_PATH}src/pages/post-detail.html?id=${encodeURIComponent(post.id)}">Đăng nhập</a>
+                        <a href="${BASE_PATH}src/pages/login.html?redirect=${encodeURIComponent(BASE_PATH + 'src/pages/post-detail.html?id=' + post.id)}">Đăng nhập</a>
                         để viết bình luận.
                     </p>
                 `}
@@ -1223,7 +1286,13 @@ function renderPostDetailView() {
         </article>
     `;
 
-    // Vẽ xong thì trả con trỏ về ô bình luận để người dùng viết tiếp ngay
+    // Chỉ trả con trỏ về ô bình luận khi có yêu cầu rõ ràng (sau khi vừa thích / gửi bình luận),
+    // không tự ý giành focus lúc người dùng vừa mở trang và đang muốn đọc bài viết.
+    if (focusPostId === undefined || focusPostId === null) return;
+
+    // Chỉ focus khi bài đang hiển thị đúng là bài vừa thao tác, tránh nhảy nhầm sang bài khác.
+    if (normalizeId(focusPostId) !== normalizeId(post.id)) return;
+
     const input = detailContainer.querySelector('[data-comment-form] input');
     if (input) input.focus();
 }

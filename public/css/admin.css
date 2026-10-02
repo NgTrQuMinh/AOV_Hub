@@ -1,0 +1,83 @@
+/* =========================================
+ * admin.css - Style bảng quản trị bài viết
+ * Phụ trách: Ng Tr Quang Minh
+ *
+ * admin.js vẽ bảng bằng <table> nhưng trước đây chưa có style nào cho table/th/td,
+ * nên bảng hiện ra không viền, không căn cột. File này bù lại phần đó.
+ * Dùng chung biến màu của variables.css nên không cần khai báo lại màu.
+ * ========================================= */
+
+/* Bảng có 9 cột nên cho phép cuộn ngang thay vì vỡ bố cục trên màn hình nhỏ */
+#admin-list.card {
+    overflow-x: auto;
+    padding: var(--space-2);
+}
+
+#admin-list table {
+    width: 100%;
+    border-collapse: collapse; /* gộp đường viền, không kẻ ô kép */
+    font-size: var(--fs-sm);
+    white-space: nowrap; /* mỗi ô một dòng, tránh chữ bị bóc vỡ */
+}
+
+/* ---------- Đầu bảng ---------- */
+#admin-list thead th {
+    background: var(--color-bg-elevated);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-align: left; /* mặc định của th là center, bảng này muốn căn trái */
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    /* Dính đầu bảng khi bảng dài, cuộn xuống vẫn thấy tên cột */
+    position: sticky;
+    top: 0;
+}
+
+/* ---------- Ô dữ liệu ---------- */
+#admin-list tbody td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+}
+
+/* Kẻ sọc xen kẽ để đuổi mắt khi bảng có nhiều dòng */
+#admin-list tbody tr:nth-child(even) {
+    background: var(--color-bg-elevated);
+}
+
+#admin-list tbody tr:hover {
+    background: var(--color-surface);
+}
+
+/* Cột tiêu đề được phép xuống dòng vì tiêu đề bài viết thường dài */
+#admin-list tbody td:nth-child(3) {
+    white-space: normal;
+    min-width: 240px;
+}
+
+/* Cột số (ID, like, bình luận) căn phải cho dễ so sánh */
+#admin-list tbody td:nth-child(1),
+#admin-list tbody td:nth-child(6),
+#admin-list tbody td:nth-child(7) {
+    text-align: right;
+}
+
+/* Cột thao tác: hai nút nằm cạnh nhau, không xuống dòng */
+#admin-list tbody td:last-child {
+    display: flex;
+    gap: var(--space-2);
+}
+
+/* ---------- Nút trong bảng ---------- */
+/* .btn-sm chưa có trong common.css nên định nghĩa riêng tại đây */
+#admin-list .btn-sm {
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--fs-xs);
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+#admin-list .btn-sm:hover {
+    border-color: var(--color-crimson);
+    color: var(--color-crimson);
+}
