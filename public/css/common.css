@@ -2,6 +2,7 @@
  * common.css - Style dùng chung toàn site
  * Phụ trách: Người 1
  * (dùng sau reset.css + variables.css)
+ * Giao diện: sáng, tối giản, góc cạnh
  * Mục lục:
  *   1. Body / Typography
  *   2. Layout & Container
@@ -16,15 +17,15 @@
 
 /* ---------- 1. BODY / TYPOGRAPHY ---------- */
 body {
-    background: var(--color-bg);
-    color: var(--color-text);
+    background: var(--bg);
+    color: var(--text);
     font-family: var(--font-base);
     font-size: var(--fs-base);
     line-height: 1.6;
 }
 
 h1, h2, h3, h4 {
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: -0.01em;
     line-height: 1.25;
     margin-bottom: var(--space-3);
@@ -35,7 +36,7 @@ h2 { font-size: var(--fs-2xl); }
 h3 { font-size: var(--fs-md); }
 
 p {
-    color: var(--color-text-muted);
+    color: var(--text-muted);
     margin-bottom: var(--space-3);
 }
 
@@ -63,7 +64,7 @@ main {
     gap: var(--space-4);
     margin-bottom: var(--space-5);
     padding-left: var(--space-3);
-    border-left: 4px solid var(--color-gold);
+    border-left: 2px solid var(--accent);
 }
 
 .section__header h2 {
@@ -71,7 +72,7 @@ main {
 }
 
 .section__link {
-    color: var(--color-gold);
+    color: var(--accent);
     font-size: var(--fs-sm);
     white-space: nowrap;
 }
@@ -87,65 +88,70 @@ main {
     justify-content: center;
     gap: var(--space-2);
     padding: var(--space-3) var(--space-5);
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius);
     font-weight: 600;
     font-size: var(--fs-sm);
     border: 1px solid transparent;
-    transition: transform 0.15s ease, background 0.15s ease;
+    transition: background-color 150ms ease, border-color 150ms ease,
+        color 150ms ease;
     white-space: nowrap;
 }
 
 .btn:hover {
-    transform: translateY(-1px);
+    border-color: var(--border-strong);
 }
 
 .btn-primary {
-    background: var(--color-gold);
-    color: #241a0a;
+    background: var(--accent);
+    color: var(--text-inverse);
 }
 
 .btn-primary:hover {
-    background: var(--color-gold-dark);
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
 }
 
 .btn-outline {
     background: transparent;
-    border-color: var(--color-border);
-    color: var(--color-text);
+    border-color: var(--border);
+    color: var(--text);
 }
 
 .btn-outline:hover {
-    border-color: var(--color-gold);
-    color: var(--color-gold);
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 /* ---------- 4. CARD / BADGE ---------- */
 .card {
     position: relative;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     overflow: hidden;
-    transition: border-color 0.15s ease;
+    transition: border-color 150ms ease;
 }
 
 .card:hover {
-    border-color: var(--color-gold);
+    border-color: var(--accent);
 }
 
 .badge {
     display: inline-block;
     padding: 2px var(--space-3);
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius);
     font-size: var(--fs-xs);
-    background: var(--color-bg-elevated);
-    color: var(--color-text-muted);
-    border: 1px solid var(--color-border);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    background: var(--bg-alt);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
 }
 
-.badge--easy { color: #7fd18f; border-color: #2f4a35; }
-.badge--medium { color: var(--color-gold); border-color: #4a3d22; }
-.badge--hard { color: var(--color-crimson); border-color: #4a2730; }
+.badge--easy { color: var(--success); border-color: var(--border); background: var(--success-soft); }
+.badge--medium { color: var(--accent); border-color: var(--border); background: var(--accent-soft); }
+.badge--hard { color: var(--danger); border-color: var(--border); background: var(--danger-soft); }
 
 .btn-favorite {
     position: absolute;
@@ -156,25 +162,29 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    background: rgba(20, 15, 31, 0.65);
-    color: var(--color-text);
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
     font-size: var(--fs-md);
     z-index: 2;
+    transition: color 150ms ease, border-color 150ms ease;
 }
 
 .btn-favorite:hover {
-    color: var(--color-crimson);
+    color: var(--danger);
+    border-color: var(--danger);
 }
 
 .btn-favorite.is-active {
-    color: var(--color-crimson);
+    color: var(--danger);
+    border-color: var(--danger);
 }
 
 .hero-card__media,
 .item-card__media {
     aspect-ratio: 4 / 3;
-    background: var(--color-bg-elevated);
+    background: var(--bg-alt);
     overflow: hidden;
 }
 
@@ -207,8 +217,8 @@ main {
 .item-card__price {
     margin-left: auto;
     font-size: var(--fs-sm);
-    font-weight: 700;
-    color: var(--color-gold);
+    font-weight: 600;
+    color: var(--accent);
 }
 
 .hero-card__link,
@@ -216,12 +226,12 @@ main {
     display: inline-block;
     font-size: var(--fs-sm);
     font-weight: 600;
-    color: var(--color-text);
+    color: var(--text);
 }
 
 .hero-card__link:hover,
 .item-card__link:hover {
-    color: var(--color-gold);
+    color: var(--accent);
 }
 
 /* ---------- 5. GRID TIỆN ÍCH ---------- */
@@ -236,8 +246,8 @@ main {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: var(--color-bg-elevated);
-    border-bottom: 1px solid var(--color-border);
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
 }
 
 .site-header__inner {
@@ -252,12 +262,13 @@ main {
     align-items: baseline;
     gap: 2px;
     font-size: var(--fs-lg);
-    font-weight: 800;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     flex-shrink: 0;
 }
 
-.site-logo__mark { color: var(--color-gold); }
-.site-logo__text { color: var(--color-text); }
+.site-logo__mark { color: var(--accent); }
+.site-logo__text { color: var(--text); }
 
 .site-nav {
     flex: 1;
@@ -272,28 +283,34 @@ main {
     display: inline-block;
     padding-block: var(--space-2);
     font-size: var(--fs-sm);
-    font-weight: 600;
-    color: var(--color-text-muted);
+    font-weight: 500;
+    color: var(--text-muted);
     border-bottom: 2px solid transparent;
+    transition: color 150ms ease, border-color 150ms ease;
 }
 
 .site-nav__link:hover {
-    color: var(--color-text);
+    color: var(--text);
 }
 
 .site-nav__link.is-active {
-    color: var(--color-gold);
-    border-color: var(--color-gold);
+    color: var(--accent);
+    border-color: var(--accent);
 }
 
 .header-search {
     display: flex;
     align-items: center;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-pill);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     padding-left: var(--space-4);
     flex-shrink: 0;
+    transition: border-color 150ms ease;
+}
+
+.header-search:focus-within {
+    border-color: var(--accent);
 }
 
 .header-search__input {
@@ -301,12 +318,18 @@ main {
     border: none;
     padding: var(--space-2) 0;
     width: 180px;
-    color: var(--color-text);
+    color: var(--text);
 }
 
 .header-search__btn {
     padding: var(--space-2) var(--space-4);
-    color: var(--color-text-muted);
+    color: var(--text-muted);
+    border-radius: var(--radius);
+    transition: color 150ms ease;
+}
+
+.header-search__btn:hover {
+    color: var(--accent);
 }
 
 /* ---------- 6.1 ACCOUNT AREA (điền bởi updateAccountUI - js/auth.js) ---------- */
@@ -326,12 +349,14 @@ main {
     align-items: center;
     gap: var(--space-2);
     font-size: var(--fs-sm);
-    font-weight: 600;
-    color: var(--color-text);
+    font-weight: 500;
+    color: var(--text);
 }
 
 .account-area__avatar {
     font-size: var(--fs-lg);
+    border-radius: var(--radius-full);
+    line-height: 1;
 }
 
 .nav-toggle__btn {
@@ -339,18 +364,22 @@ main {
     flex-direction: column;
     gap: 4px;
     cursor: pointer;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--space-2);
 }
 
 .nav-toggle__btn span {
     width: 22px;
     height: 2px;
-    background: var(--color-text);
+    background: var(--text);
 }
 
 /* ---------- 7. FOOTER ---------- */
 .site-footer {
-    background: var(--color-bg-elevated);
-    border-top: 1px solid var(--color-border);
+    background: var(--bg-alt);
+    border-top: 1px solid var(--border);
     margin-top: var(--space-8);
 }
 
@@ -373,7 +402,7 @@ main {
 }
 
 .site-footer__nav a:hover {
-    color: var(--color-gold);
+    color: var(--accent);
 }
 
 .site-footer__meta p {
@@ -381,11 +410,11 @@ main {
 }
 
 .site-footer__bottom {
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid var(--border);
     padding-block: var(--space-4);
     text-align: center;
     font-size: var(--fs-xs);
-    color: var(--color-text-muted);
+    color: var(--text-muted);
 }
 
 /* ---------- 8. FILTER BAR / PAGINATION / NOT-FOUND ---------- */
@@ -398,18 +427,30 @@ main {
 .filter-bar__keyword {
     flex: 1;
     padding: var(--space-3) var(--space-4);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    color: var(--color-text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    transition: border-color 150ms ease;
+}
+
+.filter-bar__keyword:focus {
+    border-color: var(--accent);
+    outline: none;
 }
 
 .filter-bar__select {
     padding: var(--space-3) var(--space-4);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    color: var(--color-text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    transition: border-color 150ms ease;
+}
+
+.filter-bar__select:focus {
+    border-color: var(--accent);
+    outline: none;
 }
 
 .pagination {
@@ -425,22 +466,28 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-sm);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    color: var(--color-text-muted);
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
     font-size: var(--fs-sm);
+    transition: border-color 150ms ease, color 150ms ease;
+}
+
+.pagination__item:hover {
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 .pagination__item.is-active {
-    border-color: var(--color-gold);
-    color: var(--color-gold);
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 .not-found {
     text-align: center;
     padding: var(--space-8) var(--space-4);
-    color: var(--color-text-muted);
+    color: var(--text-muted);
     grid-column: 1 / -1;
 }
 
@@ -448,6 +495,7 @@ main {
     font-size: var(--fs-3xl);
     display: block;
     margin-bottom: var(--space-3);
+    line-height: 1;
 }
 
 /* ---------- 9. RESPONSIVE ---------- */
@@ -484,8 +532,8 @@ main {
         top: var(--header-height);
         left: 0;
         right: 0;
-        background: var(--color-bg-elevated);
-        border-bottom: 1px solid var(--color-border);
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
         display: none;
     }
 
@@ -502,6 +550,11 @@ main {
     .site-nav__link {
         display: block;
         padding-block: var(--space-3);
+        border-bottom: 1px solid var(--border);
+    }
+
+    .site-nav__link.is-active {
+        border-bottom-color: var(--accent);
     }
 
     .site-footer__inner {
