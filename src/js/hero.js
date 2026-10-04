@@ -47,6 +47,13 @@ const HERO_SORT_LABELS = {
 };
 
 /**
+ * Số tướng hiển thị trên 1 trang = 4 cột × 3 dòng.
+ * Giống hằng số ITEM_PAGE_SIZE của trang danh sách trang bị để 2 trang
+ * có cùng nhịp phân trang. Muốn mỗi trang nhiều/ít hơn thì chỉ sửa ở đây.
+ */
+const HERO_PAGE_SIZE = 12;
+
+/**
  * Sắp xếp danh sách tướng theo cách đã chọn.
  * "Mặc định" thì giữ nguyên thứ tự trong heroes.json.
  * A → Z và Z → A so tên bằng localeCompare("vi") nên không phân biệt hoa/thường
@@ -92,6 +99,8 @@ function syncHeroFilterUrl(state) {
 function initHeroListPage(heroes) {
     const filterBarEl = document.getElementById("hero-filter-bar");
     const gridContainer = document.getElementById("hero-list");
+    const paginationEl = document.getElementById("hero-pagination");
+    const countEl = document.getElementById("hero-count");
 
     if (!gridContainer) return;
 
@@ -104,6 +113,8 @@ function initHeroListPage(heroes) {
         // Chỉ nhận cách sắp xếp có thật trong HERO_SORT_LABELS, giá trị lạ trên
         // URL thì rơi về "mặc định" (giữ nguyên thứ tự trong heroes.json).
         sort: HERO_SORT_LABELS[getQueryParam("sort")] ? getQueryParam("sort") : HERO_SORT_DEFAULT,
+        // Trang đang xem, luôn bắt đầc từ 1 (giống trang danh sách trang bị).
+        page: 1,
     };
 
     if (filterBarEl) {
@@ -156,26 +167,55 @@ function initHeroListPage(heroes) {
         return sortHeroes(list, state.sort);
     };
 
-    const renderGrid = (list) => {
-        gridContainer.innerHTML = list.length
-            ? list.map(renderHeroCard).join("")
+    const render = () => {
+        const filtered = getFilteredHeroes();
+
+        // Tổng số trang: luôn ít nhất 1 để trang rỗng vẫn không lỗi phép chia.
+        const totalPages = Math.max(1, Math.ceil(filtered.length / HERO_PAGE_SIZE));
+        // Lọc xong danh sách có thể ngắn lại (vd đang ở trang 3 rồi lọc còn 1 trang),
+        // kẹp lại để không render ra trang trống.
+        state.page = Math.min(Math.max(1, state.page), totalPages);
+
+        // Đếm kết quả: không lọc thì "30 tướng", có lọc thì "3/30 tướng".
+        if (countEl) {
+            countEl.textContent = filtered.length === heroes.length
+                ? `${filtered.length} tướng`
+                : `${filtered.length}/${heroes.length} tướng`;
+        }
+
+        // Cắt đúng 1 trang hiện tại ra khỏi danh sách đã lọc + sắp xếp.
+        const pageItems = filtered.slice((state.page - 1) * HERO_PAGE_SIZE, state.page * HERO_PAGE_SIZE);
+
+        gridContainer.innerHTML = pageItems.length
+            ? pageItems.map(renderHeroCard).join("")
             : renderNotFound("Không tìm thấy tướng phù hợp!");
+
+        renderHeroPagination(paginationEl, totalPages, state.page);
 
         if (typeof refreshFavoriteButtons === "function") refreshFavoriteButtons();
     };
 
-    const render = () => {
-        renderGrid(getFilteredHeroes());
-    };
-
     if (searchInput) {
-        searchInput.addEventListener("input", () => { state.keyword = searchInput.value; render(); });
+        // Đổi từ khoá là kết quả đổi theo -> luôn quay về trang 1.
+        searchInput.addEventListener("input", () => {
+            state.keyword = searchInput.value;
+            state.page = 1;
+            render();
+        });
     }
     if (roleFilter) {
-        roleFilter.addEventListener("change", () => { state.role = roleFilter.value; render(); });
+        roleFilter.addEventListener("change", () => {
+            state.role = roleFilter.value;
+            state.page = 1;
+            render();
+        });
     }
     if (difficultyFilter) {
-        difficultyFilter.addEventListener("change", () => { state.difficulty = difficultyFilter.value; render(); });
+        difficultyFilter.addEventListener("change", () => {
+            state.difficulty = difficultyFilter.value;
+            state.page = 1;
+            render();
+        });
     }
     if (sortFilter) {
         sortFilter.addEventListener("change", () => {
@@ -184,12 +224,57 @@ function initHeroListPage(heroes) {
             const picked = sortFilter.value;
             state.sort = HERO_SORT_LABELS[picked] ? picked : HERO_SORT_DEFAULT;
             sortFilter.value = state.sort;
+            // Sắp xếp lại cũng là danh sách mới, giữ nguyên quy ước quay về trang 1.
+            state.page = 1;
             syncHeroFilterUrl(state);
             render();
         });
     }
+    if (paginationEl) {
+        // Thân phân trang được vẽ lại mỗi lần render nên dùng event delegation.
+        paginationEl.addEventListener("click", (event) => {
+            const pageBtn = event.target.closest("[data-page]");
+            if (!pageBtn) return;
+
+            const pickedPage = Number(pageBtn.dataset.page);
+            if (!Number.isFinite(pickedPage) || pickedPage === state.page) return;
+
+            state.page = pickedPage;
+            render();
+            // Cuộn lên đầu lưới để không phải cuộn ngược tìm vị trí mới.
+            gridContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+    }
 
     render();
+}
+
+/**
+ * Vẽ thanh phân trang dưới lưới tướng.
+ * Dùng lại class .pagination / .pagination__item đã có sẵn ở common.css.
+ * Chỉ 1 trang thì không vẽ gì cho gọn (giống trang danh sách trang bị).
+ *
+ * @param {Element|null} paginationEl - #hero-pagination
+ * @param {number} totalPages tổng số trang
+ * @param {number} currentPage trang đang xem
+ */
+function renderHeroPagination(paginationEl, totalPages, currentPage) {
+    if (!paginationEl) return;
+
+    paginationEl.innerHTML = totalPages > 1
+        ? `<div class="pagination">${Array.from({ length: totalPages }, (_, index) => {
+            const page = index + 1;
+            const isActive = page === currentPage;
+
+            return `<button
+                type="button"
+                class="pagination__item${isActive ? " is-active" : ""}"
+                data-page="${page}"
+                aria-label="Trang ${page}"
+                aria-current="${isActive ? "page" : "false"}"
+            >${page}</button>`;
+        }).join("")}</div>`
+        : "";
 }
 
 /**

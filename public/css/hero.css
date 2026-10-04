@@ -1,11 +1,53 @@
 /* =========================================
  * hero.css - Style trang Danh sách/Chi tiết Tướng
  * Phụ trách: Người 2
+ * (dùng sau reset.css + variables.css + common.css)
  *
- * TODO: layout heroes.html (filter-bar + grid), hero-detail.html (ảnh lớn, stats, skills, build đề xuất)
+ * Mục lục:
+ *   1. Trang danh sách (heroes.html): tiêu đề + đếm kết quả, lưới card, phân trang
+ *   2. Thanh lọc & sắp xếp
+ *
+ * Quy ước: chỉ dùng biến trong variables.css, không !important,
+ * không khai lại rule đã có ở common.css (.grid, .badge, .btn-favorite,
+ * .filter-bar, .pagination).
  * ========================================= */
 
-/* ---------- Thanh lọc & sắp xếp ---------- */
+/* ---------- 1. TRANG DANH SÁCH ---------- */
+
+/* Tiêu đề trang + số kết quả, cùng kiểu với .item-page-head của item.css */
+.hero-page-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-bottom: var(--space-2);
+    padding-left: var(--space-3);
+    border-left: 4px solid var(--color-gold);
+}
+
+.hero-page-head h1 {
+    margin: 0;
+}
+
+/* Badge đếm kết quả do js/hero.js ghi vào #hero-count: "30 tướng" hoặc "3/30 tướng" */
+.hero-page-head__count {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--color-gold);
+    white-space: nowrap;
+}
+
+/* Lưới tướng đã được .grid (common.css) lo sẵn: 4 → 3 → 2 → 2 cột.
+   .grid--heroes chỉ cần khai thêm khi muốn khác layout trang chủ, hiện không cần. */
+
+/* Thanh phân trang dùng luôn .pagination / .pagination__item của common.css,
+   ở đây chỉ chừa khoảng cách cho khỏi dính sát lưới card. */
+#hero-pagination {
+    margin-top: var(--space-6);
+}
+
+/* ---------- 2. THANH LỌC & SẮP XẾP ---------- */
 /* Màn hình hẹp: ô tìm chiếm một dòng riêng, các select tự xuống hàng dưới
    (giống feed.css) vì thanh lọc đã có tới 4 ô: tìm + vai trò + độ khó + sắp xếp */
 @media (max-width: 640px) {

@@ -15,11 +15,16 @@
     <header id="site-header"></header>
 
     <main class="container section">
-        <h1>Danh sách Tướng</h1>
+        <div class="hero-page-head">
+            <h1>Danh sách Tướng</h1>
+            <span class="hero-page-head__count" id="hero-count"></span>
+        </div>
 
         <!-- Filter + tìm kiếm và danh sách được render bởi js/hero.js từ src/data/heroes.json -->
         <div id="hero-filter-bar"></div>
         <div class="grid grid--heroes" id="hero-list"></div>
+        <!-- Thanh phân trang (4 cột × 3 dòng = 12 tướng/trang) do js/hero.js vẽ -->
+        <div id="hero-pagination"></div>
     </main>
 
     <footer id="site-footer"></footer>
