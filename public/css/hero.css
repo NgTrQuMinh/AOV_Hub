@@ -4,55 +4,353 @@
  * (dùng sau reset.css + variables.css + common.css)
  *
  * Mục lục:
- *   1. Trang danh sách (heroes.html): tiêu đề + đếm kết quả, lưới card, phân trang
- *   2. Thanh lọc & sắp xếp
+ *   1. Trang danh sách (heroes.html)
+ *   2. Trang chi tiết (hero-detail.html): link quay lại + header (ảnh lớn | thông tin)
+ *   3. Chỉ số cơ bản (.hero-stats-table)
+ *   4. Bộ kỹ năng (.hero-skills-table + .skill-item)
+ *   5. Trang bị đề xuất (.hero-build, .build-items, .build-item)
+ *   6. Responsive: 1024 / 768 / 480
+ *   7. Thanh lọc & sắp xếp
  *
  * Quy ước: chỉ dùng biến trong variables.css, không !important,
- * không khai lại rule đã có ở common.css (.grid, .badge, .btn-favorite,
- * .filter-bar, .pagination).
+ * không đụng vào rule đã có ở common.css (.badge, .btn-favorite, .grid, .filter-bar).
  * ========================================= */
 
 /* ---------- 1. TRANG DANH SÁCH ---------- */
+/* Lưới tướng đã được .grid (common.css) lo: 4 → 3 → 2 → 2 cột.
+   .grid--heroes chỉ cần khai thêm khi muốn khác layout trang chủ, hiện không cần. */
 
-/* Tiêu đề trang + số kết quả, cùng kiểu với .item-page-head của item.css */
-.hero-page-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--space-4);
-    margin-bottom: var(--space-2);
-    padding-left: var(--space-3);
-    border-left: 4px solid var(--color-gold);
+/* ---------- 2. TRANG CHI TIẾT: BACK LINK + HEADER ---------- */
+
+/* 2.1 Link "← Danh sách tướng" nằm trên đầu trang, nhỏ và nhạt để không tranh
+   chỗ với khối tiêu đề tướng bên dưới. */
+.hero-detail__back {
+    margin-bottom: var(--space-4);
 }
 
-.hero-page-head h1 {
-    margin: 0;
-}
-
-/* Badge đếm kết quả do js/hero.js ghi vào #hero-count: "30 tướng" hoặc "3/30 tướng" */
-.hero-page-head__count {
+.hero-detail__back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
     font-size: var(--fs-sm);
     font-weight: 600;
-    color: var(--color-gold);
+    color: var(--color-text-muted);
+}
+
+.hero-detail__back-link:hover {
+    color: var(--color-text-accent);
+}
+
+/* 2.2 Header: ảnh lớn bên trái, thông tin bên phải.
+   min-width: 0 cho các con để nội dung dài (mô tả, tên) co lại được
+   thay vì đẩy rộng khung làm tràn ngang trang. */
+.hero-detail-header {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Ảnh tướng: khung vuông, nền sáng, ảnh nằm giữa (contain) để không bị cắt chữ. */
+.hero-large-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    padding: var(--space-3);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+}
+
+/* Cột thông tin: tên + vai trò/độ khó/nút yêu thích. */
+.hero-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.hero-info h1 {
+    margin: 0;
+    font-size: var(--fs-2xl);
+    line-height: 1.2;
+    overflow-wrap: break-word;
+}
+
+/* Dải badge vai trò + độ khó + nút ♥, tự xuống hàng khi chật. */
+.hero-info__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+/* .btn-favorite ở common.css position:absolute (để nổi trên card),
+   ở trang chi tiết nút nằm trong luồng .hero-info__meta nên trả về static. */
+.hero-info__meta .btn-favorite {
+    position: static;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+}
+
+/* ---------- 3. CHỈ SỐ CƠ BẢN ---------- */
+/* Khối bọc có overflow-x:auto để bảng cuộn ngang thay vì tràn ngang trang. */
+.hero-stats {
+    margin-bottom: var(--space-6);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Tiêu đề khối dùng chung cho cả 3 khối: chỉ số / kỹ năng / trang bị. */
+.hero-stats h2,
+.hero-skills h2,
+.hero-build h2 {
+    margin: 0 0 var(--space-3);
+    font-size: var(--fs-lg);
+}
+
+/* border-spacing: 0 + overflow: hidden để bo góc cắt được các đường viền trong ô
+   (reset.css đặt border-collapse: collapse nên bo góc trên <table> không ăn). */
+.hero-stats-table {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-spacing: 0;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--color-surface);
+}
+
+.hero-stats-table__row + .hero-stats-table__row th,
+.hero-stats-table__row + .hero-stats-table__row td {
+    border-top: 1px solid var(--color-border);
+}
+
+/* Cột nhãn: nền vàng rất nhạt để tách khỏi cột giá trị. */
+.hero-stats-table__label {
+    width: 40%;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-gold-subtle);
+    color: var(--color-text);
+    font-weight: 600;
+    text-align: left;
     white-space: nowrap;
 }
 
-/* Lưới tướng đã được .grid (common.css) lo sẵn: 4 → 3 → 2 → 2 cột.
-   .grid--heroes chỉ cần khai thêm khi muốn khác layout trang chủ, hiện không cần. */
-
-/* Thanh phân trang dùng luôn .pagination / .pagination__item của common.css,
-   ở đây chỉ chừa khoảng cách cho khỏi dính sát lưới card. */
-#hero-pagination {
-    margin-top: var(--space-6);
+.hero-stats-table__value {
+    padding: var(--space-3) var(--space-4);
+    color: var(--color-text);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
 }
 
-/* ---------- 2. THANH LỌC & SẮP XẾP ---------- */
-/* Màn hình hẹp: ô tìm chiếm một dòng riêng, các select tự xuống hàng dưới
+/* ---------- 4. BỘ KỸ NĂNG ---------- */
+.hero-skills {
+    margin-bottom: var(--space-6);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.hero-skills-table {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-spacing: 0;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--color-surface);
+}
+
+/* Hàng tiêu đề cột: nền vàng nhạt, chữ nhỏ, không đổi dòng. */
+.hero-skills-table thead th {
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-gold-soft);
+    color: var(--color-text-accent);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    text-align: left;
+    white-space: nowrap;
+}
+
+/* Ngăn cách giữa các kỹ năng bằng đường viền, không bo góc từng ô để khung
+   bảng thành 1 khối liền mạch. */
+.skill-item th,
+.skill-item td {
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--color-border);
+    vertical-align: top;
+    text-align: left;
+}
+
+/* Cột tên kỹ năng: gọn, không xuống dòng khi tên dài. */
+.skill-item__name {
+    min-width: 160px;
+    color: var(--color-text);
+    font-weight: 700;
+}
+
+.skill-item__type {
+    min-width: 110px;
+    color: var(--color-text-accent);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Mô tả là cột rộng nhất, chữ nhỏ hơn cho dễ đọc đoạn văn. */
+.skill-item__desc {
+    min-width: 320px;
+    color: var(--color-text-muted);
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+}
+
+/* Cột hồi chiêu: căn giữa, số liệu dễ so sánh giữa các kỹ năng. */
+.skill-item__cooldown {
+    min-width: 96px;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Tướng chưa có kỹ năng trong JSON: chỉ hiện dòng báo trống. */
+.hero-skills__empty {
+    margin: 0;
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--fs-sm);
+    font-style: italic;
+}
+
+/* ---------- 5. TRANG BỊ ĐỀ XUẤT ---------- */
+.hero-build {
+    margin-bottom: var(--space-6);
+}
+
+/* Lưới ô trang bị: tự co giãn theo bề rộng, mỗi ô vuông. */
+.build-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: var(--space-3);
+}
+
+/* .build-item dùng chung với build.js nên chỉ style trong phạm vi .hero-build,
+   không lặp lại / không ghi đè rule của build.css. */
+.hero-build .build-item {
+    display: block;
+    min-width: 0;
+    text-align: center;
+    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+}
+
+.hero-build .build-item img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    padding: var(--space-2);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-1);
+    transition: border-color var(--transition), transform var(--transition);
+}
+
+/* Tên trang bị dài bị cắt bằng "..." sau 2 dòng để các ô không lệch chiều cao. */
+.hero-build .build-item span {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Hover: viền vàng + ảnh nâng nhẹ + chữ đậm màu nhấn. */
+.hero-build .build-item:hover img {
+    border-color: var(--color-gold);
+    transform: translateY(-2px);
+}
+
+.hero-build .build-item:hover span {
+    color: var(--color-gold);
+}
+
+/* ---------- 6. RESPONSIVE ---------- */
+@media (max-width: 1024px) {
+    /* Ảnh nhỏ lại còn 240px, phần thông tin lấy phần rộng còn lại. */
+    .hero-detail-header {
+        grid-template-columns: 240px minmax(0, 1fr);
+        gap: var(--space-5);
+    }
+}
+
+@media (max-width: 768px) {
+    /* Header xếp dọc: ảnh trên, thông tin dưới, ảnh giới hạn bề rộng. */
+    .hero-detail-header {
+        grid-template-columns: minmax(0, 1fr);
+        padding: var(--space-4);
+    }
+
+    .hero-large-img {
+        max-width: 260px;
+        margin-inline: auto;
+    }
+
+    .hero-info h1 {
+        font-size: var(--fs-xl);
+    }
+
+    /* Bảng chỉ số bỏ yêu cầu chữ không xuống dòng để vẫn vừa màn hình. */
+    .hero-stats-table__label {
+        width: 50%;
+        white-space: normal;
+    }
+
+    /* Bảng kỹ năng đặt min-width: nhỏ hơn thế cột Mô tả sẽ bị dồn quá chật,
+       .hero-skills (overflow-x:auto) lo phần cuộn ngang. */
+    .hero-skills-table {
+        min-width: 560px;
+    }
+
+    /* Mỗi ô trang bị nhỏ hơn cho vừa 3 cột trên màn hình tablet. */
+    .build-items {
+        grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+        gap: var(--space-2);
+    }
+}
+
+@media (max-width: 480px) {
+    /* Header bỏ đệm & bóng đỡ để lấy chỗ cho nội dung trên máy nhỏ. */
+    .hero-detail-header {
+        margin-bottom: var(--space-5);
+        padding: var(--space-3);
+        box-shadow: none;
+    }
+
+    .hero-stats h2,
+    .hero-skills h2,
+    .hero-build h2 {
+        font-size: var(--fs-md);
+    }
+
+    /* Ô trang bị 2 cột, tên hiển thị đủ 1 dòng. */
+    .build-items {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* ---------- 7. THANH LỌC & SẮP XẾP ---------- */
+/* Màn hình hẹp: ô tìm kiếm chiếm một dòng riêng, các select tự xuống hàng dưới
    (giống feed.css) vì thanh lọc đã có tới 4 ô: tìm + vai trò + độ khó + sắp xếp */
 @media (max-width: 640px) {
     .filter-bar {
         flex-wrap: wrap;
+        padding: var(--space-4);
     }
 
     .filter-bar__keyword {
@@ -61,5 +359,70 @@
 
     .filter-bar__select {
         flex: 1 1 auto;
+    }
+
+    .hero-build .build-items {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .grid--heroes {
+        grid-template-columns: 1fr;
+    }
+
+    .container.section > h1 {
+        margin-top: 32px;
+        font-size: 30px;
+    }
+
+    .hero-info h1 {
+        font-size: 28px;
+    }
+
+    .hero-stats,
+    .hero-skills,
+    .hero-build {
+        padding: 16px;
+        border-radius: var(--radius);
+    }
+
+    .hero-stats h2,
+    .hero-skills h2,
+    .hero-build h2 {
+        margin-bottom: var(--space-4);
+        font-size: 20px;
+    }
+
+    .skill-item {
+        gap: var(--space-3);
+        padding: 16px 0;
+    }
+
+    .skill-item img {
+        flex-basis: 48px;
+        width: 48px;
+        height: 48px;
+    }
+
+    /* Không phần tử nào tràn ngang ở màn hình hẹp nhất */
+    #hero-detail,
+    #hero-detail-container,
+    .hero-detail-header,
+    .hero-info,
+    .hero-stats,
+    .hero-skills,
+    .hero-build,
+    .hero-card,
+    .hero-card__body,
+    .skill-item > div {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .hero-card__name,
+    .skill-item h4,
+    .hero-build .build-item span {
+        overflow-wrap: anywhere;
     }
 }
