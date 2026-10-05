@@ -4,190 +4,301 @@
  * (dùng sau reset.css + variables.css + common.css)
  * ========================================= */
 
+/* ---------- Nền khu vực form: căn giữa cả hai chiều ---------- */
 .auth-section {
+    position: relative;
     display: flex;
+    align-items: center;
     justify-content: center;
-    padding-block: var(--space-8);
+    min-height: calc(100vh - 260px);
+    padding: var(--space-7) var(--space-5);
+}
+
+/* Vòng tròn trang trí mờ phía sau thẻ form, không bắt sự kiện chuột */
+.auth-section::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    width: 420px;
+    height: 420px;
+    transform: translateX(-50%);
+    background: #F5EACC;
+    border-radius: 50%;
+    opacity: .6;
+    filter: blur(12px);
+    pointer-events: none;
 }
 
 .auth-card {
+    position: relative;
+    z-index: 1;
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
+    padding: 40px;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    padding: var(--space-6);
+    border-radius: 24px;
+    box-shadow: var(--shadow-md);
+}
+
+/* Trang đăng ký có nhiều ô hơn nên khung form rộng hơn một chút */
+body[data-page="register"] .auth-card {
+    max-width: 480px;
 }
 
 .auth-card h1 {
-    font-size: var(--fs-xl);
     margin-bottom: var(--space-2);
+    font-size: 30px;
+    font-weight: 800;
+    text-align: center;
+    color: var(--color-text);
 }
 
 .auth-card__desc {
-    margin-bottom: var(--space-5);
+    margin-bottom: 28px;
+    font-size: 17px;
+    text-align: center;
+    color: var(--color-text-muted);
 }
 
+/* ---------- Nhóm trường nhập liệu ---------- */
 .form-group {
-    margin-bottom: var(--space-4);
+    margin-bottom: 18px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: var(--space-2);
-    font-size: var(--fs-sm);
+    margin-bottom: 6px;
+    font-size: var(--fs-base);
     font-weight: 600;
     color: var(--color-text);
 }
 
 .form-group input {
     width: 100%;
-    padding: var(--space-3) var(--space-4);
+    padding: 14px 18px;
     background: var(--color-bg-elevated);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     color: var(--color-text);
-    font-size: var(--fs-base);
+    font-size: 17px;
+    transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.form-group input::placeholder {
+    color: #B5A27A;
 }
 
 .form-group input:focus {
     outline: none;
+    background: var(--color-surface);
     border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px rgba(221, 165, 50, 0.25);
 }
 
+/* ---------- Thông báo lỗi / thành công của form ---------- */
 .form-errors {
-    margin-bottom: var(--space-4);
-    padding: var(--space-3) var(--space-4);
-    border: 1px solid var(--color-crimson);
-    border-radius: var(--radius-sm);
-    background: rgba(209, 73, 91, 0.12);
-    color: #f4b6bf;
-    font-size: var(--fs-sm);
+    margin-bottom: var(--space-5);
+    padding: 12px 16px;
+    background: #FDECEA;
+    border: 1px solid color-mix(in srgb, var(--color-danger) 30%, transparent);
+    border-radius: var(--radius-md);
+    color: #A93226;
+    font-size: var(--fs-base);
 }
 
 .form-errors li {
+    margin-left: var(--space-5);
     list-style: disc;
-    margin-left: var(--space-4);
 }
 
 .form-success {
-    margin-bottom: var(--space-4);
-    padding: var(--space-3) var(--space-4);
-    border: 1px solid var(--color-gold);
-    border-radius: var(--radius-sm);
-    background: rgba(230, 179, 74, 0.12);
-    color: var(--color-gold);
-    font-size: var(--fs-sm);
+    margin-bottom: var(--space-5);
+    padding: 12px 16px;
+    background: #E8F5EC;
+    border: 1px solid color-mix(in srgb, #2E7D4F 30%, transparent);
+    border-radius: var(--radius-md);
+    color: #2E7D4F;
+    font-size: var(--fs-base);
 }
 
+/* ---------- Nút và dòng chuyển trang ---------- */
 .auth-card .btn {
     width: 100%;
     margin-top: var(--space-2);
+    padding: 14px;
+    font-size: var(--fs-md);
+}
+
+.auth-card .btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    filter: none;
 }
 
 .auth-card__switch {
-    margin-top: var(--space-5);
+    margin-top: 24px;
+    font-size: var(--fs-base);
     text-align: center;
-    font-size: var(--fs-sm);
+    color: #5A4A2E;
 }
 
 .auth-card__switch a {
-    color: var(--color-gold);
-    font-weight: 600;
+    color: var(--color-text-accent);
+    font-weight: 700;
 }
 
 .auth-card__switch a:hover {
     text-decoration: underline;
 }
 
+/* ---------- Ghi chú nhỏ dưới ô nhập ---------- */
+.form-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+}
+
+.auth-card__hint {
+    margin-top: var(--space-3);
+    font-size: var(--fs-sm);
+    text-align: center;
+    color: var(--color-text-muted);
+}
+
+.auth-card__hint strong {
+    color: var(--color-text);
+}
+
 /* ---------- Profile ---------- */
+body[data-page="profile"] .container {
+    max-width: 960px;
+}
+
+body[data-page="profile"] .section__header h2 {
+    font-size: var(--fs-lg);
+    font-weight: 700;
+}
+
 .profile-card {
     display: flex;
     align-items: center;
     gap: var(--space-5);
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-5);
+    padding: 32px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    box-shadow: var(--shadow-sm);
+}
+
+.profile-card > div {
+    text-align: center;
 }
 
 .profile-card__avatar {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 72px;
-    height: 72px;
-    border-radius: var(--radius-pill);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    font-size: var(--fs-2xl);
+    width: 112px;
+    height: 112px;
     flex-shrink: 0;
+    background: var(--gradient-gold);
+    border: 4px solid var(--color-gold-soft);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-sm);
+    color: var(--color-on-accent);
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1;
 }
 
 .profile-card__name {
     margin-bottom: var(--space-1);
+    font-size: 26px;
+    font-weight: 800;
 }
 
 .profile-card__status {
     display: inline-block;
-    padding: 2px var(--space-3);
+    padding: 4px 12px;
+    background: var(--color-gold-soft);
     border-radius: var(--radius-pill);
-    background: rgba(230, 179, 74, 0.15);
-    color: var(--color-gold);
-    font-size: var(--fs-xs);
+    color: var(--color-text-accent);
+    font-size: 14px;
     font-weight: 600;
 }
 
-/* ---------- Ghi chú nhỏ dưới ô nhập ---------- */
-.form-hint {
-    display: block;
-    margin-top: var(--space-1);
-    font-size: var(--fs-xs);
-    color: var(--color-text-muted);
-}
-
-.auth-card__hint {
-    margin-top: var(--space-3);
-    text-align: center;
-    font-size: var(--fs-xs);
-}
-
-/* ---------- Profile ---------- */
 .profile-card__joined {
     margin: var(--space-2) 0 0;
-    font-size: var(--fs-xs);
+    font-size: 15px;
+    color: var(--color-text-muted);
 }
 
 .profile-card .btn {
     margin-left: auto;
+    padding: 12px 24px;
+    background: transparent;
+    border: 1.5px solid var(--color-danger);
+    color: var(--color-danger);
+    font-size: var(--fs-base);
 }
 
+.profile-card .btn:hover {
+    background: #FDECEA;
+    color: var(--color-danger);
+}
+
+/* ---------- Số liệu nhanh ---------- */
 .profile-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-4);
-    margin-bottom: var(--space-7);
-}
-
-.profile-stats li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
     padding: var(--space-4);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.profile-stats li {
+    flex: 1 1 0;
+    min-width: 130px;
+    padding: var(--space-3) var(--space-2);
     text-align: center;
+}
+
+.profile-stats li + li {
+    border-left: 1px solid var(--color-border);
 }
 
 .profile-stats strong {
     display: block;
-    font-size: var(--fs-xl);
-    color: var(--color-gold);
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--color-text-accent);
 }
 
 .profile-stats span {
-    font-size: var(--fs-xs);
+    font-size: 15px;
     color: var(--color-text-muted);
 }
 
+/* ---------- Responsive 768 ---------- */
 @media (max-width: 768px) {
     .profile-stats {
-        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-2);
+    }
+
+    .profile-stats li {
+        flex: 1 1 calc(50% - var(--space-2));
+    }
+
+    .profile-stats li:nth-child(2n + 1) {
+        border-left: 0;
     }
 
     .profile-card {
@@ -196,5 +307,65 @@
 
     .profile-card .btn {
         margin-left: 0;
+    }
+}
+
+/* ---------- Responsive 480 ---------- */
+@media (max-width: 480px) {
+    .auth-section {
+        min-height: calc(100vh - 220px);
+        padding: var(--space-6) var(--space-5);
+    }
+
+    .auth-section::before {
+        display: none;
+    }
+
+    .auth-card {
+        padding: 28px 20px;
+        border-radius: 20px;
+    }
+
+    .auth-card h1 {
+        font-size: 26px;
+    }
+
+    .auth-card__desc {
+        margin-bottom: 20px;
+        font-size: var(--fs-base);
+    }
+
+    .form-group input {
+        padding: 12px 14px;
+        font-size: var(--fs-base);
+    }
+
+    .profile-card {
+        flex-direction: column;
+        gap: var(--space-4);
+        padding: var(--space-5);
+        text-align: center;
+    }
+
+    .profile-card__avatar {
+        width: 88px;
+        height: 88px;
+        font-size: 34px;
+    }
+
+    .profile-card .btn {
+        width: 100%;
+    }
+
+    .profile-stats {
+        padding: var(--space-3) var(--space-2);
+    }
+
+    .profile-stats strong {
+        font-size: 22px;
+    }
+
+    .profile-stats span {
+        font-size: var(--fs-sm);
     }
 }
