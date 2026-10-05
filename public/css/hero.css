@@ -345,7 +345,7 @@
 }
 
 /* ---------- 7. THANH LỌC & SẮP XẾP ---------- */
-/* Màn hình hẹp: ô tìm chiếm một dòng riêng, các select tự xuống hàng dưới
+/* Màn hình hẹp: ô tìm kiếm chiếm một dòng riêng, các select tự xuống hàng dưới
    (giống feed.css) vì thanh lọc đã có tới 4 ô: tìm + vai trò + độ khó + sắp xếp */
 @media (max-width: 640px) {
     .filter-bar {
