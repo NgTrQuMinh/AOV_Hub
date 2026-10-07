@@ -119,6 +119,7 @@ function initHeroListPage(heroes) {
         // Chỉ nhận cách sắp xếp có thật trong HERO_SORT_LABELS, giá trị lạ trên
         // URL thì rơi về "mặc định" (giữ nguyên thứ tự trong heroes.json).
         sort: HERO_SORT_LABELS[getQueryParam("sort")] ? getQueryParam("sort") : HERO_SORT_DEFAULT,
+        page: Number(getQueryParam("page")) > 0 ? Math.floor(Number(getQueryParam("page"))) : 1,
     };
 
     if (filterBarEl) {
@@ -159,6 +160,8 @@ function initHeroListPage(heroes) {
     if (searchInput) searchInput.value = state.keyword;
     if (sortFilter) sortFilter.value = state.sort;
 
+    const HERO_PER_PAGE = 12;
+
     const getFilteredHeroes = () => {
         const list = heroes.filter((hero) => {
             const matchesRole = state.role === "all" || (hero.role || []).includes(state.role);
@@ -171,6 +174,50 @@ function initHeroListPage(heroes) {
         return sortHeroes(list, state.sort);
     };
 
+    const syncHeroFilterUrl = (currentState) => {
+        const params = new URLSearchParams(window.location.search);
+
+        if (currentState.sort && currentState.sort !== HERO_SORT_DEFAULT) params.set("sort", currentState.sort);
+        else params.delete("sort");
+
+        if (currentState.keyword) params.set("keyword", currentState.keyword);
+        else params.delete("keyword");
+
+        if (currentState.page && currentState.page > 1) params.set("page", String(currentState.page));
+        else params.delete("page");
+
+        const query = params.toString();
+
+        history.replaceState(null, "", query ? `${BASE_PATH}src/pages/heroes.html?${query}` : `${BASE_PATH}src/pages/heroes.html`);
+    };
+
+    const renderPagination = (total, perPage, currentPage) => {
+        const totalPages = Math.ceil(total / perPage) || 1;
+        let page = currentPage;
+        if (page > totalPages) page = totalPages;
+        if (page < 1) page = 1;
+        state.page = page;
+
+        const paginationEl = document.getElementById("hero-pagination");
+        if (!paginationEl) return;
+
+        // Cùng kiểu với trang Danh sách trang bị: các ô số nằm trong .pagination
+        // (flex, căn giữa) và ẩn luôn khi chỉ có 1 trang.
+        paginationEl.innerHTML = totalPages > 1
+            ? `<div class="pagination">${Array.from({ length: totalPages }, (_, index) => {
+                const pageNumber = index + 1;
+
+                return `<button
+                    type="button"
+                    class="pagination__item${pageNumber === page ? " is-active" : ""}"
+                    data-page="${pageNumber}"
+                    aria-label="Trang ${pageNumber}"
+                    aria-current="${pageNumber === page ? "page" : "false"}"
+                >${pageNumber}</button>`;
+            }).join("")}</div>`
+            : "";
+    };
+
     const renderGrid = (list) => {
         gridContainer.innerHTML = list.length
             ? list.map(renderHeroCard).join("")
@@ -180,17 +227,52 @@ function initHeroListPage(heroes) {
     };
 
     const render = () => {
-        renderGrid(getFilteredHeroes());
+        const filtered = getFilteredHeroes();
+        const total = filtered.length;
+        const perPage = HERO_PER_PAGE;
+        let page = state.page;
+        const totalPages = Math.ceil(total / perPage) || 1;
+        if (page > totalPages) page = totalPages;
+        if (page < 1) page = 1;
+        state.page = page;
+
+        const start = (page - 1) * perPage;
+        const paged = filtered.slice(start, start + perPage);
+
+        renderGrid(paged);
+        renderPagination(total, perPage, page);
+        syncHeroFilterUrl(state);
+
+        const countEl = document.getElementById("hero-count");
+        if (countEl) {
+            if (state.keyword || state.role !== "all" || state.difficulty !== "all") {
+                countEl.textContent = `${total}/30 tướng`;
+            } else {
+                countEl.textContent = `${total} tướng`;
+            }
+        }
     };
 
     if (searchInput) {
-        searchInput.addEventListener("input", () => { state.keyword = searchInput.value; render(); });
+        searchInput.addEventListener("input", () => {
+            state.keyword = searchInput.value;
+            state.page = 1;
+            render();
+        });
     }
     if (roleFilter) {
-        roleFilter.addEventListener("change", () => { state.role = roleFilter.value; render(); });
+        roleFilter.addEventListener("change", () => {
+            state.role = roleFilter.value;
+            state.page = 1;
+            render();
+        });
     }
     if (difficultyFilter) {
-        difficultyFilter.addEventListener("change", () => { state.difficulty = difficultyFilter.value; render(); });
+        difficultyFilter.addEventListener("change", () => {
+            state.difficulty = difficultyFilter.value;
+            state.page = 1;
+            render();
+        });
     }
     if (sortFilter) {
         sortFilter.addEventListener("change", () => {
@@ -199,7 +281,20 @@ function initHeroListPage(heroes) {
             const picked = sortFilter.value;
             state.sort = HERO_SORT_LABELS[picked] ? picked : HERO_SORT_DEFAULT;
             sortFilter.value = state.sort;
-            syncHeroFilterUrl(state);
+            state.page = 1;
+            render();
+        });
+    }
+
+    // Phân trang dùng event delegation (giống trang Danh sách trang bị) vì thanh
+    // được vẽ lại mỗi lần render, gắn sự kiện riêng cho từng nút sẽ bị mất.
+    const paginationEl = document.getElementById("hero-pagination");
+    if (paginationEl) {
+        paginationEl.addEventListener("click", (event) => {
+            const pageBtn = event.target.closest("[data-page]");
+            if (!pageBtn) return;
+
+            state.page = Number(pageBtn.dataset.page);
             render();
         });
     }
@@ -358,10 +453,10 @@ async function initHeroDetailPage(heroes) {
 
     // Độ khó thiếu trong JSON thì không vẽ badge, tránh hiện chữ "Độ khó undefined".
     const hasDifficulty = hero.difficulty !== undefined && hero.difficulty !== null && hero.difficulty !== "";
-    const difficultyText = DIFFICULTY_LABEL[hero.difficulty] || `Độ khó ${hero.difficulty}`;
-    const difficultyBadge = hasDifficulty
-        ? `<span class="badge ${DIFFICULTY_BADGE_CLASS[hero.difficulty] || ""}">${escapeHtml(difficultyText)}</span>`
-        : "";
+        const difficultyText = (typeof DIFFICULTY_LABEL !== "undefined" && DIFFICULTY_LABEL[hero.difficulty]) || `Độ khó ${hero.difficulty}`;
+        const difficultyBadge = hasDifficulty
+            ? `<span class="badge ${(typeof DIFFICULTY_BADGE_CLASS !== "undefined" && DIFFICULTY_BADGE_CLASS[hero.difficulty]) || ""}">${escapeHtml(difficultyText)}</span>`
+            : "";
 
     detailContainer.innerHTML = `
         <!-- Link quay lại trang danh sách, luôn hiện kể cả khi tướng không có build -->
