@@ -1,6 +1,210 @@
 /* =========================================
  * compare.css - Style trang So sánh Tướng
  * Phụ trách: Người 4
+ * (nạp sau common.css, dùng lại .badge / .not-found / các CSS variable)
  *
- * TODO: 2 ô select, bảng so sánh HP/Attack/Defense/Difficulty, highlight chỉ số cao hơn
+ * Mục lục:
+ *   1. Ô chọn tướng (.compare-picker)
+ *   2. Bảng so sánh (.compare-table)
+ *   3. Responsive: 768 / 480
  * ========================================= */
+
+/* ---------- 1. Ô CHỌN TƯỚNG ---------- */
+/* Markup do js/compare.js vẽ: .compare-picker > .compare-picker__slot x2 + .compare-picker__vs */
+
+.compare-picker {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-5);
+    margin-bottom: var(--space-6);
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.compare-picker__slot {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.compare-picker__label {
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: var(--color-text-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.compare-picker__select {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.compare-picker__select:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 25%, transparent);
+}
+
+/* Vòng tròn "VS" nằm giữa 2 ô chọn */
+.compare-picker__vs {
+    flex: 0 0 auto;
+    align-self: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--gradient-gold);
+    color: var(--color-on-accent);
+    font-weight: 800;
+    font-size: var(--fs-sm);
+    box-shadow: var(--shadow-gold);
+}
+
+/* ---------- 2. BẢNG SO SÁNH ---------- */
+
+.compare-table {
+    width: 100%;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.compare-table th,
+.compare-table td {
+    padding: var(--space-4) var(--space-5);
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--color-border);
+}
+
+/* Bỏ đường kẻ dưới cùng của bảng */
+.compare-table tbody tr:last-child th,
+.compare-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Cột trái: nhãn chỉ số (nền nhạt, chữ trái) */
+.compare-table__corner,
+.compare-table__label {
+    text-align: left;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    background: var(--color-bg-elevated);
+    white-space: nowrap;
+}
+
+.compare-table__label {
+    width: 30%;
+}
+
+/* Hàng đầu: ảnh + tên tướng, bấm mở trang chi tiết */
+.compare-table__hero-link {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-text);
+}
+
+.compare-table__hero-link:hover {
+    color: var(--color-text-accent);
+}
+
+.compare-table__img {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border-radius: var(--radius);
+    border: 2px solid var(--color-gold-light);
+    background: var(--color-bg-elevated);
+}
+
+.compare-table__name {
+    font-weight: 700;
+    font-size: var(--fs-md);
+}
+
+/* Ô giá trị từng chỉ số */
+.compare-table__value {
+    font-size: var(--fs-md);
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+/* Chỉ số cao hơn được tô nổi */
+.compare-table__value.is-best {
+    color: var(--color-text-accent);
+    background: var(--color-gold-subtle);
+    font-weight: 800;
+}
+
+.compare-table__best {
+    display: inline-block;
+    margin-left: var(--space-2);
+    color: var(--color-success);
+    font-size: var(--fs-xs);
+    vertical-align: middle;
+}
+
+/* ---------- 3. RESPONSIVE ---------- */
+
+@media (max-width: 768px) {
+    /* 2 ô chọn xếp dọc cho dễ bấm */
+    .compare-picker {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--space-4);
+    }
+
+    .compare-table th,
+    .compare-table td {
+        padding: var(--space-3);
+    }
+
+    .compare-table__img {
+        width: 72px;
+        height: 72px;
+    }
+
+    .compare-table__name,
+    .compare-table__value {
+        font-size: var(--fs-base);
+    }
+}
+
+@media (max-width: 480px) {
+    .compare-table__img {
+        width: 56px;
+        height: 56px;
+    }
+
+    .compare-table__label {
+        width: auto;
+    }
+
+    .compare-table th,
+    .compare-table td {
+        padding: var(--space-2) var(--space-3);
+    }
+
+    .compare-table__value {
+        font-size: var(--fs-sm);
+    }
+}

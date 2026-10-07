@@ -194,6 +194,28 @@ function getCompare() {
     return Array.isArray(compare) ? compare : [];
 }
 
+/**
+ * Ghi đè cả danh sách so sánh trong 1 lần (dùng cho 2 ô <select> của compare.js).
+ * Tự bỏ id rỗng/trùng và cắt còn tối đa COMPARE_LIMIT tướng.
+ * @param {Array} ids
+ * @returns {boolean} true nếu ghi thành công.
+ */
+function setCompare(ids) {
+    const list = Array.isArray(ids) ? ids : [];
+    const result = [];
+
+    list.forEach((id) => {
+        const heroId = toStorageId(id);
+        if (heroId === null) return;
+        if (result.includes(heroId)) return;
+        if (result.length >= COMPARE_LIMIT) return;
+
+        result.push(heroId);
+    });
+
+    return setStore(COMPARE_KEY, result);
+}
+
 function clearCompare() {
     return removeStore(COMPARE_KEY);
 }
