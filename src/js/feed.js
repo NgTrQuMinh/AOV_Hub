@@ -650,7 +650,7 @@ async function initFeedPage() {
     if (!listContainer) return;
 
     await seedPostsFromJson();
-    feedHeroes = await loadData(DATA_PATH.heroes);
+    feedHeroes = await loadHeroes();
     if (!Array.isArray(feedHeroes)) feedHeroes = [];
 
     // Vẽ thanh lọc trước danh sách để renderFeedList() dùng luôn trạng thái đó.
@@ -1174,7 +1174,7 @@ async function initPostDetailPage() {
     // Bài viết mẫu phải được nạp vào LocalStorage trước thì mới tra cứu được,
     // nên nạp trước rồi mới render (giống hệt cách trang Feed mở).
     await seedPostsFromJson();
-    feedHeroes = await loadData(DATA_PATH.heroes);
+    feedHeroes = await loadHeroes();
     if (!Array.isArray(feedHeroes)) feedHeroes = [];
 
     // Các nút thích / gửi bình luận trên trang chi tiết được xử lý bởi đúng

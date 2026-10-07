@@ -21,7 +21,7 @@ async function initBuildPage() {
     if (!listContainer) return;
 
     allBuilds = await loadData(DATA_PATH.builds);
-    buildHeroes = await loadData(DATA_PATH.heroes);
+    buildHeroes = await loadHeroes();
     buildItems = await loadData(DATA_PATH.items);
 
     buildKeyword = getQueryParam('keyword');

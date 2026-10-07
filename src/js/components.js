@@ -55,6 +55,9 @@ function imageUrl(image) {
     const raw = String(image || '').trim();
 
     if (!raw) return BASE_PATH + IMAGE_FALLBACK;
+    // Ảnh upload từ trang Quản lý tướng được lưu dạng data URL — giữ nguyên,
+    // không nối BASE_PATH / IMAGE_ROOT vào (không thì <img> sẽ vỡ link).
+    if (raw.startsWith('data:')) return raw;
     if (/^(https?:)?\/\//.test(raw)) return raw;
 
     const relative = raw.startsWith(IMAGE_ROOT)

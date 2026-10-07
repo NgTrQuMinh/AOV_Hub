@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AOV HUB - Quản lý tướng</title>
+
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/feed.css">
+    <link rel="stylesheet" href="/css/hero-admin.css">
+</head>
+<body data-page="admin">
+
+    <!--
+        Guard quản trị: nạp config.js + auth.js trước mọi thứ và gọi requireAdmin()
+        ngay trong thẻ body, trước khi hero-admin.js kịp vẽ form / bảng tướng.
+        requireAdmin() async vì phải chờ usersReady nạp aov_users từ data/users.json
+        rồi mới biết tài khoản có role 'admin' hay không.
+    -->
+    <script src="/src/js/config.js"></script>
+    <script src="/src/js/auth.js"></script>
+    <script>requireAdmin();</script>
+
+    <header id="site-header"></header>
+
+    <main class="container section">
+        <h1>Quản lý tướng</h1>
+        <p>
+            Dành cho quản trị viên: thêm tướng mới, sửa thông tin tướng
+            (tên, ảnh, vai trò, độ khó, chỉ số, kỹ năng, trang bị đề xuất)
+            hoặc xoá tướng khỏi hệ thống. Thay đổi được lưu trong trình duyệt
+            và hiển thị ngay ở Danh sách tướng, Chi tiết, So sánh, Yêu thích, Build, Feed.
+        </p>
+
+        <!-- Form thêm / sửa tướng: do hero-admin.js vẽ và gắn sự kiện -->
+        <div id="hero-admin-form"></div>
+
+        <!-- Ô tìm theo tên tướng + nút thêm mới -->
+        <div id="hero-admin-toolbar" class="feed-filter"></div>
+
+        <!-- Số tướng đang hiển thị / tổng số tướng trong hệ thống -->
+        <p id="hero-admin-count" class="feed-count" aria-live="polite"></p>
+
+        <!-- Bảng tướng: do hero-admin.js vẽ từ aov_heroes (heroData.js) -->
+        <div id="hero-admin-list" class="card"></div>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="/src/js/loadData.js"></script>
+    <script src="/src/js/components.js"></script>
+    <!-- search.js: matchKeyword() tìm theo tên tướng, debounce() khi gõ -->
+    <script src="/src/js/search.js"></script>
+    <script src="/src/js/layout.js"></script>
+    <script src="/src/js/storage.js"></script>
+    <!-- heroData.js: lớp dữ liệu tướng (loadHeroes/createHero/updateHero/deleteHero) -->
+    <script src="/src/js/heroData.js"></script>
+    <script src="/src/js/hero-admin.js"></script>
+</body>
+</html>

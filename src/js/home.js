@@ -8,7 +8,7 @@ async function renderFeaturedHeroes() {
     const container = document.getElementById('featured-heroes');
     if (!container) return;
 
-    const heroes = await loadData(DATA_PATH.heroes);
+    const heroes = await loadHeroes();
     const featured = heroes.slice(0, 8);
 
     container.innerHTML = featured.length

@@ -1,0 +1,244 @@
+/* =========================================
+ * hero-admin.css - Style trang quản lý tướng (src/pages/hero-admin.html)
+ *
+ * Bảng quản trị mượn lại bố cục của admin.css nhưng đổi selector sang #hero-admin-list
+ * (admin.css chỉ áp cho #admin-list của trang Quản trị bài viết).
+ * Form thêm /sửa nối tiếp style .feed-form của feed.css, file này chỉ bù phần
+ * mà feed.css không có: chọn vai trò dạng checkbox, lưới chỉ số và dòng kỹ năng.
+ * Dùng chung biến màu của variables.css nên không cần khai báo lại màu.
+ * ========================================= */
+
+/* ---------- Form thêm / sửa tướng ---------- */
+
+#hero-admin-form {
+    margin-bottom: var(--space-6);
+}
+
+#hero-admin-form .feed-form__actions {
+    margin-top: var(--space-5);
+}
+
+/* Chọn ảnh: ô chỉ đọc + nút mở File Explorer + ảnh xem trước */
+.hero-image-field {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.hero-image-field #hero-image {
+    flex: 1 1 240px;
+    min-width: 0;
+    /* Ô chỉ đọc nhưng bấm vào là mở File Explorer nên để dấu nhấn tay */
+    cursor: pointer;
+    background: var(--color-bg-elevated);
+}
+
+.hero-image-field .btn-sm {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--fs-xs);
+    line-height: 1.4;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+#hero-image-preview {
+    margin-top: var(--space-2);
+}
+
+#hero-image-preview:empty {
+    display: none;
+}
+
+#hero-image-preview img {
+    display: block;
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+}
+
+.hero-image-hint {
+    margin-top: var(--space-2);
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+/* Chọn vai trò: các ô radio dạng viên thuốc, chọn vào là sáng lên */
+.hero-role-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.hero-role-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.hero-role-option:has(input:checked) {
+    background: var(--color-gold-subtle);
+    border-color: var(--color-gold);
+    color: var(--color-text-accent);
+}
+
+.hero-role-option input {
+    margin: 0;
+    accent-color: var(--color-gold);
+}
+
+/* Lưới 4 chỉ số cơ bản: mỗi ô gồm nhãn + ô nhập */
+.hero-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-3);
+}
+
+.hero-stat-field label {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+/* Dòng kỹ năng: tên / loại (khoá theo dòng) / mô tả / hồi chiêu — cố định 3 dòng */
+#hero-skill-rows {
+    display: grid;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+}
+
+.hero-skill-row {
+    display: grid;
+    grid-template-columns: 1.2fr 0.9fr 2fr 0.7fr;
+    gap: var(--space-2);
+    align-items: center;
+}
+
+/* Loại chiêu bị khoá theo thứ tự dòng (select disabled): bù lại màu xám mặc định
+   của trình duyệt để ô vẫn hiển thị bình thường như các ô khác trong dòng. */
+.hero-skill-row select[data-skill-type]:disabled {
+    opacity: 1;
+    color: var(--color-text);
+    -webkit-text-fill-color: var(--color-text);
+    cursor: default;
+}
+
+/* ---------- Thanh tìm + bảng danh sách tướng ---------- */
+
+#hero-admin-toolbar .filter-bar {
+    margin-bottom: var(--space-4);
+}
+
+#hero-admin-toolbar .filter-bar__keyword:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px rgba(221, 165, 50, 0.22);
+}
+
+#hero-admin-toolbar .btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* Bảng cho phép cuộn ngang thay vì vỡ bố cục trên màn hình nhỏ */
+#hero-admin-list.card {
+    overflow-x: auto;
+    padding: var(--space-2);
+}
+
+#hero-admin-list table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-sm);
+    white-space: nowrap;
+}
+
+#hero-admin-list thead th {
+    background: var(--color-bg-elevated);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-align: left;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    /* Dính đầu bảng khi bảng dài, cuộn xuống vẫn thấy tên cột */
+    position: sticky;
+    top: 0;
+}
+
+#hero-admin-list tbody td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+}
+
+/* Kẻ sọc xen kẽ để đuổi mắt khi bảng có nhiều dòng */
+#hero-admin-list tbody tr:nth-child(even) {
+    background: var(--color-bg-elevated);
+}
+
+#hero-admin-list tbody tr:hover {
+    background: var(--color-surface);
+}
+
+/* Tên tướng là link sang trang chi tiết */
+#hero-admin-list tbody td:nth-child(2) a {
+    color: var(--color-text-accent);
+    font-weight: 600;
+}
+
+#hero-admin-list tbody td:nth-child(2) a:hover {
+    text-decoration: underline;
+}
+
+/* Cột số (ID) căn phải cho dễ so sánh */
+#hero-admin-list tbody td:nth-child(1) {
+    text-align: right;
+}
+
+/* Cột thao tác: hai nút nằm cạnh nhau, không xuống dòng */
+#hero-admin-list tbody td:last-child {
+    display: flex;
+    gap: var(--space-2);
+}
+
+#hero-admin-list .btn-sm {
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--fs-xs);
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+#hero-admin-list .btn-sm:hover {
+    border-color: var(--color-crimson);
+    color: var(--color-crimson);
+}
+
+/* ---------- Màn hình hẹp ---------- */
+@media (max-width: 768px) {
+    .hero-stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero-skill-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-stat-grid {
+        grid-template-columns: 1fr;
+    }
+}
