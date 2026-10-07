@@ -18,11 +18,11 @@
         <h1>So sánh Tướng</h1>
 
         <!--
-            TODO (Người 4):
-            - 2 ô <select> chọn tướng (đọc data/heroes.json bằng loadData())
-            - Đọc/ghi aov_compare qua storage.js (tối đa 2 tướng)
-            - Render bảng so sánh HP/Attack/Defense/Difficulty vào #compare-table, highlight chỉ số cao hơn
-            - Hiện thông báo nếu chưa chọn đủ 2 tướng
+            2 khối dưới do js/compare.js vẽ:
+            - #compare-select: 2 ô <select> chọn tướng (đọc src/data/heroes.json)
+            - #compare-table:  bảng so sánh HP/Attack/Defense/Speed/Difficulty,
+                               chỉ số cao hơn được tô nổi
+            Cặp tướng đang so sánh lưu ở aov_compare (js/storage.js) nên F5 không mất.
         -->
         <div id="compare-select"></div>
         <div id="compare-table"></div>
