@@ -77,6 +77,17 @@ function parseHtmlInto(host, html) {
     }
 }
 
+/**
+ * Đánh dấu node cùng toàn bộ con là "đã gỡ khỏi cây" — innerHTML ghi đè thì cây
+ * con cũ mất liên kết với node cha nhưng .parent vẫn trỏ về, nên không phân biệt
+ * được bằng cách đi lên. getElementById / querySelectorAll sẽ bỏ qua các node này
+ * thay vì trả node cũ (stale) sau khi render lại (vd form #hero-form).
+ */
+function markDetached(root) {
+    root.__detached = true;
+    walkAll(root, (node) => { node.__detached = true; });
+}
+
 /** Giải mã các entity HTML cơ bản để value của textarea/input khớp với trình duyệt. */
 function decodeEntities(text) {
     return String(text)
@@ -96,8 +107,28 @@ function splitSelector(selector) {
         .map((group) => group.split(/\s+(?![^[]*\])/).filter(Boolean));
 }
 
+/**
+ * Tách selector ghép đơn giản thành các mảnh: 'input[name="x"]' -> ['input', '[name="x"]'].
+ * Trả null khi có cú pháp chưa hỗ trợ (vd: pseudo-class 'input:hover').
+ */
+function tokenizeCompound(selector) {
+    const text = String(selector);
+    const parts = [];
+    let index = 0;
+
+    while (index < text.length) {
+        const rest = text.slice(index);
+        const match = rest.match(/^[a-zA-Z][\w-]*|^\.[\w-]+|^#[\w-]+|^\[[^\]]+\]/);
+        if (!match) return null;
+        parts.push(match[0]);
+        index += match[0].length;
+    }
+
+    return parts;
+}
+
 /** Chỉ so khớp MỘT selector đơn giản: .class / [attr] / [attr="value"] / #id / tag. */
-function matchesOne(node, selector) {
+function matchesSimple(node, selector) {
     if (selector.startsWith('.')) return classListOf(node).includes(selector.slice(1));
 
     const attrMatch = selector.match(/^\[([\w-]+)(?:="?([^"\]]*)"?)?\]$/);
@@ -116,6 +147,13 @@ function matchesOne(node, selector) {
     if (selector.startsWith('#')) return node.attrs.id === selector.slice(1);
 
     return node.tag === selector.toLowerCase();
+}
+
+/** So khớp MỘT selector (hỗ trợ ghép 'tag.class', 'tag#id', 'tag[attr="v"]'). */
+function matchesOne(node, selector) {
+    const parts = tokenizeCompound(selector);
+    if (!parts) return false;
+    return parts.every((part) => matchesSimple(node, part));
 }
 
 /** node khớp "A B" khi node khớp B và có tổ tiên khớp A (đúng nghĩa của Element.matches). */
@@ -255,6 +293,12 @@ function makeNode(tag, attrs = {}, rawHtml = '') {
             },
             set(value) { assigned = String(value); },
         });
+
+        // Trình duyệt: select.options là collection các <option> con (compare.js
+        // duyệt .options để khoá option trùng). Trả về mảng node con cho đúng.
+        Object.defineProperty(node, 'options', {
+            get() { return node.querySelectorAll('option'); },
+        });
     }
 
     for (const [name, value] of Object.entries(attrs)) {
@@ -263,11 +307,18 @@ function makeNode(tag, attrs = {}, rawHtml = '') {
         }
     }
 
+    // Attribute checked (vd checkbox điền sẵn trong form sửa tướng) -> property,
+    // đúng như trình duyệt, để code đọc input.checked được cả trong test.
+    if ('checked' in attrs) node.checked = true;
+
     let htmlText = '';
 
     Object.defineProperty(node, 'innerHTML', {
         get: () => htmlText,
         set: (value) => {
+            // Cây con cũ sắp bị parseHtmlInto vứt khỏi node.children: đánh dấu đã gỡ
+            // để getElementById không trả node cũ sau khi render lại.
+            for (const child of node.children) markDetached(child);
             htmlText = String(value);
             parseHtmlInto(node, htmlText);
         },
@@ -375,10 +426,16 @@ function loadPage(options) {
         documentElement: makeNode('html'),
         listeners: {},
         getElementById(id) {
-            if (byId.has(id)) return byId.get(id);
+            if (byId.has(id)) {
+                const cached = byId.get(id);
+                // Node đã bị innerHTML ghi đè thì bỏ đi và tìm lại node mới trong cây.
+                if (!cached.__detached) return cached;
+                byId.delete(id);
+            }
 
             // innerHTML vừa tạo ra phần tử mới thì tìm trong cây DOM rồi đăng ký lại
             for (const el of byId.values()) {
+                if (el.__detached) continue;
                 let found = null;
                 walkAll(el, (node) => { if (!found && node.attrs.id === id) found = node; });
                 if (found) {
@@ -393,6 +450,7 @@ function loadPage(options) {
         querySelectorAll(selector) {
             const out = [];
             for (const el of byId.values()) {
+                if (el.__detached) continue;
                 if (el.matches(selector)) out.push(el);
                 walkAll(el, (node) => { if (node.matches(selector)) out.push(node); });
             }

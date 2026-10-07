@@ -338,7 +338,7 @@ async function initComparePage() {
     // Trang khác không có 2 khối này thì bỏ qua.
     if (!selectBox && !tableBox) return;
 
-    const heroes = await loadData(DATA_PATH.heroes);
+    const heroes = await loadHeroes();
     compareHeroes = Array.isArray(heroes) ? heroes : [];
     compareHeroIndex = buildCompareIndex(compareHeroes);
     compareDataReady = true;

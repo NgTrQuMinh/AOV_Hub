@@ -407,7 +407,7 @@ async function initFavoritePage() {
 
     // Nạp song song 2 file JSON, không nạp những thứ trang này không dùng.
     const [heroes, items] = await Promise.all([
-        loadData(DATA_PATH.heroes),
+        loadHeroes(),
         loadData(DATA_PATH.items),
     ]);
 

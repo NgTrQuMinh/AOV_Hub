@@ -27,10 +27,14 @@ const CURRENT_USER_KEY = 'aov_current_user';
 const PROTECTED_PAGES = [
     BASE_PATH + 'src/pages/profile.html',
     BASE_PATH + 'src/pages/admin.html',
+    BASE_PATH + 'src/pages/hero-admin.html',
 ];
 
 /** Trang quản trị bài viết: chỉ tài khoản có role === 'admin' mới vào được. */
 const ADMIN_PAGE = BASE_PATH + 'src/pages/admin.html';
+
+/** Trang quản lý tướng (thêm/sửa/xoá): cũng chỉ tài khoản admin mới vào được. */
+const HERO_ADMIN_PAGE = BASE_PATH + 'src/pages/hero-admin.html';
 
 /* ---------- Đọc/ghi danh sách user ---------- */
 
@@ -152,7 +156,8 @@ function redirectIfLoggedIn() {
 }
 
 /**
- * Guard trang Quản trị (src/pages/admin.html): chỉ admin mới được vào.
+ * Guard trang Quản trị (src/pages/admin.html, src/pages/hero-admin.html):
+ * chỉ admin mới được vào.
  *
  * Gọi ở đầu <body> của admin.html, trước khi vẽ nội dung:
  *   requireAdmin();
@@ -176,7 +181,7 @@ async function requireAdmin() {
     if (!isLoggedIn()) return requireAuth();
 
     // Đã đăng nhập nhưng không phải admin: báo lý do rồi đưa về trang chủ.
-    alert('Bạn không có quyền truy cập trang Quản trị bài viết.');
+    alert('Bạn không có quyền truy cập trang quản trị.');
     window.location.href = BASE_PATH + 'index.html';
 
     return false;
@@ -302,6 +307,7 @@ function updateAccountUI(isRetry = false) {
                     ${escapeHtml(username)}
                 </a>
                 ${isAdmin() ? `<a class="btn btn-outline btn-sm" href="${ADMIN_PAGE}">Quản trị</a>` : ''}
+                ${isAdmin() ? `<a class="btn btn-outline btn-sm" href="${HERO_ADMIN_PAGE}">Quản lý tướng</a>` : ''}
                 <button type="button" class="btn btn-outline btn-sm" id="logout-btn">Đăng xuất</button>
             </div>
         `;

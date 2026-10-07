@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 2. Tải dữ liệu từ heroes.json
     let heroes = [];
     try {
-        heroes = await loadData(DATA_PATH.heroes);
+        heroes = await loadHeroes();
     } catch (error) {
         console.error("Lỗi khi tải dữ liệu tướng:", error);
         return;
@@ -246,7 +246,8 @@ function initHeroListPage(heroes) {
         const countEl = document.getElementById("hero-count");
         if (countEl) {
             if (state.keyword || state.role !== "all" || state.difficulty !== "all") {
-                countEl.textContent = `${total}/30 tướng`;
+                // Tổng số tướng đọc từ dữ liệu (đã gồm tướng admin thêm), không hard-code.
+                countEl.textContent = `${total}/${heroes.length} tướng`;
             } else {
                 countEl.textContent = `${total} tướng`;
             }
