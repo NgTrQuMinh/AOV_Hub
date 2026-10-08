@@ -31,9 +31,17 @@
             Dành cho quản trị viên: theo dõi toàn bộ bài viết của cộng đồng,
             ẩn bài vi phạm (bài bị ẩn sẽ không hiện trên Cộng đồng, trang chi tiết
             và trang cá nhân của người khác) hoặc xoá hẳn bài viết.
+            Công tắc "Yêu cầu duyệt bài trước khi đăng" ở ngay bên dưới quyết định
+            bài của user thường có phải chờ admin duyệt không.
             Quản lý tướng (thêm / sửa / xoá) nằm ở trang riêng:
             <a href="/src/pages/hero-admin.html">Quản lý tướng</a>.
         </p>
+
+        <!--
+            Công tắc "Yêu cầu duyệt bài trước khi đăng" (aov_mod_settings.requireApproval):
+            do admin.js vẽ và lắng nghe sự kiện change (event delegation) ở document.
+        -->
+        <div id="admin-settings"></div>
 
         <!-- Ô tìm theo tiêu đề / tác giả: do admin.js vẽ và gắn sự kiện gõ -->
         <div id="admin-toolbar" class="feed-filter"></div>

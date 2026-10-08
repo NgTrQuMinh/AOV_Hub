@@ -11,6 +11,10 @@
  *                     bị xoá không bị nạp lại ("sống lại") khi mở trang
  *   aov_comments      [ { id, postId, author, content, createdAt } ]
  *   aov_likes         { "<postId>": [username, ...] }
+ *   aov_mod_settings  { requireApproval: boolean, bannedWords: [string],
+ *                     autoHideThreshold: number }
+ *                     cấu hình kiểm duyệt; key chưa ghi thì lấy
+ *                     MOD_SETTINGS_DEFAULTS (xem getModSettings)
  *
  * Mỗi lần mở trang, bài trong data/posts.json được MERGE theo id:
  *   - id đã có trong LocalStorage  -> giữ nguyên bản đang lưu, không ghi đè, không thêm lần 2
@@ -60,14 +64,19 @@
  *     "Bị từ chối") — đúng cách bài ẩn vẫn làm với nhãn "Đã bị ẩn"
  *   - admin chỉ thấy bài chờ duyệt / bị từ chối ở trang Quản trị (bảng liệt kê
  *     toàn bộ aov_posts), đúng quy tắc cũ của bài ẩn
- *   - bài mới createPost() vẫn KHÔNG ghi status (tức là "approved");
- *     đặt "pending" cho user thường là việc của bước duyệt sau
+ *   - bài mới createPost() ghi status theo aov_mod_settings.requireApproval:
+ *     đang bật duyệt trước thì user thường tạo "pending", admin tạo "approved"
+ *     (kèm reviewedBy/reviewedAt); tắt chế độ thì ai cũng tạo "approved" —
+ *     xem mục "Cấu hình kiểm duyệt" bên dưới
  */
 
 const POSTS_KEY = 'aov_posts';
 const POSTS_SEEDED_KEY = 'aov_posts_seeded';
 const COMMENTS_KEY = 'aov_comments';
 const LIKES_KEY = 'aov_likes';
+
+/** Khóa lưu cấu hình kiểm duyệt cộng đồng (duyệt trước khi đăng), xem getModSettings(). */
+const MOD_SETTINGS_KEY = 'aov_mod_settings';
 
 let feedHeroes = [];
 
@@ -204,6 +213,85 @@ async function seedPostsFromJson() {
     return merged;
 }
 
+/* ---------- Cấu hình kiểm duyệt (duyệt trước khi đăng) ---------- */
+
+/**
+ * Giá trị mặc định của aov_mod_settings: MẶC ĐỊNH bật duyệt trước khi đăng.
+ * bannedWords / autoHideThreshold là cấu hình cho các bước kiểm duyệt sau,
+ * ở bước này mới chỉ dùng requireApproval nhưng luôn ghi đủ 3 trường.
+ */
+const MOD_SETTINGS_DEFAULTS = {
+    requireApproval: true,
+    bannedWords: [],
+    autoHideThreshold: 5,
+};
+
+/**
+ * Đọc cấu hình kiểm duyệt từ aov_mod_settings.
+ *
+ * Key chưa từng ghi (lần đầu mở web) hoặc LocalStorage bị sửa tay cho hỏng
+ * thì rơi về MOD_SETTINGS_DEFAULTS, luôn trả đủ 3 trường nên nơi gọi không
+ * phải kiểm tra null. Đọc từng trường theo kiểu dữ liệu của nó, nên giá trị
+ * lạ ("yes", mảng, object...) không làm hỏng được cấu hình.
+ *
+ * @returns {{ requireApproval: boolean, bannedWords: string[], autoHideThreshold: number }}
+ */
+function getModSettings() {
+    const stored = getStore(MOD_SETTINGS_KEY, null);
+    const source = stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {};
+
+    return {
+        requireApproval: typeof source.requireApproval === 'boolean'
+            ? source.requireApproval
+            : MOD_SETTINGS_DEFAULTS.requireApproval,
+        bannedWords: Array.isArray(source.bannedWords)
+            ? source.bannedWords.filter((word) => typeof word === 'string' && word.trim())
+            : MOD_SETTINGS_DEFAULTS.bannedWords,
+        autoHideThreshold: typeof source.autoHideThreshold === 'number'
+            && Number.isFinite(source.autoHideThreshold)
+            ? source.autoHideThreshold
+            : MOD_SETTINGS_DEFAULTS.autoHideThreshold,
+    };
+}
+
+/**
+ * Ghi cấu hình kiểm duyệt vào aov_mod_settings (công tắc ở trang Quản trị gọi).
+ *
+ * Chặn ở tầng dữ liệu giống setPostHidden(): không phải admin thì trả false
+ * và KHÔNG ghi gì, nên user thường gọi thẳng từ console cũng không đổi được.
+ * Chỉ ba trường của MOD_SETTINGS_DEFAULTS được nhận; trường lạ trong patch bị
+ * bỏ qua để aov_mod_settings không bao giờ bị ghi rác.
+ *
+ * @param {object} patch phần muốn đổi, ví dụ { requireApproval: false }
+ * @returns {boolean} true nếu đã ghi được aov_mod_settings.
+ */
+function setModSettings(patch) {
+    if (!isLoggedIn() || typeof isAdmin !== 'function' || !isAdmin()) return false;
+    if (!patch || typeof patch !== 'object' || Array.isArray(patch)) return false;
+
+    const current = getModSettings();
+    const next = {
+        requireApproval: current.requireApproval,
+        bannedWords: current.bannedWords.slice(),
+        autoHideThreshold: current.autoHideThreshold,
+    };
+
+    if (typeof patch.requireApproval === 'boolean') next.requireApproval = patch.requireApproval;
+
+    if (Array.isArray(patch.bannedWords)) {
+        next.bannedWords = patch.bannedWords
+            .filter((word) => typeof word === 'string')
+            .map((word) => word.trim())
+            .filter(Boolean);
+    }
+
+    if (typeof patch.autoHideThreshold === 'number' && Number.isFinite(patch.autoHideThreshold)) {
+        next.autoHideThreshold = patch.autoHideThreshold;
+    }
+
+    return setStore(MOD_SETTINGS_KEY, next);
+}
+
 /* ---------- Tìm bài viết ---------- */
 
 /**
@@ -338,6 +426,11 @@ function validatePostForm(title, content, heroId, category) {
  * Cùng lúc khởi tạo sẵn lượt thích và bình luận rỗng cho bài mới để
  * mọi trang đọc cùng một cấu trúc dữ liệu, không phải tự xử lý vắng mặt.
  *
+ * Trạng thái duyệt ghi theo cấu hình aov_mod_settings.requireApproval (xem
+ * getModSettings): đang bật duyệt trước thì user thường tạo "pending", admin
+ * tạo "approved" ngay kèm reviewedBy/reviewedAt; đang tắt thì mọi bài ra
+ * "approved" — luôn có trường status để bảng quản trị khỏi phải đoán.
+ *
  * @returns {object|null} bài vừa tạo, null nếu dữ liệu không hợp lệ hoặc lưu thất bại.
  */
 function createPost(title, content, heroId, category) {
@@ -346,6 +439,11 @@ function createPost(title, content, heroId, category) {
 
     const posts = getPosts();
     const id = nextFeedId(posts.map((row) => row.id));
+    const createdAt = new Date().toISOString();
+
+    const approvalOn = getModSettings().requireApproval;
+    const posterIsAdmin = typeof isAdmin === 'function' && isAdmin();
+
     const post = {
         id,
         author: checked.values.author,
@@ -353,8 +451,16 @@ function createPost(title, content, heroId, category) {
         content: checked.values.content,
         heroId: checked.values.heroId,
         category: checked.values.category,
-        createdAt: new Date().toISOString(),
+        createdAt,
+        status: approvalOn && !posterIsAdmin ? POST_STATUS_PENDING : POST_STATUS_APPROVED,
     };
+
+    // Admin đăng trong lúc đang bật duyệt trước -> duyệt luôn, ghi lại ai duyệt
+    // và lúc nào để bảng quản trị truy vết được (đúng reviewedBy/reviewedAt của KD01).
+    if (approvalOn && posterIsAdmin) {
+        post.reviewedBy = checked.values.author;
+        post.reviewedAt = createdAt;
+    }
 
     posts.unshift(post);
 
@@ -388,6 +494,8 @@ function canEditPost(post) {
  * Sửa bài viết đã có: giữ nguyên id và createdAt, chỉ cập nhật nội dung và updatedAt.
  *
  * Chỉ tác giả của bài mới sửa được. Không tạo bài mới và không đụng data/posts.json.
+ * Bài bị từ chối mà sửa lại thì chuyển về "pending" (coi như gửi duyệt lần nữa)
+ * và bỏ lý do từ chối; bài "approved" / "pending" giữ nguyên trạng thái.
  *
  * @param {number|string} postId
  * @param {string} title
@@ -412,6 +520,11 @@ function updatePost(postId, title, content, heroId, category) {
     const checked = validatePostForm(title, content, heroId, category || current.category);
     if (!checked.valid) return null;
 
+    // Sửa bài bị từ chối = gửi duyệt lại: chuyển về "pending" và bỏ lý do
+    // từ chối cũ. Bài "approved" giữ nguyên (đã duyệt rồi, sửa nội dung không
+    // mất duyệt), bài "pending" vẫn chờ duyệt.
+    const wasRejected = getPostStatus(current) === POST_STATUS_REJECTED;
+
     // Giữ nguyên id + createdAt, chỉ đổi phần nội dung và ghi thời điểm sửa.
     const updated = Object.assign({}, current, {
         title: checked.values.title,
@@ -420,6 +533,11 @@ function updatePost(postId, title, content, heroId, category) {
         category: checked.values.category,
         updatedAt: new Date().toISOString(),
     });
+
+    if (wasRejected) {
+        updated.status = POST_STATUS_PENDING;
+        delete updated.rejectReason;
+    }
 
     posts[index] = updated;
 
@@ -874,14 +992,19 @@ function renderPostForm(editingPost, formBox) {
 
         // Bài mới lên đầu danh sách nên Feed hiển thị ngay,
         // đồng thời báo kèm link để mở trang chi tiết của chính bài vừa đăng.
+        // Thông báo theo kết quả duyệt: bài đang chờ duyệt thì báo rõ để tác
+        // giả khỏi tưởng người khác đã thấy; bài đã duyệt giữ nguyên lời báo cũ.
         form.reset();
+        const waitingApproval = getPostStatus(newPost) === POST_STATUS_PENDING;
         renderSuccess(
             form.querySelector('#post-errors'),
-            `Đã đăng bài "${checked.values.title}".`,
+            waitingApproval
+                ? `Đã đăng bài "${checked.values.title}". Bài của bạn đang chờ duyệt.`
+                : `Đã đăng bài "${checked.values.title}".`,
         );
         form.querySelector('#post-errors').insertAdjacentHTML(
             'beforeend',
-            ` <a href="${BASE_PATH}src/pages/post-detail.html?id=${encodeURIComponent(newPost.id)}">Xem bài vừa đăng</a>`,
+            ` <a href="${BASE_PATH}src/pages/post-detail.html?id=${encodeURIComponent(newPost.id)}">${waitingApproval ? 'Xem bài' : 'Xem bài vừa đăng'}</a>`,
         );
 
         rerenderFeedView();
