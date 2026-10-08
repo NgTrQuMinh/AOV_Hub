@@ -2,11 +2,15 @@
  * admin.js - Trang quản trị bài viết (src/pages/admin.html)
  *
  * Nhiệm vụ: giúp quản trị viên (tài khoản có role === 'admin') kiểm duyệt cộng đồng:
- *   - xem bảng TẤT CẢ bài viết (kể cả bài đã bị ẩn) với id, tác giả, tiêu đề,
- *     chuyên mục, ngày đăng, số like, số bình luận và trạng thái hiện/ẩn
+ *   - xem bảng TẤT CẢ bài viết (kể cả bài đã bị ẩn và bài chờ duyệt) với id, tác giả,
+ *     tiêu đề, chuyên mục, ngày đăng, số like, số bình luận, trạng thái hiện/ẩn
+ *     và trạng thái duyệt (Chờ duyệt / Đã duyệt / Từ chối)
  *   - ẩn / hiện một bài: setPostHidden() (feed.js) bật hoặc tắt trường hidden
  *   - xoá hẳn một bài: deletePost() (feed.js) — hàm này tự kiểm tra lại quyền
  *   - tìm nhanh theo tiêu đề hoặc tên tác giả
+ *
+ * Trạng thái duyệt CHỈ hiển thị ở cột "Trạng thái duyệt", chưa có nút duyệt/từ chối
+ * (nút đó nằm ở bước duyệt sau); trạng thái đọc qua getPostStatus() của feed.js.
  *
  * Quyền truy cập (không phải việc của file này, nhưng file này phải tôn trọng):
  *   - requireAdmin() trong auth.js chặn ở thẻ <body> của admin.html: chưa đăng nhập
@@ -21,7 +25,8 @@
  * Dùng lại của nhóm khác: requireAdmin()/isAdmin() (auth.js), escapeHtml()/
  * formatDateTime()/renderNotFound() (components.js), matchKeyword()/debounce()
  * (search.js), getPosts()/seedPostsFromJson()/getPostCategory()/getLikeUsers()/
- * getCommentsOfPost()/setPostHidden()/deletePost() (feed.js).
+ * getCommentsOfPost()/setPostHidden()/deletePost()/getPostStatus()/POST_STATUS_LABELS
+ * (feed.js).
  */
 
 /** Từ khoá đang gõ trong ô tìm kiếm; lưu trong bộ nhớ, không ghi lên URL. */
@@ -41,7 +46,8 @@ function getAdminPostTime(post) {
 
 /**
  * Toàn bộ bài viết trong hệ thống, bài mới nhất trước.
- * Không lọc bài ẩn: bảng quản trị là nơi duy nhất admin nhìn thấy bài đã bị ẩn.
+ * Không lọc bài ẩn và không lọc theo trạng thái duyệt: bảng quản trị là nơi duy
+ * nhất admin nhìn thấy bài đã bị ẩn, bài chờ duyệt và bài bị từ chối.
  * @returns {Array}
  */
 function getAdminPosts() {
@@ -106,6 +112,8 @@ function renderAdminToolbar() {
  */
 function renderAdminRow(post) {
     const hidden = isPostHidden(post);
+    // Trạng thái duyệt lấy qua getPostStatus() để bài cũ thiếu status vẫn là "Đã duyệt".
+    const status = getPostStatus(post);
     const likeCount = getLikeUsers(post.id).length;
     const commentCount = getCommentsOfPost(post.id).length;
 
@@ -122,6 +130,10 @@ function renderAdminRow(post) {
             <td>${commentCount}</td>
             <td>
                 <span class="badge">${hidden ? 'Đã ẩn' : 'Đang hiện'}</span>
+            </td>
+            <td>
+                <!-- Chỉ hiển thị trạng thái duyệt, CHƯA có nút duyệt/từ chối (bước sau) -->
+                <span class="badge post-status--${escapeHtml(status)}">${escapeHtml(POST_STATUS_LABELS[status])}</span>
             </td>
             <td>
                 <!-- data-admin-hidden lưu trạng thái HIỆN TẠI để handler biết cần đổi sang gì -->
@@ -177,6 +189,7 @@ function renderAdminTable() {
                     <th>Like</th>
                     <th>Bình luận</th>
                     <th>Trạng thái</th>
+                    <th>Trạng thái duyệt</th>
                     <th>Thao tác</th>
                 </tr>
             </thead>
