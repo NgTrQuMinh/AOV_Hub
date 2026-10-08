@@ -16,6 +16,7 @@ const { loadPage, fire, ROOT } = require('./mini-dom.cjs');
 const KEY_POSTS = 'aov_posts';
 const KEY_LIKES = 'aov_likes';
 const KEY_COMMENTS = 'aov_comments';
+const KEY_MOD_SETTINGS = 'aov_mod_settings';
 
 const TITLE_OLD = 'Bài gốc trước khi sửa';
 const TITLE_NEW = 'Tiêu đề đã được sửa';
@@ -81,7 +82,20 @@ function postIn(storage, postId) {
 
 (async () => {
     const jsonPosts = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
-    const feed = await openFeed(new Map(), 'player1');
+
+    // KD02: tắt trước chế độ duyệt trước khi đăng (aov_mod_settings.requireApproval).
+    // Test này kiểm tra QUYỀN SỬA BÀI, không kiểm tra duyệt: nếu để bật (mặc định
+    // của app) thì bài của player1 ở trạng thái "pending", người khác không thấy
+    // thẻ bài trên Feed và mục 7 (người khác không thấy nút Sửa trên thẻ bài)
+    // sẽ mất ý nghĩa vì thẻ đâu để so sánh nút.
+    const initialStorage = new Map();
+    initialStorage.set(KEY_MOD_SETTINGS, JSON.stringify({
+        requireApproval: false,
+        bannedWords: [],
+        autoHideThreshold: 5,
+    }));
+
+    const feed = await openFeed(initialStorage, 'player1');
 
     // ============ A. Tạo post ============
     console.log('--- A. Tạo post ---');

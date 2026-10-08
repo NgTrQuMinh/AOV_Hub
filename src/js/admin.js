@@ -8,9 +8,13 @@
  *   - ẩn / hiện một bài: setPostHidden() (feed.js) bật hoặc tắt trường hidden
  *   - xoá hẳn một bài: deletePost() (feed.js) — hàm này tự kiểm tra lại quyền
  *   - tìm nhanh theo tiêu đề hoặc tên tác giả
+ *   - bật / tắt "Yêu cầu duyệt bài trước khi đăng": setModSettings(patch) ghi
+ *     aov_mod_settings.requireApproval (công tắc ở #admin-settings, chỉ admin giữ được)
  *
  * Trạng thái duyệt CHỈ hiển thị ở cột "Trạng thái duyệt", chưa có nút duyệt/từ chối
  * (nút đó nằm ở bước duyệt sau); trạng thái đọc qua getPostStatus() của feed.js.
+ * Công tắc duyệt trước khi đăng cũng chỉ ghi ở tầng dữ liệu qua setModSettings(),
+ * giao diện không tự tin vào trạng thái của checkbox.
  *
  * Quyền truy cập (không phải việc của file này, nhưng file này phải tôn trọng):
  *   - requireAdmin() trong auth.js chặn ở thẻ <body> của admin.html: chưa đăng nhập
@@ -26,7 +30,7 @@
  * formatDateTime()/renderNotFound() (components.js), matchKeyword()/debounce()
  * (search.js), getPosts()/seedPostsFromJson()/getPostCategory()/getLikeUsers()/
  * getCommentsOfPost()/setPostHidden()/deletePost()/getPostStatus()/POST_STATUS_LABELS
- * (feed.js).
+ * /getModSettings()/setModSettings() (feed.js).
  */
 
 /** Từ khoá đang gõ trong ô tìm kiếm; lưu trong bộ nhớ, không ghi lên URL. */
@@ -102,6 +106,35 @@ function renderAdminToolbar() {
     }, 200));
 
     return toolbar;
+}
+
+/**
+ * Vẽ công tắc "Yêu cầu duyệt bài trước khi đăng" (aov_mod_settings.requireApproval).
+ * Tái dùng các biến màu của admin.css; trạng thái checkbox lấy từ getModSettings()
+ * nên mở trang ra là thấy đúng cấu hình đang lưu, không cần đếm lại bằng tay.
+ * @returns {Element|null} vùng chứa công tắc, null nếu trang không có #admin-settings.
+ */
+function renderAdminSettings() {
+    const box = document.getElementById('admin-settings');
+    if (!box) return null;
+
+    const requireApproval = getModSettings().requireApproval;
+
+    box.innerHTML = `
+        <div class="admin-settings">
+            <label class="admin-settings__toggle">
+                <input type="checkbox" data-admin-require-approval${requireApproval ? ' checked' : ''}>
+                Yêu cầu duyệt bài trước khi đăng
+            </label>
+            <p class="admin-settings__hint">
+                Bật: bài của user thường lưu ở trạng thái "Chờ duyệt", chỉ tác giả
+                thấy tới khi admin duyệt. Admin vẫn đăng bài hiện ngay.
+                Tắt: mọi người đăng bài đều hiện công khai ngay lập tức.
+            </p>
+        </div>
+    `;
+
+    return box;
 }
 
 /**
@@ -243,6 +276,7 @@ async function initAdminPage() {
     // nạp theo đúng cách trang Feed và trang chi tiết đang làm.
     await seedPostsFromJson();
 
+    renderAdminSettings();
     renderAdminToolbar();
     renderAdminTable();
 }
@@ -291,6 +325,23 @@ document.addEventListener('click', (event) => {
         }
 
         renderAdminTable();
+    }
+});
+
+/*
+ * Công tắc "Yêu cầu duyệt bài trước khi đăng" vẽ lại mỗi lần mở trang nên cũng
+ * gắn một lần ở cấp document (event delegation), nghe sự kiện change vì checkbox
+ * chỉ đổi trạng thái khi người dùng bấm, không có sự kiện click dùng được.
+ */
+document.addEventListener('change', (event) => {
+    const toggle = event.target.closest('[data-admin-require-approval]');
+    if (!toggle) return;
+
+    // setModSettings() kiểm tra lại quyền admin ở tầng dữ liệu; trả false là không lưu được.
+    if (!setModSettings({ requireApproval: Boolean(toggle.checked) })) {
+        alert('Không lưu được cấu hình kiểm duyệt. Bạn không có quyền quản trị.');
+        // Vẽ lại theo aov_mod_settings thật để checkbox không đứng ở trạng thái "giả mở".
+        renderAdminSettings();
     }
 });
 
