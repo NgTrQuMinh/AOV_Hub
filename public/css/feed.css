@@ -72,6 +72,27 @@
     border-color: color-mix(in srgb, var(--color-danger) 30%, transparent);
 }
 
+/* Huy hiệu trạng thái duyệt (renderPostStatusBadge trong feed.js):
+ * bài chờ duyệt tông vàng, bài bị từ chối tông đỏ như nhãn "Đã bị ẩn". */
+.post-status--pending {
+    background: #FFF4D6;
+    color: var(--color-text-accent);
+    border-color: color-mix(in srgb, var(--color-gold) 45%, transparent);
+}
+
+.post-status--rejected {
+    background: #FDECEA;
+    color: var(--color-danger);
+    border-color: color-mix(in srgb, var(--color-danger) 30%, transparent);
+}
+
+/* Cột "Trạng thái duyệt" ở trang Quản trị (admin.html cũng nạp feed.css) */
+.post-status--approved {
+    background: #E8F6EE;
+    color: var(--color-success);
+    border-color: color-mix(in srgb, var(--color-success) 30%, transparent);
+}
+
 /* Màn hình hẹp: cho ô tìm chiếm một dòng riêng, select xuống hàng dưới */
 @media (max-width: 640px) {
     .feed-filter .filter-bar {

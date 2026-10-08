@@ -3,8 +3,10 @@
  * Phụ trách: Người 3 (giao diện) + Người 4 (logic LocalStorage)
  *
  * LocalStorage:
- *   aov_posts         [ { id, author, title, content, heroId, createdAt } ]
- *                     gồm bài lấy từ data/posts.json + bài người dùng tự đăng
+ *   aov_posts         [ { id, author, title, content, heroId, category, createdAt,
+ *                     status?, rejectReason?, reviewedBy?, reviewedAt?, flagged?, hidden? } ]
+ *                     gồm bài lấy từ data/posts.json + bài người dùng tự đăng;
+ *                     các trường có "?" là tùy chọn, bài cũ không có cũng chạy được
  *   aov_posts_seeded  [ id ]  các id bài từ posts.json đã từng nạp, để bài đã
  *                     bị xoá không bị nạp lại ("sống lại") khi mở trang
  *   aov_comments      [ { id, postId, author, content, createdAt } ]
@@ -43,6 +45,23 @@
  *     mà dữ liệu vẫn còn, bấm "Hiện" là bài hiện lại nguyên trạng
  *   - tác giả vẫn thấy bài của mình (kèm nhãn "Đã bị ẩn") để còn biết mình đã đăng gì
  *   - admin thao tác ở trang quản trị, không cần xem bài ẩn trong Feed
+ *
+ * Duyệt bài viết (trạng thái status, cũng nằm trong aov_posts):
+ *   - status: "pending" (chờ duyệt) | "approved" (đã duyệt) | "rejected" (bị từ chối);
+ *     bài thiếu trường này (bài cũ trong posts.json, bài đã đăng trước đây, bài mới
+ *     tạo) hoặc để giá trị lạ đều coi là "approved" — đọc qua getPostStatus(),
+ *     KHÔNG đọc post.status trực tiếp ở bất kỳ đâu
+ *   - các trường kèm theo, tùy chọn, chỉ được ghi khi có thao tác duyệt:
+ *     rejectReason (lý do từ chối, chuỗi), reviewedBy (ai duyệt, chuỗi),
+ *     reviewedAt (thời điểm duyệt, ISO time), flagged (đánh dấu vi phạm, boolean)
+ *   - "duyệt" KHÁC "ẩn": hidden là admin ẩn tạm, bấm "Hiện" là bài trở lại;
+ *     bài pending/rejected thì người ngoài không thấy ở Feed / trang chi tiết /
+ *     Profile của tác giả, chỉ tác giả thấy (kèm huy hiệu "Chờ duyệt" /
+ *     "Bị từ chối") — đúng cách bài ẩn vẫn làm với nhãn "Đã bị ẩn"
+ *   - admin chỉ thấy bài chờ duyệt / bị từ chối ở trang Quản trị (bảng liệt kê
+ *     toàn bộ aov_posts), đúng quy tắc cũ của bài ẩn
+ *   - bài mới createPost() vẫn KHÔNG ghi status (tức là "approved");
+ *     đặt "pending" cho user thường là việc của bước duyệt sau
  */
 
 const POSTS_KEY = 'aov_posts';
@@ -214,6 +233,27 @@ const COMMENT_MAX = 500;
 /** Danh sách chuyên mục hợp lệ, dùng cho select ở form và cho thanh lọc trang Feed. */
 const POST_CATEGORIES = ['Build trang bị', 'Mẹo chơi', 'Thảo luận', 'Hỏi đáp'];
 
+/* ---------- Trạng thái duyệt bài viết ---------- */
+
+/** Trạng thái "chờ duyệt": bài chưa được quản trị viên duyệt, chỉ tác giả thấy. */
+const POST_STATUS_PENDING = 'pending';
+
+/** Trạng thái "đã duyệt": bài hiển thị bình thường cho mọi người (mặc định). */
+const POST_STATUS_APPROVED = 'approved';
+
+/** Trạng thái "bị từ chối": bài không qua duyệt, chỉ tác giả thấy. */
+const POST_STATUS_REJECTED = 'rejected';
+
+/** Ba trạng thái hợp lệ; thiếu trường status hoặc giá trị lạ đều coi là "approved". */
+const POST_STATUSES = [POST_STATUS_PENDING, POST_STATUS_APPROVED, POST_STATUS_REJECTED];
+
+/** Nhãn tiếng Việt cho từng trạng thái, dùng ở bảng trang Quản trị. */
+const POST_STATUS_LABELS = {
+    [POST_STATUS_PENDING]: 'Chờ duyệt',
+    [POST_STATUS_APPROVED]: 'Đã duyệt',
+    [POST_STATUS_REJECTED]: 'Từ chối',
+};
+
 /**
  * Chuyên mục hiển thị của một bài viết.
  * Bài đã đăng từ trước khi có trường category thì không có thuộc tính này,
@@ -224,6 +264,23 @@ const POST_CATEGORIES = ['Build trang bị', 'Mẹo chơi', 'Thảo luận', 'H�
 function getPostCategory(post) {
     const category = post && post.category;
     return POST_CATEGORIES.includes(category) ? category : 'Khác';
+}
+
+/**
+ * Trạng thái duyệt của một bài viết, luôn trả về một trong 3 giá trị hợp lệ.
+ * Cùng kiểu với getPostCategory: bài viết tạo trước khi có tính năng duyệt thì
+ * không có trường status, và LocalStorage có thể bị sửa tay để giá trị lạ
+ * ("draft", "1", null...) -> tất cả đều coi là "approved" để dữ liệu cũ chạy bình thường.
+ *
+ * Mọi nơi trong dự án phải gọi hàm này, KHÔNG đọc post.status trực tiếp,
+ * để một chỗ chặn nhầm giá trị lạ không làm bài cũ biến mất khỏi giao diện.
+ *
+ * @param {object} post
+ * @returns {string} "pending" | "approved" | "rejected"
+ */
+function getPostStatus(post) {
+    const status = post && post.status;
+    return POST_STATUSES.includes(status) ? status : POST_STATUS_APPROVED;
 }
 
 /**
@@ -469,21 +526,29 @@ function isPostHidden(post) {
 /**
  * Bài viết này có hiện với người đang xem không.
  *
- * Quy tắc: bài đang hiện thì ai cũng thấy; bài đã ẩn thì chỉ tác giả thấy
- * (kèm nhãn "Đã bị ẩn"), mọi người khác kể cả admin đều không thấy trên
- * Feed / trang chi tiết / Profile — bảng ở trang Quản trị mới là nơi duy nhất
- * admin nhìn thấy bài ẩn.
+ * Quy tắc (ẩn và duyệt xử lý cùng một kiểu):
+ *   - bài đang hiện VÀ đã được duyệt (approved) -> ai cũng thấy;
+ *   - bài bị ẩn (hidden) HOẶC chưa được duyệt (pending / rejected) -> chỉ tác giả
+ *     thấy (kèm nhãn "Đã bị ẩn" hoặc huy hiệu "Chờ duyệt" / "Bị từ chối"),
+ *     mọi người khác kể cả admin đều không thấy trên Feed / trang chi tiết /
+ *     Profile — bảng ở trang Quản trị mới là nơi duy nhất admin thấy bài ẩn
+ *     và bài chờ duyệt / bị từ chối.
  *
  * Dùng hàm này ở MỌI nơi vẽ danh sách bài cho người đọc, không tự viết lại điều kiện,
- * để không sót chỗ nào bài ẩn vẫn lọt ra giao diện.
+ * để không sót chỗ nào bài ẩn hay bài chưa duyệt vẫn lọt ra giao diện.
  *
  * @param {object} post
  * @returns {boolean}
  */
 function isPostVisibleForViewer(post) {
-    if (!isPostHidden(post)) return true;
+    // Bài bị admin ẩn thì chỉ tác giả được xem (giữ nguyên quy tắc cũ).
+    if (isPostHidden(post)) return isPostAuthor(post);
 
-    return isPostAuthor(post);
+    // Bài chưa qua duyệt (chờ duyệt / bị từ chối) cũng chỉ tác giả được xem;
+    // bài thiếu trường status hoặc status lạ đều là "approved" nên vẫn hiện bình thường.
+    if (getPostStatus(post) !== POST_STATUS_APPROVED) return isPostAuthor(post);
+
+    return true;
 }
 
 /**
@@ -526,8 +591,8 @@ function getPostsByUser(username) {
     const name = String(username || '').trim();
     if (!name) return [];
 
-    // Bài ẩn của chính mình vẫn thấy (kèm nhãn "Đã bị ẩn") nhờ isPostVisibleForViewer();
-    // bài ẩn của người khác thì không lộ ra Profile của họ.
+    // Bài ẩn / bài chưa được duyệt của chính mình vẫn thấy (kèm nhãn) nhờ
+    // isPostVisibleForViewer(); bài đó của người khác thì không lộ ra Profile của họ.
     return getPosts().filter((post) => (
         String(post.author || '').trim() === name && isPostVisibleForViewer(post)
     ));
@@ -547,16 +612,22 @@ function isLikedByCurrentUser(postId) {
 
 /**
  * Bật/tắt lượt thích của người dùng đang đăng nhập.
- * @returns {boolean} true nếu vừa thích, false nếu vừa bỏ thích, chưa đăng nhập
- *         hoặc bài viết không còn tồn tại.
+ * @returns {boolean} true nếu vừa thích, false nếu vừa bỏ thích, chưa đăng nhập,
+ *         bài viết không còn tồn tại hoặc bài không hiển thị với người đang xem
+ *         (bài ẩn, bài chờ duyệt / bị từ chối của người khác) — chặn cả khi
+ *         gọi thẳng từ console.
  */
 function toggleLike(postId) {
     const id = normalizeId(postId);
     const username = getCurrentUser();
     if (!id || !username) return false;
 
+    const post = findPostById(id);
+
     // Bài không còn trong hệ thống (đã bị xoá) thì không ghi rác vào aov_likes.
-    if (!findPostById(id)) return false;
+    // Bài chưa được duyệt hoặc đang bị ẩn mà người gọi không phải tác giả thì
+    // không được thích: giao diện đã không vẽ nút, đây là chặn thêm ở tầng dữ liệu.
+    if (!post || !isPostVisibleForViewer(post)) return false;
 
     const likes = getLikes();
     const users = getLikeUsers(id);
@@ -578,7 +649,9 @@ function getCommentsOfPost(postId) {
 /**
  * Thêm bình luận cho một bài viết.
  * @returns {object|null} bình luận vừa tạo, null nếu chưa đăng nhập, nội dung rỗng,
- *         quá COMMENT_MAX ký tự, bài viết không còn tồn tại hoặc lưu thất bại.
+ *         quá COMMENT_MAX ký tự, bài viết không còn tồn tại, bài không hiển thị
+ *         với người đang xem (bài ẩn, bài chờ duyệt / bị từ chối của người khác —
+ *         chặn cả khi gọi thẳng từ console) hoặc lưu thất bại.
  */
 function addComment(postId, content) {
     const id = normalizeId(postId);
@@ -587,8 +660,12 @@ function addComment(postId, content) {
 
     if (!id || !text || !author) return null;
 
+    const post = findPostById(id);
+
     // Không bình luận vào bài không tồn tại (đã bị xoá) để aov_comments không sinh rác.
-    if (!findPostById(id)) return null;
+    // Bài chưa được duyệt hoặc đang bị ẩn mà người gọi không phải tác giả thì
+    // không nhận bình luận: giao diện đã không vẽ ô, đây là chặn thêm ở tầng dữ liệu.
+    if (!post || !isPostVisibleForViewer(post)) return null;
 
     // Chặn bình luận quá dài để một bình luận không làm phình toàn bộ aov_comments.
     if (text.length > COMMENT_MAX) return null;
@@ -909,7 +986,8 @@ function syncFeedFilterUrl(state) {
 function getVisiblePosts(state) {
     const keyword = String(state.keyword || '').trim();
     const list = getPosts().filter((post) => {
-        // Bài đã bị ẩn thì không hiện trong Feed (trừ bài của chính tác giả đang xem).
+        // Bài bị ẩn hoặc bài chưa được duyệt (chờ duyệt / bị từ chối) thì không hiện
+        // trong Feed với người khác (trừ bài của chính tác giả đang xem).
         if (!isPostVisibleForViewer(post)) return false;
 
         const matchesCategory = state.category === POST_CATEGORY_ALL || getPostCategory(post) === state.category;
@@ -1084,6 +1162,32 @@ function renderFeedList(focusPostId) {
     if (input) input.focus();
 }
 
+/**
+ * Huy hiệu trạng thái duyệt của bài viết (dùng cho cả thẻ bài lẫn trang chi tiết).
+ * - bài đang "approved" -> không cần huy hiệu (trạng thái bình thường, khỏi làm chật giao diện);
+ * - bài "pending" -> "Chờ duyệt", bài "rejected" -> "Bị từ chối";
+ * - bài bị ẩn -> để trống: chỗ render đã có sẵn huy hiệu "Đã bị ẩn"
+ *   (giữ nguyên kiểu hiện tại), tránh hiện hai huy hiệu chồng lên nhau.
+ *
+ * Chỉ tác giả mới thấy bài pending/rejected nên huy hiệu này cũng chỉ họ thấy.
+ * Mọi chuỗi đưa vào HTML đều qua escapeHtml().
+ *
+ * @param {object} post
+ * @returns {string} HTML string, '' nếu không cần huy hiệu.
+ */
+function renderPostStatusBadge(post) {
+    if (isPostHidden(post)) return '';
+
+    const status = getPostStatus(post);
+    if (status === POST_STATUS_APPROVED) return '';
+
+    // Nhãn theo yêu cầu giao diện: "Chờ duyệt" / "Bị từ chối"
+    // (bảng quản trị dùng POST_STATUS_LABELS nên từ chối ở đó là "Từ chối").
+    const label = status === POST_STATUS_PENDING ? 'Chờ duyệt' : 'Bị từ chối';
+
+    return `<span class="badge post-status--${escapeHtml(status)}">${escapeHtml(label)}</span>`;
+}
+
 function renderPostCard(post) {
     const hero = feedHeroes.find((record) => record.id === post.heroId);
     const likeUsers = getLikeUsers(post.id);
@@ -1098,6 +1202,10 @@ function renderPostCard(post) {
     const hiddenBadge = isPostHidden(post)
         ? '<span class="badge post-card__hidden">Đã bị ẩn</span>'
         : '';
+
+    // Bài chờ duyệt / bị từ chối cũng chỉ hiện với tác giả, kèm huy hiệu tương ứng
+    // (renderPostStatusBadge() tự bỏ qua bài approved và bài đang có nhãn "Đã bị ẩn").
+    const statusBadge = renderPostStatusBadge(post);
 
     const commentsHtml = comments.map((comment) => `
         <li class="comment">
@@ -1122,7 +1230,7 @@ function renderPostCard(post) {
                         ${hero ? ` · <a href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">${escapeHtml(hero.name)}</a>` : ''}
                         · <span class="post-card__category">${escapeHtml(getPostCategory(post))}</span>
                     </span>
-                    ${hiddenBadge}
+                    ${hiddenBadge}${statusBadge}
                 </div>
                 <div class="post-card__owner-actions">
                     ${canEdit ? `<button type="button" class="post-card__edit" data-post-edit="${escapeHtml(post.id)}">Sửa</button>` : ''}
@@ -1211,12 +1319,16 @@ function renderPostDetailView(focusPostId) {
         return;
     }
 
-    // Bài đã bị quản trị viên ẩn: mọi người khác không mở được, tác giả vẫn xem được
-    // (để kiểm tra bài của mình) và sẽ thấy nhãn "Đã bị ẩn" bên dưới.
+    // Bài không hiển thị với người đang xem:
+    // - bài bị ẩn -> báo đúng như trước đây ("đã bị ẩn bởi quản trị viên");
+    // - bài chờ duyệt / bị từ chối mà người xem không phải tác giả -> báo y hệt
+    //   bài không tồn tại, để không lộ cả chuyện bài đang chờ duyệt.
     if (!isPostVisibleForViewer(post)) {
-        detailContainer.innerHTML = renderPostDetailPlaceholder(
-            'Bài viết này đã bị ẩn bởi quản trị viên.',
-        );
+        const message = isPostHidden(post)
+            ? 'Bài viết này đã bị ẩn bởi quản trị viên.'
+            : `Không tìm thấy bài viết có mã "${String(postId).trim()}".`;
+
+        detailContainer.innerHTML = renderPostDetailPlaceholder(message);
         return;
     }
 
@@ -1250,6 +1362,7 @@ function renderPostDetailView(focusPostId) {
                     ${hero ? `<a href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">${escapeHtml(hero.name)}</a>` : ''}
                     <span class="post-card__category">${escapeHtml(getPostCategory(post))}</span>
                     ${isPostHidden(post) ? '<span class="badge post-detail__hidden">Đã bị ẩn</span>' : ''}
+                    ${renderPostStatusBadge(post)}
                 </p>
             </header>
 
