@@ -589,6 +589,8 @@ function canDeleteComment(comment) {
  * Chỉ tác giả của bài hoặc admin mới xoá được: không tìm thấy bài, chưa đăng nhập
  * hoặc không đủ quyền thì trả về false và KHÔNG ghi gì đè lên LocalStorage
  * (không chạm vào aov_posts, aov_comments, aov_likes).
+ * Xoá xong, nếu trang có nạp adminlog.js và người xoá là admin thì logAdminAction()
+ * sẽ ghi 1 bản ghi vào aov_admin_log; tác giả xoá bài mình không được ghi.
  *
  * @param {number|string} postId
  * @returns {boolean} true nếu bài đã bị xoá.
@@ -610,6 +612,14 @@ function deletePost(postId) {
     if (id in likes) {
         delete likes[id];
         setLikes(likes);
+    }
+
+    // Nhật ký thao tác admin (adminlog.js): logAdminAction() tự kiểm tra quyền
+    // nên chỉ admin xoá bài mới được ghi — tác giả xoá bài của chính mình thì
+    // lời gọi này là no-op (trả false, không ghi). Bọc typeof như trên để trang
+    // không nạp adminlog.js không lỗi.
+    if (typeof logAdminAction === 'function') {
+        logAdminAction('delete-post', 'post', id, target.title);
     }
 
     return true;
@@ -675,6 +685,8 @@ function isPostVisibleForViewer(post) {
  * Chỉ admin mới gọi được (kiểm tra isAdmin(), giống cách canDeletePost() chặn quyền xoá),
  * nên giao diện không cần tự tin rằng nút bấm là của admin — tầng dữ liệu vẫn chặn lại.
  * Không xoá bài, không đụng bình luận/lượt thích: ẩn xong bấm "Hiện" là bài trở lại nguyên trạng.
+ * Ẩn hoặc hiện thành công mà trang có nạp adminlog.js thì logAdminAction() ghi
+ * 1 bản ghi 'hide-post' / 'unhide-post' vào aov_admin_log.
  *
  * @param {number|string} postId
  * @param {boolean} hidden true = ẩn, false = hiện lại
@@ -702,7 +714,21 @@ function setPostHidden(postId, hidden) {
 
     posts[index] = updated;
 
-    return setPosts(posts);
+    if (!setPosts(posts)) return false;
+
+    // Nhật ký thao tác admin (adminlog.js): bọc typeof để trang không nạp file
+    // này (Feed, Profile...) gọi setPostHidden cũng không lỗi ReferenceError;
+    // logAdminAction() bên trong còn tự kiểm tra quyền admin một lần nữa.
+    if (typeof logAdminAction === 'function') {
+        logAdminAction(
+            hidden ? 'hide-post' : 'unhide-post',
+            'post',
+            id,
+            updated.title
+        );
+    }
+
+    return true;
 }
 
 function getPostsByUser(username) {
