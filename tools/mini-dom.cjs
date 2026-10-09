@@ -12,6 +12,18 @@ const vm = require('vm');
 
 const ROOT = path.resolve(__dirname, '..');
 
+/** Web Crypto (crypto.subtle) cho auth.js: ưu tiên global, lùi về require('crypto'). */
+const WEB_CRYPTO = (() => {
+    if (typeof globalThis.crypto !== 'undefined' && globalThis.crypto && globalThis.crypto.subtle) {
+        return globalThis.crypto;
+    }
+    try {
+        return require('crypto').webcrypto;
+    } catch (error) {
+        return undefined;
+    }
+})();
+
 const VOID_TAGS = new Set(['img', 'br', 'input', 'hr', 'meta', 'link']);
 
 /* ================= Mini DOM ================= */
@@ -703,6 +715,9 @@ function loadPage(options) {
             },
         },
         navigator: { userAgent: 'node' },
+        crypto: WEB_CRYPTO,
+        TextEncoder,
+        TextDecoder,
         URLSearchParams,
         alert(message) { alerts.push(String(message)); },
         confirm: () => true,

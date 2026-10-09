@@ -9,17 +9,35 @@
  *     thư mục src/data để ghi thẳng vào users.json.
  *   - aov_current_user   - username đang đăng nhập (session, localStorage)
  *
- * Cấu trúc tài khoản: { username, password, displayName, role, joinedAt }
+ * Cấu trúc tài khoản: { username, passwordHash, salt, displayName, role, joinedAt }
+ *   passwordHash   -> PBKDF2-SHA256 (100000 vòng, 256 bit, hex), salt 16 byte hex
  *   role = 'admin'  -> quản trị viên (được vào trang Quản trị, ẩn/xoá bài của người khác)
  *   role = 'user'   -> tài khoản thường (mặc định của mọi tài khoản đăng ký)
  *   isAdmin() chỉ trả true khi role đúng bằng 'admin', nên tài khoản không có
  *   trường role (dữ liệu cũ) vẫn an toàn: không có quyền quản trị.
+ *
+ * Mật khẩu KHÔNG BAO GIỜ lưu thô trong users.json / bản nháp / session — chỉ lưu
+ * salt + passwordHash, giống tools/hash-users.cjs. Tài khoản cũ còn trường
+ * `password` thô được nâng cấp lên hash ngay sau lần đăng nhập đúng đầu tiên.
+ *
+ * LƯU Ý AN NINH: băm mật khẩu ở đây chạy bằng Web Crypto (crypto.subtle) phía
+ * trình duyệt, CHỈ để tránh lưu mật khẩu thô trong dữ liệu demo. Không có
+ * backend nên không khuyến khích dùng mật khẩu thật quan trọng. crypto.subtle
+ * chỉ hoạt động trên localhost/https; không có nó thì đăng ký/đăng nhập báo lỗi
+ * rõ ràng và KHÔNG bao giờ lưu mật khẩu thô.
  *
  * Phụ thuộc: dataStore.js (nạp sau config.js và trước auth.js). js/layout.js gọi
  * updateAccountUI() sau khi nạp xong header để hiển thị đúng trạng thái đăng nhập.
  */
 
 const CURRENT_USER_KEY = 'aov_current_user';
+
+/* Cấu hình băm mật khẩu (khớp tools/hash-users.cjs để cùng đọc users.json). */
+const PASSWORD_HASH_ITERATIONS = 100000;
+const PASSWORD_HASH_BYTES = 32;
+const PASSWORD_MIN_LENGTH = 6;
+const PASSWORD_MAX_LENGTH = 64;
+const VALID_USERNAME = /^[\p{L}\p{N}_.-]{3,30}$/u;
 
 /* Các trang bắt buộc đăng nhập (Task 36). Muốn thêm trang thì bổ sung vào đây. */
 const PROTECTED_PAGES = [
@@ -36,18 +54,30 @@ const HERO_ADMIN_PAGE = BASE_PATH + 'src/pages/hero-admin.html';
 
 /* ---------- Đọc/ghi danh sách user ---------- */
 
+/**
+ * Danh sách tài khoản, chịu được dữ liệu hỏng:
+ *  - users.json không phải mảng (vd null/object) -> trả [] thay vì làm sập trang;
+ *  - phần tử lạ (không phải object, hoặc thiếu username chuỗi) -> bỏ qua.
+ */
 function getUsers() {
-    return getCollection('users');
+    const users = getCollection('users');
+    if (!Array.isArray(users)) return [];
+    return users.filter((user) => user && typeof user === 'object' && typeof user.username === 'string');
 }
 
 function setUsers(users) {
     return setCollection('users', users);
 }
 
+/** Tìm tài khoản theo username (không phân biệt hoa thường), không bao giờ ném lỗi. */
 function findUser(username) {
-    return getUsers().find(
-        (user) => user.username.toLowerCase() === String(username).trim().toLowerCase()
-    );
+    try {
+        return getUsers().find(
+            (user) => user.username.toLowerCase() === String(username).trim().toLowerCase()
+        );
+    } catch (error) {
+        return undefined;
+    }
 }
 
 /**
@@ -61,11 +91,19 @@ const usersReady = initDataStore({ collections: ['users'] });
 /* ---------- Task 33 - Session ---------- */
 
 function getCurrentUser() {
-    return localStorage.getItem(CURRENT_USER_KEY);
+    try {
+        return localStorage.getItem(CURRENT_USER_KEY);
+    } catch (error) {
+        return null;
+    }
 }
 
 function setCurrentUser(username) {
-    localStorage.setItem(CURRENT_USER_KEY, username);
+    try {
+        localStorage.setItem(CURRENT_USER_KEY, username);
+    } catch (error) {
+        // Storage bị chặn (chế độ riêng tư...) thì không lưu phiên được.
+    }
 }
 
 function isLoggedIn() {
@@ -101,13 +139,39 @@ function isAdmin() {
  * Chỉ xoá phiên đăng nhập. KHÔNG xoá aov_users, aov_favorites, aov_posts...
  */
 function logout() {
-    localStorage.removeItem(CURRENT_USER_KEY);
+    try {
+        localStorage.removeItem(CURRENT_USER_KEY);
+    } catch (error) {
+        // Bỏ qua: không xoá được session cũng không sao, vẫn đưa về trang chủ.
+    }
 
     // Nếu đang đứng ở trang cần đăng nhập thì quay về trang chủ.
     window.location.href = BASE_PATH + 'index.html';
 }
 
 /* ---------- Task 36 - Guard chặn trang cần đăng nhập ---------- */
+
+/**
+ * Chặn open redirect (F1): chỉ chấp nhận `redirect` là đường dẫn nội bộ.
+ *
+ * Hợp lệ khi: chuỗi string, bắt đầu bằng "/", KHÔNG bắt đầu bằng "//" hoặc "/\",
+ * và không chứa ký tự điều khiển (\u0000-\u001f). Mọi trường hợp khác trả về
+ * trang chủ, không cho đưa người dùng sang host/URL bên ngoài.
+ *
+ * @param {*} redirect giá trị tham số ?redirect= (đã decode bởi URLSearchParams)
+ * @returns {string} đường dẫn an toàn để gán vào window.location.href
+ */
+function getSafeRedirect(redirect) {
+    if (typeof redirect === 'string'
+        && redirect.startsWith('/')
+        && !redirect.startsWith('//')
+        && !redirect.startsWith('/\\')
+        && !/[\u0000-\u001f]/.test(redirect)) {
+        return redirect;
+    }
+
+    return BASE_PATH + 'index.html';
+}
 
 /**
  * Gọi ở đầu script của trang cần bảo vệ (vd pages/profile.html):
@@ -184,16 +248,16 @@ function validateRegisterForm(username, password, confirmPassword) {
 
     if (!trimmedUsername) {
         errors.push('Username không được để trống.');
-    } else if (trimmedUsername.length < 3 || trimmedUsername.length > 30) {
-        errors.push('Username phải có từ 3 đến 30 ký tự.');
+    } else if (!VALID_USERNAME.test(trimmedUsername)) {
+        errors.push('Username phải có từ 3 đến 30 ký tự (chữ, số, dấu chấm, gạch dưới hoặc gạch ngang).');
     } else if (findUser(trimmedUsername)) {
         errors.push('Username đã tồn tại.');
     }
 
     if (!password) {
         errors.push('Mật khẩu không được để trống.');
-    } else if (password.length < 6 || password.length > 10) {
-        errors.push('Mật khẩu phải có từ 6 đến 10 ký tự.');
+    } else if (password.length < PASSWORD_MIN_LENGTH || password.length > PASSWORD_MAX_LENGTH) {
+        errors.push(`Mật khẩu phải có từ ${PASSWORD_MIN_LENGTH} đến ${PASSWORD_MAX_LENGTH} ký tự.`);
     }
 
     if (confirmPassword !== password) {
@@ -203,38 +267,155 @@ function validateRegisterForm(username, password, confirmPassword) {
     return errors;
 }
 
+/* ---------- Băm mật khẩu (PBKDF2-SHA256, khớp tools/hash-users.cjs) ---------- */
+
+function bytesToHex(bytes) {
+    let out = '';
+    for (let i = 0; i < bytes.length; i += 1) out += bytes[i].toString(16).padStart(2, '0');
+    return out;
+}
+
+function hexToBytes(hex) {
+    const out = new Uint8Array(Math.ceil(String(hex).length / 2));
+    for (let i = 0; i < hex.length; i += 2) out[i / 2] = parseInt(hex.slice(i, i + 2), 16);
+    return out;
+}
+
+/**
+ * Băm mật khẩu bằng PBKDF2-SHA256.
+ * @param {string} password mật khẩu thô
+ * @param {string} [saltHex] salt có sẵn (để xác minh); không truyền thì sinh ngẫu nhiên 16 byte
+ * @returns {Promise<{ salt: string, passwordHash: string }>}
+ * @throws nếu trình duyệt không có crypto.subtle (cần HTTPS/localhost)
+ */
+async function hashPassword(password, saltHex) {
+    if (typeof crypto === 'undefined' || !crypto.subtle) {
+        throw new Error('Trình duyệt không hỗ trợ Web Crypto (cần HTTPS/localhost).');
+    }
+
+    const salt = saltHex ? hexToBytes(saltHex) : crypto.getRandomValues(new Uint8Array(16));
+    const keyMaterial = await crypto.subtle.importKey(
+        'raw', new TextEncoder().encode(String(password)), 'PBKDF2', false, ['deriveBits'],
+    );
+    const bits = await crypto.subtle.deriveBits(
+        { name: 'PBKDF2', salt, iterations: PASSWORD_HASH_ITERATIONS, hash: 'SHA-256' },
+        keyMaterial, PASSWORD_HASH_BYTES * 8,
+    );
+
+    return { salt: bytesToHex(salt), passwordHash: bytesToHex(new Uint8Array(bits)) };
+}
+
+/** So sánh hai chuỗi hex với thời gian hằng số (không lộ vị trí khác biệt). */
+function timingSafeEqualHex(a, b) {
+    if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
+
+    let diff = 0;
+    for (let i = 0; i < a.length; i += 1) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    return diff === 0;
+}
+
+/** Mật khẩu thô có khớp với { salt, passwordHash } đã lưu không. */
+async function verifyPassword(password, saltHex, expectedHash) {
+    const hash = await hashPassword(password, saltHex);
+    return timingSafeEqualHex(hash.passwordHash, expectedHash);
+}
+
 /* ---------- Task 30 - Đăng ký ---------- */
 
-function registerUser(username, password) {
-    const users = getUsers();
+/**
+ * Tạo tài khoản mới (luôn role 'user').
+ * @returns {Promise<{ ok: boolean, error?: string }>}
+ */
+async function registerUser(username, password) {
+    const trimmedUsername = String(username).trim();
 
+    if (!trimmedUsername || !VALID_USERNAME.test(trimmedUsername)) {
+        return { ok: false, error: 'Username không hợp lệ: 3-30 ký tự chữ, số, dấu chấm, gạch dưới hoặc gạch ngang.' };
+    }
+
+    if (typeof password !== 'string' || password.length < PASSWORD_MIN_LENGTH || password.length > PASSWORD_MAX_LENGTH) {
+        return { ok: false, error: `Mật khẩu phải có từ ${PASSWORD_MIN_LENGTH} đến ${PASSWORD_MAX_LENGTH} ký tự.` };
+    }
+
+    // Kiểm tra trùng ngay trước khi ghi: hai tab cùng mở có thể cùng đăng ký một
+    // username, nên kiểm tra ở validate lúc submit không đủ — phải kiểm tra lại đây.
+    if (findUser(trimmedUsername)) {
+        return { ok: false, error: 'Username đã tồn tại.' };
+    }
+
+    let hash;
+    try {
+        hash = await hashPassword(password);
+    } catch (error) {
+        return { ok: false, error: 'Trình duyệt không hỗ trợ mã hoá mật khẩu (cần HTTPS/localhost). Không lưu mật khẩu thô.' };
+    }
+
+    const users = getUsers();
     users.push({
-        username: String(username).trim(),
-        password,
-        displayName: String(username).trim(),
+        username: trimmedUsername,
+        passwordHash: hash.passwordHash,
+        salt: hash.salt,
+        displayName: trimmedUsername,
         // Mọi tài khoản tự đăng ký đều là tài khoản thường.
         // Không cho tự chọn role khi đăng ký, nếu không ai cũng tự làm admin được.
         role: 'user',
         joinedAt: new Date().toISOString(),
     });
 
-    setUsers(users);
+    const ok = setUsers(users);
+    if (!ok) {
+        return { ok: false, error: 'Không lưu được tài khoản. Hãy thử lại.' };
+    }
+
+    return { ok: true };
 }
 
 /* ---------- Task 32 - Đăng nhập ---------- */
 
 /**
- * @returns {boolean} true nếu đăng nhập thành công.
+ * @returns {Promise<boolean>} true nếu đăng nhập thành công.
  */
-function loginUser(username, password) {
+async function loginUser(username, password) {
     const user = findUser(username);
+    if (!user) return false;
 
-    if (!user || user.password !== password) {
-        return false;
+    // Tài khoản đã băm (chuẩn hiện tại): xác minh bằng PBKDF2, so sánh thời gian hằng số.
+    if (typeof user.passwordHash === 'string' && typeof user.salt === 'string') {
+        let ok = false;
+        try {
+            ok = await verifyPassword(password, user.salt, user.passwordHash);
+        } catch (error) {
+            return false;
+        }
+        if (ok) setCurrentUser(user.username);
+        return ok;
     }
 
-    setCurrentUser(user.username);
-    return true;
+    // Tài khoản cũ còn mật khẩu thô (trước đợt băm): nâng cấp lên hash sau khi
+    // xác minh đúng, để lần sau không còn mật khẩu thô trong dữ liệu.
+    if (typeof user.password === 'string') {
+        if (user.password !== password) return false;
+
+        try {
+            const hash = await hashPassword(password);
+            const users = getUsers();
+            const index = users.findIndex((u) => u.username.toLowerCase() === user.username.toLowerCase());
+            if (index !== -1) {
+                users[index].passwordHash = hash.passwordHash;
+                users[index].salt = hash.salt;
+                delete users[index].password;
+                setUsers(users);
+            }
+        } catch (error) {
+            // Không nâng cấp được thì vẫn cho đăng nhập trong phiên này.
+        }
+
+        setCurrentUser(user.username);
+        return true;
+    }
+
+    // Tài khoản không có bất kỳ thông tin mật khẩu nào -> fail-closed.
+    return false;
 }
 
 /* ---------- Hiển thị lỗi / thông báo trên form ---------- */
