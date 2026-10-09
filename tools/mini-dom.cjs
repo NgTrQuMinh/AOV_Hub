@@ -578,9 +578,13 @@ function createStorage(entries) {
  * @param {string} [options.login]   username đang đăng nhập (ghi sẵn vào aov_current_user)
  * @param {string|string[]} [options.failData] file data/*.json cố tình cho tải lỗi
  * @param {object} [options.data]   { 'posts.json': [...] } để thay nội dung JSON trả về (mô phỏng dữ liệu mới)
+ * @param {object} [options.seed]   dữ liệu khởi tạo các bộ (users/posts/comments/likes): qua
+ *        globalThis.__AOV_DATASTORE_TEST__ (xem dataStore.js, initDataStore) giúp trang chạy
+ *        chế độ memoryOnly, không đọc file/LocalStorage, và setCollection sẽ ghi ngược về chính
+ *        object seed truyền vào (useSeedRef) — dùng cho test-datastore cần dữ liệu cô lập.
  */
 function loadPage(options) {
-    const { page, search = '', storage = new Map(), login = null, failData = [], data = {}, api = null } = options;
+    const { page, search = '', storage = new Map(), login = null, failData = [], data = {}, api = null, seed = null } = options;
     const brokenFiles = new Set(Array.isArray(failData) ? failData : [failData].filter(Boolean));
 
     // "File" heroes.json dùng chung cho API /api/heroes. Truyền cùng object api qua
@@ -758,6 +762,9 @@ function loadPage(options) {
 
     ctx.window = ctx;
     ctx.globalThis = ctx;
+    if (seed && typeof seed === 'object' && !Array.isArray(seed)) {
+        ctx.__AOV_DATASTORE_TEST__ = { seed, useSeedRef: true };
+    }
     vm.createContext(ctx);
     local.__ctx = ctx;
 
