@@ -2,8 +2,9 @@
 
 Website tra cứu tướng, trang bị và build đề xuất của game Arena of Valor.
 
-- Công nghệ: **HTML5 + CSS3 + Vanilla JavaScript**, dữ liệu **JSON tĩnh**, lưu tạm bằng **LocalStorage**
-- Không dùng: React/Vue/Angular, framework CSS, backend, database, API thật
+- Công nghệ: **HTML5 + CSS3 + Vanilla JavaScript**, dữ liệu **JSON tĩnh**
+- Lưu tạm (yêu thích / lịch sử / so sánh) bằng **LocalStorage**; thao tác quản trị **Tướng** ghi thẳng vào `src/data/heroes.json` qua API nhỏ của Vite dev server
+- Không dùng: React/Vue/Angular, framework CSS, database, API thật (chỉ có endpoint `/api/heroes` chạy trong `npm run dev`)
 - Nhóm 4 thành viên
 
 ## 1. Cấu trúc
@@ -84,8 +85,13 @@ Không tự ý đổi tên các key trên khi thêm tính năng mới — các f
 
 Vì có dùng `fetch()` để đọc file JSON, **phải chạy qua một local server**, không mở trực tiếp file `index.html` (giao thức `file://` sẽ bị trình duyệt chặn CORS khi fetch JSON):
 
-- VS Code: cài extension **Live Server**, chuột phải `index.html` → "Open with Live Server", hoặc
-- Terminal: `npx http-server .` hoặc `python -m http.server 5500` chạy tại thư mục gốc `AOV-HUB/`, sau đó mở `http://localhost:<port>/`.
+- Chạy bằng Vite (khuyến nghị vì có kèm API ghi file cho trang Quản lý tướng):
+  ```bash
+  npm install
+  npm run dev
+  ```
+  rồi mở địa chỉ Vite in ra (thường là `http://localhost:5173/`).
+- Hoặc Live Server / `npx http-server .` / `python -m http.server 5500` — các trang vẫn xem được, nhưng trang **Quản lý tướng sẽ không lưu được** vì thiếu API `/api/heroes` (API này do `vite.config.js` cung cấp).
 
 ## 5. Phân công
 

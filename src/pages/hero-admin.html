@@ -30,8 +30,9 @@
         <p>
             Dành cho quản trị viên: thêm tướng mới, sửa thông tin tướng
             (tên, ảnh, vai trò, độ khó, chỉ số, kỹ năng, trang bị đề xuất)
-            hoặc xoá tướng khỏi hệ thống. Thay đổi được lưu trong trình duyệt
-            và hiển thị ngay ở Danh sách tướng, Chi tiết, So sánh, Yêu thích, Build, Feed.
+            hoặc xoá tướng khỏi hệ thống. Thay đổi được lưu thẳng vào file
+            src/data/heroes.json qua API (chạy bằng npm run dev) và hiển thị ngay
+            ở Danh sách tướng, Chi tiết, So sánh, Yêu thích, Build, Feed.
         </p>
 
         <!-- Form thêm / sửa tướng: do hero-admin.js vẽ và gắn sự kiện -->
@@ -43,7 +44,7 @@
         <!-- Số tướng đang hiển thị / tổng số tướng trong hệ thống -->
         <p id="hero-admin-count" class="feed-count" aria-live="polite"></p>
 
-        <!-- Bảng tướng: do hero-admin.js vẽ từ aov_heroes (heroData.js) -->
+        <!-- Bảng tướng: do hero-admin.js vẽ từ src/data/heroes.json (heroData.js) -->
         <div id="hero-admin-list" class="card"></div>
     </main>
 

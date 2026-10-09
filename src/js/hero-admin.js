@@ -24,14 +24,16 @@
  *   - Tầng dữ liệu cũng chặn: createHero()/updateHero()/deleteHero() trong heroData.js
  *     đều gọi canManageHeroes() nên gọi thẳng từ console cũng không sửa được.
  *
- * Dữ liệu: dùng đúng lớp dữ liệu tướng (heroData.js) nên thao tác ở đây thấy ngay
- * trên mọi trang đọc qua loadHeroes() (Danh sách tướng, Chi tiết, So sánh, Yêu thích,
- * Build, Feed, Trang chủ...).
+ * Dữ liệu: dùng đúng lớp dữ liệu tướng (heroData.js) — CRUD gọi API ghi file
+ * src/data/heroes.json nên thao tác ở đây thấy ngay trên mọi trang đọc qua
+ * loadHeroes() (Danh sách tướng, Chi tiết, So sánh, Yêu thích, Build, Feed, Trang chủ...)
+ * và giữ nguyên sau khi tải lại trang. Các hàm createHero()/updateHero()/deleteHero()
+ * đều là async nên handler phải await.
  *
  * Dùng lại của nhóm khác: requireAdmin()/isAdmin()/renderErrors()/renderSuccess() (auth.js),
  * escapeHtml()/renderNotFound()/DIFFICULTY_LABEL (components.js),
  * matchKeyword()/debounce() (search.js),
- * getStoredHeroes()/findHeroById()/validateHeroForm()/createHero()/updateHero()/
+ * getCachedHeroes()/findHeroById()/validateHeroForm()/createHero()/updateHero()/
  * deleteHero()/HERO_ROLES/HERO_DIFFICULTIES/HERO_STAT_KEYS/HERO_STAT_LIMITS/
  * HERO_SKILL_TYPES/HERO_SKILL_MAX/HERO_SKILL_COOLDOWN_MAX (heroData.js).
  */
@@ -75,7 +77,7 @@ const HERO_IMAGE_JPEG_QUALITY = 0.85;
  * @returns {Array}
  */
 function getHeroAdminHeroes() {
-    return getStoredHeroes();
+    return getCachedHeroes();
 }
 
 /**
@@ -556,7 +558,7 @@ function renderHeroAdminForm(editingHero) {
 
     attachHeroImagePicker(form);
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const input = readHeroFormValues(form);
@@ -570,9 +572,9 @@ function renderHeroAdminForm(editingHero) {
 
         if (editId) {
             // Sửa tướng cũ: giữ nguyên id, chỉ đổi nội dung.
-            const updated = updateHero(editId, input);
+            const updated = await updateHero(editId, input);
             if (!updated) {
-                renderErrors(errorBox, ['Không lưu được tướng. Bạn cần đăng nhập bằng tài khoản quản trị viên.']);
+                renderErrors(errorBox, ['Không lưu được tướng. Hãy khởi động lại server bằng "npm run dev" (nạp vite.config.js) và dùng tài khoản quản trị viên.']);
                 return;
             }
 
@@ -586,9 +588,9 @@ function renderHeroAdminForm(editingHero) {
             return;
         }
 
-        const created = createHero(input);
+        const created = await createHero(input);
         if (!created) {
-            renderErrors(errorBox, ['Không lưu được tướng. Hãy thử lại hoặc kiểm tra dung lượng trình duyệt.']);
+            renderErrors(errorBox, ['Không lưu được tướng. Hãy khởi động lại server bằng "npm run dev" (nạp vite.config.js) và dùng tài khoản quản trị viên.']);
             return;
         }
 
@@ -649,8 +651,8 @@ async function initHeroAdminPage() {
         return;
     }
 
-    // Tướng mẫu trong data/heroes.json phải được merge vào aov_heroes trước
-    // thì bảng mới đầy đủ (cùng cách mọi trang đọc tướng đang làm).
+    // Nạp danh sách tướng từ API (đọc thẳng src/data/heroes.json) để bảng đầy đủ
+    // và để hợp đồng findHeroById() tra cứu được đồng bộ ở các handler bên dưới.
     await loadHeroes();
 
     renderHeroAdminForm(null);
@@ -665,7 +667,7 @@ async function initHeroAdminPage() {
  * mà gắn một lần ở cấp document rồi dò theo data attribute (event delegation),
  * đúng cách admin.js xử lý nút ẩn / xoá bài.
  */
-document.addEventListener('click', (event) => {
+document.addEventListener('click', async (event) => {
     // Nút "Thêm tướng" trên thanh công cụ: quay về form trống.
     const addBtn = event.target.closest('[data-hero-add]');
     if (addBtn) {
@@ -736,8 +738,8 @@ document.addEventListener('click', (event) => {
 
         if (!confirm(`Xóa vĩnh viễn tướng "${hero.name}"? Yêu thích, lịch sử và so sánh của tướng này cũng sẽ bị dọn.`)) return;
 
-        if (!deleteHero(hero.id)) {
-            alert('Không xóa được tướng. Bạn cần đăng nhập bằng tài khoản quản trị viên.');
+        if (!await deleteHero(hero.id)) {
+            alert('Không xóa được tướng. Bạn cần đăng nhập bằng tài khoản quản trị viên và server phải đang chạy.');
             return;
         }
 
