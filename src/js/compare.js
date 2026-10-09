@@ -81,7 +81,9 @@ function readCompareSelectIds() {
  * @param {string} value giá trị đang chọn ở ô còn lại.
  */
 function disableCompareOption(select, value) {
-    Array.prototype.forEach.call(select.options, (option) => {
+    // select.options có thể undefined nếu DOM mini / select không có option
+    // (một số thư viện cũ), duyệt qua mảng rỗng cho an toàn.
+    Array.prototype.forEach.call(select.options || [], (option) => {
         option.disabled = option.value !== '' && option.value === value;
     });
 }

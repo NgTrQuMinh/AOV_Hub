@@ -233,8 +233,10 @@ function heroesApiMiddleware() {
 export default defineConfig({
     server: {
         // heroes.json được API ghi trực tiếp; tắt theo dõi để không reload trang sau mỗi lần lưu.
+        // Các file JSON khác trong src/data/ cũng do lớp dữ liệu (dataStore.js) ghi qua
+        // File System Access API, nên tắt theo dõi để form không bị reset sau khi lưu.
         watch: {
-            ignored: ['**/src/data/heroes.json'],
+            ignored: ['**/src/data/*.json'],
         },
     },
     plugins: [

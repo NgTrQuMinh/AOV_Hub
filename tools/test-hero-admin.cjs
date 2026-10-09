@@ -40,6 +40,13 @@ const FEED_PAGE = 'src/pages/feed.html';
 
 const HEROES_JSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/heroes.json'), 'utf8'));
 
+// Số tướng có trên đĩa và id kế tiếp. Test chạy theo số liệu thật của heroes.json
+// chứ không khoá cứng 30/31, nên thêm bớt tướng vào file vẫn qua được.
+const HEROES_START = HEROES_JSON.length;
+const HEROES_START_MAX_ID = Math.max(...HEROES_JSON.map((hero) => hero.id));
+const NEXT_HERO_ID = HEROES_START_MAX_ID + 1;
+const COUNT_AFTER_ADD = HEROES_START + 1;
+
 /**
  * "File" heroes.json dùng chung giữa các lần mở trang. API /api/heroes (mô phỏng
  * trong mini-dom) đọc/ghi vào đây, nên tướng thêm/sửa/xoá giữ nguyên qua các lần "reload".
@@ -168,8 +175,8 @@ const formErrorsText = (page) => {
     /* ---------- 0. Dữ liệu mẫu ---------- */
     section('0. data/heroes.json có dữ liệu mẫu');
 
-    check('heroes.json có 30 tướng như cam kết',
-        HEROES_JSON.length === 30,
+    check(`heroes.json có ${HEROES_START} tướng như cam kết`,
+        HEROES_JSON.length === HEROES_START,
         HEROES_JSON.length + ' tướng');
     check('mọi tướng đều có id, name, role, stats, skills',
         HEROES_JSON.every((hero) => (
@@ -510,14 +517,14 @@ const formErrorsText = (page) => {
     const heroesAfterAdd = storedHeroes(admin);
     const added = heroesAfterAdd[heroesAfterAdd.length - 1];
 
-    check('file heroes.json thêm 1 tướng (31/30)',
+    check(`file heroes.json thêm 1 tướng (${COUNT_AFTER_ADD}/${HEROES_START})`,
         heroesAfterAdd.length === HEROES_JSON.length + 1,
         heroesAfterAdd.length + ' tướng');
     check('tướng mới có tên vừa nhập',
         added && added.name === 'Test Tướng',
         JSON.stringify(added && added.name));
-    check('tướng mới tự nhận id kế tiếp (31)',
-        added && added.id === 31,
+    check(`tướng mới tự nhận id kế tiếp (${NEXT_HERO_ID})`,
+        added && added.id === NEXT_HERO_ID,
         JSON.stringify(added && added.id));
     check('tướng mới giữ đúng vai trò đã tick (chỉ 1 vai trò)',
         added && JSON.stringify(added.role) === JSON.stringify(['Xạ thủ']),
@@ -543,8 +550,8 @@ const formErrorsText = (page) => {
         tableRowCount(admin) === HEROES_JSON.length + 1
         && plainTable(admin).includes('Test Tướng'),
         tableRowCount(admin) + ' dòng');
-    check('đếm số tướng đổi thành 31',
-        countText(admin) === '31 tướng',
+    check(`đếm số tướng đổi thành ${COUNT_AFTER_ADD}`,
+        countText(admin) === `${COUNT_AFTER_ADD} tướng`,
         countText(admin));
     check('form quay về trạng thái thêm mới sau khi lưu',
         !formHtml(admin).includes('data-edit-id'),
@@ -697,8 +704,8 @@ const formErrorsText = (page) => {
     section('5. Tướng mới hiện ở Danh sách và Chi tiết');
 
     const heroesPage = await open(HEROES_PAGE, { storage: admin.storage, search: '?keyword=Test' });
-    check('trang Danh sách tướng đếm được 31 tướng',
-        unescapeHtml(heroesPage.el('hero-count').textContent).includes('31'),
+    check(`trang Danh sách tướng đếm được ${COUNT_AFTER_ADD} tướng`,
+        unescapeHtml(heroesPage.el('hero-count').textContent).includes('/' + COUNT_AFTER_ADD + ' tướng'),
         heroesPage.el('hero-count').textContent);
     check('tướng mới hiện trong lưới danh sách',
         unescapeHtml(heroesPage.el('hero-list').innerHTML).includes('Test Tướng'),
@@ -712,7 +719,7 @@ const formErrorsText = (page) => {
         heroesPage.errors.length === 0,
         heroesPage.errors.join(' | '));
 
-    const detailPage = await open(HERO_DETAIL_PAGE, { storage: admin.storage, search: '?id=31' });
+    const detailPage = await open(HERO_DETAIL_PAGE, { storage: admin.storage, search: '?id=' + NEXT_HERO_ID });
     check('trang Chi tiết hiển thị tướng vừa thêm',
         unescapeHtml(detailPage.el('hero-detail').innerHTML).includes('Test Tướng'),
         unescapeHtml(detailPage.el('hero-detail').innerHTML).slice(0, 200));
@@ -725,25 +732,25 @@ const formErrorsText = (page) => {
      * Tướng đã được API ghi vào file heroes.json nên lần mở sau vẫn đọc được.
      */
     admin = await openHeroAdmin({ storage: admin.storage, login: ADMIN_USERNAME });
-    check('reload vẫn giữ đủ 31 tướng (đã ghi vào file)',
+    check(`reload vẫn giữ đủ ${COUNT_AFTER_ADD} tướng (đã ghi vào file)`,
         storedHeroes().length === HEROES_JSON.length + 1,
         storedHeroes().length + ' tướng');
     check('tướng vừa thêm vẫn nằm trong file heroes.json',
-        storedHeroes().some((hero) => String(hero.id) === '31'),
+        storedHeroes().some((hero) => String(hero.id) === String(NEXT_HERO_ID)),
         JSON.stringify(storedHeroes().map((hero) => hero.id).slice(-3)));
 
     /* ---------- 6. Sửa tướng ---------- */
     section('6. Sửa tướng');
 
     fire(
-        admin.el('hero-admin-list').querySelector('[data-hero-edit="31"]'),
+        admin.el('hero-admin-list').querySelector('[data-hero-edit="' + NEXT_HERO_ID + '"]'),
         'click',
         admin.doc,
     );
     await admin.settled();
 
     check('bấm Sửa mở form ở chế độ sửa (có data-edit-id)',
-        formHtml(admin).includes('data-edit-id="31"'),
+        formHtml(admin).includes('data-edit-id="' + NEXT_HERO_ID + '"'),
         plainForm(admin).slice(0, 200));
     check('form điền sẵn tên tướng đang sửa',
         formHtml(admin).includes('value="Test Tướng"'),
@@ -762,9 +769,9 @@ const formErrorsText = (page) => {
     });
     await submitForm(admin, editForm);
 
-    const edited = storedHeroes(admin).find((hero) => String(hero.id) === '31');
+    const edited = storedHeroes(admin).find((hero) => String(hero.id) === String(NEXT_HERO_ID));
     check('tướng vẫn giữ nguyên id sau khi sửa',
-        storedHeroes(admin).length === HEROES_JSON.length + 1 && edited && edited.id === 31,
+        storedHeroes(admin).length === HEROES_JSON.length + 1 && edited && edited.id === NEXT_HERO_ID,
         JSON.stringify(edited && edited.id));
     check('tên tướng đã được cập nhật',
         edited && edited.name === 'Test Tướng Đã Sửa',
@@ -787,28 +794,28 @@ const formErrorsText = (page) => {
     /* ---------- 7. Xoá tướng ---------- */
     section('7. Xoá tướng');
 
-    // Chuẩn bị sẵn tham chiếu tới tướng 31 để kiểm tra tầng dữ liệu dọn giúp.
-    admin.storage.set('aov_favorites', JSON.stringify({ hero: [31], item: [] }));
-    admin.storage.set('aov_history', JSON.stringify([31, 1]));
-    admin.storage.set('aov_compare', JSON.stringify([31, 2]));
+    // Chuẩn bị sẵn tham chiếu tới tướng vừa thêm để kiểm tra tầng dữ liệu dọn giúp.
+    admin.storage.set('aov_favorites', JSON.stringify({ hero: [NEXT_HERO_ID], item: [] }));
+    admin.storage.set('aov_history', JSON.stringify([NEXT_HERO_ID, 1]));
+    admin.storage.set('aov_compare', JSON.stringify([NEXT_HERO_ID, 2]));
 
     fire(
-        admin.el('hero-admin-list').querySelector('[data-hero-delete="31"]'),
+        admin.el('hero-admin-list').querySelector('[data-hero-delete="' + NEXT_HERO_ID + '"]'),
         'click',
         admin.doc,
     );
     await admin.settled();
 
-    check('file heroes.json còn đúng 30 tướng sau khi xoá',
+    check(`file heroes.json còn đúng ${HEROES_START} tướng sau khi xoá`,
         storedHeroes(admin).length === HEROES_JSON.length,
         storedHeroes(admin).length + ' tướng');
-    check('tướng 31 không còn trong file heroes.json',
-        !storedHeroes(admin).some((hero) => String(hero.id) === '31'));
+    check(`tướng ${NEXT_HERO_ID} không còn trong file heroes.json`,
+        !storedHeroes(admin).some((hero) => String(hero.id) === String(NEXT_HERO_ID)));
     check('bảng không còn dòng của tướng đã xoá',
         tableRowCount(admin) === HEROES_JSON.length && !plainTable(admin).includes('Test Tướng'),
         tableRowCount(admin) + ' dòng');
-    check('đếm số tướng quay về 30',
-        countText(admin) === '30 tướng',
+    check(`đếm số tướng quay về ${HEROES_START}`,
+        countText(admin) === `${HEROES_START} tướng`,
         countText(admin));
     check('dọn tướng khỏi Yêu thích',
         JSON.stringify(admin.readKey('aov_favorites').hero) === '[]',
@@ -820,7 +827,7 @@ const formErrorsText = (page) => {
         JSON.stringify(admin.readKey('aov_compare')) === '[2]',
         JSON.stringify(admin.readKey('aov_compare')));
     check('tướng mẫu trong heroes.json không bị xoá theo',
-        storedHeroes(admin).some((hero) => hero.id === 1) && storedHeroes(admin).some((hero) => hero.id === 30));
+        storedHeroes(admin).some((hero) => hero.id === 1) && storedHeroes(admin).some((hero) => hero.id === HEROES_START_MAX_ID));
     check('trang không ném lỗi JavaScript sau khi xoá',
         admin.errors.length === 0,
         admin.errors.join(' | '));
@@ -829,22 +836,22 @@ const formErrorsText = (page) => {
     section('8. Mở lại trang sau khi xoá (không sống lại)');
 
     const reopened = await openHeroAdmin({ storage: admin.storage, login: ADMIN_USERNAME });
-    check('mở lại trang thì vẫn là 30 tướng',
+    check(`mở lại trang thì vẫn là ${HEROES_START} tướng`,
         storedHeroes(reopened).length === HEROES_JSON.length,
         storedHeroes(reopened).length + ' tướng');
     check('tướng đã xoá không quay lại bảng',
         !plainTable(reopened).includes('Test Tướng'),
         plainTable(reopened).slice(0, 200));
     check('id tướng đã xoá không còn trong file heroes.json',
-        !storedHeroes().some((hero) => String(hero.id) === '31'),
+        !storedHeroes().some((hero) => String(hero.id) === String(NEXT_HERO_ID)),
         JSON.stringify(storedHeroes().map((hero) => hero.id).slice(-3)));
     check('trang không ném lỗi JavaScript',
         reopened.errors.length === 0,
         reopened.errors.join(' | '));
 
     const heroesAfterDelete = await open(HEROES_PAGE, { storage: admin.storage });
-    check('trang Danh sách tướng quay về 30 tướng',
-        unescapeHtml(heroesAfterDelete.el('hero-count').textContent) === '30 tướng',
+    check('trang Danh sách tướng quay về đủ số tướng',
+        unescapeHtml(heroesAfterDelete.el('hero-count').textContent) === `${HEROES_START} tướng`,
         heroesAfterDelete.el('hero-count').textContent);
 
     /* ---------- 9. Chặn ở tầng dữ liệu với tài khoản không có quyền ---------- */

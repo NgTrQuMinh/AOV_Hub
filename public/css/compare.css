@@ -129,6 +129,12 @@
 }
 
 /* Hàng tiêu đề: ảnh + tên tướng, bấm mở trang chi tiết */
+/* Cột tướng ở thead: đủ rộng cho ảnh + tên (120px + padding) */
+.compare-table__hero {
+    width: 180px;
+    min-width: 180px;
+}
+
 .compare-table__hero-link {
     display: inline-flex;
     flex-direction: column;

@@ -130,8 +130,10 @@ function adminTableIds(page) {
 
     const adminAccount = USERS_JSON.find((user) => user.username === ADMIN_USERNAME);
 
-    check('users.json có tài khoản admin / admin1',
-        Boolean(adminAccount) && adminAccount.password === 'admin1',
+    check('users.json có tài khoản admin với mật khẩu đã băm (không còn password thô)',
+        Boolean(adminAccount) && !adminAccount.password
+            && typeof adminAccount.passwordHash === 'string' && adminAccount.passwordHash.length > 0
+            && typeof adminAccount.salt === 'string' && adminAccount.salt.length > 0,
         JSON.stringify(adminAccount));
     check('tài khoản admin có role "admin" và displayName',
         adminAccount && adminAccount.role === 'admin' && adminAccount.displayName === 'Quản trị viên',

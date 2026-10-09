@@ -1,26 +1,29 @@
 /**
  * feed.js - Community Feed: đăng bài, thích, bình luận (pages/feed.html)
- * Phụ trách: Người 3 (giao diện) + Người 4 (logic LocalStorage)
+ * Phụ trách: Người 3 (giao diện) + Người 4 (logic dữ liệu)
  *
- * LocalStorage:
- *   aov_posts         [ { id, author, title, content, heroId, category, createdAt,
- *                     status?, rejectReason?, reviewedBy?, reviewedAt?, flagged?, hidden? } ]
- *                     gồm bài lấy từ data/posts.json + bài người dùng tự đăng;
- *                     các trường có "?" là tùy chọn, bài cũ không có cũng chạy được
- *   aov_posts_seeded  [ id ]  các id bài từ posts.json đã từng nạp, để bài đã
- *                     bị xoá không bị nạp lại ("sống lại") khi mở trang
- *   aov_comments      [ { id, postId, author, content, createdAt } ]
- *   aov_likes         { "<postId>": [username, ...] }
- *   aov_mod_settings  { requireApproval: boolean, bannedWords: [string],
+ * Dữ liệu dùng chung (posts/comments/likes/users) nằm trong src/data/*.json và được
+ * quản lý bởi dataStore.js: đọc bằng fetch, ghi bằng File System Access API, giữ bản
+ * nháp aov_draft_* trong LocalStorage khi chưa liên kết thư mục. Mọi đọc/ghi ở đây
+ * đi qua getCollection/setCollection; các key cũ aov_posts/aov_posts_seeded/
+ * aov_comments/aov_likes chỉ được dataStore gộp đúng một lần rồi không dùng nữa.
+ *
+ * Cấu trúc từng bài viết:
+ *   [ { id, author, title, content, heroId, category, createdAt,
+ *       status?, rejectReason?, reviewedBy?, reviewedAt?, flagged?, hidden? } ]
+ *   các trường có "?" là tùy chọn, bài cũ không có cũng chạy được
+ * Bình luận:  [ { id, postId, author, content, createdAt } ]
+ * Lượt thích: { "<postId>": [username, ...] }
+ *
+ * aov_mod_settings  { requireApproval: boolean, bannedWords: [string],
  *                     autoHideThreshold: number }
- *                     cấu hình kiểm duyệt; key chưa ghi thì lấy
- *                     MOD_SETTINGS_DEFAULTS (xem getModSettings)
+ *                     cấu hình kiểm duyệt; key còn ở LocalStorage (ngoại lệ), chưa
+ *                     ghi thì lấy MOD_SETTINGS_DEFAULTS (xem getModSettings)
  *
- * Mỗi lần mở trang, bài trong data/posts.json được MERGE theo id:
- *   - id đã có trong LocalStorage  -> giữ nguyên bản đang lưu, không ghi đè, không thêm lần 2
- *   - id từng nạp rồi nhưng đã xoá  -> không nạp lại
- *   - id mới                        -> thêm vào CUỐI danh sách để không đẩy bài người dùng đã đăng
- * Nên bao giờ không render trùng hai bài cùng id.
+ * Mỗi lần mở Feed/Profile/chi tiết, seedPostsFromJson() chỉ await initDataStore rồi
+ * trả getPosts(): bản nháp (nếu có) ưu tiên hơn file, bài đã xoá không "sống lại",
+ * bài người dùng tự đăng không bị nhân bản. Không còn cơ chế merge theo id và
+ * aov_posts_seeded như trước.
  *
  * Này là lớp dữ liệu duy nhất của mọi trang hiển thị bài viết:
  *   - feed.html          : danh sách bài viết
@@ -70,12 +73,12 @@
  *     xem mục "Cấu hình kiểm duyệt" bên dưới
  */
 
-const POSTS_KEY = 'aov_posts';
-const POSTS_SEEDED_KEY = 'aov_posts_seeded';
-const COMMENTS_KEY = 'aov_comments';
-const LIKES_KEY = 'aov_likes';
-
-/** Khóa lưu cấu hình kiểm duyệt cộng đồng (duyệt trước khi đăng), xem getModSettings(). */
+/**
+ * Dữ liệu dùng chung (posts/comments/likes/users) nằm trong src/data/*.json và được
+ * quản lý bởi dataStore.js: đọc bằng fetch, ghi bằng File System Access API, giữ bản
+ * nháp tạm ở LocalStorage qua key aov_draft_*. Ở đây chỉ còn MOD_SETTINGS_KEY nằm
+ * trong LocalStorage như ngoại lệ đã thống nhất.
+ */
 const MOD_SETTINGS_KEY = 'aov_mod_settings';
 
 let feedHeroes = [];
@@ -149,68 +152,40 @@ function nextFeedId(taken) {
 /* ---------- Đọc/ghi dữ liệu ---------- */
 
 function getPosts() {
-    return normalizePosts(getStore(POSTS_KEY, []));
+    return normalizePosts(getCollection('posts'));
 }
 
 function setPosts(posts) {
-    return setStore(POSTS_KEY, normalizePosts(posts));
+    return setCollection('posts', normalizePosts(posts));
 }
 
 function getComments() {
-    return normalizeComments(getStore(COMMENTS_KEY, []));
+    return normalizeComments(getCollection('comments'));
 }
 
 function setComments(comments) {
-    return setStore(COMMENTS_KEY, normalizeComments(comments));
+    return setCollection('comments', normalizeComments(comments));
 }
 
 function getLikes() {
-    const likes = getStore(LIKES_KEY, {});
+    const likes = getCollection('likes');
     return likes && typeof likes === 'object' && !Array.isArray(likes) ? likes : {};
 }
 
 function setLikes(likes) {
-    return setStore(LIKES_KEY, likes);
-}
-
-function getSeededPostIds() {
-    const ids = getStore(POSTS_SEEDED_KEY, []);
-    return Array.isArray(ids) ? ids.map(normalizeId) : [];
+    return setCollection('likes', likes);
 }
 
 /**
- * Nạp bài viết mẫu từ data/posts.json (chạy mỗi lần mở Feed hoặc Profile).
- * Merge theo id nên không tạo bài trùng, xem mô tả đầu file.
- * @returns {Array} danh sách bài viết sau khi merge.
+ * Nạp dữ liệu dùng chung từ dataStore (chạy mỗi lần mở Feed / Profile / chi tiết).
+ * dataStore tự đọc từng file JSON trong src/data/, gộp dữ liệu cũ (aov_posts,
+ * aov_comments, aov_likes) đúng một lần và ưu tiên bản nháp đang sửa hơn file —
+ * nhờ vậy bài đã xoá không "sống lại" và bài người dùng tự đăng không bị mất khi F5.
+ * @returns {Array} danh sách bài viết hiện có.
  */
 async function seedPostsFromJson() {
-    const jsonPosts = await loadData(DATA_PATH.posts);
-    const stored = getPosts();
-
-    // Mọi id từng nạp + mọi id đang lưu đều được coi là "đã biết".
-    const seeded = getSeededPostIds();
-    const known = new Set(seeded);
-    stored.forEach((post) => known.add(normalizeId(post.id)));
-
-    const added = normalizePosts(jsonPosts).filter((post) => {
-        const id = normalizeId(post.id);
-        if (known.has(id)) return false;
-
-        known.add(id);
-        return true;
-    });
-
-    if (!added.length) {
-        // Ghi lại danh sách id đã nạp (lần đầu chưa có ghi, hoặc posts.json vừa thêm id mới).
-        if (known.size > seeded.length) setStore(POSTS_SEEDED_KEY, [...known]);
-        return stored;
-    }
-
-    const merged = stored.concat(added);
-    setPosts(merged);
-    setStore(POSTS_SEEDED_KEY, [...known]);
-
-    return merged;
+    await initDataStore({ collections: ['posts', 'comments', 'likes', 'users'] });
+    return getPosts();
 }
 
 /* ---------- Cấu hình kiểm duyệt (duyệt trước khi đăng) ---------- */
@@ -420,8 +395,8 @@ function validatePostForm(title, content, heroId, category) {
 /**
  * Đăng bài mới. Bài mới luôn lên đầu danh sách.
  *
- * Bài chỉ nằm trong aov_posts (LocalStorage), KHÔNG ghi vào data/posts.json
- * vì file đó là dữ liệu tĩnh của project.
+ * Bài mới được lưu vào collection posts (do dataStore quản lý, nằm trong
+ * posts.json của src/data/); khi chưa liên kết thư mục, dataStore giữ thay bản nháp
  *
  * Cùng lúc khởi tạo sẵn lượt thích và bình luận rỗng cho bài mới để
  * mọi trang đọc cùng một cấu trúc dữ liệu, không phải tự xử lý vắng mặt.

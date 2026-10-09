@@ -25,3 +25,6 @@ audit-result.json
 *.njsproj
 *.sln
 *.sw?
+
+# Archives
+*.rar

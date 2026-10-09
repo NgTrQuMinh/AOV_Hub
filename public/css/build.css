@@ -24,6 +24,34 @@
  * ========================================= */
 
 /* ---------- 1. BỐ CỤC DANH SÁCH BUILD ---------- */
+/* Tiêu đề trang Build + số lượng (đọc từ #build-count) */
+.page-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin: 48px 0 var(--space-3);
+    padding-left: var(--space-3);
+    border-left: 4px solid var(--color-gold);
+}
+
+.page-head h1 {
+    margin: 0;
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.page-head__count {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #7A5508;
+    white-space: nowrap;
+}
+
 .build-list {
     --build-icon: 120px;
     --build-hero: 220px;
@@ -93,6 +121,11 @@
 }
 
 /* ---------- 4. NỘI DUNG BUILD + LƯỚI TRANG BỊ ---------- */
+/* Khối nội dung trong grid .build-card: min-width: 0 để tên dài không đẩy vỡ cột */
+.build-card__body {
+    min-width: 0;
+}
+
 .build-card__name {
     position: relative;
     margin: 0 0 8px;
