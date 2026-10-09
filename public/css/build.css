@@ -1,95 +1,259 @@
 /* =========================================
  * build.css - Trang Build đề xuất
  * Phụ trách: Người 2
+ * Phong cách: nền kem ấm, vàng nhấn, card trắng bo góc mềm
+ * (dùng sau reset.css + variables.css + common.css)
+ *
+ * Cấu trúc thật:
+ *   .page-head > h1 + .page-head__count
+ *   p mô tả
+ *   #build-filter-bar.filter-bar > input.filter-bar__keyword
+ *   .build-list > article.build-card
+ *     .build-card__hero > a(img + h3) + span.badge
+ *     .build-card__body > h2.build-card__name + p + .build-card__items > a.build-item(img + span)
+ *   Không có kết quả: .not-found trong .build-list
+ *
+ * Mục lục:
+ *   1. Bố cục danh sách build
+ *   2. Thẻ build
+ *   3. Khối tướng (hero) trong thẻ
+ *   4. Nội dung build + lưới trang bị
+ *   5. Thanh tìm kiếm build
+ *   6. Trạng thái không có kết quả
+ *   7. Responsive: 1100 / 768 / 420
  * ========================================= */
 
+/* ---------- 1. BỐ CỤC DANH SÁCH BUILD ---------- */
 .build-list {
+    --build-icon: 120px;
+    --build-hero: 220px;
+
     display: grid;
-    gap: var(--space-5);
-    margin-top: var(--space-5);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    margin-top: 24px;
 }
 
+.build-list .not-found {
+    grid-column: 1 / -1;
+}
+
+/* ---------- 2. THẺ BUILD ---------- */
 .build-card {
     display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: var(--space-5);
-    padding: var(--space-5);
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    grid-template-columns: var(--build-hero) minmax(0, 1fr);
+    align-items: start;
+    gap: 32px;
+    padding: 28px;
+    background: #FFFFFF;
+    border: 1px solid #EFE3C6;
+    border-radius: 24px;
+    box-shadow: var(--shadow-sm);
+    transition: border-color var(--transition), box-shadow var(--transition);
 }
 
+.build-card:hover {
+    border-color: #EFCC72;
+}
+
+/* ---------- 3. KHỐI TƯỚNG TRONG THẺ ---------- */
 .build-card__hero {
     text-align: center;
+}
+
+.build-card__hero a {
+    display: block;
 }
 
 .build-card__hero img {
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--color-border);
-    margin-bottom: var(--space-3);
+    border-radius: 20px;
+    border: 3px solid #F5E5C3;
+    background: var(--color-surface);
 }
 
 .build-card__hero h3 {
-    margin-bottom: var(--space-2);
+    margin-top: 12px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--color-text);
+    transition: color var(--transition);
 }
 
 .build-card__hero a:hover h3 {
-    color: var(--color-gold);
+    color: #9C6F10;
 }
 
+.build-card__hero .badge {
+    margin-top: 8px;
+    background: #F5E5C3;
+    color: #7A5508;
+}
+
+/* ---------- 4. NỘI DUNG BUILD + LƯỚI TRANG BỊ ---------- */
 .build-card__name {
-    font-size: var(--fs-lg);
-    color: var(--color-gold);
+    position: relative;
+    margin: 0 0 8px;
+    padding-top: 14px;
+    font-size: 26px;
+    font-weight: 800;
+    color: #3A2F1C;
+}
+
+.build-card__name::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 48px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--color-gold);
+}
+
+.build-card__body p {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #5A4A2E;
+}
+
+.build-card__body p:empty {
+    display: none;
 }
 
 .build-card__items {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: var(--space-3);
-    margin-top: var(--space-4);
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+    counter-reset: build-item;
 }
 
 .build-item {
-    display: block;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    background: #FFFDF8;
+    border: 1px solid #EFE3C6;
+    border-radius: 16px;
     text-align: center;
-    font-size: var(--fs-xs);
-    color: var(--color-text-muted);
+    text-decoration: none;
+    counter-increment: build-item;
+    transition: transform var(--transition), border-color var(--transition),
+        box-shadow var(--transition);
 }
 
 .build-item img {
     width: 100%;
+    max-width: var(--build-icon);
     aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--color-border);
-    margin-bottom: var(--space-1);
-    transition: border-color 0.15s ease;
+    object-fit: contain;
+    margin-inline: auto;
+    background: #FFFFFF;
+    border-radius: 12px;
 }
 
-.build-item:hover img {
-    border-color: var(--color-gold);
+.build-item span {
+    display: -webkit-box;
+    margin-top: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #3A2F1C;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    transition: color var(--transition);
+}
+
+/* Số thứ tự 1..6 ở góc trên trái mỗi ô trang bị */
+.build-item::before {
+    content: counter(build-item);
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #DDA532;
+    color: #3A2F1C;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
 }
 
 .build-item:hover {
-    color: var(--color-gold);
+    transform: translateY(-3px);
+    border-color: #EFCC72;
+    box-shadow: var(--shadow-sm);
 }
 
-@media (max-width: 1024px) {
+.build-item:hover span {
+    color: #9C6F10;
+}
+
+/* ---------- 5. THANH TÌM KIẾM BUILD ---------- */
+#build-filter-bar.filter-bar {
+    margin-top: 24px;
+    margin-bottom: 0;
+}
+
+#build-filter-bar .filter-bar__keyword {
+    flex: 0 1 560px;
+    max-width: 560px;
+    border-radius: var(--radius-pill);
+}
+
+/* ---------- 6. TRẠNG THÁI KHÔNG CÓ KẾT QUẢ ---------- */
+.build-list .not-found {
+    padding: 64px 16px;
+}
+
+.build-card__items .not-found {
+    grid-column: 1 / -1;
+    padding: 24px 0;
+}
+
+/* ---------- 7. RESPONSIVE ---------- */
+@media (max-width: 1100px) {
     .build-card__items {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 768px) {
     .build-card {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 24px;
+        padding: 20px;
+    }
+
+    .build-card__hero {
+        max-width: 200px;
+        margin-inline: auto;
     }
 
     .build-card__hero img {
-        max-width: 180px;
+        max-width: 200px;
         margin-inline: auto;
+    }
+
+    .build-card__items {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 420px) {
+    .build-card__items {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
     }
 }
