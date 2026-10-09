@@ -1,26 +1,29 @@
 /**
  * feed.js - Community Feed: đăng bài, thích, bình luận (pages/feed.html)
- * Phụ trách: Người 3 (giao diện) + Người 4 (logic LocalStorage)
+ * Phụ trách: Người 3 (giao diện) + Người 4 (logic dữ liệu)
  *
- * LocalStorage:
- *   aov_posts         [ { id, author, title, content, heroId, category, createdAt,
- *                     status?, rejectReason?, reviewedBy?, reviewedAt?, flagged?, hidden? } ]
- *                     gồm bài lấy từ data/posts.json + bài người dùng tự đăng;
- *                     các trường có "?" là tùy chọn, bài cũ không có cũng chạy được
- *   aov_posts_seeded  [ id ]  các id bài từ posts.json đã từng nạp, để bài đã
- *                     bị xoá không bị nạp lại ("sống lại") khi mở trang
- *   aov_comments      [ { id, postId, author, content, createdAt } ]
- *   aov_likes         { "<postId>": [username, ...] }
- *   aov_mod_settings  { requireApproval: boolean, bannedWords: [string],
+ * Dữ liệu dùng chung (posts/comments/likes/users) nằm trong src/data/*.json và được
+ * quản lý bởi dataStore.js: đọc bằng fetch, ghi bằng File System Access API, giữ bản
+ * nháp aov_draft_* trong LocalStorage khi chưa liên kết thư mục. Mọi đọc/ghi ở đây
+ * đi qua getCollection/setCollection; các key cũ aov_posts/aov_posts_seeded/
+ * aov_comments/aov_likes chỉ được dataStore gộp đúng một lần rồi không dùng nữa.
+ *
+ * Cấu trúc từng bài viết:
+ *   [ { id, author, title, content, heroId, category, createdAt,
+ *       status?, rejectReason?, reviewedBy?, reviewedAt?, flagged?, hidden? } ]
+ *   các trường có "?" là tùy chọn, bài cũ không có cũng chạy được
+ * Bình luận:  [ { id, postId, author, content, createdAt } ]
+ * Lượt thích: { "<postId>": [username, ...] }
+ *
+ * aov_mod_settings  { requireApproval: boolean, bannedWords: [string],
  *                     autoHideThreshold: number }
- *                     cấu hình kiểm duyệt; key chưa ghi thì lấy
- *                     MOD_SETTINGS_DEFAULTS (xem getModSettings)
+ *                     cấu hình kiểm duyệt; key còn ở LocalStorage (ngoại lệ), chưa
+ *                     ghi thì lấy MOD_SETTINGS_DEFAULTS (xem getModSettings)
  *
- * Mỗi lần mở trang, bài trong data/posts.json được MERGE theo id:
- *   - id đã có trong LocalStorage  -> giữ nguyên bản đang lưu, không ghi đè, không thêm lần 2
- *   - id từng nạp rồi nhưng đã xoá  -> không nạp lại
- *   - id mới                        -> thêm vào CUỐI danh sách để không đẩy bài người dùng đã đăng
- * Nên bao giờ không render trùng hai bài cùng id.
+ * Mỗi lần mở Feed/Profile/chi tiết, seedPostsFromJson() chỉ await initDataStore rồi
+ * trả getPosts(): bản nháp (nếu có) ưu tiên hơn file, bài đã xoá không "sống lại",
+ * bài người dùng tự đăng không bị nhân bản. Không còn cơ chế merge theo id và
+ * aov_posts_seeded như trước.
  *
  * Này là lớp dữ liệu duy nhất của mọi trang hiển thị bài viết:
  *   - feed.html          : danh sách bài viết
@@ -392,8 +395,8 @@ function validatePostForm(title, content, heroId, category) {
 /**
  * Đăng bài mới. Bài mới luôn lên đầu danh sách.
  *
- * Bài chỉ nằm trong aov_posts (LocalStorage), KHÔNG ghi vào data/posts.json
- * vì file đó là dữ liệu tĩnh của project.
+ * Bài mới được lưu vào collection posts (do dataStore quản lý, nằm trong
+ * posts.json của src/data/); khi chưa liên kết thư mục, dataStore giữ thay bản nháp
  *
  * Cùng lúc khởi tạo sẵn lượt thích và bình luận rỗng cho bài mới để
  * mọi trang đọc cùng một cấu trúc dữ liệu, không phải tự xử lý vắng mặt.

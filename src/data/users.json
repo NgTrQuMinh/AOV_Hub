@@ -1,23 +1,26 @@
 [
     {
         "username": "demo",
-        "password": "123456",
         "displayName": "Người dùng Demo",
         "role": "user",
-        "joinedAt": "2025-01-10T08:00:00.000Z"
+        "joinedAt": "2025-01-10T08:00:00.000Z",
+        "passwordHash": "d4b739f367803b6654028cdd0711fbb97918cafdd08b8affde7bef36fd8dc61c",
+        "salt": "2e443de02a0d2915f712986e3f0efd69"
     },
     {
         "username": "aovfan",
-        "password": "aov123",
         "displayName": "Fan Liên Quân",
         "role": "user",
-        "joinedAt": "2025-02-02T09:30:00.000Z"
+        "joinedAt": "2025-02-02T09:30:00.000Z",
+        "passwordHash": "08cdeafb1bdc924962804daf987eea13e7ac975cdba833f8cfa86cc784b7c915",
+        "salt": "5699e3aed18675f69c64715b120acf84"
     },
     {
         "username": "admin",
-        "password": "admin1",
         "displayName": "Quản trị viên",
         "role": "admin",
-        "joinedAt": "2025-01-05T07:00:00.000Z"
+        "joinedAt": "2025-01-05T07:00:00.000Z",
+        "passwordHash": "8c22633247684a4a202db57ef54cfd1a40e9dba80387c3c0dff70f2d2fdbbbbe",
+        "salt": "3c52479ecebf18fdb62fd7db83d30abc"
     }
 ]
