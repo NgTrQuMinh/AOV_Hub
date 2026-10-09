@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AOV HUB - Không tìm thấy</title>
+    <title>AOV HUB - Không tìm thấy trang (404)</title>
 
     <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/variables.css">
@@ -14,8 +14,7 @@
     <header id="site-header"></header>
 
     <main class="container section">
-        <!-- TODO (Người 4): thông báo "Không tìm thấy trang/tướng/trang bị" + nút quay lại trang chủ -->
-        <div id="not-found-content"></div>
+        <div class="not-found-page" id="not-found-content"></div>
     </main>
 
     <footer id="site-footer"></footer>
@@ -25,5 +24,24 @@
     <script src="/src/js/components.js"></script>
     <script src="/src/js/auth.js"></script>
     <script src="/src/js/layout.js"></script>
+    <script>
+        (function () {
+            var box = document.getElementById('not-found-content');
+            if (!box) return;
+
+            var message = new URLSearchParams(window.location.search).get('message')
+                || 'Trang bạn tìm không tồn tại hoặc đã bị di chuyển.';
+
+            box.innerHTML = `
+                <p class="not-found-page__code">404</p>
+                ${renderNotFound(message)}
+                <div class="not-found-page__actions">
+                    <a class="btn btn-primary" href="${BASE_PATH}index.html">Về trang chủ</a>
+                    <a class="btn btn-outline" href="${BASE_PATH}src/pages/heroes.html">Xem tướng</a>
+                    <a class="btn btn-outline" href="${BASE_PATH}src/pages/items.html">Xem trang bị</a>
+                </div>
+            `;
+        })();
+    </script>
 </body>
 </html>
