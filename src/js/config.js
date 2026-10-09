@@ -26,4 +26,6 @@ const DATA_PATH = {
     builds: BASE_PATH + 'src/data/builds.json',
     posts: BASE_PATH + 'src/data/posts.json',
     users: BASE_PATH + 'src/data/users.json',
+    comments: BASE_PATH + 'src/data/comments.json',
+    likes: BASE_PATH + 'src/data/likes.json',
 };

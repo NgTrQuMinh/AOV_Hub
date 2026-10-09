@@ -448,6 +448,114 @@ function fireOnDocument(document, target, type) {
     for (const fn of document.listeners[type] || []) fn(event);
 }
 
+/* ================= Cầu nối dataStore <-> storage cũ =================
+ *
+ * Từ đợt này dữ liệu dùng chung (tài khoản, bài viết, bình luận, lượt thích) nằm
+ * trong các collection của dataStore (src/js/dataStore.js), không còn nằm trực tiếp
+ * trong LocalStorage. Các test đang viết theo kiểu cũ (đọc/ghi aov_users, aov_posts,
+ * aov_comments, aov_likes) nên storage mô phỏng ở đây "nhìn xuyên" sang collection:
+ *  - đọc aov_posts / aov_comments / aov_likes / aov_users -> lấy nội dung collection,
+ *    giữ nguyên định dạng JSON chuỗi của localStorage cũ;
+ *  - ghi aov_posts / ... -> cập nhật luôn collection;
+ *  - dữ liệu test dựng sẵn qua những key đó được nạp thành BẢN NHÁP của dataStore
+ *    (aov_draft_<name>) khi mở trang, để nó thay thế hẳn file JSON (đúng ngữ nghĩa
+ *    "bài đã xoá thì không sống lại").
+ */
+const COLLECTION_KEYS = {
+    aov_users: 'users',
+    aov_posts: 'posts',
+    aov_comments: 'comments',
+    aov_likes: 'likes',
+};
+
+/**
+ * Storage mô phỏng vừa giữ các key thường (aov_current_user, aov_mod_settings,
+ * aov_favorites...), vừa nhìn xuyên bốn key collection sang dataStore sau khi
+ * trang chạy. Dùng cho cả page.storage lẫn localStorage của trang.
+ */
+function createStorage(entries) {
+    const base = new Map(entries);
+    const api = {
+        __base: base,
+        __ctx: null,
+
+        has(key) {
+            if (Object.prototype.hasOwnProperty.call(COLLECTION_KEYS, key)) {
+                if (readLive(key) !== undefined) return true;
+            }
+            return base.has(key);
+        },
+        get(key) {
+            const live = readLive(key);
+            if (live !== undefined) return live;
+            return base.has(key) ? base.get(key) : undefined;
+        },
+        set(key, value) {
+            // Không nhận undefined: Map cũ vẫn chấp nhận nhưng storage thật không có.
+            if (value === undefined) return api;
+            const text = String(value);
+            base.set(key, text);
+
+            if (Object.prototype.hasOwnProperty.call(COLLECTION_KEYS, key) && api.__ctx
+                && typeof api.__ctx.setCollection === 'function') {
+                try {
+                    api.__ctx.setCollection(COLLECTION_KEYS[key], JSON.parse(text));
+                } catch (error) {
+                    // JSON hỏng: giữ nguyên giá trị thô, không cập nhật collection.
+                }
+            }
+            return api;
+        },
+        delete(key) {
+            return base.delete(key);
+        },
+        get size() { return snapshot().size; },
+        keys() { return snapshot().keys(); },
+        values() { return snapshot().values(); },
+        entries() { return snapshot().entries(); },
+        forEach(fn, thisArg) { snapshot().forEach(fn, thisArg); },
+        [Symbol.iterator]() { return snapshot().entries(); },
+    };
+
+    function readLive(key) {
+        if (!Object.prototype.hasOwnProperty.call(COLLECTION_KEYS, key)) return undefined;
+        if (!api.__ctx || typeof api.__ctx.getCollection !== 'function') return undefined;
+        try {
+            return JSON.stringify(api.__ctx.getCollection(COLLECTION_KEYS[key]));
+        } catch (error) {
+            return undefined;
+        }
+    }
+
+    /**
+     * Bản sao chụp gồm các key thường (aov_current_user, favorites, history, ...) +
+     * các collection đã có dữ liệu (kèm theo người dùng đã chạm tới) qua key cũ
+     * tương ứng. KHÔNG mang theo bản nháp aov_draft_*: bản nháp là nội bộ một phiên
+     * mở trang, trang sau tự dựng lại từ dữ liệu collection mang theo. Nhờ vậy dữ
+     * liệu thuần từ file không bị "kẹt" qua các lần mở trang (file được sửa vẫn có
+     * hiệu lực), còn thay đổi của người dùng vẫn giữ nguyên.
+     */
+    function snapshot() {
+        const out = new Map();
+        const hadDraft = new Set();
+        for (const [key, value] of base) {
+            if (key.startsWith('aov_draft_')) {
+                hadDraft.add(key.slice('aov_draft_'.length));
+                continue;
+            }
+            out.set(key, value);
+        }
+        for (const key of Object.keys(COLLECTION_KEYS)) {
+            if (!hadDraft.has(COLLECTION_KEYS[key]) && !out.has(key)) continue;
+            const live = readLive(key);
+            if (live !== undefined) out.set(key, live);
+        }
+        return out;
+    }
+
+    return api;
+}
+
 /* ================= Nạp trang thật vào VM ================= */
 
 /**
@@ -485,7 +593,7 @@ function loadPage(options) {
 
     // Copy storage để không sửa bản gốc: test truyền cùng một Map cho nhiều lần mở trang
     // với login khác nhau (vd đổi từ đã đăng nhập sang khách).
-    const local = new Map(storage);
+    const local = createStorage(storage);
 
     // auth.js lưu session dạng chuỗi thô (không JSON) trong aov_current_user.
     // Trong thực tế session luôn đi kèm tài khoản có thật trong aov_users
@@ -509,6 +617,16 @@ function loadPage(options) {
         }
 
         local.set('aov_users', JSON.stringify(users));
+    }
+
+    // Dữ liệu test dựng sẵn theo key cũ (aov_users/aov_posts/...) được đưa vào bản
+    // nháp của dataStore để khi mở trang nó thay thế hẳn file JSON. Không đè lên bản
+    // nháp đã có (nếu không sẽ khôi phục lại những thứ đã xoá trong lần mở trước).
+    for (const key of Object.keys(COLLECTION_KEYS)) {
+        const draftKey = 'aov_draft_' + COLLECTION_KEYS[key];
+        if (local.__base.has(key) && !local.__base.has(draftKey)) {
+            local.__base.set(draftKey, local.__base.get(key));
+        }
     }
 
     const document = {
@@ -626,6 +744,7 @@ function loadPage(options) {
     ctx.window = ctx;
     ctx.globalThis = ctx;
     vm.createContext(ctx);
+    local.__ctx = ctx;
 
     const run = () => {
         for (const file of scripts) {

@@ -207,7 +207,7 @@ async function clickPage(page, index) {
     const pager = await openHeroes();
     const expectedPages = Math.ceil(HEROES_JSON.length / PAGE_SIZE);
 
-    check(`30 tướng / ${PAGE_SIZE} mỗi trang -> ${expectedPages} nút trang`,
+    check(`${HEROES_JSON.length} tướng / ${PAGE_SIZE} mỗi trang -> ${expectedPages} nút trang`,
         readPaginationLabels(pager).join(',') === Array.from({ length: expectedPages }, (_, i) => String(i + 1)).join(','),
         readPaginationLabels(pager).join(','));
     check('trang 1 là nút active (aria-current=page)',
@@ -234,8 +234,8 @@ async function clickPage(page, index) {
         readHeroNames(pager.el('hero-list')).join(',')
             === firstPage(HEROES_JSON.filter((h) => h.role.includes('Pháp thuật'))).map((h) => h.name).join(','),
         readHeroNames(pager.el('hero-list')).slice(0, 3).join(', '));
-    check('đếm kết quả cập nhật khi lọc (dạng "n/tổng tướng")',
-        /^(\d+)\/30 tướng$/.test(pager.el('hero-count').textContent),
+    check(`đếm kết quả cập nhật khi lọc (dạng "n/tổng tướng")`,
+        new RegExp('^(\\d+)/' + HEROES_JSON.length + ' tướng$').test(pager.el('hero-count').textContent),
         pager.el('hero-count').textContent);
 
     // Kết quả lọc chỉ còn 1 trang thì ẩn thanh phân trang.

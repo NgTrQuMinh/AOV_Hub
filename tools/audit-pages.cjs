@@ -372,7 +372,15 @@ const setVal = (node, v) => { node.value = v; };
     let parsed8 = [];
     try { parsed8 = JSON.parse(s8.get('aov_posts') || '[]'); ok(8, 'LocalStorage luu JSON hop le', true, 'parse OK'); }
     catch (e) { ok(8, 'LocalStorage luu JSON hop le', false, e.message); }
-    ok(8, 'co khoa aov_posts_seeded', !!s8.get('aov_posts_seeded'), 'chong bai da xoa bi "song lai"');
+    // Trước đây cần khoá aov_posts_seeded để chống bài đã xoá "sống lại". Nay dataStore
+    // ghi bản nháp (aov_draft_posts) thay cho khoá đó: xoá bài rồi reload -> bài không quay lại.
+    const s8del = new Map(s8);
+    s8del.set('aov_posts', JSON.stringify(JSON.parse(s8del.get('aov_posts') || '[]').filter((x) => x.title !== 'Bai viet audit hop le')));
+    const f8del = loadPage({ page: 'src/pages/feed.html', search: '', storage: s8del, login: 'tester' });
+    f8del.run(); await f8del.settled();
+    ok(8, 'khong can aov_posts_seeded: xoa bai -> reload khong con bai da xoa',
+        !f8del.el('feed-list').innerHTML.includes('Bai viet audit hop le'),
+        'feed van con bai da xoa');
     ok(8, 'co khoa aov_likes', !!s8.get('aov_likes'), 'khoa aov_likes duoc tao');
     ok(8, 'co khoa aov_users', !!s8.get('aov_users'), '');
     const f8 = loadPage({ page: 'src/pages/feed.html', search: '', storage: s8, login: 'tester' });

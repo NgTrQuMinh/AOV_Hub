@@ -2,12 +2,12 @@
  * auth.js - Đăng ký / Đăng nhập / Session / Guard
  * Phụ trách: Người 1 (TV1) — Task 30 đến 36
  *
- * LocalStorage:
- *   aov_users          - mảng tài khoản đã đăng ký (mô phỏng dữ liệu, KHÔNG mã hoá,
- *                        chỉ phục vụ demo đồ án, không dùng cho môi trường thật)
- *   aov_current_user   - username đang đăng nhập (nếu có)
- *
- * Lần đầu mở web, danh sách user sẽ được nạp sẵn từ data/users.json (tài khoản demo).
+ * Danh sách tài khoản:
+ *   - nằm trong src/data/users.json (dữ liệu dùng chung), quản lý bởi dataStore.js;
+ *     key LocalStorage cũ aov_users chỉ được đọc để gộp đúng một lần rồi bỏ;
+ *     thay đổi (đăng ký) được giữ trong bản nháp aov_draft_users trước khi liên kết
+ *     thư mục src/data để ghi thẳng vào users.json.
+ *   - aov_current_user   - username đang đăng nhập (session, localStorage)
  *
  * Cấu trúc tài khoản: { username, password, displayName, role, joinedAt }
  *   role = 'admin'  -> quản trị viên (được vào trang Quản trị, ẩn/xoá bài của người khác)
@@ -15,12 +15,10 @@
  *   isAdmin() chỉ trả true khi role đúng bằng 'admin', nên tài khoản không có
  *   trường role (dữ liệu cũ) vẫn an toàn: không có quyền quản trị.
  *
- * Phụ thuộc: không phụ thuộc file khác (dùng fetch trực tiếp để có thể nạp sớm
- * ở đầu trang profile.html cho Guard). js/layout.js gọi updateAccountUI() sau khi
- * nạp xong header để hiển thị đúng trạng thái đăng nhập trên mọi trang.
+ * Phụ thuộc: dataStore.js (nạp sau config.js và trước auth.js). js/layout.js gọi
+ * updateAccountUI() sau khi nạp xong header để hiển thị đúng trạng thái đăng nhập.
  */
 
-const USERS_KEY = 'aov_users';
 const CURRENT_USER_KEY = 'aov_current_user';
 
 /* Các trang bắt buộc đăng nhập (Task 36). Muốn thêm trang thì bổ sung vào đây. */
@@ -39,16 +37,11 @@ const HERO_ADMIN_PAGE = BASE_PATH + 'src/pages/hero-admin.html';
 /* ---------- Đọc/ghi danh sách user ---------- */
 
 function getUsers() {
-    try {
-        return JSON.parse(localStorage.getItem(USERS_KEY)) || [];
-    } catch (error) {
-        console.error(error);
-        return [];
-    }
+    return getCollection('users');
 }
 
 function setUsers(users) {
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    return setCollection('users', users);
 }
 
 function findUser(username) {
@@ -58,29 +51,12 @@ function findUser(username) {
 }
 
 /**
- * Nạp tài khoản mẫu từ data/users.json vào LocalStorage ở lần chạy đầu tiên.
- * Nếu người dùng đã đăng ký tài khoản riêng thì KHÔNG ghi đè.
- */
-async function seedUsersFromJson() {
-    if (getUsers().length) return;
-
-    try {
-        const response = await fetch(DATA_PATH.users);
-        if (!response.ok) return;
-
-        const users = await response.json();
-        setUsers(users);
-    } catch (error) {
-        console.error('Không nạp được data/users.json', error);
-    }
-}
-
-/**
  * usersReady: lời hứa (Promise) cho biết danh sách user đã sẵn sàng.
- * Trang Login/Register phải `await usersReady` trước khi kiểm tra tài khoản,
- * nếu không lần đầu mở web có thể chưa kịp nạp tài khoản demo từ JSON.
+ * dataStore nạp trực tiếp từ data/users.json, gộp dữ liệu cũ trong aov_users đúng
+ * một lần và ưu tiên bản nháp đang ghi (aov_draft_users). Trang Login/Register phải
+ * `await usersReady` trước khi kiểm tra tài khoản.
  */
-const usersReady = seedUsersFromJson();
+const usersReady = initDataStore({ collections: ['users'] });
 
 /* ---------- Task 33 - Session ---------- */
 

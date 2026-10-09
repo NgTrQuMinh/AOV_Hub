@@ -208,8 +208,8 @@ async function createPost(page, title, content, heroId = '') {
     check('id không trùng nhau', new Set(renderedIds).size === renderedIds.length, renderedIds.join(', '));
     check('aov_posts lưu đủ id của posts.json',
         POSTS_JSON.every((post) => storedIds.includes(idOf(post.id))), storedIds.join(', '));
-    check('aov_posts_seeded ghi lại id từng nạp từ JSON',
-        JSON.stringify(guest.readKey(KEYS.seeded).map(idOf).sort()) === JSON.stringify(POSTS_JSON.map((post) => idOf(post.id)).sort()),
+    check('không còn cần aov_posts_seeded (dataStore giữ trạng thái bằng bản nháp)',
+        guest.readKey(KEYS.seeded) === null,
         JSON.stringify(guest.readKey(KEYS.seeded)));
 
     /* ---------- 4. Reload không nhân bản bài viết ---------- */
@@ -243,7 +243,6 @@ async function createPost(page, title, content, heroId = '') {
 
     // Xoá 1 bài rồi reload -> bài đã xoá không được "sống lại"
     const mergedStorage = merged.storage;
-    const seededNow = merged.readKey(KEYS.seeded).map(idOf);
     const firstJsonId = idOf(POSTS_JSON[0].id);
     mergedStorage.set(KEYS.posts, JSON.stringify(
         merged.readKey(KEYS.posts).filter((post) => idOf(post.id) !== firstJsonId)
@@ -255,7 +254,9 @@ async function createPost(page, title, content, heroId = '') {
     check('xoá bài từ posts.json rồi reload -> bài không quay lại',
         !survived.some((post) => post.id === firstJsonId) && survived.length === POSTS_JSON.length,
         `còn ${survived.length} bài: ${survived.map((p) => p.id).join(', ')}`);
-    check('aov_posts_seeded vẫn nhớ các id đã nạp', seededNow.includes(firstJsonId), seededNow.join(', '));
+    check('bài đã xoá không còn trong collection posts',
+        !afterDeleteJsonPost.readKey(KEYS.posts).some((post) => idOf(post.id) === firstJsonId),
+        afterDeleteJsonPost.readKey(KEYS.posts).map((p) => p.id).join(', '));
 
     // posts.json tải lỗi -> không mất bài đang có, không báo lỗi
     const brokenJson = await reloadFeed(afterDeleteJsonPost, { failData: ['posts.json'] });
@@ -403,7 +404,7 @@ async function createPost(page, title, content, heroId = '') {
     await sendComment(talker, commentTarget, '   ');
     check('bình luận rỗng -> không tạo bình luận',
         readPosts(talker.el('feed-list')).find((post) => post.id === commentTarget).commentCount === 0
-        && !talker.readKey(KEYS.comments),
+        && (talker.readKey(KEYS.comments) || []).length === 0,
         JSON.stringify(talker.readKey(KEYS.comments)));
 
     await sendComment(talker, commentTarget, 'Bài này rất hữu ích, cảm ơn tác giả!');
