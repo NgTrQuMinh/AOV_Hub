@@ -1,8 +1,11 @@
 const fs = require('fs');
+const path = require('path');
 const { loadPage, fire, fireOnDocument } = require('./mini-dom.cjs');
 const items = require('../src/data/items.json');
 const heroes = require('../src/data/heroes.json');
 const postsFile = require('../src/data/posts.json');
+
+const ROOT = path.resolve(__dirname, '..');
 
 const R = [];
 const ok = (req, name, cond, detail = '') => R.push({ req, name, pass: !!cond, detail });
@@ -395,7 +398,7 @@ const setVal = (node, v) => { node.value = v; };
     const after8b = JSON.parse(f8b.storage.get('aov_posts') || '[]');
     ok(8, 'mo nhieu lan khong nhan ban JSON lap lai', after8b.length === after8.length, after8.length + ' -> ' + after8b.length);
     ok(8, 'Feed doc duoc post LocalStorage', f8.el('feed-list').innerHTML.includes('Bai viet audit hop le'), '');
-    ok(8, 'posts.json KHONG bi ghi de (file tinh)', fs.readFileSync('src/data/posts.json', 'utf8').length > 0 && JSON.parse(fs.readFileSync('src/data/posts.json', 'utf8')).length === postsFile.length, 'van ' + postsFile.length + ' bai trong file');
+    ok(8, 'posts.json KHONG bi ghi de (file tinh)', fs.readFileSync(path.join(ROOT, 'src', 'data', 'posts.json'), 'utf8').length > 0 && JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'data', 'posts.json'), 'utf8')).length === postsFile.length, 'van ' + postsFile.length + ' bai trong file');
     // JSON hong -> fallback
     const brokenP = loadPage({ page: 'src/pages/feed.html', search: '', storage: new Map(), failData: 'posts.json' });
     brokenP.run(); await brokenP.settled();
@@ -531,6 +534,6 @@ const setVal = (node, v) => { node.value = v; };
     console.log('\nConsole/JSON: ' + (errs.length ? 'FAIL ' + errs.length : 'PASS'));
     errs.forEach((r) => console.log('   [FAIL] ' + r.name + ' -> ' + r.detail));
 
-    fs.writeFileSync('audit-result.json', JSON.stringify(R, null, 2));
+    fs.writeFileSync(path.join(ROOT, 'audit-result.json'), JSON.stringify(R, null, 2));
     console.log('\ntong phép kiem: ' + R.length);
 })();

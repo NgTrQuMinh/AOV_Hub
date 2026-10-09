@@ -1,4 +1,6 @@
 const fs = require('fs');
+const path = require('path');
+const ROOT = path.resolve(__dirname, '..');
 const items = require('../src/data/items.json');
 const builds = require('../src/data/builds.json');
 const heroes = require('../src/data/heroes.json');
@@ -39,7 +41,7 @@ console.log('alias trung             :', aliasDup.filter((v,i)=>aliasDup.indexOf
 const nameDup = items.map((i) => i.name);
 console.log('name trung              :', nameDup.filter((v,i)=>nameDup.indexOf(v)!==i).join(',') || 'PASS (0)');
 // anh
-const IMG_DIR = 'public/assets/images/items/';
+const IMG_DIR = path.join(ROOT, 'public', 'assets', 'images', 'items');
 const files = fs.existsSync(IMG_DIR) ? new Set(fs.readdirSync(IMG_DIR)) : new Set();
 const badFmt = items.filter((i) => !/^items\/[a-z0-9-]+\.png$/.test(i.image));
 console.log('image sai format        :', badFmt.length ? 'FAIL ' + badFmt.map((i) => i.id + ':' + i.image).join(', ') : 'PASS (0)');
@@ -56,7 +58,7 @@ console.log('related tu tham chieu    :', items.filter((i) => (i.related||[]).in
 const dupRel = items.filter((i) => new Set(i.related).size !== i.related.length);
 console.log('related lap trong       :', dupRel.length ? 'FAIL ' + dupRel.map((i)=>i.id).join(',') : 'PASS (0)');
 // stat keys vs label
-const label = fs.readFileSync('src/js/item.js', 'utf8');
+const label = fs.readFileSync(path.join(ROOT, 'src', 'js', 'item.js'), 'utf8');
 const statKeys = new Set();
 items.forEach((i) => Object.keys(i.stats || {}).forEach((k) => statKeys.add(k)));
 console.log('stat keys dung         :', [...statKeys].sort().join(', '));
@@ -111,11 +113,11 @@ const resolveImage = (raw) => {
     if (/^(https?:)?\/\//.test(s)) return s;
     return s.startsWith(IMAGE_ROOT) ? s : IMAGE_ROOT + s.replace(/^\/+/, '').replace(/^assets\//, '');
 };
-const heroImgMiss = heroes.filter((h) => h.image && !fs.existsSync('public/' + resolveImage(h.image)));
+const heroImgMiss = heroes.filter((h) => h.image && !fs.existsSync(path.join(ROOT, 'public', resolveImage(h.image))));
 console.log('hero image thieu file   :', heroImgMiss.length, 'hero:', heroImgMiss.map((h) => h.id + ':' + h.image + ' -> ' + resolveImage(h.image)).join(', ') || '0');
-const heroImgOk = heroes.filter((h) => h.image && fs.existsSync('public/' + resolveImage(h.image)));
+const heroImgOk = heroes.filter((h) => h.image && fs.existsSync(path.join(ROOT, 'public', resolveImage(h.image))));
 console.log('hero image TON TAI       :', heroImgOk.length + '/' + heroes.length, heroImgOk.length === heroes.length ? 'PASS' : 'FAIL');
-const itemImgMiss = items.filter((i) => !fs.existsSync('public/' + resolveImage(i.image)));
+const itemImgMiss = items.filter((i) => !fs.existsSync(path.join(ROOT, 'public', resolveImage(i.image))));
 console.log('item image TON TAI       :', (items.length - itemImgMiss.length) + '/' + items.length, itemImgMiss.length === 0 ? 'PASS' : 'FAIL');
 
 // ---------- POSTS ----------
@@ -133,7 +135,7 @@ const pBadAuthor = posts.filter((p) => {
 });
 console.log('post author sai          :', pBadAuthor.length ? 'FAIL ' + pBadAuthor.map((p) => p.id + '->' + p.author).join(', ') : 'PASS (0)');
 console.log('post heroId hop le       :', posts.filter((p) => !require('../src/data/heroes.json').some((h) => String(h.id) === String(p.heroId))).map((p) => p.id + '->' + p.heroId).join(', ') || 'PASS (0)');
-const pImgMiss = posts.filter((p) => p.image && !fs.existsSync('public/' + String(p.image).replace(/^\//, '')));
+const pImgMiss = posts.filter((p) => p.image && !fs.existsSync(path.join(ROOT, 'public', String(p.image).replace(/^\//, ''))));
 console.log('post image thieu file   :', pImgMiss.length, 'post:', pImgMiss.map((p) => p.id + ':' + p.image).join(', ') || '0');
 
 line('JSON PARSE');

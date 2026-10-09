@@ -93,7 +93,27 @@ Vì có dùng `fetch()` để đọc file JSON, **phải chạy qua một local 
   rồi mở địa chỉ Vite in ra (thường là `http://localhost:5173/`).
 - Hoặc Live Server / `npx http-server .` / `python -m http.server 5500` — các trang vẫn xem được, nhưng trang **Quản lý tướng sẽ không lưu được** vì thiếu API `/api/heroes` (API này do `vite.config.js` cung cấp).
 
-## 5. Phân công
+## 5. Chạy test
+
+Bộ test mô phỏng trình duyệt tối giản (`tools/mini-dom.cjs`) chạy được trong Node, không cần cài thêm thư viện:
+
+- Chạy toàn bộ test (`tools/run-tests.cjs`, lệnh `tools/test-*.cjs`):
+  ```bash
+  npm test
+  ```
+- Chạy một test đơn lẻ:
+  ```bash
+  node tools/test-auth.cjs
+  ```
+- Audit (thông tin phụ trợ cho báo cáo, không tính vào pass/fail của test):
+  ```bash
+  node tools/audit-data.cjs
+  node tools/audit-pages.cjs
+  node tools/audit-links.cjs
+  ```
+- Các test chạy trong LocalStorage ảo (copy trong `mini-dom`), không sửa file dữ liệu JSON trong repo. Muốn chạy trên mọi thư mục đều được: mọi đường dẫn test/audit đều xoay quanh gốc repo qua `__dirname`.
+
+## 6. Phân công
 
 | Thành viên | Phụ trách |
 |---|---|

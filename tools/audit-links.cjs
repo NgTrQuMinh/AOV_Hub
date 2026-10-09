@@ -37,7 +37,7 @@ const stripBase = (s) => String(s).replace(/^\{\{BASE\}\}/, '/');
 const exists = (rel, fromFile) => {
     const cands = rel.startsWith('/')
         ? [path.join(PUBLIC, rel), path.join(root, rel)]                                    // duong dan goc -> public/ truoc
-        : [path.join(root, rel), ...(fromFile ? [path.join(path.dirname(fromFile), rel)] : [])]; // duong dan tuong doi
+        : [path.join(root, rel), ...(fromFile ? [path.join(root, path.dirname(fromFile), rel)] : [])]; // duong dan tuong doi theo goc repo
     return cands.some((c) => fs.existsSync(c) || fs.existsSync(c + '.html') || fs.existsSync(path.join(c, 'index.html')));
 };
 
