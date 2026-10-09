@@ -15,14 +15,14 @@
  *      validate chối thiếu tên / thiếu vai trò / hơn 1 vai trò / chỉ số vượt
  *      giới hạn / loại chiêu sai thứ tự dòng / hồi chiêu >= 60s / quá 3 kỹ năng
  *      thì báo lỗi và KHÔNG thêm tướng.
- *   4. Thêm tướng mới -> nằm trong aov_heroes, hiện ở bảng quản trị, ở trang
+ *   4. Thêm tướng mới -> nằm trong file heroes.json (qua API), hiện ở bảng quản trị, ở trang
  *      Danh sách tướng và trang Chi tiết tướng.
  *   4b. Chọn ảnh từ File Explorer: ô ảnh readOnly + input file accept image/*,
  *       FileReader ghi data URL vào ô, ảnh bị cắt giữa về tỉ lệ 1:1 trước khi lưu,
  *       ảnh xem trước, nút Xoá ảnh, file không phải ảnh thì báo lỗi.
  *       imageUrl() hiểu data URL.
- *   5. Sửa tướng -> giữ nguyên id, đổi nội dung trong aov_heroes và bảng.
- *   6. Xoá tướng (có confirm) -> mất khỏi aov_heroes + bảng, dọn yêu thích /
+ *   5. Sửa tướng -> giữ nguyên id, đổi nội dung trong file heroes.json và bảng.
+ *   6. Xoá tướng (có confirm) -> mất khỏi file heroes.json + bảng, dọn yêu thích /
  *      lịch sử / so sánh, không bị "sống lại" khi mở lại trang.
  *   7. createHero()/deleteHero() chặn đúng ở tầng dữ liệu với tài khoản không phải admin.
  *
@@ -39,6 +39,12 @@ const HERO_DETAIL_PAGE = 'src/pages/hero-detail.html';
 const FEED_PAGE = 'src/pages/feed.html';
 
 const HEROES_JSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/heroes.json'), 'utf8'));
+
+/**
+ * "File" heroes.json dùng chung giữa các lần mở trang. API /api/heroes (mô phỏng
+ * trong mini-dom) đọc/ghi vào đây, nên tướng thêm/sửa/xoá giữ nguyên qua các lần "reload".
+ */
+const api = { heroes: JSON.parse(JSON.stringify(HEROES_JSON)) };
 
 /** Tài khoản quản trị viên trong data/users.json */
 const ADMIN_USERNAME = 'admin';
@@ -69,7 +75,7 @@ function section(title) {
 
 /** Mở một trang bất kỳ và chờ render xong. */
 async function open(page, options = {}) {
-    const loaded = loadPage(Object.assign({ page }, options));
+    const loaded = loadPage(Object.assign({ page, api }, options));
     loaded.run();
     await loaded.settled();
     return loaded;
@@ -83,8 +89,8 @@ const tableHtml = (page) => page.el('hero-admin-list').innerHTML;
 const countText = (page) => page.el('hero-admin-count').textContent;
 const plainTable = (page) => unescapeHtml(tableHtml(page));
 
-/** Toàn bộ tướng đang lưu trong aov_heroes của một trang. */
-const storedHeroes = (page) => page.readKey('aov_heroes') || [];
+/** Toàn bộ tướng đang có trong "file" heroes.json (dùng chung qua API). */
+const storedHeroes = () => api.heroes;
 
 /** Số dòng tướng trong bảng quản trị (số nút Sửa = số dòng). */
 function tableRowCount(page) {
@@ -504,7 +510,7 @@ const formErrorsText = (page) => {
     const heroesAfterAdd = storedHeroes(admin);
     const added = heroesAfterAdd[heroesAfterAdd.length - 1];
 
-    check('aov_heroes thêm 1 tướng (31/30)',
+    check('file heroes.json thêm 1 tướng (31/30)',
         heroesAfterAdd.length === HEROES_JSON.length + 1,
         heroesAfterAdd.length + ' tướng');
     check('tướng mới có tên vừa nhập',
@@ -716,16 +722,15 @@ const formErrorsText = (page) => {
 
     /*
      * Mở lại trang quản trị (giống admin tải lại trang) ngay sau khi thêm tướng.
-     * Mọi trang đọc tướng đều seed khi mở, nên lần này id 31 được ghi vào
-     * aov_heroes_seeded — đúng hành vi trình duyệt (localStorage dùng chung).
+     * Tướng đã được API ghi vào file heroes.json nên lần mở sau vẫn đọc được.
      */
     admin = await openHeroAdmin({ storage: admin.storage, login: ADMIN_USERNAME });
-    check('reload sau khi thêm đưa id 31 vào aov_heroes_seeded',
-        (admin.readKey('aov_heroes_seeded') || []).map(String).includes('31'),
-        JSON.stringify(admin.readKey('aov_heroes_seeded')));
-    check('reload vẫn giữ đủ 31 tướng',
-        storedHeroes(admin).length === HEROES_JSON.length + 1,
-        storedHeroes(admin).length + ' tướng');
+    check('reload vẫn giữ đủ 31 tướng (đã ghi vào file)',
+        storedHeroes().length === HEROES_JSON.length + 1,
+        storedHeroes().length + ' tướng');
+    check('tướng vừa thêm vẫn nằm trong file heroes.json',
+        storedHeroes().some((hero) => String(hero.id) === '31'),
+        JSON.stringify(storedHeroes().map((hero) => hero.id).slice(-3)));
 
     /* ---------- 6. Sửa tướng ---------- */
     section('6. Sửa tướng');
@@ -794,10 +799,10 @@ const formErrorsText = (page) => {
     );
     await admin.settled();
 
-    check('aov_heroes còn đúng 30 tướng sau khi xoá',
+    check('file heroes.json còn đúng 30 tướng sau khi xoá',
         storedHeroes(admin).length === HEROES_JSON.length,
         storedHeroes(admin).length + ' tướng');
-    check('tướng 31 không còn trong aov_heroes',
+    check('tướng 31 không còn trong file heroes.json',
         !storedHeroes(admin).some((hero) => String(hero.id) === '31'));
     check('bảng không còn dòng của tướng đã xoá',
         tableRowCount(admin) === HEROES_JSON.length && !plainTable(admin).includes('Test Tướng'),
@@ -830,9 +835,9 @@ const formErrorsText = (page) => {
     check('tướng đã xoá không quay lại bảng',
         !plainTable(reopened).includes('Test Tướng'),
         plainTable(reopened).slice(0, 200));
-    check('id tướng đã xoá được ghi vào aov_heroes_seeded',
-        (reopened.readKey('aov_heroes_seeded') || []).map(String).includes('31'),
-        JSON.stringify(reopened.readKey('aov_heroes_seeded')));
+    check('id tướng đã xoá không còn trong file heroes.json',
+        !storedHeroes().some((hero) => String(hero.id) === '31'),
+        JSON.stringify(storedHeroes().map((hero) => hero.id).slice(-3)));
     check('trang không ném lỗi JavaScript',
         reopened.errors.length === 0,
         reopened.errors.join(' | '));
@@ -851,21 +856,21 @@ const formErrorsText = (page) => {
     // nên chỉ so sánh trước/sau mới biết 3 hàm ghi có thay đổi gì không.
     const storageBefore = JSON.stringify([...hacker.storage.entries()]);
 
-    const hacked = hacker.runInPage(`
-        createHero({
+    const hacked = await hacker.runInPage(`
+        (async () => await createHero({
             name: 'Hack Tướng',
             roles: ['Xạ thủ'],
             difficulty: 2,
             stats: { hp: 9999, attack: 9999, defense: 9999, speed: 9999 },
-        })
+        }))()
     `);
     check('createHero() trả null với tài khoản thường',
         hacked === null,
         JSON.stringify(hacked));
     check('updateHero() trả null với tài khoản thường',
-        hacker.runInPage(`updateHero(1, { name: 'Hack', roles: ['Xạ thủ'], difficulty: 2, stats: { hp: 1, attack: 1, defense: 1, speed: 1 } })`) === null);
+        await hacker.runInPage(`(async () => await updateHero(1, { name: 'Hack', roles: ['Xạ thủ'], difficulty: 2, stats: { hp: 1, attack: 1, defense: 1, speed: 1 } }))()`) === null);
     check('deleteHero() trả false với tài khoản thường',
-        hacker.runInPage('deleteHero(1)') === false);
+        await hacker.runInPage('(async () => await deleteHero(1))()') === false);
     const storageAfter = JSON.stringify([...hacker.storage.entries()]);
     check('LocalStorage không bị tài khoản thường ghi thêm gì',
         storageAfter === storageBefore,
@@ -873,7 +878,7 @@ const formErrorsText = (page) => {
 
     const guestData = await openHeroAdmin({ storage: new Map() });
     check('createHero() trả null khi chưa đăng nhập',
-        guestData.runInPage(`createHero({ name: 'Khách', roles: ['Xạ thủ'], difficulty: 2, stats: { hp: 1, attack: 1, defense: 1, speed: 1 } })`) === null);
+        await guestData.runInPage(`(async () => await createHero({ name: 'Khách', roles: ['Xạ thủ'], difficulty: 2, stats: { hp: 1, attack: 1, defense: 1, speed: 1 } }))()`) === null);
 
     /* ---------- Tổng kết ---------- */
     section('Tổng kết');

@@ -1,452 +1,1277 @@
 [
-    {
+  {
     "id": 1,
     "name": "Valhein",
     "alias": "valhein",
     "image": "assets/heroes/valhein.png",
-    "role": ["Xạ thủ"],
-    "difficulty": 1,
-    "stats": { "hp": 3399, "attack": 178, "defense": 136, "speed": 360 },
-    "skills": [
-      { "name": "Chuyến Hàng Đặc Biệt", "type": "Chiêu 1", "description": "Valhein ném một đoản đao màu đỏ vào mục tiêu, gây sát thương phép lên kẻ địch trong vùng ảnh hưởng và giúp bản thân tăng tốc chạy.", "cooldown": 9 },
-      { "name": "Trừ Tà", "type": "Chiêu 2", "description": "Valhein ném một đoản đao màu vàng vào mục tiêu, gây sát thương phép và làm choáng nạn nhân.", "cooldown": 10 },
-      { "name": "Bão Đạn", "type": "Chiêu 3", "description": "Valhein bắn ra 6 viên đạn bạc về phía trước, mỗi viên đạn gây sát thương phép. Nếu trúng nhiều đạn, kẻ địch sẽ chịu thêm sát thương.", "cooldown": 24 }
+    "role": [
+      "Xạ thủ"
     ],
-    "recommendedBuild": [101, 102, 103]
+    "difficulty": 1,
+    "stats": {
+      "hp": 3399,
+      "attack": 178,
+      "defense": 136,
+      "speed": 360
+    },
+    "skills": [
+      {
+        "name": "Chuyến Hàng Đặc Biệt",
+        "type": "Chiêu 1",
+        "description": "Valhein ném một đoản đao màu đỏ vào mục tiêu, gây sát thương phép lên kẻ địch trong vùng ảnh hưởng và giúp bản thân tăng tốc chạy.",
+        "cooldown": 9
+      },
+      {
+        "name": "Trừ Tà",
+        "type": "Chiêu 2",
+        "description": "Valhein ném một đoản đao màu vàng vào mục tiêu, gây sát thương phép và làm choáng nạn nhân.",
+        "cooldown": 10
+      },
+      {
+        "name": "Bão Đạn",
+        "type": "Chiêu 3",
+        "description": "Valhein bắn ra 6 viên đạn bạc về phía trước, mỗi viên đạn gây sát thương phép. Nếu trúng nhiều đạn, kẻ địch sẽ chịu thêm sát thương.",
+        "cooldown": 24
+      }
+    ],
+    "recommendedBuild": [
+      101,
+      102,
+      103
+    ]
   },
   {
     "id": 2,
     "name": "Tel'Annas",
     "alias": "telannas",
     "image": "assets/heroes/telannas.png",
-    "role": ["Xạ thủ"],
-    "difficulty": 2,
-    "stats": { "hp": 3400, "attack": 180, "defense": 90, "speed": 380 },
-    "skills": [
-      { "name": "Ưng Nhãn", "type": "Chiêu 1", "description": "Tăng tầm đánh, bắn ra mũi tên mang sát thương phép và sát thương vật lý.", "cooldown": 8 },
-      { "name": "Ám Đạn", "type": "Chiêu 2", "description": "Bắn ra 3 mũi tên gây sát thương vật lý và làm chậm mục tiêu.", "cooldown": 6 },
-      { "name": "Hỗn Vương Tiễn", "type": "Chiêu 3", "description": "Bắn ra mũi tên xuyên thấu gây sát thương vật lý và làm choáng kẻ địch.", "cooldown": 35 }
+    "role": [
+      "Xạ thủ"
     ],
-    "recommendedBuild": [101, 102, 103]
+    "difficulty": 2,
+    "stats": {
+      "hp": 3400,
+      "attack": 180,
+      "defense": 90,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Ưng Nhãn",
+        "type": "Chiêu 1",
+        "description": "Tăng tầm đánh, bắn ra mũi tên mang sát thương phép và sát thương vật lý.",
+        "cooldown": 8
+      },
+      {
+        "name": "Ám Đạn",
+        "type": "Chiêu 2",
+        "description": "Bắn ra 3 mũi tên gây sát thương vật lý và làm chậm mục tiêu.",
+        "cooldown": 6
+      },
+      {
+        "name": "Hỗn Vương Tiễn",
+        "type": "Chiêu 3",
+        "description": "Bắn ra mũi tên xuyên thấu gây sát thương vật lý và làm choáng kẻ địch.",
+        "cooldown": 35
+      }
+    ],
+    "recommendedBuild": [
+      101,
+      102,
+      103
+    ]
   },
   {
     "id": 3,
     "name": "Nakroth",
     "alias": "nakroth",
     "image": "assets/heroes/nakroth.png",
-    "role": ["Sát thủ"],
-    "difficulty": 4,
-    "stats": { "hp": 3100, "attack": 172, "defense": 92, "speed": 380 },
-    "skills": [
-      { "name": "Bồi Thẩm Đoàn", "type": "Chiêu 1", "description": "Nakroth lướt về phía trước hất văng mục tiêu và gây sát thương vật lý. Chiêu thức này có thể tái kích hoạt trong vòng 5 giây.", "cooldown": 9 },
-      { "name": "Nguồn Cơn Rắc Rối", "type": "Chiêu 2", "description": "Nakroth nhảy lùi về phía sau và biến đòn đánh thường tiếp theo thành đòn quét gây sát thương vật lý.", "cooldown": 5 },
-      { "name": "Gươm Hành Quyết", "type": "Chiêu 3", "description": "Nakroth vung gươm liên tục gây sát thương vật lý và miễn khống chế. Đòn đánh cuối hất văng kẻ địch.", "cooldown": 36 }
+    "role": [
+      "Sát thủ"
     ],
-    "recommendedBuild": [104, 105, 106]
+    "difficulty": 4,
+    "stats": {
+      "hp": 3100,
+      "attack": 172,
+      "defense": 92,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Bồi Thẩm Đoàn",
+        "type": "Chiêu 1",
+        "description": "Nakroth lướt về phía trước hất văng mục tiêu và gây sát thương vật lý. Chiêu thức này có thể tái kích hoạt trong vòng 5 giây.",
+        "cooldown": 9
+      },
+      {
+        "name": "Nguồn Cơn Rắc Rối",
+        "type": "Chiêu 2",
+        "description": "Nakroth nhảy lùi về phía sau và biến đòn đánh thường tiếp theo thành đòn quét gây sát thương vật lý.",
+        "cooldown": 5
+      },
+      {
+        "name": "Gươm Hành Quyết",
+        "type": "Chiêu 3",
+        "description": "Nakroth vung gươm liên tục gây sát thương vật lý và miễn khống chế. Đòn đánh cuối hất văng kẻ địch.",
+        "cooldown": 36
+      }
+    ],
+    "recommendedBuild": [
+      104,
+      105,
+      106
+    ]
   },
   {
     "id": 4,
     "name": "Murad",
     "alias": "murad",
     "image": "assets/heroes/murad.png",
-    "role": ["Sát thủ"],
-    "difficulty": 5,
-    "stats": { "hp": 3050, "attack": 178, "defense": 88, "speed": 380 },
-    "skills": [
-      { "name": "Tàn Ảnh Đao", "type": "Chiêu 1", "description": "Murad lướt về phía trước gây sát thương vật lý và làm choáng. Tái kích hoạt lần 3 sẽ quay về vị trí ban đầu.", "cooldown": 8 },
-      { "name": "Vô Ảnh Vực", "type": "Chiêu 2", "description": "Murad tạo ra một vùng không gian khiến bản thân không thể bị chọn làm mục tiêu, gây sát thương và giảm giáp kẻ địch chạm mép.", "cooldown": 12 },
-      { "name": "Ảo Ảnh Trảm", "type": "Chiêu 3", "description": "Murad lướt đi liên tục tung ra 5 đòn đánh gây sát thương vật lý diện rộng và không thể bị chọn làm mục tiêu.", "cooldown": 30 }
+    "role": [
+      "Sát thủ"
     ],
-    "recommendedBuild": [104, 105, 107]
+    "difficulty": 5,
+    "stats": {
+      "hp": 3050,
+      "attack": 178,
+      "defense": 88,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Tàn Ảnh Đao",
+        "type": "Chiêu 1",
+        "description": "Murad lướt về phía trước gây sát thương vật lý và làm choáng. Tái kích hoạt lần 3 sẽ quay về vị trí ban đầu.",
+        "cooldown": 8
+      },
+      {
+        "name": "Vô Ảnh Vực",
+        "type": "Chiêu 2",
+        "description": "Murad tạo ra một vùng không gian khiến bản thân không thể bị chọn làm mục tiêu, gây sát thương và giảm giáp kẻ địch chạm mép.",
+        "cooldown": 12
+      },
+      {
+        "name": "Ảo Ảnh Trảm",
+        "type": "Chiêu 3",
+        "description": "Murad lướt đi liên tục tung ra 5 đòn đánh gây sát thương vật lý diện rộng và không thể bị chọn làm mục tiêu.",
+        "cooldown": 30
+      }
+    ],
+    "recommendedBuild": [
+      104,
+      105,
+      107
+    ]
   },
   {
     "id": 5,
     "name": "Raz",
     "alias": "raz",
     "image": "assets/heroes/raz.png",
-    "role": ["Pháp sư"],
-    "difficulty": 4,
-    "stats": { "hp": 3250, "attack": 165, "defense": 95, "speed": 370 },
-    "skills": [
-      { "name": "Cú Đấm Chân Lý", "type": "Chiêu 1", "description": "Raz lao đến tung cú đấm móc hất văng kẻ địch và gây sát thương phép.", "cooldown": 10 },
-      { "name": "Cú Đấm Chân Sóng", "type": "Chiêu 2", "description": "Raz tung đấm văng ra một luồng khí gây sát thương phép, làm chậm và giảm giáp phép của mục tiêu.", "cooldown": 4 },
-      { "name": "Cú Đấm Bộc Phá", "type": "Chiêu 3", "description": "Raz ủi về phía trước tung đấm bộc phá, hất lùi kẻ địch, gây sát thương phép và giảm công vật lý của chúng.", "cooldown": 25 }
+    "role": [
+      "Pháp sư"
     ],
-    "recommendedBuild": [108, 109, 110]
+    "difficulty": 4,
+    "stats": {
+      "hp": 3250,
+      "attack": 165,
+      "defense": 95,
+      "speed": 370
+    },
+    "skills": [
+      {
+        "name": "Cú Đấm Chân Lý",
+        "type": "Chiêu 1",
+        "description": "Raz lao đến tung cú đấm móc hất văng kẻ địch và gây sát thương phép.",
+        "cooldown": 10
+      },
+      {
+        "name": "Cú Đấm Chân Sóng",
+        "type": "Chiêu 2",
+        "description": "Raz tung đấm văng ra một luồng khí gây sát thương phép, làm chậm và giảm giáp phép của mục tiêu.",
+        "cooldown": 4
+      },
+      {
+        "name": "Cú Đấm Bộc Phá",
+        "type": "Chiêu 3",
+        "description": "Raz ủi về phía trước tung đấm bộc phá, hất lùi kẻ địch, gây sát thương phép và giảm công vật lý của chúng.",
+        "cooldown": 25
+      }
+    ],
+    "recommendedBuild": [
+      108,
+      109,
+      110
+    ]
   },
   {
     "id": 6,
     "name": "Liliana",
     "alias": "liliana",
     "image": "assets/heroes/liliana.png",
-    "role": ["Pháp sư"],
-    "difficulty": 5,
-    "stats": { "hp": 3220, "attack": 168, "defense": 90, "speed": 360 },
-    "skills": [
-      { "name": "Hồ Quang Đạn", "type": "Chiêu 1", "description": "Ở dạng người: Xả đạn phép thuật gây sát thương. Ở dạng hồ cáo: Cào liên tiếp gây sát thương vật lý.", "cooldown": 6 },
-      { "name": "Hồ Quang Lực", "type": "Chiêu 2", "description": "Ở dạng người: Bắn ra đạn đạn phép làm choáng. Ở dạng hồ cáo: Nhảy vồ và ngưng tụ đạn hồ quang cực mạnh.", "cooldown": 9 },
-      { "name": "Biến Hình Hồi Xuân", "type": "Chiêu 3", "description": "Chuyển đổi giữa dạng người và dạng hồ cáo, tăng thuộc tính và làm mới bộ kỹ năng.", "cooldown": 6 }
+    "role": [
+      "Pháp sư"
     ],
-    "recommendedBuild": [108, 109, 110]
+    "difficulty": 5,
+    "stats": {
+      "hp": 3220,
+      "attack": 168,
+      "defense": 90,
+      "speed": 360
+    },
+    "skills": [
+      {
+        "name": "Hồ Quang Đạn",
+        "type": "Chiêu 1",
+        "description": "Ở dạng người: Xả đạn phép thuật gây sát thương. Ở dạng hồ cáo: Cào liên tiếp gây sát thương vật lý.",
+        "cooldown": 6
+      },
+      {
+        "name": "Hồ Quang Lực",
+        "type": "Chiêu 2",
+        "description": "Ở dạng người: Bắn ra đạn đạn phép làm choáng. Ở dạng hồ cáo: Nhảy vồ và ngưng tụ đạn hồ quang cực mạnh.",
+        "cooldown": 9
+      },
+      {
+        "name": "Biến Hình Hồi Xuân",
+        "type": "Chiêu 3",
+        "description": "Chuyển đổi giữa dạng người và dạng hồ cáo, tăng thuộc tính và làm mới bộ kỹ năng.",
+        "cooldown": 6
+      }
+    ],
+    "recommendedBuild": [
+      108,
+      109,
+      110
+    ]
   },
   {
     "id": 7,
     "name": "Krixi",
     "alias": "krixi",
     "image": "assets/heroes/krixi.png",
-    "role": ["Pháp sư"],
-    "difficulty": 1,
-    "stats": { "hp": 3088, "attack": 170, "defense": 85, "speed": 350 },
-    "skills": [
-      { "name": "Bướm Ảo", "type": "Chiêu 1", "description": "Krixi gọi bướm ảo bay đi bay về gây sát thương phép cho kẻ địch trên đường bay.", "cooldown": 6 },
-      { "name": "Bão Lá", "type": "Chiêu 2", "description": "Krixi gọi một cơn bão lá hất văng kẻ địch trong vùng chỉ định và gây sát thương phép.", "cooldown": 10 },
-      { "name": "Mưa Sao Băng", "type": "Chiêu 3", "description": "Krixi gọi mưa sao băng tấn công ngẫu nhiên các kẻ địch xung quanh, gây sát thương phép.", "cooldown": 42 }
+    "role": [
+      "Pháp sư"
     ],
-    "recommendedBuild": [108, 109, 110]
+    "difficulty": 1,
+    "stats": {
+      "hp": 3088,
+      "attack": 170,
+      "defense": 85,
+      "speed": 350
+    },
+    "skills": [
+      {
+        "name": "Bướm Ảo",
+        "type": "Chiêu 1",
+        "description": "Krixi gọi bướm ảo bay đi bay về gây sát thương phép cho kẻ địch trên đường bay.",
+        "cooldown": 6
+      },
+      {
+        "name": "Bão Lá",
+        "type": "Chiêu 2",
+        "description": "Krixi gọi một cơn bão lá hất văng kẻ địch trong vùng chỉ định và gây sát thương phép.",
+        "cooldown": 10
+      },
+      {
+        "name": "Mưa Sao Băng",
+        "type": "Chiêu 3",
+        "description": "Krixi gọi mưa sao băng tấn công ngẫu nhiên các kẻ địch xung quanh, gây sát thương phép.",
+        "cooldown": 42
+      }
+    ],
+    "recommendedBuild": [
+      108,
+      109,
+      110
+    ]
   },
   {
     "id": 8,
     "name": "Florentino",
     "alias": "florentino",
     "image": "assets/heroes/Florentino.jpg",
-    "role": ["Đấu sĩ"],
-    "difficulty": 5,
-    "stats": { "hp": 3535, "attack": 170, "defense": 120, "speed": 380 },
-    "skills": [
-      { "name": "Hào Hoa", "type": "Chiêu 1", "description": "Florentino phóng hoa gây sát thương, làm choáng và phân tán 3 bông hoa. Nhặt hoa giúp hồi năng lượng và nhặt kiếm.", "cooldown": 8 },
-      { "name": "Thưởng Trà", "type": "Chiêu 2", "description": "Florentino tung 3 nhát kiếm liên tiếp gây sát thương chuẩn dựa trên % HP tối đa của kẻ địch.", "cooldown": 4 },
-      { "name": "Tài Hoa", "type": "Chiêu 3", "description": "Florentino quyết đấu với một mục tiêu, được miễn khống chế từ các mục tiêu khác và tăng hút máu.", "cooldown": 35 }
+    "role": [
+      "Đấu sĩ"
     ],
-    "recommendedBuild": [203, 204, 205]
+    "difficulty": 5,
+    "stats": {
+      "hp": 3535,
+      "attack": 170,
+      "defense": 120,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Hào Hoa",
+        "type": "Chiêu 1",
+        "description": "Florentino phóng hoa gây sát thương, làm choáng và phân tán 3 bông hoa. Nhặt hoa giúp hồi năng lượng và nhặt kiếm.",
+        "cooldown": 8
+      },
+      {
+        "name": "Thưởng Trà",
+        "type": "Chiêu 2",
+        "description": "Florentino tung 3 nhát kiếm liên tiếp gây sát thương chuẩn dựa trên % HP tối đa của kẻ địch.",
+        "cooldown": 4
+      },
+      {
+        "name": "Tài Hoa",
+        "type": "Chiêu 3",
+        "description": "Florentino quyết đấu với một mục tiêu, được miễn khống chế từ các mục tiêu khác và tăng hút máu.",
+        "cooldown": 35
+      }
+    ],
+    "recommendedBuild": [
+      203,
+      204,
+      205
+    ]
   },
   {
     "id": 9,
     "name": "Lu Bu",
     "alias": "lubu",
     "image": "assets/heroes/lubu.png",
-    "role": ["Đấu sĩ"],
-    "difficulty": 2,
-    "stats": { "hp": 3622, "attack": 170, "defense": 128, "speed": 380 },
-    "skills": [
-      { "name": "Xích Thố Mã", "type": "Chiêu 1", "description": "Lữ Bố xông về phía trước 3 lần liên tiếp, lần thứ ba sẽ hất văng kẻ địch.", "cooldown": 10 },
-      { "name": "Tàn Huyết Khống", "type": "Chiêu 2", "description": "Lữ Bố phóng ra thương khí làm chậm tốc chạy của kẻ địch và gây sát thương vật lý.", "cooldown": 6 },
-      { "name": "Chiến Thần", "type": "Chiêu 3", "description": "Lữ Bố giải khống chế, tăng công vật lý, kháng khống chế và khả năng hồi phục cực mạnh trên mỗi đòn đánh.", "cooldown": 30 }
+    "role": [
+      "Đấu sĩ"
     ],
-    "recommendedBuild": [203, 204, 206]
+    "difficulty": 2,
+    "stats": {
+      "hp": 3622,
+      "attack": 170,
+      "defense": 128,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Xích Thố Mã",
+        "type": "Chiêu 1",
+        "description": "Lữ Bố xông về phía trước 3 lần liên tiếp, lần thứ ba sẽ hất văng kẻ địch.",
+        "cooldown": 10
+      },
+      {
+        "name": "Tàn Huyết Khống",
+        "type": "Chiêu 2",
+        "description": "Lữ Bố phóng ra thương khí làm chậm tốc chạy của kẻ địch và gây sát thương vật lý.",
+        "cooldown": 6
+      },
+      {
+        "name": "Chiến Thần",
+        "type": "Chiêu 3",
+        "description": "Lữ Bố giải khống chế, tăng công vật lý, kháng khống chế và khả năng hồi phục cực mạnh trên mỗi đòn đánh.",
+        "cooldown": 30
+      }
+    ],
+    "recommendedBuild": [
+      203,
+      204,
+      206
+    ]
   },
   {
     "id": 10,
     "name": "Zuka",
     "alias": "zuka",
     "image": "assets/heroes/zuka.png",
-    "role": ["Đấu sĩ", "Sát thủ"],
-    "difficulty": 3,
-    "stats": { "hp": 3418, "attack": 175, "defense": 105, "speed": 380 },
-    "skills": [
-      { "name": "Loạn Đả Bổng", "type": "Chiêu 1", "description": "Zuka lướt về phía trước vung gậy gây sát thương vật lý. Chiêu này có thể tái kích hoạt trong 5 giây.", "cooldown": 9 },
-      { "name": "Phi Hổ Quyền", "type": "Chiêu 2", "description": "Zuka lộn vòng về phía trước, tạo lá chắn và cường hóa đòn đánh tiếp theo làm choáng kẻ địch.", "cooldown": 8 },
-      { "name": "Trầm Trọng Lực", "type": "Chiêu 3", "description": "Zuka nhảy lên không trung rồi giáng xuống gây sát thương vật lý diện rộng và làm choáng kẻ địch.", "cooldown": 32 }
+    "role": [
+      "Đấu sĩ",
+      "Sát thủ"
     ],
-    "recommendedBuild": [203, 105, 107]
+    "difficulty": 3,
+    "stats": {
+      "hp": 3418,
+      "attack": 175,
+      "defense": 105,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Loạn Đả Bổng",
+        "type": "Chiêu 1",
+        "description": "Zuka lướt về phía trước vung gậy gây sát thương vật lý. Chiêu này có thể tái kích hoạt trong 5 giây.",
+        "cooldown": 9
+      },
+      {
+        "name": "Phi Hổ Quyền",
+        "type": "Chiêu 2",
+        "description": "Zuka lộn vòng về phía trước, tạo lá chắn và cường hóa đòn đánh tiếp theo làm choáng kẻ địch.",
+        "cooldown": 8
+      },
+      {
+        "name": "Trầm Trọng Lực",
+        "type": "Chiêu 3",
+        "description": "Zuka nhảy lên không trung rồi giáng xuống gây sát thương vật lý diện rộng và làm choáng kẻ địch.",
+        "cooldown": 32
+      }
+    ],
+    "recommendedBuild": [
+      203,
+      105,
+      107
+    ]
   },
   {
     "id": 11,
     "name": "Thane",
     "alias": "thane",
     "image": "assets/heroes/thane.png",
-    "role": ["Đỡ đòn"],
-    "difficulty": 2,
-    "stats": { "hp": 3889, "attack": 160, "defense": 145, "speed": 380 },
-    "skills": [
-      { "name": "Xung Phong", "type": "Chiêu 1", "description": "Thane lao đến đẩy lùi kẻ địch liên tục và hất văng chúng ở đòn cuối cùng.", "cooldown": 12 },
-      { "name": "Gươm Thần", "type": "Chiêu 2", "description": "Thane dậm mạnh gươm xuống đất, hất văng kẻ địch xung quanh và làm chậm chúng.", "cooldown": 9 },
-      { "name": "Ma Phong Trảm", "type": "Chiêu 3", "description": "Thane chém ra một nhát kiếm năng lượng gây sát thương chuẩn kèm % máu đã mất của mục tiêu và nhận miễn khống.", "cooldown": 40 }
+    "role": [
+      "Đỡ đòn"
     ],
-    "recommendedBuild": [303, 304, 305]
+    "difficulty": 2,
+    "stats": {
+      "hp": 3889,
+      "attack": 160,
+      "defense": 145,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Xung Phong",
+        "type": "Chiêu 1",
+        "description": "Thane lao đến đẩy lùi kẻ địch liên tục và hất văng chúng ở đòn cuối cùng.",
+        "cooldown": 12
+      },
+      {
+        "name": "Gươm Thần",
+        "type": "Chiêu 2",
+        "description": "Thane dậm mạnh gươm xuống đất, hất văng kẻ địch xung quanh và làm chậm chúng.",
+        "cooldown": 9
+      },
+      {
+        "name": "Ma Phong Trảm",
+        "type": "Chiêu 3",
+        "description": "Thane chém ra một nhát kiếm năng lượng gây sát thương chuẩn kèm % máu đã mất của mục tiêu và nhận miễn khống.",
+        "cooldown": 40
+      }
+    ],
+    "recommendedBuild": [
+      303,
+      304,
+      305
+    ]
   },
   {
     "id": 12,
     "name": "Mina",
     "alias": "mina",
     "image": "assets/heroes/mina.png",
-    "role": ["Đỡ đòn"],
-    "difficulty": 1,
-    "stats": { "hp": 3910, "attack": 158, "defense": 140, "speed": 380 },
-    "skills": [
-      { "name": "Vũ Điệu Lưỡi Hái", "type": "Chiêu 1", "description": "Mina vung lưỡi hái gây sát thương vật lý lên tất cả kẻ địch xung quanh.", "cooldown": 6 },
-      { "name": "Lưỡi Hái Tử Thần", "type": "Chiêu 2", "description": "Mina vung lưỡi hái kéo tất cả kẻ địch phía trước lại gần và làm chậm chúng.", "cooldown": 12 },
-      { "name": "Thôi Miên", "type": "Chiêu 3", "description": "Mina khiêu khích kẻ địch xung quanh khiến chúng buộc phải tấn công cô trong thời gian ngắn.", "cooldown": 40 }
+    "role": [
+      "Đỡ đòn"
     ],
-    "recommendedBuild": [303, 304, 305]
+    "difficulty": 1,
+    "stats": {
+      "hp": 3910,
+      "attack": 158,
+      "defense": 140,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Vũ Điệu Lưỡi Hái",
+        "type": "Chiêu 1",
+        "description": "Mina vung lưỡi hái gây sát thương vật lý lên tất cả kẻ địch xung quanh.",
+        "cooldown": 6
+      },
+      {
+        "name": "Lưỡi Hái Tử Thần",
+        "type": "Chiêu 2",
+        "description": "Mina vung lưỡi hái kéo tất cả kẻ địch phía trước lại gần và làm chậm chúng.",
+        "cooldown": 12
+      },
+      {
+        "name": "Thôi Miên",
+        "type": "Chiêu 3",
+        "description": "Mina khiêu khích kẻ địch xung quanh khiến chúng buộc phải tấn công cô trong thời gian ngắn.",
+        "cooldown": 40
+      }
+    ],
+    "recommendedBuild": [
+      303,
+      304,
+      305
+    ]
   },
   {
     "id": 13,
     "name": "Arum",
     "alias": "arum",
     "image": "assets/heroes/arum.png",
-    "role": ["Đỡ đòn"],
-    "difficulty": 2,
-    "stats": { "hp": 3850, "attack": 155, "defense": 135, "speed": 370 },
-    "skills": [
-      { "name": "Thú Thần Linh", "type": "Chiêu 1", "description": "Arum triệu hồi thú linh quanh bản thân gây sát thương phép và hồi máu khi chạm phải kẻ địch.", "cooldown": 5 },
-      { "name": "Thú Thần Oán", "type": "Chiêu 2", "description": "Arum phóng các thú linh tấn công khu vực chỉ định gây sát thương, làm chậm và làm choáng.", "cooldown": 7 },
-      { "name": "Thú Thần Xích", "type": "Chiêu 3", "description": "Arum trói chặt một tướng địch khiến cả hai cùng chịu sát thương tương đương nhau, không thể giải khống chế.", "cooldown": 50 }
+    "role": [
+      "Đỡ đòn"
     ],
-    "recommendedBuild": [303, 304, 306]
+    "difficulty": 2,
+    "stats": {
+      "hp": 3850,
+      "attack": 155,
+      "defense": 135,
+      "speed": 370
+    },
+    "skills": [
+      {
+        "name": "Thú Thần Linh",
+        "type": "Chiêu 1",
+        "description": "Arum triệu hồi thú linh quanh bản thân gây sát thương phép và hồi máu khi chạm phải kẻ địch.",
+        "cooldown": 5
+      },
+      {
+        "name": "Thú Thần Oán",
+        "type": "Chiêu 2",
+        "description": "Arum phóng các thú linh tấn công khu vực chỉ định gây sát thương, làm chậm và làm choáng.",
+        "cooldown": 7
+      },
+      {
+        "name": "Thú Thần Xích",
+        "type": "Chiêu 3",
+        "description": "Arum trói chặt một tướng địch khiến cả hai cùng chịu sát thương tương đương nhau, không thể giải khống chế.",
+        "cooldown": 50
+      }
+    ],
+    "recommendedBuild": [
+      303,
+      304,
+      306
+    ]
   },
   {
     "id": 14,
     "name": "Capheny",
     "alias": "capheny",
     "image": "assets/heroes/capheny.png",
-    "role": ["Xạ thủ"],
-    "difficulty": 2,
-    "stats": { "hp": 3200, "attack": 172, "defense": 95, "speed": 360 },
-    "skills": [
-      { "name": "Đại Bác / Liên Thanh", "type": "Chiêu 1", "description": "Capheny chuyển đổi giữa chế độ Đại bác (bắn xuyên, tầm xa) và Liên thanh (bắn di động liên tục).", "cooldown": 1 },
-      { "name": "Pha Động Lực / Pha Siêu Hành", "type": "Chiêu 2", "description": "Chế độ Liên thanh giúp tăng tốc chạy và tích tầng xuyên giáp. Chế độ Đại bác giúp lướt ngắn và tăng tỷ lệ chí mạng.", "cooldown": 9 },
-      { "name": "Mưa Đạn", "type": "Chiêu 3", "description": "Capheny xả một cơn mưa đạn theo hướng chỉ định, gây sát thương liên tục và giảm giáp kẻ địch.", "cooldown": 40 }
+    "role": [
+      "Xạ thủ"
     ],
-    "recommendedBuild": [101, 102, 103]
+    "difficulty": 2,
+    "stats": {
+      "hp": 3200,
+      "attack": 172,
+      "defense": 95,
+      "speed": 360
+    },
+    "skills": [
+      {
+        "name": "Đại Bác / Liên Thanh",
+        "type": "Chiêu 1",
+        "description": "Capheny chuyển đổi giữa chế độ Đại bác (bắn xuyên, tầm xa) và Liên thanh (bắn di động liên tục).",
+        "cooldown": 1
+      },
+      {
+        "name": "Pha Động Lực / Pha Siêu Hành",
+        "type": "Chiêu 2",
+        "description": "Chế độ Liên thanh giúp tăng tốc chạy và tích tầng xuyên giáp. Chế độ Đại bác giúp lướt ngắn và tăng tỷ lệ chí mạng.",
+        "cooldown": 9
+      },
+      {
+        "name": "Mưa Đạn",
+        "type": "Chiêu 3",
+        "description": "Capheny xả một cơn mưa đạn theo hướng chỉ định, gây sát thương liên tục và giảm giáp kẻ địch.",
+        "cooldown": 40
+      }
+    ],
+    "recommendedBuild": [
+      101,
+      102,
+      103
+    ]
   },
   {
     "id": 15,
     "name": "Elsu",
     "alias": "elsu",
     "image": "assets/heroes/elsu.png",
-    "role": ["Xạ thủ"],
-    "difficulty": 4,
-    "stats": { "hp": 3300, "attack": 190, "defense": 90, "speed": 370 },
-    "skills": [
-      { "name": "Ưng Trạm", "type": "Chiêu 1", "description": "Elsu đặt thiết bị cung cấp tầm nhìn trong một khu vực rộng và tăng xuyên giáp khi đứng yên.", "cooldown": 1 },
-      { "name": "Viễn Trình Kích", "type": "Chiêu 2", "description": "Elsu ngắm bắn một phát đạn cực xa gây sát thương vật lý siêu lớn và làm chậm mục tiêu.", "cooldown": 1 },
-      { "name": "Giật Bắn", "type": "Chiêu 3", "description": "Elsu nhảy lùi về phía sau và bắn ra một viên đạn về phía trước, gây sát thương và tăng tốc chạy.", "cooldown": 25 }
+    "role": [
+      "Xạ thủ"
     ],
-    "recommendedBuild": [101, 102, 103]
+    "difficulty": 4,
+    "stats": {
+      "hp": 3300,
+      "attack": 190,
+      "defense": 90,
+      "speed": 370
+    },
+    "skills": [
+      {
+        "name": "Ưng Trạm",
+        "type": "Chiêu 1",
+        "description": "Elsu đặt thiết bị cung cấp tầm nhìn trong một khu vực rộng và tăng xuyên giáp khi đứng yên.",
+        "cooldown": 1
+      },
+      {
+        "name": "Viễn Trình Kích",
+        "type": "Chiêu 2",
+        "description": "Elsu ngắm bắn một phát đạn cực xa gây sát thương vật lý siêu lớn và làm chậm mục tiêu.",
+        "cooldown": 1
+      },
+      {
+        "name": "Giật Bắn",
+        "type": "Chiêu 3",
+        "description": "Elsu nhảy lùi về phía sau và bắn ra một viên đạn về phía trước, gây sát thương và tăng tốc chạy.",
+        "cooldown": 25
+      }
+    ],
+    "recommendedBuild": [
+      101,
+      102,
+      103
+    ]
   },
   {
     "id": 16,
     "name": "Lauriel",
     "alias": "lauriel",
     "image": "assets/heroes/lauriel.png",
-    "role": ["Pháp sư"],
-    "difficulty": 3,
-    "stats": { "hp": 3100, "attack": 162, "defense": 90, "speed": 350 },
-    "skills": [
-      { "name": "Con Đường Sám Hối", "type": "Chiêu 1", "description": "Lauriel vẽ ra một con đường ánh sáng gây sát thương phép và phát nổ sau thời gian ngắn.", "cooldown": 5 },
-      { "name": "Đôi Cánh Thuần Khiết", "type": "Chiêu 2", "description": "Lauriel lướt về hướng chỉ định và bắn ra 3 luồng năng lượng. Bản thân trở nên không thể bị chọn làm mục tiêu trong khoảnh khắc.", "cooldown": 6 },
-      { "name": "Đại Phán Xét", "type": "Chiêu 3", "description": "Lauriel vẽ ra một pháp trận lớn. Khi đứng trong pháp trận, Chiêu 1 và Chiêu 2 của cô được giảm hồi chiêu cực nhanh.", "cooldown": 45 }
+    "role": [
+      "Pháp sư"
     ],
-    "recommendedBuild": [108, 109, 307]
+    "difficulty": 3,
+    "stats": {
+      "hp": 3100,
+      "attack": 162,
+      "defense": 90,
+      "speed": 350
+    },
+    "skills": [
+      {
+        "name": "Con Đường Sám Hối",
+        "type": "Chiêu 1",
+        "description": "Lauriel vẽ ra một con đường ánh sáng gây sát thương phép và phát nổ sau thời gian ngắn.",
+        "cooldown": 5
+      },
+      {
+        "name": "Đôi Cánh Thuần Khiết",
+        "type": "Chiêu 2",
+        "description": "Lauriel lướt về hướng chỉ định và bắn ra 3 luồng năng lượng. Bản thân trở nên không thể bị chọn làm mục tiêu trong khoảnh khắc.",
+        "cooldown": 6
+      },
+      {
+        "name": "Đại Phán Xét",
+        "type": "Chiêu 3",
+        "description": "Lauriel vẽ ra một pháp trận lớn. Khi đứng trong pháp trận, Chiêu 1 và Chiêu 2 của cô được giảm hồi chiêu cực nhanh.",
+        "cooldown": 45
+      }
+    ],
+    "recommendedBuild": [
+      108,
+      109,
+      307
+    ]
   },
   {
     "id": 17,
     "name": "Tulen",
     "alias": "tulen",
     "image": "assets/heroes/tulen.png",
-    "role": ["Pháp sư"],
-    "difficulty": 3,
-    "stats": { "hp": 3200, "attack": 165, "defense": 88, "speed": 360 },
-    "skills": [
-      { "name": "Lôi Quang", "type": "Chiêu 1", "description": "Tulen bắn ra 3 tia sét về phía trước, mỗi tia gây sát thương phép và tích luỹ tầng nội đạn.", "cooldown": 8 },
-      { "name": "Lôi Động", "type": "Chiêu 2", "description": "Tulen biến ảo theo hướng chỉ định, gây sát thương phép tại điểm biến mất và điểm xuất hiện.", "cooldown": 2 },
-      { "name": "Lôi Điểu", "type": "Chiêu 3", "description": "Tulen tích tụ và bắn ra một chú chim sét gây sát thương phép cực lớn dựa trên lượng máu đã mất của mục tiêu.", "cooldown": 35 }
+    "role": [
+      "Pháp sư"
     ],
-    "recommendedBuild": [108, 109, 110]
+    "difficulty": 3,
+    "stats": {
+      "hp": 3200,
+      "attack": 165,
+      "defense": 88,
+      "speed": 360
+    },
+    "skills": [
+      {
+        "name": "Lôi Quang",
+        "type": "Chiêu 1",
+        "description": "Tulen bắn ra 3 tia sét về phía trước, mỗi tia gây sát thương phép và tích luỹ tầng nội đạn.",
+        "cooldown": 8
+      },
+      {
+        "name": "Lôi Động",
+        "type": "Chiêu 2",
+        "description": "Tulen biến ảo theo hướng chỉ định, gây sát thương phép tại điểm biến mất và điểm xuất hiện.",
+        "cooldown": 2
+      },
+      {
+        "name": "Lôi Điểu",
+        "type": "Chiêu 3",
+        "description": "Tulen tích tụ và bắn ra một chú chim sét gây sát thương phép cực lớn dựa trên lượng máu đã mất của mục tiêu.",
+        "cooldown": 35
+      }
+    ],
+    "recommendedBuild": [
+      108,
+      109,
+      110
+    ]
   },
   {
     "id": 18,
     "name": "Ryoma",
     "alias": "ryoma",
     "image": "assets/heroes/ryoma.png",
-    "role": ["Đấu sĩ", "Sát thủ"],
-    "difficulty": 3,
-    "stats": { "hp": 3350, "attack": 182, "defense": 102, "speed": 380 },
-    "skills": [
-      { "name": "Thần Hành Bách Biến", "type": "Chiêu 1", "description": "Ryoma nhảy lùi về phía sau và vung kiếm gây sát thương vật lý lên kẻ địch xung quanh.", "cooldown": 8 },
-      { "name": "Nhất Thần Thương", "type": "Chiêu 2", "description": "Ryoma đâm thương về phía trước. Kẻ địch trúng rìa chiêu thức sẽ bị làm choáng.", "cooldown": 10 },
-      { "name": "Loạn Trảm", "type": "Chiêu 3", "description": "Ryoma đâm liên tiếp 4 nhát thương về phía trước, gây sát thương vật lý và hồi máu cho bản thân.", "cooldown": 12 }
+    "role": [
+      "Đấu sĩ",
+      "Sát thủ"
     ],
-    "recommendedBuild": [203, 105, 107]
+    "difficulty": 3,
+    "stats": {
+      "hp": 3350,
+      "attack": 182,
+      "defense": 102,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Thần Hành Bách Biến",
+        "type": "Chiêu 1",
+        "description": "Ryoma nhảy lùi về phía sau và vung kiếm gây sát thương vật lý lên kẻ địch xung quanh.",
+        "cooldown": 8
+      },
+      {
+        "name": "Nhất Thần Thương",
+        "type": "Chiêu 2",
+        "description": "Ryoma đâm thương về phía trước. Kẻ địch trúng rìa chiêu thức sẽ bị làm choáng.",
+        "cooldown": 10
+      },
+      {
+        "name": "Loạn Trảm",
+        "type": "Chiêu 3",
+        "description": "Ryoma đâm liên tiếp 4 nhát thương về phía trước, gây sát thương vật lý và hồi máu cho bản thân.",
+        "cooldown": 12
+      }
+    ],
+    "recommendedBuild": [
+      203,
+      105,
+      107
+    ]
   },
   {
     "id": 19,
     "name": "Hayate",
     "alias": "hayate",
     "image": "assets/heroes/hayate.png",
-    "role": ["Xạ thủ"],
-    "difficulty": 3,
-    "stats": { "hp": 3250, "attack": 170, "defense": 92, "speed": 370 },
-    "skills": [
-      { "name": "Chuỗi Phi Tiêu", "type": "Chiêu 1", "description": "Hayate liên tục phóng phi tiêu về phía trước trong khi vẫn có thể di chuyển tự do.", "cooldown": 5 },
-      { "name": "Ảnh Biến", "type": "Chiêu 2", "description": "Hayate lướt về hướng chỉ định. Tăng sát thương và tốc chạy khi có tướng địch ở gần.", "cooldown": 6 },
-      { "name": "Bão Phi Tiêu", "type": "Chiêu 3", "description": "Hayate biến đến vị trí chỉ định và xả mưa phi tiêu ra xung quanh, gây sát thương diện rộng.", "cooldown": 40 }
+    "role": [
+      "Xạ thủ"
     ],
-    "recommendedBuild": [101, 102, 103]
+    "difficulty": 3,
+    "stats": {
+      "hp": 3250,
+      "attack": 170,
+      "defense": 92,
+      "speed": 370
+    },
+    "skills": [
+      {
+        "name": "Chuỗi Phi Tiêu",
+        "type": "Chiêu 1",
+        "description": "Hayate liên tục phóng phi tiêu về phía trước trong khi vẫn có thể di chuyển tự do.",
+        "cooldown": 5
+      },
+      {
+        "name": "Ảnh Biến",
+        "type": "Chiêu 2",
+        "description": "Hayate lướt về hướng chỉ định. Tăng sát thương và tốc chạy khi có tướng địch ở gần.",
+        "cooldown": 6
+      },
+      {
+        "name": "Bão Phi Tiêu",
+        "type": "Chiêu 3",
+        "description": "Hayate biến đến vị trí chỉ định và xả mưa phi tiêu ra xung quanh, gây sát thương diện rộng.",
+        "cooldown": 40
+      }
+    ],
+    "recommendedBuild": [
+      101,
+      102,
+      103
+    ]
   },
   {
     "id": 20,
     "name": "Violet",
     "alias": "violet",
     "image": "assets/heroes/violet.png",
-    "role": ["Xạ thủ"],
-    "difficulty": 2,
-    "stats": { "hp": 3280, "attack": 175, "defense": 88, "speed": 370 },
-    "skills": [
-      { "name": "Đạn Lộn Nhào", "type": "Chiêu 1", "description": "Violet lộn về phía trước, cường hóa đòn đánh tiếp theo gia tăng tầm bắn và sát thương cực lớn.", "cooldown": 5 },
-      { "name": "Khai Hỏa", "type": "Chiêu 2", "description": "Violet ném lựu đạn gây sát thương vật lý và làm chậm kẻ địch trong vùng ảnh hưởng.", "cooldown": 9 },
-      { "name": "Pháo Đại Đạn", "type": "Chiêu 3", "description": "Violet bắn ra một viên đạn pháo hạng nặng gây sát thương vật lý diện rộng từ khoảng cách xa.", "cooldown": 30 }
+    "role": [
+      "Xạ thủ"
     ],
-    "recommendedBuild": [101, 102, 103]
+    "difficulty": 2,
+    "stats": {
+      "hp": 3280,
+      "attack": 175,
+      "defense": 88,
+      "speed": 370
+    },
+    "skills": [
+      {
+        "name": "Đạn Lộn Nhào",
+        "type": "Chiêu 1",
+        "description": "Violet lộn về phía trước, cường hóa đòn đánh tiếp theo gia tăng tầm bắn và sát thương cực lớn.",
+        "cooldown": 5
+      },
+      {
+        "name": "Khai Hỏa",
+        "type": "Chiêu 2",
+        "description": "Violet ném lựu đạn gây sát thương vật lý và làm chậm kẻ địch trong vùng ảnh hưởng.",
+        "cooldown": 9
+      },
+      {
+        "name": "Pháo Đại Đạn",
+        "type": "Chiêu 3",
+        "description": "Violet bắn ra một viên đạn pháo hạng nặng gây sát thương vật lý diện rộng từ khoảng cách xa.",
+        "cooldown": 30
+      }
+    ],
+    "recommendedBuild": [
+      101,
+      102,
+      103
+    ]
   },
   {
     "id": 21,
     "name": "Superman",
     "alias": "superman",
     "image": "assets/heroes/superman.png",
-    "role": ["Đấu sĩ", "Đỡ đòn"],
-    "difficulty": 5,
-    "stats": { "hp": 3700, "attack": 170, "defense": 130, "speed": 380 },
-    "skills": [
-      { "name": "Siêu Năng Lực", "type": "Chiêu 1", "description": "Trạng thái bộ: Bắn hơi lạnh làm chậm. Trạng thái bay: Lao đến húc văng và xả tia la-ze.", "cooldown": 8 },
-      { "name": "Người Đàn Ông Thép", "type": "Chiêu 2", "description": "Giải mọi hiệu ứng khống chế. Ở trạng thái bay sẽ nện xuống đất hất văng kẻ địch.", "cooldown": 12 },
-      { "name": "Sức Mạnh Vô Song", "type": "Chiêu 3", "description": "Tăng tốc độ tích lũy trạng thái phi hành và giúp Superman húc lùi kẻ địch liên tục.", "cooldown": 50 }
+    "role": [
+      "Đấu sĩ",
+      "Đỡ đòn"
     ],
-    "recommendedBuild": [203, 303, 304]
+    "difficulty": 5,
+    "stats": {
+      "hp": 3700,
+      "attack": 170,
+      "defense": 130,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Siêu Năng Lực",
+        "type": "Chiêu 1",
+        "description": "Trạng thái bộ: Bắn hơi lạnh làm chậm. Trạng thái bay: Lao đến húc văng và xả tia la-ze.",
+        "cooldown": 8
+      },
+      {
+        "name": "Người Đàn Ông Thép",
+        "type": "Chiêu 2",
+        "description": "Giải mọi hiệu ứng khống chế. Ở trạng thái bay sẽ nện xuống đất hất văng kẻ địch.",
+        "cooldown": 12
+      },
+      {
+        "name": "Sức Mạnh Vô Song",
+        "type": "Chiêu 3",
+        "description": "Tăng tốc độ tích lũy trạng thái phi hành và giúp Superman húc lùi kẻ địch liên tục.",
+        "cooldown": 50
+      }
+    ],
+    "recommendedBuild": [
+      203,
+      303,
+      304
+    ]
   },
   {
     "id": 22,
     "name": "Richter",
     "alias": "richter",
     "image": "assets/heroes/richter.png",
-    "role": ["Đấu sĩ"],
-    "difficulty": 4,
-    "stats": { "hp": 3520, "attack": 175, "defense": 115, "speed": 380 },
-    "skills": [
-      { "name": "Chặt & Chém", "type": "Chiêu 1", "description": "Richter lướt về phía trước chém kẻ địch, hiệu ứng thay đổi tùy theo môi trường (Bụi cỏ, Sông, Đất bằng).", "cooldown": 9 },
-      { "name": "Công Thủ Toàn Diện", "type": "Chiêu 2", "description": "Richter bật trạng thái miễn nhiễm mọi sát thương và khống chế trong thời gian ngắn rồi phản công.", "cooldown": 3 },
-      { "name": "Vùng Ma Trận", "type": "Chiêu 3", "description": "Richter tạo ra một vùng ma trận xung quanh gây sát thương chuẩn liên tục và làm câm lặng kẻ địch.", "cooldown": 45 }
+    "role": [
+      "Đấu sĩ"
     ],
-    "recommendedBuild": [203, 204, 107]
+    "difficulty": 4,
+    "stats": {
+      "hp": 3520,
+      "attack": 175,
+      "defense": 115,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Chặt & Chém",
+        "type": "Chiêu 1",
+        "description": "Richter lướt về phía trước chém kẻ địch, hiệu ứng thay đổi tùy theo môi trường (Bụi cỏ, Sông, Đất bằng).",
+        "cooldown": 9
+      },
+      {
+        "name": "Công Thủ Toàn Diện",
+        "type": "Chiêu 2",
+        "description": "Richter bật trạng thái miễn nhiễm mọi sát thương và khống chế trong thời gian ngắn rồi phản công.",
+        "cooldown": 3
+      },
+      {
+        "name": "Vùng Ma Trận",
+        "type": "Chiêu 3",
+        "description": "Richter tạo ra một vùng ma trận xung quanh gây sát thương chuẩn liên tục và làm câm lặng kẻ địch.",
+        "cooldown": 45
+      }
+    ],
+    "recommendedBuild": [
+      203,
+      204,
+      107
+    ]
   },
   {
     "id": 23,
     "name": "Omen",
     "alias": "omen",
     "image": "assets/heroes/omen.png",
-    "role": ["Đấu sĩ"],
-    "difficulty": 3,
-    "stats": { "hp": 3600, "attack": 172, "defense": 125, "speed": 380 },
-    "skills": [
-      { "name": "Sát Kiếm", "type": "Chiêu 1", "description": "Omen giật kiếm kéo kẻ địch về phía mình, gây sát thương vật lý và làm chậm.", "cooldown": 9 },
-      { "name": "Sát Niệm", "type": "Chiêu 2", "description": "Omen tăng tốc chạy, miễn giảm cực lớn sát thương nhận vào và phản lại đòn đánh thường của đối thủ.", "cooldown": 11 },
-      { "name": "Sát Vực", "type": "Chiêu 3", "description": "Omen lao đến trói chặt một tướng địch vào đấu trường xích, khiến mục tiêu không thể thoát ra ngoài.", "cooldown": 40 }
+    "role": [
+      "Đấu sĩ"
     ],
-    "recommendedBuild": [203, 204, 206]
+    "difficulty": 3,
+    "stats": {
+      "hp": 3600,
+      "attack": 172,
+      "defense": 125,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Sát Kiếm",
+        "type": "Chiêu 1",
+        "description": "Omen giật kiếm kéo kẻ địch về phía mình, gây sát thương vật lý và làm chậm.",
+        "cooldown": 9
+      },
+      {
+        "name": "Sát Niệm",
+        "type": "Chiêu 2",
+        "description": "Omen tăng tốc chạy, miễn giảm cực lớn sát thương nhận vào và phản lại đòn đánh thường của đối thủ.",
+        "cooldown": 11
+      },
+      {
+        "name": "Sát Vực",
+        "type": "Chiêu 3",
+        "description": "Omen lao đến trói chặt một tướng địch vào đấu trường xích, khiến mục tiêu không thể thoát ra ngoài.",
+        "cooldown": 40
+      }
+    ],
+    "recommendedBuild": [
+      203,
+      204,
+      206
+    ]
   },
   {
     "id": 24,
     "name": "Veera",
     "alias": "veera",
     "image": "assets/heroes/veera.png",
-    "role": ["Pháp sư"],
-    "difficulty": 1,
-    "stats": { "hp": 3150, "attack": 165, "defense": 85, "speed": 350 },
-    "skills": [
-      { "name": "Dơi Đêm", "type": "Chiêu 1", "description": "Veera triệu hồi đàn dơi cắn xé về phía trước gây sát thương phép.", "cooldown": 7 },
-      { "name": "Hôn Gió", "type": "Chiêu 2", "description": "Veera ném ra một nụ hôn gây sát thương phép và làm choáng mục tiêu trong thời gian dài.", "cooldown": 10 },
-      { "name": "Tiểu Quỷ", "type": "Chiêu 3", "description": "Veera triệu hồi 5 tiểu quỷ liên tục tấn công kẻ địch xung quanh gây sát thương phép lớn.", "cooldown": 18 }
+    "role": [
+      "Pháp sư"
     ],
-    "recommendedBuild": [108, 109, 110]
+    "difficulty": 1,
+    "stats": {
+      "hp": 3150,
+      "attack": 165,
+      "defense": 85,
+      "speed": 350
+    },
+    "skills": [
+      {
+        "name": "Dơi Đêm",
+        "type": "Chiêu 1",
+        "description": "Veera triệu hồi đàn dơi cắn xé về phía trước gây sát thương phép.",
+        "cooldown": 7
+      },
+      {
+        "name": "Hôn Gió",
+        "type": "Chiêu 2",
+        "description": "Veera ném ra một nụ hôn gây sát thương phép và làm choáng mục tiêu trong thời gian dài.",
+        "cooldown": 10
+      },
+      {
+        "name": "Tiểu Quỷ",
+        "type": "Chiêu 3",
+        "description": "Veera triệu hồi 5 tiểu quỷ liên tục tấn công kẻ địch xung quanh gây sát thương phép lớn.",
+        "cooldown": 18
+      }
+    ],
+    "recommendedBuild": [
+      108,
+      109,
+      110
+    ]
   },
   {
     "id": 25,
     "name": "Zill",
     "alias": "zill",
     "image": "assets/heroes/zill.png",
-    "role": ["Sát thủ", "Pháp sư"],
-    "difficulty": 3,
-    "stats": { "hp": 3200, "attack": 168, "defense": 92, "speed": 370 },
-    "skills": [
-      { "name": "Phong Đao", "type": "Chiêu 1", "description": "Zill ném ra cặp phong đao gây sát thương phép và làm chậm kẻ địch trên đường bay.", "cooldown": 6 },
-      { "name": "Phong Dịch", "type": "Chiêu 2", "description": "Zill dịch chuyển đến vị trí chỉ định gây sát thương phép diện rộng lên kẻ địch xung quanh.", "cooldown": 10 },
-      { "name": "Phong Ba", "type": "Chiêu 3", "description": "Zill hóa thành một cơn bão tấn công liên tục 5 lần vào các mục tiêu xung quanh và không thể bị chọn làm mục tiêu.", "cooldown": 40 }
+    "role": [
+      "Sát thủ",
+      "Pháp sư"
     ],
-    "recommendedBuild": [108, 109, 110]
+    "difficulty": 3,
+    "stats": {
+      "hp": 3200,
+      "attack": 168,
+      "defense": 92,
+      "speed": 370
+    },
+    "skills": [
+      {
+        "name": "Phong Đao",
+        "type": "Chiêu 1",
+        "description": "Zill ném ra cặp phong đao gây sát thương phép và làm chậm kẻ địch trên đường bay.",
+        "cooldown": 6
+      },
+      {
+        "name": "Phong Dịch",
+        "type": "Chiêu 2",
+        "description": "Zill dịch chuyển đến vị trí chỉ định gây sát thương phép diện rộng lên kẻ địch xung quanh.",
+        "cooldown": 10
+      },
+      {
+        "name": "Phong Ba",
+        "type": "Chiêu 3",
+        "description": "Zill hóa thành một cơn bão tấn công liên tục 5 lần vào các mục tiêu xung quanh và không thể bị chọn làm mục tiêu.",
+        "cooldown": 40
+      }
+    ],
+    "recommendedBuild": [
+      108,
+      109,
+      110
+    ]
   },
   {
     "id": 26,
     "name": "Alice",
     "alias": "alice",
     "image": "assets/heroes/alice.png",
-    "role": ["Trợ thủ"],
-    "difficulty": 1,
-    "stats": { "hp": 3380, "attack": 150, "defense": 100, "speed": 360 },
-    "skills": [
-      { "name": "Thần Giao Cách Cảm", "type": "Chiêu 1", "description": "Alice định vị một khu vực, gây sát thương phép và làm choáng tất cả kẻ địch trong đó.", "cooldown": 9 },
-      { "name": "Lá Chắn Thời Gian", "type": "Chiêu 2", "description": "Alice tạo lá chắn bảo vệ bản thân và các đồng minh xung quanh, đồng thời tăng tốc chạy cho họ.", "cooldown": 11 },
-      { "name": "Dòng Dòng Thời Gian", "type": "Chiêu 3", "description": "Alice tạo ra một vùng không gian ma thuật làm chậm, câm lặng và giảm giáp phép của kẻ địch.", "cooldown": 30 }
+    "role": [
+      "Trợ thủ"
     ],
-    "recommendedBuild": [301, 108, 303]
+    "difficulty": 1,
+    "stats": {
+      "hp": 3380,
+      "attack": 150,
+      "defense": 100,
+      "speed": 360
+    },
+    "skills": [
+      {
+        "name": "Thần Giao Cách Cảm",
+        "type": "Chiêu 1",
+        "description": "Alice định vị một khu vực, gây sát thương phép và làm choáng tất cả kẻ địch trong đó.",
+        "cooldown": 9
+      },
+      {
+        "name": "Lá Chắn Thời Gian",
+        "type": "Chiêu 2",
+        "description": "Alice tạo lá chắn bảo vệ bản thân và các đồng minh xung quanh, đồng thời tăng tốc chạy cho họ.",
+        "cooldown": 11
+      },
+      {
+        "name": "Dòng Dòng Thời Gian",
+        "type": "Chiêu 3",
+        "description": "Alice tạo ra một vùng không gian ma thuật làm chậm, câm lặng và giảm giáp phép của kẻ địch.",
+        "cooldown": 30
+      }
+    ],
+    "recommendedBuild": [
+      301,
+      108,
+      303
+    ]
   },
   {
     "id": 27,
     "name": "Aya",
     "alias": "aya",
     "image": "assets/heroes/aya.png",
-    "role": ["Trợ thủ"],
-    "difficulty": 1,
-    "stats": { "hp": 3250, "attack": 145, "defense": 95, "speed": 350 },
-    "skills": [
-      { "name": "Nốt Nhạc Vui Nhộn", "type": "Chiêu 1", "description": "Aya bắn ra một sóng âm mở rộng, gây sát thương phép, làm chậm và hiện tầm nhìn kẻ địch.", "cooldown": 7 },
-      { "name": "Rừng Rậm Lắc Lư", "type": "Chiêu 2", "description": "Aya nhảy lên đầu đồng minh, ám vào họ và tạo ra một lượng lớn lá chắn bảo vệ.", "cooldown": 12 },
-      { "name": "Khúc Nhạc Mặt Trời", "type": "Chiêu 3", "description": "Aya tạo ma trận xung quanh đồng minh được ám, biến tất cả kẻ địch xung quanh thành sinh vật nhỏ.", "cooldown": 45 }
+    "role": [
+      "Trợ thủ"
     ],
-    "recommendedBuild": [301, 108, 303]
+    "difficulty": 1,
+    "stats": {
+      "hp": 3250,
+      "attack": 145,
+      "defense": 95,
+      "speed": 350
+    },
+    "skills": [
+      {
+        "name": "Nốt Nhạc Vui Nhộn",
+        "type": "Chiêu 1",
+        "description": "Aya bắn ra một sóng âm mở rộng, gây sát thương phép, làm chậm và hiện tầm nhìn kẻ địch.",
+        "cooldown": 7
+      },
+      {
+        "name": "Rừng Rậm Lắc Lư",
+        "type": "Chiêu 2",
+        "description": "Aya nhảy lên đầu đồng minh, ám vào họ và tạo ra một lượng lớn lá chắn bảo vệ.",
+        "cooldown": 12
+      },
+      {
+        "name": "Khúc Nhạc Mặt Trời",
+        "type": "Chiêu 3",
+        "description": "Aya tạo ma trận xung quanh đồng minh được ám, biến tất cả kẻ địch xung quanh thành sinh vật nhỏ.",
+        "cooldown": 45
+      }
+    ],
+    "recommendedBuild": [
+      301,
+      108,
+      303
+    ]
   },
   {
     "id": 28,
     "name": "Baldum",
     "alias": "baldum",
     "image": "assets/heroes/baldum.png",
-    "role": ["Đỡ đòn"],
-    "difficulty": 2,
-    "stats": { "hp": 3950, "attack": 158, "defense": 150, "speed": 370 },
-    "skills": [
-      { "name": "Vật Thù Thù", "type": "Chiêu 1", "description": "Baldum lao về phía trước, hất văng kẻ địch trúng phải ra sau lưng và làm chậm chúng.", "cooldown": 10 },
-      { "name": "Địa Chấn", "type": "Chiêu 2", "description": "Baldum giậm chân xuống đất liên tục gây sát thương và giảm khả năng gây sát thương của kẻ địch.", "cooldown": 9 },
-      { "name": "Địa Giam", "type": "Chiêu 3", "description": "Baldum tạo ra một vùng địa giam. Sau thời gian ngắn, mặt đất sụp xuống giam cầm mọi kẻ địch bên trong.", "cooldown": 50 }
+    "role": [
+      "Đỡ đòn"
     ],
-    "recommendedBuild": [303, 304, 305]
+    "difficulty": 2,
+    "stats": {
+      "hp": 3950,
+      "attack": 158,
+      "defense": 150,
+      "speed": 370
+    },
+    "skills": [
+      {
+        "name": "Vật Thù Thù",
+        "type": "Chiêu 1",
+        "description": "Baldum lao về phía trước, hất văng kẻ địch trúng phải ra sau lưng và làm chậm chúng.",
+        "cooldown": 10
+      },
+      {
+        "name": "Địa Chấn",
+        "type": "Chiêu 2",
+        "description": "Baldum giậm chân xuống đất liên tục gây sát thương và giảm khả năng gây sát thương của kẻ địch.",
+        "cooldown": 9
+      },
+      {
+        "name": "Địa Giam",
+        "type": "Chiêu 3",
+        "description": "Baldum tạo ra một vùng địa giam. Sau thời gian ngắn, mặt đất sụp xuống giam cầm mọi kẻ địch bên trong.",
+        "cooldown": 50
+      }
+    ],
+    "recommendedBuild": [
+      303,
+      304,
+      305
+    ]
   },
   {
     "id": 29,
     "name": "Cresht",
     "alias": "cresht",
     "image": "assets/heroes/cresht.png",
-    "role": ["Đỡ đòn"],
-    "difficulty": 2,
-    "stats": { "hp": 3860, "attack": 162, "defense": 142, "speed": 380 },
-    "skills": [
-      { "name": "Đinh Ba Thủy Thần", "type": "Chiêu 1", "description": "Cresht quạt đinh ba đẩy lùi kẻ địch xung quanh. Dạng Thủy Thần sẽ đập mạnh gây sát thương lớn.", "cooldown": 6 },
-      { "name": "Bọt Biển", "type": "Chiêu 2", "description": "Cresht nhảy đến vùng chỉ định tạo lá chắn cho bản thân và đồng minh.", "cooldown": 10 },
-      { "name": "Thủy Thần", "type": "Chiêu 3", "description": "Cresht hóa thành Thủy Thần khổng lồ, tạo ra một cơn sóng cuộn đẩy lùi làm choáng kẻ địch và nhận lượng lớn lá chắn.", "cooldown": 40 }
+    "role": [
+      "Đỡ đòn"
     ],
-    "recommendedBuild": [303, 304, 305]
+    "difficulty": 2,
+    "stats": {
+      "hp": 3860,
+      "attack": 162,
+      "defense": 142,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Đinh Ba Thủy Thần",
+        "type": "Chiêu 1",
+        "description": "Cresht quạt đinh ba đẩy lùi kẻ địch xung quanh. Dạng Thủy Thần sẽ đập mạnh gây sát thương lớn.",
+        "cooldown": 6
+      },
+      {
+        "name": "Bọt Biển",
+        "type": "Chiêu 2",
+        "description": "Cresht nhảy đến vùng chỉ định tạo lá chắn cho bản thân và đồng minh.",
+        "cooldown": 10
+      },
+      {
+        "name": "Thủy Thần",
+        "type": "Chiêu 3",
+        "description": "Cresht hóa thành Thủy Thần khổng lồ, tạo ra một cơn sóng cuộn đẩy lùi làm choáng kẻ địch và nhận lượng lớn lá chắn.",
+        "cooldown": 40
+      }
+    ],
+    "recommendedBuild": [
+      303,
+      304,
+      305
+    ]
   },
   {
     "id": 30,
     "name": "Maloch",
     "alias": "maloch",
     "image": "assets/heroes/maloch.png",
-    "role": ["Đỡ đòn", "Đấu sĩ"],
-    "difficulty": 2,
-    "stats": { "hp": 3800, "attack": 170, "defense": 135, "speed": 380 },
-    "skills": [
-      { "name": "Quỷ Vương Trảm", "type": "Chiêu 1", "description": "Maloch vung đao vương miện gây sát thương vật lý. Nếu đao được cường hóa sẽ gây sát thương chuẩn và hồi máu.", "cooldown": 5 },
-      { "name": "Đoạt Hồn", "type": "Chiêu 2", "description": "Maloch tước đoạt linh hồn kẻ địch xung quanh, gây làm chậm và tạo cho bản thân một lớp lá chắn dày.", "cooldown": 12 },
-      { "name": "Luyện Ngục", "type": "Chiêu 3", "description": "Maloch phóng lên không trung rồi giáng xuống khu vực chỉ định, hất văng tất cả kẻ địch và tạo ra vùng luyện ngục làm chậm.", "cooldown": 50 }
+    "role": [
+      "Đỡ đòn",
+      "Đấu sĩ"
     ],
-    "recommendedBuild": [203, 303, 304]
+    "difficulty": 2,
+    "stats": {
+      "hp": 3800,
+      "attack": 170,
+      "defense": 135,
+      "speed": 380
+    },
+    "skills": [
+      {
+        "name": "Quỷ Vương Trảm",
+        "type": "Chiêu 1",
+        "description": "Maloch vung đao vương miện gây sát thương vật lý. Nếu đao được cường hóa sẽ gây sát thương chuẩn và hồi máu.",
+        "cooldown": 5
+      },
+      {
+        "name": "Đoạt Hồn",
+        "type": "Chiêu 2",
+        "description": "Maloch tước đoạt linh hồn kẻ địch xung quanh, gây làm chậm và tạo cho bản thân một lớp lá chắn dày.",
+        "cooldown": 12
+      },
+      {
+        "name": "Luyện Ngục",
+        "type": "Chiêu 3",
+        "description": "Maloch phóng lên không trung rồi giáng xuống khu vực chỉ định, hất văng tất cả kẻ địch và tạo ra vùng luyện ngục làm chậm.",
+        "cooldown": 50
+      }
+    ],
+    "recommendedBuild": [
+      203,
+      303,
+      304
+    ]
+  },
+  {
+    "id": 31,
+    "name": "Trần Gia Bảo",
+    "alias": "tran-gia-bao",
+    "image": "data:image/jpeg;base64,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",
+    "role": [
+      "Xạ thủ"
+    ],
+    "difficulty": 2,
+    "stats": {
+      "hp": 1,
+      "attack": 1,
+      "defense": 1,
+      "speed": 1
+    },
+    "skills": [
+      {
+        "name": "q",
+        "type": "Chiêu 1",
+        "description": "q",
+        "cooldown": 1
+      },
+      {
+        "name": "qq",
+        "type": "Chiêu 2",
+        "description": "q",
+        "cooldown": 1
+      },
+      {
+        "name": "q",
+        "type": "Chiêu 3",
+        "description": "q",
+        "cooldown": 1
+      }
+    ],
+    "recommendedBuild": [
+      101,
+      102
+    ]
   }
 ]

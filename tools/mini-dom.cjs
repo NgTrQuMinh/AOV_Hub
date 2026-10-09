@@ -339,6 +339,92 @@ function walkAll(root, visit) {
     }
 }
 
+/* ================= API quản lý tướng (mô phỏng vite.config.js) ================= */
+
+/** Đọc nội dung heroes.json thật làm dữ liệu khởi tạo cho "file" của API. */
+function readHeroesFile() {
+    const file = path.join(ROOT, 'src', 'data', 'heroes.json');
+    if (!fs.existsSync(file)) return [];
+
+    try {
+        return JSON.parse(fs.readFileSync(file, 'utf8'));
+    } catch (error) {
+        return [];
+    }
+}
+
+/**
+ * "File" heroes.json dùng chung giữa nhiều lần mở trang trong test (giống file thật).
+ * store.heroes = null nghĩa là chưa nạp, lần request đầu sẽ đọc từ heroes.json.
+ */
+function createHeroesApi(initial) {
+    return { heroes: Array.isArray(initial) ? initial : null };
+}
+
+function heroesApiResponse(status, payload) {
+    return {
+        ok: status >= 200 && status < 300,
+        status,
+        json: async () => payload,
+        text: async () => JSON.stringify(payload),
+    };
+}
+
+/** Mô phỏng đúng các route /api/heroes của plugin trong vite.config.js. */
+function handleHeroesApi(store, pathname, options) {
+    if (!Array.isArray(store.heroes)) store.heroes = readHeroesFile();
+
+    const method = String((options && options.method) || 'GET').toUpperCase();
+    const id = pathname.startsWith('/api/heroes/')
+        ? decodeURIComponent(pathname.slice('/api/heroes/'.length))
+        : '';
+
+    if (method === 'GET' && !id) return heroesApiResponse(200, store.heroes.slice());
+
+    let body = {};
+    if (options && options.body) {
+        try {
+            body = JSON.parse(options.body);
+        } catch (error) {
+            body = null;
+        }
+    }
+
+    if (body === null) return heroesApiResponse(400, { error: 'JSON không hợp lệ' });
+
+    if (method === 'POST' && !id) {
+        const max = store.heroes.reduce((current, hero) => {
+            const value = Number(hero && hero.id);
+            return Number.isFinite(value) && value > current ? value : current;
+        }, 0);
+
+        const hero = Object.assign({}, body, { id: Math.floor(max) + 1 });
+        store.heroes.push(hero);
+        return heroesApiResponse(201, hero);
+    }
+
+    if (method === 'PUT' && id) {
+        const index = store.heroes.findIndex((hero) => String(hero.id) === String(id));
+        if (index === -1) return heroesApiResponse(404, { error: 'Không tìm thấy tướng' });
+
+        const hero = Object.assign({}, store.heroes[index], body, {
+            id: store.heroes[index].id,
+            updatedAt: new Date().toISOString(),
+        });
+        store.heroes[index] = hero;
+        return heroesApiResponse(200, hero);
+    }
+
+    if (method === 'DELETE' && id) {
+        const before = store.heroes.length;
+        store.heroes = store.heroes.filter((hero) => String(hero.id) !== String(id));
+        if (store.heroes.length === before) return heroesApiResponse(404, { error: 'Không tìm thấy tướng' });
+        return heroesApiResponse(200, { ok: true });
+    }
+
+    return heroesApiResponse(405, { error: 'Phương thức không được hỗ trợ' });
+}
+
 /**
  * Bắn sự kiện và nối bong bóng lên các phần tử cha.
  * @param {object} [document] nếu truyền vào thì listener ở cấp document chạy sau
@@ -374,8 +460,12 @@ function fireOnDocument(document, target, type) {
  * @param {object} [options.data]   { 'posts.json': [...] } để thay nội dung JSON trả về (mô phỏng dữ liệu mới)
  */
 function loadPage(options) {
-    const { page, search = '', storage = new Map(), login = null, failData = [], data = {} } = options;
+    const { page, search = '', storage = new Map(), login = null, failData = [], data = {}, api = null } = options;
     const brokenFiles = new Set(Array.isArray(failData) ? failData : [failData].filter(Boolean));
+
+    // "File" heroes.json dùng chung cho API /api/heroes. Truyền cùng object api qua
+    // nhiều lần open() để mô phỏng file được ghi bền (giống chạy thật).
+    const heroesApi = api || createHeroesApi(null);
 
     const html = fs.readFileSync(path.join(ROOT, page), 'utf8');
     const scripts = [...html.matchAll(/<script src="\/src\/js\/([^"]+)"><\/script>/g)].map((m) => m[1]);
@@ -500,8 +590,16 @@ function loadPage(options) {
         confirm: () => true,
         setTimeout,
         clearTimeout,
-        fetch: async (url) => {
-            const name = path.basename(String(url));
+        fetch: async (url, fetchOptions = {}) => {
+            const target = String(url);
+            const pathname = target.split('?')[0].replace(/\/+$/, '');
+
+            // API quản lý tướng (đọc/ghi "file" heroes.json) — giống vite.config.js.
+            if (pathname === '/api/heroes' || pathname.startsWith('/api/heroes/')) {
+                return handleHeroesApi(heroesApi, pathname, fetchOptions);
+            }
+
+            const name = path.basename(target);
             const file = path.join(ROOT, 'src', 'data', name);
 
             if (brokenFiles.has(name)) {
@@ -553,6 +651,8 @@ function loadPage(options) {
         alerts,
         /** Map localStorage của lần mở trang này (đã copy, không phải Map gốc truyền vào). */
         storage: local,
+        /** "File" heroes.json mà API /api/heroes đang đọc/ghi. */
+        api: heroesApi,
         run: start,
         el: (id) => document.getElementById(id),
         settled: () => new Promise((resolve) => setTimeout(resolve, 60)),
