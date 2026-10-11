@@ -610,6 +610,112 @@ main {
     margin-bottom: var(--space-3);
 }
 
+/* ---------- 8.1 TRANG 404 ---------- */
+.not-found-page {
+    text-align: center;
+    padding-block: 48px 64px;
+}
+
+.not-found-page__code {
+    font-size: clamp(72px, 16vw, 144px);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--color-gold);
+    margin: 0 0 8px;
+}
+
+/* Chữ 404 dùng gradient vàng khi trình duyệt hỗ trợ background-clip: text,
+   ngược lại vẫn giữ màu vàng đặc ở rule trên. */
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+    .not-found-page__code {
+        background: var(--gradient-gold);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+    }
+}
+
+/* Khối thông báo sát ngay dưới chữ 404 (ghi đè padding riêng cho ngữ cảnh này) */
+.not-found-page .not-found {
+    padding-top: 0;
+}
+
+.not-found-page__actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+/* ---------- 8.2 THANH TRẠNG THÁI DỮ LIỆU (dataStore.js) ---------- */
+.data-status-bar {
+    background: var(--color-gold-subtle);
+    border-bottom: 1px solid var(--color-border);
+    font-size: 15px;
+    color: var(--color-text);
+}
+
+.data-status-bar__inner {
+    max-width: var(--container-width);
+    margin-inline: auto;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+}
+
+.data-status-bar__state {
+    font-weight: 600;
+}
+
+.data-status-bar__state::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #3B8F5A;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.data-status-bar__dirty {
+    color: var(--color-text-muted);
+}
+
+.data-status-bar__migrated {
+    background: var(--color-gold-soft);
+    color: #7A5508;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: var(--radius-pill);
+}
+
+.data-status-bar__actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.data-status-bar--dirty {
+    background: #FFF3CD;
+    border-bottom-color: #F2DC93;
+}
+
+.data-status-bar--dirty .data-status-bar__dirty {
+    color: #7A5508;
+    font-weight: 700;
+}
+
+.data-status-bar--dirty .data-status-bar__state::before {
+    background: #E0A100;
+}
+
 /* ---------- 9. RESPONSIVE ---------- */
 @media (max-width: 1200px) {
     /* Nav đủ dài: cuộn ngang trong lòng nav, không đè lên search/account */
@@ -712,6 +818,16 @@ main {
     .site-footer__inner {
         grid-template-columns: 1fr;
         gap: var(--space-6);
+    }
+
+    /* Thanh trạng thái dữ liệu: nút xuống hàng riêng, chia đều, không tràn ngang */
+    .data-status-bar__actions {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .data-status-bar__actions .btn-sm {
+        flex: 1 1 auto;
     }
 }
 
