@@ -26,6 +26,13 @@
  *   - File tab nào chưa viết xong (vd admin-reports.js chưa có) thì script 404 sẽ
  *     được bỏ qua êm; người dùng thấy "Mục này đang được phát triển." thay vì lỗi đỏ.
  *
+ * MENU DỌC (bước sau)
+ *   Trang quản trị sẽ đổi thành MỘT mục "Quản lý": cột trái là danh sách mục quản lý
+ *   chia theo nhóm, cột phải là nội dung. Để chuẩn bị dữ liệu, mỗi phần tử ADMIN_TABS
+ *   đã được thêm hai trường: group (tên nhóm trong ADMIN_GROUPS) và icon (chuỗi <svg>
+ *   inline vẽ biểu tượng). Hàm getAdminMenuGroups() trả về danh sách nhóm theo thứ tự
+ *   ADMIN_GROUPS để bước sau vẽ menu dọc; giao diện hiện tại vẫn dùng thanh tab ngang.
+ *
  * DÙNG CHUNG KHUNG Ở TRANG RIÊNG
  *   hero-admin.html có thể đặt <div id="admin-tabs"></div> và
  *   <body data-admin-tab="heroes"> để dùng lại đúng thanh tab này. Shell đọc
@@ -45,6 +52,12 @@
  */
 
 /**
+ * Các nhóm của menu quản lý dạng cột (bước sau), giữ đúng thứ tự này.
+ * Mỗi phần tử ADMIN_TABS mang trường group chỉ đúng MỘT giá trị trong đây.
+ */
+const ADMIN_GROUPS = ['Nội dung', 'Cộng đồng', 'Dữ liệu game', 'Hệ thống'];
+
+/**
  * Các tab của khung quản trị, giữ đúng thứ tự hiển thị trên thanh tab.
  *   id       mã tab (dùng trong URL ?tab= và data-admin-tab)
  *   label    chữ hiện trên tab
@@ -52,30 +65,119 @@
  *   scripts  các file JS của tab, nối sau BASE_PATH + 'src/js/'
  *   badge    'pending' | 'reports' — tab có gắn badge đếm số
  *   external tab trỏ sang trang riêng, shell chỉ vẽ liên kết, không nạp nội dung
+ *   group    tên nhóm (một giá trị trong ADMIN_GROUPS) để vẽ menu dọc "Quản lý"
+ *   icon     chuỗi <svg> inline vẽ biểu tượng của mục cho menu dọc
  */
 const ADMIN_TABS = [
-    { id: 'posts', label: 'Bài viết', page: 'admin.html?tab=posts' },
+    {
+        id: 'posts',
+        label: 'Bài viết',
+        page: 'admin.html?tab=posts',
+        group: 'Nội dung',
+        icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="13" y2="17"></line></svg>',
+    },
     {
         id: 'pending',
         label: 'Chờ duyệt',
         page: 'admin.html?tab=pending',
         badge: 'pending',
         scripts: ['admin-pending.js', 'admin-build-review.js'],
+        group: 'Nội dung',
+        icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="7" x2="12" y2="12"></line><line x1="16" y1="14" x2="12" y2="12"></line></svg>',
     },
-    { id: 'reports', label: 'Báo cáo', page: 'admin.html?tab=reports', badge: 'reports', scripts: ['admin-reports.js'] },
-    { id: 'users', label: 'Người dùng', page: 'admin.html?tab=users', scripts: ['admin-users.js'] },
-    { id: 'heroes', label: 'Tướng', page: 'hero-admin.html', external: true },
-    { id: 'items', label: 'Trang bị', page: 'admin-items.html', external: true },
-    { id: 'builds', label: 'Build', page: 'admin-builds.html', external: true },
-    { id: 'log', label: 'Nhật ký', page: 'admin.html?tab=log', scripts: ['admin-log.js'] },
+    {
+        id: 'reports',
+        label: 'Báo cáo',
+        page: 'admin.html?tab=reports',
+        badge: 'reports',
+        scripts: ['admin-reports.js'],
+        group: 'Nội dung',
+        icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="3" x2="5" y2="21"></line><path d="M5 4h12l-3 4 3 4H5"></path></svg>',
+    },
+    {
+        id: 'users',
+        label: 'Người dùng',
+        page: 'admin.html?tab=users',
+        scripts: ['admin-users.js'],
+        group: 'Cộng đồng',
+        icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4 4-6 8-6s8 2 8 6"></path></svg>',
+    },
+    {
+        id: 'heroes',
+        label: 'Tướng',
+        page: 'hero-admin.html',
+        external: true,
+        group: 'Dữ liệu game',
+        icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z"></path></svg>',
+    },
+    {
+        id: 'items',
+        label: 'Trang bị',
+        page: 'admin-items.html',
+        external: true,
+        group: 'Dữ liệu game',
+        icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"></path><line x1="3" y1="7" x2="12" y2="11"></line><line x1="12" y1="11" x2="21" y2="7"></line><line x1="12" y1="11" x2="12" y2="21"></line></svg>',
+    },
+    {
+        id: 'builds',
+        label: 'Build',
+        page: 'admin-builds.html',
+        external: true,
+        group: 'Dữ liệu game',
+        icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>',
+    },
+    {
+        id: 'log',
+        label: 'Nhật ký',
+        page: 'admin.html?tab=log',
+        scripts: ['admin-log.js'],
+        group: 'Hệ thống',
+        icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="6" r="1.6"></circle><line x1="9" y1="6" x2="20" y2="6"></line><circle cx="5" cy="12" r="1.6"></circle><line x1="9" y1="12" x2="20" y2="12"></line><circle cx="5" cy="18" r="1.6"></circle><line x1="9" y1="18" x2="20" y2="18"></line></svg>',
+    },
     {
         id: 'data',
         label: 'Dữ liệu',
         page: 'admin.html?tab=data',
         scripts: ['admin-backup.js', 'admin-storage.js', 'admin-datacheck.js'],
+        group: 'Hệ thống',
+        icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"></path><line x1="4" y1="12" x2="20" y2="12"></line></svg>',
     },
-    { id: 'settings', label: 'Cài đặt', page: 'admin.html?tab=settings', scripts: ['admin-banned.js'] },
+    {
+        id: 'settings',
+        label: 'Cài đặt',
+        page: 'admin.html?tab=settings',
+        scripts: ['admin-banned.js'],
+        group: 'Hệ thống',
+        icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="17" x2="20" y2="17"></line><circle cx="9" cy="7" r="2.2"></circle><circle cx="15" cy="17" r="2.2"></circle></svg>',
+    },
 ];
+
+/**
+ * Trả về các nhóm mục quản lý để vẽ menu dọc "Quản lý" (bước sau).
+ * Mỗi nhóm là { group: tên nhóm, tabs: [các phần tử ADMIN_TABS của nhóm, giữ
+ * thứ tự trong ADMIN_TABS] }, sắp theo đúng thứ tự ADMIN_GROUPS. Nhóm nào
+ * không có mục nào thì bỏ qua. Tab có group không nằm trong ADMIN_GROUPS
+ * (hoặc thiếu group) được gom vào nhóm 'Khác' đặt cuối.
+ * Hàm thuần dữ liệu: không đụng DOM, không ném lỗi.
+ * @returns {Array<{ group: string, tabs: Array<object> }>}
+ */
+function getAdminMenuGroups() {
+    const buckets = ADMIN_GROUPS.map((group) => ({ group: group, tabs: [] }));
+    const other = { group: 'Khác', tabs: [] };
+
+    for (const tab of ADMIN_TABS) {
+        const bucket = buckets.find((item) => item.group === tab.group);
+        if (bucket) {
+            bucket.tabs.push(tab);
+        } else {
+            other.tabs.push(tab);
+        }
+    }
+
+    const result = buckets.filter((item) => item.tabs.length > 0);
+    if (other.tabs.length > 0) result.push(other);
+    return result;
+}
 
 /** Mục đã đăng ký theo tab: ADMIN_SECTIONS[tabId] = [{ sectionId, title, renderFn }]. */
 const ADMIN_SECTIONS = {};
