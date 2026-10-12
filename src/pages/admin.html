@@ -39,19 +39,37 @@
         </p>
 
         <!--
-            Công tắc "Yêu cầu duyệt bài trước khi đăng" (aov_mod_settings.requireApproval):
-            do admin.js vẽ và lắng nghe sự kiện change (event delegation) ở document.
+            Thanh tab quản trị: admin-shell.js vẽ vào đây (tab Bài viết, Chờ duyệt,
+            Báo cáo, Người dùng, Nhật ký, Dữ liệu, Cài đặt...). Để rỗng trong HTML.
         -->
-        <div id="admin-settings"></div>
+        <div id="admin-tabs"></div>
 
-        <!-- Ô tìm theo tiêu đề / tác giả: do admin.js vẽ và gắn sự kiện gõ -->
-        <div id="admin-toolbar" class="feed-filter"></div>
+        <!--
+            Khung nội dung tab "Bài viết": giữ nguyên toàn bộ vùng do admin.js vẽ
+            (#admin-settings, #admin-toolbar, #admin-count, #admin-list).
+        -->
+        <div id="admin-posts-panel">
+            <!--
+                Công tắc "Yêu cầu duyệt bài trước khi đăng" (aov_mod_settings.requireApproval):
+                do admin.js vẽ và lắng nghe sự kiện change (event delegation) ở document.
+            -->
+            <div id="admin-settings"></div>
 
-        <!-- Số bài đang hiện / tổng số bài trong hệ thống -->
-        <p id="admin-count" class="feed-count" aria-live="polite"></p>
+            <!-- Ô tìm theo tiêu đề / tác giả: do admin.js vẽ và gắn sự kiện gõ -->
+            <div id="admin-toolbar" class="feed-filter"></div>
 
-        <!-- Bảng bài viết: do admin.js vẽ từ aov_posts (feed.js) -->
-        <div id="admin-list" class="card"></div>
+            <!-- Số bài đang hiện / tổng số bài trong hệ thống -->
+            <p id="admin-count" class="feed-count" aria-live="polite"></p>
+
+            <!-- Bảng bài viết: do admin.js vẽ từ aov_posts (feed.js) -->
+            <div id="admin-list" class="card"></div>
+        </div>
+
+        <!--
+            Khung rỗng cho các tab động còn lại (Chờ duyệt, Báo cáo, Người dùng,
+            Nhật ký, Dữ liệu, Cài đặt): admin-shell.js đổ nội dung vào, mặc định ẩn.
+        -->
+        <div id="admin-panel" class="admin-panel" hidden></div>
     </main>
 
     <footer id="site-footer"></footer>
@@ -67,5 +85,7 @@
     <!-- feed.js: lớp dữ liệu bài viết (getPosts/setPosts/setPostHidden/deletePost...) -->
     <script src="/src/js/feed.js"></script>
     <script src="/src/js/admin.js"></script>
+    <!-- admin-shell.js: khung tab quản trị, nạp ngay sau admin.js -->
+    <script src="/src/js/admin-shell.js"></script>
 </body>
 </html>
