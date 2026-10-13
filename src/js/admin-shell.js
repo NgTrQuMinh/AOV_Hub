@@ -1,8 +1,8 @@
 /**
  * admin-shell.js - Khung trang quản trị nhiều tab (CM03)
  *
- * Trang: src/pages/admin.html (và dùng chung cho các trang quản trị riêng như
- * hero-admin.html nếu các trang đó đặt sẵn <div id="admin-tabs"></div>).
+ * Trang: src/pages/admin.html. Mọi mục quản lý đều mở ngay trong trang này với
+ * địa chỉ admin.html?tab=<id>; shell chỉ vẽ vào <div id="admin-tabs"></div>.
  *
  * MỤC ĐÍCH
  *   Trước đây phần khung trang Quản trị nằm chung trong admin.js nên nhiều người
@@ -22,9 +22,12 @@
  * DANH SÁCH TAB (giữ đúng thứ tự này)
  *   posts, pending, reports, users, heroes, items, builds, log, data, settings.
  *   - Tab "Dữ liệu" và "Cài đặt" là phần THÊM so với kế hoạch gốc.
- *   - Tab "Tướng", "Trang bị", "Build" là trang riêng (external), chỉ là liên kết.
- *   - File tab nào chưa viết xong (vd admin-reports.js chưa có) thì script 404 sẽ
- *     được bỏ qua êm; người dùng thấy "Mục này đang được phát triển." thay vì lỗi đỏ.
+ *   - Mọi mục đều mở trong admin.html?tab=<id>, không mục nào nhảy sang trang riêng.
+ *   - Mục "Tướng" do hero-admin.js tự đăng ký (file này được nạp tĩnh sau
+ *     admin-shell.js trong admin.html) nên không cần trường scripts.
+ *   - admin-items.js và admin-builds.js do người khác viết sau (nạp qua trường
+ *     scripts); chưa có file thì script 404 được bỏ qua êm và người dùng thấy
+ *     "Mục này đang được phát triển." thay vì lỗi đỏ.
  *
  * MENU DỌC
  *   Trang quản trị là MỘT mục "Quản lý": cột trái là menu dọc chia theo nhóm, cột phải
@@ -39,11 +42,14 @@
  *   Hợp đồng class: admin-sidebar, __brand, __title, __sub, __nav, __group, __link
  *   (is-active), __icon, __label, __badge.
  *
- * DÙNG CHUNG KHUNG Ở TRANG RIÊNG
- *   hero-admin.html có thể đặt <div id="admin-tabs"></div> và
- *   <body data-admin-tab="heroes"> để dùng lại đúng menu dọc này. Shell đọc
- *   data-admin-tab trên <body> trước; không có thì đọc tham số ?tab= trên URL;
- *   vẫn không có thì mặc định 'posts'. Tên tab lạ cũng rơi về 'posts'.
+ * CHỌN TAB ĐANG MỞ
+ *   Shell đọc data-admin-tab trên <body> trước; không có thì đọc tham số ?tab= trên
+ *   URL; vẫn không có thì mặc định 'posts'. Tên tab lạ cũng rơi về 'posts'.
+ *
+ * GHI CHÚ GẮN KẾT
+ *   Shell vẽ vào <div id="admin-tabs"></div>. Phần tử tuỳ chọn <div id="admin-notices">
+ *   (nếu trang có) nhận cảnh báo dung lượng LocalStorage; trang không có thì cảnh báo
+ *   được nối vào cuối #admin-tabs (đã xử lý ở S2).
  *
  * AN NINH
  *   "admin" ở đây CHỈ là quy ước phía trình duyệt (role trong users.json), KHÔNG
@@ -66,11 +72,13 @@ const ADMIN_GROUPS = ['Nội dung', 'Cộng đồng', 'Dữ liệu game', 'Hệ 
 /**
  * Các tab của khung quản trị, giữ đúng thứ tự hiển thị trên menu dọc.
  *   id       mã tab (dùng trong URL ?tab= và data-admin-tab)
- *   label    chữ hiện trên tab
- *   page     file trang, nối sau BASE_PATH + 'src/pages/'
- *   scripts  các file JS của tab, nối sau BASE_PATH + 'src/js/'
+ *   label    chữ hiện trên mục
+ *   page     luôn là 'admin.html?tab=<id>' (mở ngay trong trang quản lý)
+ *   scripts  các file JS của tab, nối sau BASE_PATH + 'src/js/' (mục Tướng không
+ *            cần vì hero-admin.js được nạp tĩnh và tự đăng ký mục 'heroes')
  *   badge    'pending' | 'reports' — tab có gắn badge đếm số
- *   external tab trỏ sang trang riêng, shell chỉ vẽ liên kết, không nạp nội dung
+ *   external cờ cho mục trỏ sang trang riêng; hiện KHÔNG mục nào dùng, giữ lại để
+ *            showAdminTabContent() tương thích nếu sau này có mục như vậy
  *   group    tên nhóm (một giá trị trong ADMIN_GROUPS) để vẽ menu dọc "Quản lý"
  *   icon     chuỗi <svg> inline vẽ biểu tượng của mục cho menu dọc
  */
@@ -111,24 +119,23 @@ const ADMIN_TABS = [
     {
         id: 'heroes',
         label: 'Tướng',
-        page: 'hero-admin.html',
-        external: true,
+        page: 'admin.html?tab=heroes',
         group: 'Dữ liệu game',
         icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z"></path></svg>',
     },
     {
         id: 'items',
         label: 'Trang bị',
-        page: 'admin-items.html',
-        external: true,
+        page: 'admin.html?tab=items',
+        scripts: ['admin-items.js'],
         group: 'Dữ liệu game',
         icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"></path><line x1="3" y1="7" x2="12" y2="11"></line><line x1="12" y1="11" x2="21" y2="7"></line><line x1="12" y1="11" x2="12" y2="21"></line></svg>',
     },
     {
         id: 'builds',
         label: 'Build',
-        page: 'admin-builds.html',
-        external: true,
+        page: 'admin.html?tab=builds',
+        scripts: ['admin-builds.js'],
         group: 'Dữ liệu game',
         icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>',
     },
