@@ -1,0 +1,80 @@
+/* =========================================
+ * search.css - Trang Tìm kiếm toàn cục (src/pages/search.html)
+ * Phụ trách: bổ sung cho tính năng tìm kiếm ở Header (L20/N01).
+ *
+ * Dùng lại: .filter-bar (common.css), .grid (common.css) cho lưới Tướng/Trang bị,
+ *           .page-head + .page-head__count (build.css) cho tiêu đề trang.
+ * Ở đây chỉ thêm style cho từng nhóm kết quả và các dòng kết quả Build/Bài viết.
+ * ========================================= */
+
+/* ---------- Nhóm kết quả ---------- */
+.search-group {
+    margin-top: var(--space-6);
+}
+
+.search-group__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    font-size: var(--fs-lg);
+    color: var(--color-text);
+}
+
+.search-group__count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 24px;
+    padding: 0 var(--space-2);
+    border-radius: var(--radius-pill);
+    background: var(--color-gold-soft);
+    color: var(--color-text-accent);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+}
+
+/* Lưới Tướng/Trang bị dùng chung .grid (common.css); Build/Bài viết xếp dọc. */
+.search-group__list:not(.grid) {
+    display: grid;
+    gap: var(--space-3);
+}
+
+/* ---------- Một dòng kết quả (Build / Bài viết) ---------- */
+.search-result {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+
+.search-result:hover,
+.search-result:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-gold);
+}
+
+.search-result__title {
+    font-size: var(--fs-md);
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.search-result__meta {
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+}
+
+/* ---------- Trạng thái chưa gõ từ khoá ---------- */
+.search-hint {
+    margin-top: var(--space-5);
+    color: var(--color-text-muted);
+}
