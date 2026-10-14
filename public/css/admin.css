@@ -114,6 +114,13 @@
     cursor: pointer;
 }
 
+/* Nhóm nút sao lưu/khôi phục: giãn rộng hơn và cho phép xuống dòng */
+.admin-settings__toggle--wrap {
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    white-space: normal;
+}
+
 /* Giải thích ngắn gọn ngay cạnh công tắc, không cần trang trợ giúp riêng */
 .admin-settings__hint {
     flex: 1 1 320px;
@@ -140,45 +147,7 @@
 }
 
 /* ---------- 2. Thanh tab ---------- */
-.admin-tabs {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    border-bottom: 2px solid #EFE3C6;
-    margin-bottom: var(--space-5);
-}
-
-.admin-tabs__link {
-    padding: 12px 18px;
-    font-size: 17px;
-    font-weight: 700;
-    color: #7A6A4A;
-    margin-bottom: -2px;
-    border-bottom: 3px solid transparent;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-.admin-tabs__link:hover {
-    color: var(--color-text);
-}
-
-.admin-tabs__link.is-active {
-    color: var(--color-text);
-    border-bottom-color: var(--color-gold);
-}
-
-.admin-tabs__badge {
-    display: inline-block;
-    background: #C0392B;
-    color: #FFFFFF;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 1px 8px;
-    margin-left: 6px;
-    line-height: 1.5;
-    border-radius: var(--radius-pill);
-}
+/* (Các class .admin-tabs* cũ đã bỏ - menu dọc .admin-sidebar__* thay thế.) */
 
 /* ---------- 3. Khối nội dung / section ---------- */
 /* Chỉ .admin-section có khung card. #admin-panel là khung bao ngoài nên không
@@ -212,7 +181,7 @@
 
 .admin-section__desc {
     font-size: 17px;
-    color: #5A4A2E;
+    color: var(--color-text-soft);
     line-height: 1.6;
 }
 
@@ -231,21 +200,21 @@
 }
 
 .admin-notice--warn {
-    background: #FFF3CD;
-    color: #7A5508;
-    border-color: #F2DC93;
+    background: var(--color-warning-soft);
+    color: var(--color-accent-strong);
+    border-color: var(--color-warning-border);
 }
 
 .admin-notice--danger {
-    background: #FDECEA;
-    color: #A93226;
-    border-color: #F5C6C0;
+    background: var(--color-danger-soft);
+    color: var(--color-danger-strong);
+    border-color: var(--color-danger-border);
 }
 
 .admin-notice--success {
-    background: #E8F5EC;
-    color: #2E7D4F;
-    border-color: #BFE3CC;
+    background: var(--color-success-soft);
+    color: var(--color-success-strong);
+    border-color: var(--color-success-border);
 }
 
 /* ---------- 5. Ô số liệu thống kê ---------- */
@@ -269,7 +238,7 @@
 
 .admin-stat__label {
     font-size: var(--fs-sm);
-    color: #5A4A2E;
+    color: var(--color-text-soft);
 }
 
 /* ---------- 6. Thanh tiến độ ---------- */
@@ -283,16 +252,16 @@
 .admin-progress__bar {
     height: 100%;
     width: 0;
-    background: linear-gradient(90deg, #EFCC72, #DDA532);
+    background: linear-gradient(90deg, var(--color-gold-light), var(--color-gold));
     transition: width 300ms ease;
 }
 
 .admin-progress--warn .admin-progress__bar {
-    background: #E0A100;
+    background: var(--color-warning);
 }
 
 .admin-progress--danger .admin-progress__bar {
-    background: #C0392B;
+    background: var(--color-danger);
 }
 
 /* ---------- 7. Bảng dùng chung cho các tab mới ---------- */
@@ -311,7 +280,7 @@
 
 .admin-table th {
     background: var(--color-gold-subtle);
-    color: #5A4A2E;
+    color: var(--color-text-soft);
     font-size: var(--fs-sm);
     text-transform: uppercase;
     font-weight: 700;
@@ -337,8 +306,8 @@
 }
 
 .admin-row--flagged {
-    background: #FFF8E1;
-    box-shadow: inset 4px 0 0 #E0A100;
+    background: var(--color-warning-tint);
+    box-shadow: inset 4px 0 0 var(--color-warning);
 }
 
 .admin-row--hidden {
@@ -355,28 +324,28 @@
 }
 
 .admin-badge--pending {
-    background: #FFF3CD;
-    color: #7A5508;
+    background: var(--color-warning-soft);
+    color: var(--color-accent-strong);
 }
 
 .admin-badge--approved {
-    background: #E8F5EC;
-    color: #2E7D4F;
+    background: var(--color-success-soft);
+    color: var(--color-success-strong);
 }
 
 .admin-badge--rejected {
-    background: #FDECEA;
-    color: #A93226;
+    background: var(--color-danger-soft);
+    color: var(--color-danger-strong);
 }
 
 .admin-badge--banned {
-    background: #FDECEA;
-    color: #A93226;
+    background: var(--color-danger-soft);
+    color: var(--color-danger-strong);
 }
 
 .admin-badge--admin {
     background: var(--color-gold-soft);
-    color: #7A5508;
+    color: var(--color-accent-strong);
 }
 
 /* ---------- 9. Thanh công cụ & biểu mẫu ---------- */
@@ -417,7 +386,7 @@
 .admin-field textarea:focus {
     outline: none;
     border-color: var(--color-gold);
-    box-shadow: 0 0 0 3px rgba(221, 165, 50, .2);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 20%, transparent);
 }
 
 .admin-field__error {
@@ -438,7 +407,7 @@
     align-items: center;
     gap: var(--space-2);
     background: var(--color-gold-soft);
-    color: #7A5508;
+    color: var(--color-accent-strong);
     font-size: 16px;
     padding: 6px 6px 6px 14px;
     border-radius: var(--radius-pill);
@@ -451,14 +420,14 @@
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: #FFFFFF;
+    background: var(--color-surface);
     color: var(--color-danger);
     border: 0;
     cursor: pointer;
 }
 
 .admin-chip__remove:hover {
-    background: #FDECEA;
+    background: var(--color-danger-soft);
 }
 
 /* ---------- 11. Trạng thái rỗng ---------- */
@@ -477,7 +446,7 @@
 }
 
 .btn-danger:hover {
-    background: #FDECEA;
+    background: var(--color-danger-soft);
 }
 
 /* ---------- Responsive (L24): trang quản trị dùng được trên tablet/điện thoại ---------- */
@@ -530,7 +499,6 @@
  * <div id="admin-tabs" class="admin-layout__side"> và
  * <div class="admin-layout__main"> trong <div class="admin-layout">.
  * Các class admin-sidebar__* là hợp đồng với admin-shell.js (buildAdminSidebar).
- * Các class .admin-tabs* cũ được giữ lại nhưng hiện không còn JS dùng.
  * ========================================= */
 
 /* ---------- A. Header trên trang quản lý (chỉ logo + khu tài khoản) ---------- */
@@ -546,7 +514,7 @@ body[data-page="admin"] .nav-toggle__btn {
 body[data-page="admin"] .account-area .btn[href$="admin.html"] {
     background: var(--color-gold-soft);
     border: 1px solid var(--color-gold);
-    color: #7A5508;
+    color: var(--color-accent-strong);
 }
 
 /* ---------- B. Bố cục 2 cột ---------- */
@@ -695,7 +663,7 @@ body[data-page="admin"] .site-header__inner {
     font-size: var(--fs-base);
     font-weight: 600;
     line-height: 1.3;
-    color: #5A4A2E;
+    color: var(--color-text-soft);
     text-decoration: none;
     box-shadow: inset 3px 0 0 transparent;
     transition: background var(--transition), color var(--transition), box-shadow var(--transition);
@@ -714,7 +682,7 @@ body[data-page="admin"] .site-header__inner {
 /* Mục đang chọn: nền vàng nhạt + vạch vàng bên trái, KHÔNG nền đậm chữ trắng. */
 .admin-sidebar__link.is-active {
     background: var(--color-gold-soft);
-    color: #7A5508;
+    color: var(--color-accent-strong);
     font-weight: 700;
     box-shadow: inset 3px 0 0 var(--color-gold);
 }
@@ -735,7 +703,7 @@ body[data-page="admin"] .site-header__inner {
 
 .admin-sidebar__link:hover .admin-sidebar__icon,
 .admin-sidebar__link.is-active .admin-sidebar__icon {
-    color: #9C6F10;
+    color: var(--color-text-accent);
 }
 
 .admin-sidebar__label {
@@ -751,8 +719,8 @@ body[data-page="admin"] .site-header__inner {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: #C0392B;
-    color: #FFFFFF;
+    background: var(--color-danger);
+    color: var(--color-surface);
     font-size: 12px;
     font-weight: 700;
     line-height: 1;
@@ -761,18 +729,6 @@ body[data-page="admin"] .site-header__inner {
 
 /* ---------- Responsive khối CM03 (khung quản trị nhiều tab) ---------- */
 @media (max-width: 900px) {
-    /* Tab không xuống dòng: cuộn ngang trong lòng thanh tab, ẩn thanh cuộn */
-    .admin-tabs {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-    }
-
-    .admin-tabs::-webkit-scrollbar {
-        display: none;
-    }
-
     .admin-stats {
         grid-template-columns: repeat(2, 1fr);
     }

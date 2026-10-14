@@ -145,7 +145,7 @@
 #hero-admin-toolbar .filter-bar__keyword:focus {
     outline: none;
     border-color: var(--color-gold);
-    box-shadow: 0 0 0 3px rgba(221, 165, 50, 0.22);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 22%, transparent);
 }
 
 #hero-admin-toolbar .btn {

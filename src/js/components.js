@@ -94,14 +94,15 @@ function renderHeroCard(hero) {
     return `
         <article class="card hero-card">
             <a class="hero-card__media" href="${BASE_PATH}src/pages/hero-detail.html?id=${hero.id}">
-                <img src="${imageUrl(hero.image)}" alt="${escapeHtml(hero.name)}" loading="lazy" onerror="handleImageError(this)">
+                <img src="${imageUrl(hero.image)}" alt="${escapeHtml(hero.name)}" width="300" height="225" loading="lazy" decoding="async" onerror="handleImageError(this)">
             </a>
             <button
                 type="button"
                 class="btn-favorite"
                 data-type="hero"
                 data-id="${hero.id}"
-                aria-label="Thêm/bỏ yêu thích"
+                aria-label="Yêu thích ${escapeHtml(hero.name)}"
+                aria-pressed="false"
             ><span aria-hidden="true">♥</span></button>
             <div class="hero-card__body">
                 <h3 class="hero-card__name">${escapeHtml(hero.name)}</h3>
@@ -128,14 +129,15 @@ function renderItemCard(item) {
     return `
         <article class="card item-card">
             <a class="item-card__media" href="${BASE_PATH}src/pages/item-detail.html?id=${item.id}">
-                <img src="${imageUrl(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy" onerror="handleImageError(this)">
+                <img src="${imageUrl(item.image)}" alt="${escapeHtml(item.name)}" width="300" height="300" loading="lazy" decoding="async" onerror="handleImageError(this)">
             </a>
             <button
                 type="button"
                 class="btn-favorite"
                 data-type="item"
                 data-id="${item.id}"
-                aria-label="Thêm/bỏ yêu thích"
+                aria-label="Yêu thích ${escapeHtml(item.name)}"
+                aria-pressed="false"
             ><span aria-hidden="true">♥</span></button>
             <div class="item-card__body">
                 <h3 class="item-card__name">${escapeHtml(item.name)}</h3>
@@ -156,7 +158,7 @@ function renderItemCard(item) {
  */
 function renderNotFound(message) {
     return `
-        <div class="not-found">
+        <div class="not-found" role="status">
             <span class="not-found__icon" aria-hidden="true">🔍</span>
             <p class="not-found__text">${escapeHtml(message)}</p>
         </div>

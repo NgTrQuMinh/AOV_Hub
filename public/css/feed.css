@@ -54,7 +54,7 @@
 .feed-filter .filter-bar__select:focus {
     outline: none;
     border-color: var(--color-gold);
-    box-shadow: 0 0 0 3px rgba(221, 165, 50, 0.25);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 25%, transparent);
 }
 
 .feed-count {
@@ -69,7 +69,7 @@
     margin-left: var(--space-1);
     padding: 2px 10px;
     background: var(--color-gold-soft);
-    color: #9C6F10;
+    color: var(--color-text-accent);
     font-size: 14px;
     font-weight: 600;
     border-radius: var(--radius-pill);
@@ -80,9 +80,9 @@
    .badge.post-... để thắng rule .badge của common.css. */
 .badge.post-card__hidden,
 .badge.post-detail__hidden {
-    background: #FDECEA;
-    color: #A93226;
-    border: 1px solid #F5C6C0;
+    background: var(--color-danger-soft);
+    color: var(--color-danger-strong);
+    border: 1px solid var(--color-danger-border);
     padding: 3px 12px;
     font-size: 13px;
     font-weight: 700;
@@ -103,26 +103,26 @@
 /* Huy hiệu trạng thái duyệt (renderPostStatusBadge trong feed.js):
  * bài chờ duyệt tông vàng, bài bị từ chối tông đỏ như nhãn "Đã bị ẩn". */
 .post-status--pending {
-    background: #FFF4D6;
-    color: #9C6F10;
+    background: var(--color-warning-tint);
+    color: var(--color-text-accent);
     border-color: var(--color-gold-light);
 }
 
 .post-status--rejected {
-    background: #FDECEA;
-    color: #A93226;
-    border-color: #F5C6C0;
+    background: var(--color-danger-soft);
+    color: var(--color-danger-strong);
+    border-color: var(--color-danger-border);
 }
 
 /* Cột "Trạng thái duyệt" ở trang Quản trị (admin.html cũng nạp feed.css) */
 .post-status--approved {
-    background: #E8F5EC;
-    color: #2E7D4F;
-    border-color: #BFE4CC;
+    background: var(--color-success-soft);
+    color: var(--color-success-strong);
+    border-color: var(--color-success-border);
 }
 
 /* Màn hình hẹp: cho ô tìm chiếm một dòng riêng, select xuống hàng dưới */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
     .feed-filter .filter-bar {
         flex-wrap: wrap;
     }
@@ -204,7 +204,7 @@
 .feed-form .form-group select:focus {
     outline: none;
     border-color: var(--color-gold);
-    box-shadow: 0 0 0 3px rgba(221, 165, 50, 0.25);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 25%, transparent);
 }
 
 .feed-form .form-errors,
@@ -216,9 +216,9 @@
 }
 
 .feed-form .form-errors {
-    background: #FDECEA;
-    border: 1px solid #F5C6C0;
-    color: #A93226;
+    background: var(--color-danger-soft);
+    border: 1px solid var(--color-danger-border);
+    color: var(--color-danger-strong);
 }
 
 .feed-form .form-errors li {
@@ -229,11 +229,11 @@
 .feed-form .form-success {
     background: var(--color-gold-subtle);
     border: 1px solid var(--color-gold-light);
-    color: #7A5508;
+    color: var(--color-accent-strong);
 }
 
 .feed-form .form-success a {
-    color: #9C6F10;
+    color: var(--color-text-accent);
     text-decoration: underline;
 }
 
@@ -254,8 +254,8 @@
 
 /* ---------- Trạng thái sửa bài viết ---------- */
 .feed-form.is-editing {
-    background: #FFFDF8;
-    border-color: var(--color-primary, #DDA532);
+    background: var(--color-bg-elevated);
+    border-color: var(--color-gold);
 }
 
 .feed-form__hint {
@@ -264,7 +264,7 @@
     font-size: 15px;
     color: var(--color-text);
     background: var(--color-surface);
-    border-left: 4px solid var(--color-primary, #DDA532);
+    border-left: 4px solid var(--color-gold);
     border-radius: var(--radius-md);
 }
 
@@ -296,9 +296,9 @@
     padding: 6px 14px;
     font-size: 14px;
     font-weight: 600;
-    color: #7A5508;
+    color: var(--color-accent-strong);
     background: transparent;
-    border: 1px solid var(--color-primary, #DDA532);
+    border: 1px solid var(--color-gold);
     border-radius: var(--radius-pill);
     cursor: pointer;
     white-space: nowrap;
@@ -306,9 +306,9 @@
 }
 
 .post-card__edit:hover {
-    color: #3A2F1C;
-    background: #F5E5C3;
-    border-color: var(--color-primary, #DDA532);
+    color: var(--color-text);
+    background: var(--color-gold-soft);
+    border-color: var(--color-gold);
 }
 
 .post-card__updated,
@@ -316,16 +316,16 @@
     margin-left: var(--space-1);
     font-size: 13px;
     font-style: italic;
-    color: #7A6A4A;
+    color: var(--color-text-muted);
 }
 
 /* ---------- Thẻ bài viết ---------- */
 .post-card {
     padding: var(--space-5);
-    background: #FFFFFF;
-    border: 1px solid #EFE3C6;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 20px;
-    box-shadow: 0 2px 8px rgba(122, 90, 20, .08);
+    box-shadow: var(--shadow-sm);
     transition: border-color var(--transition), box-shadow var(--transition);
 }
 
@@ -357,7 +357,7 @@
     background: var(--color-gold-soft);
     border: 2px solid var(--color-gold-soft);
     border-radius: var(--radius-pill);
-    color: #9C6F10;
+    color: var(--color-text-accent);
     font-size: 20px;
     line-height: 1;
 }
@@ -379,12 +379,12 @@
 }
 
 .post-card__meta a {
-    color: #9C6F10;
+    color: var(--color-text-accent);
     font-weight: 600;
 }
 
 .post-card__meta a:hover {
-    color: #7A5508;
+    color: var(--color-accent-strong);
     text-decoration: underline;
 }
 
@@ -393,7 +393,7 @@
     padding: 6px 14px;
     font-size: 14px;
     font-weight: 600;
-    color: #7A6A4A;
+    color: var(--color-text-muted);
     background: transparent;
     border: 1px solid transparent;
     border-radius: var(--radius-pill);
@@ -403,7 +403,7 @@
 }
 
 .post-card__delete:hover {
-    color: #C0392B;
+    color: var(--color-danger);
     background: var(--color-gold-subtle);
 }
 
@@ -413,7 +413,7 @@
 
 .post-card__content {
     margin-bottom: var(--space-5);
-    color: #3A2F1C;
+    color: var(--color-text);
     font-size: 18px;
     line-height: 1.7;
     white-space: pre-wrap;
@@ -447,7 +447,7 @@
 button.post-action:hover,
 a.post-action:hover,
 .post-action.is-active {
-    color: #C0392B;
+    color: var(--color-danger);
 }
 
 button.post-action:hover,
@@ -456,7 +456,7 @@ a.post-action:hover {
 }
 
 .post-action.is-active {
-    background: #FDECEA;
+    background: var(--color-danger-soft);
 }
 
 a.post-action {
@@ -473,7 +473,7 @@ a.post-action {
 .comment {
     position: relative;
     padding: var(--space-3) var(--space-4);
-    background: #FFFDF8;
+    background: var(--color-bg-elevated);
     border: 1px solid var(--color-border);
     border-radius: 12px;
 }
@@ -507,12 +507,12 @@ a.post-action {
     border-radius: var(--radius-pill);
     font-size: 13px;
     font-weight: 600;
-    color: #7A6A4A;
+    color: var(--color-text-muted);
     transition: background var(--transition), color var(--transition);
 }
 
 .comment__delete:hover {
-    color: #C0392B;
+    color: var(--color-danger);
     background: var(--color-gold-subtle);
 }
 
@@ -527,8 +527,8 @@ a.post-action {
     flex: 1;
     min-width: 0;
     padding: 12px 20px;
-    background: #FFFDF8;
-    border: 1px solid #EFE3C6;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-pill);
     color: var(--color-text);
     font-family: inherit;
@@ -538,44 +538,12 @@ a.post-action {
 
 .comment-form input:focus {
     outline: none;
-    border-color: #DDA532;
-    box-shadow: 0 0 0 3px rgba(221, 165, 50, 0.25);
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 25%, transparent);
 }
 
 .comment-form .btn {
     white-space: nowrap;
-}
-
-/* ---------- Khối xem nhanh bài viết ở Trang chủ ---------- */
-.post-preview-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-4);
-}
-
-.post-preview {
-    padding: var(--space-5);
-    background: #FFFFFF;
-    border: 1px solid #EFE3C6;
-    border-radius: 20px;
-    box-shadow: 0 2px 8px rgba(122, 90, 20, .08);
-    transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
-}
-
-.post-preview:hover {
-    border-color: var(--color-gold-light);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-3px);
-}
-
-.post-preview h3 {
-    font-size: var(--fs-md);
-    margin-bottom: var(--space-2);
-}
-
-.post-preview__meta {
-    font-size: 14px;
-    color: #9C6F10;
 }
 
 @media (max-width: 900px) {
@@ -587,10 +555,6 @@ a.post-action {
     .feed-aside {
         position: static;
         order: -1;
-    }
-
-    .post-preview-list {
-        grid-template-columns: 1fr;
     }
 }
 
@@ -607,14 +571,14 @@ a.post-action {
     background: transparent;
     border: 1px solid var(--color-gold);
     border-radius: var(--radius-pill);
-    color: #9C6F10;
+    color: var(--color-text-accent);
     font-weight: 600;
     text-decoration: none;
     transition: background var(--transition), color var(--transition);
 }
 
 .post-detail__breadcrumb a:hover {
-    color: #7A5508;
+    color: var(--color-accent-strong);
     background: var(--color-gold-subtle);
 }
 
@@ -622,10 +586,10 @@ a.post-action {
     max-width: 820px;
     margin-inline: auto;
     padding: var(--space-6);
-    background: #FFFFFF;
-    border: 1px solid #EFE3C6;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 20px;
-    box-shadow: 0 2px 8px rgba(122, 90, 20, .08);
+    box-shadow: var(--shadow-sm);
 }
 
 .post-detail__head {
@@ -656,7 +620,7 @@ a.post-action {
 
 .post-detail__author {
     font-weight: 700;
-    color: #9C6F10;
+    color: var(--color-text-accent);
 }
 
 .post-detail__time {
@@ -664,22 +628,22 @@ a.post-action {
     align-items: center;
     gap: 6px;
     font-size: 14px;
-    color: #7A6A4A;
+    color: var(--color-text-muted);
 }
 
 .post-detail__meta a {
-    color: #9C6F10;
+    color: var(--color-text-accent);
     font-weight: 600;
 }
 
 .post-detail__meta a:hover {
-    color: #7A5508;
+    color: var(--color-accent-strong);
     text-decoration: underline;
 }
 
 .post-detail__content {
     margin: var(--space-5) 0;
-    color: #3A2F1C;
+    color: var(--color-text);
     font-size: 18px;
     line-height: 1.7;
     white-space: pre-wrap;
@@ -728,13 +692,13 @@ a.post-action {
 }
 
 .post-detail__guest-note a {
-    color: #9C6F10;
+    color: var(--color-text-accent);
     font-weight: 600;
     text-decoration: underline;
 }
 
 .post-detail__guest-note a:hover {
-    color: #7A5508;
+    color: var(--color-accent-strong);
 }
 
 .comment-list__empty {
@@ -773,7 +737,7 @@ a.post-action {
     margin: 0;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
     .post-detail {
         padding: var(--space-4);
     }

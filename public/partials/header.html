@@ -4,12 +4,11 @@
         <span class="site-logo__mark">AOV</span><span class="site-logo__text">HUB</span>
     </a>
 
-    <input type="checkbox" id="nav-toggle" class="nav-toggle" hidden>
-    <label for="nav-toggle" class="nav-toggle__btn" aria-label="Mở menu">
+    <button type="button" class="nav-toggle__btn" aria-label="Mở menu" aria-expanded="false" aria-controls="site-nav">
         <span></span><span></span><span></span>
-    </label>
+    </button>
 
-    <nav class="site-nav" aria-label="Điều hướng chính">
+    <nav class="site-nav" id="site-nav" aria-label="Điều hướng chính">
         <ul>
             <li><a class="site-nav__link" data-page="home" href="{{BASE}}index.html">Trang chủ</a></li>
             <li><a class="site-nav__link" data-page="heroes" href="{{BASE}}src/pages/heroes.html">Tướng</a></li>
@@ -22,8 +21,8 @@
     </nav>
 
     <form class="header-search" action="{{BASE}}src/pages/heroes.html" method="get">
-        <input class="header-search__input" type="text" name="keyword" placeholder="Tìm tướng, trang bị...">
-        <button class="header-search__btn" type="submit" aria-label="Tìm kiếm">🔍</button>
+        <input class="header-search__input" type="text" name="keyword" placeholder="Tìm tướng, trang bị..." aria-label="Tìm tướng, trang bị">
+        <button class="header-search__btn" type="submit" aria-label="Tìm kiếm"><span aria-hidden="true">🔍</span></button>
     </form>
 
     <!-- Nội dung do updateAccountUI() (js/auth.js) điền sau khi header được nạp -->
