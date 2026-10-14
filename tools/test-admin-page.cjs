@@ -29,6 +29,8 @@ const PROFILE_PAGE = 'src/pages/profile.html';
 
 const USERS_JSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/users.json'), 'utf8'));
 const POSTS_JSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/posts.json'), 'utf8'));
+/** HTML trang hồ sơ: kiểm tra nút đăng xuất đã chuyển về đây (thay cho header). */
+const PROFILE_HTML = fs.readFileSync(path.join(ROOT, PROFILE_PAGE), 'utf8');
 
 /** Tài khoản quản trị viên trong data/users.json */
 const ADMIN_USERNAME = 'admin';
@@ -211,16 +213,55 @@ function adminTableIds(page) {
     check('admin thấy link Quản trị trên Header',
         adminHeader.includes('Quản trị') && adminHeader.includes('/src/pages/admin.html'),
         adminHeader.replace(/\s+/g, ' ').slice(0, 160));
-    check('admin vẫn thấy nút Đăng xuất', adminHeader.includes('Đăng xuất'));
+    check('header admin không còn nút "Đăng xuất" và không có id logout-btn',
+        !adminHeader.includes('Đăng xuất') && !adminHeader.includes('logout-btn'),
+        adminHeader.replace(/\s+/g, ' ').slice(0, 160));
+    check('header admin vẫn có link tên tài khoản tới profile.html và nút "Quản trị"',
+        adminHeader.includes('/src/pages/profile.html')
+        && adminHeader.includes('Quản trị') && adminHeader.includes('/src/pages/admin.html'),
+        adminHeader.replace(/\s+/g, ' ').slice(0, 200));
+    check('trang hồ sơ có nút đăng xuất #profile-logout',
+        PROFILE_HTML.includes('id="profile-logout"'));
 
     const userHeader = accountAreaHtml(await openFeed({ login: OTHER_USERNAME }));
     check('user thường không thấy link Quản trí trên Header',
         !userHeader.includes('Quản trị') && !userHeader.includes('/src/pages/admin.html'),
         userHeader.replace(/\s+/g, ' ').slice(0, 160));
+    check('user thường cũng không còn nút Đăng xuất trên header',
+        !userHeader.includes('Đăng xuất') && !userHeader.includes('logout-btn'),
+        userHeader.replace(/\s+/g, ' ').slice(0, 160));
 
     const guestHeader = accountAreaHtml(await openFeed({ storage: new Map() }));
     check('khách không thấy link Quản trị',
         !guestHeader.includes('Quản trị') && guestHeader.includes('Đăng ký'));
+
+    /* ---------- 2b. Menu dọc trang Quản lý (dashboard mới) ---------- */
+    section('2b. Menu dọc trang Quản lý (dashboard mới)');
+
+    const adminMenu = admin.el('admin-tabs');
+    const menuLinks = adminMenu.querySelectorAll('.admin-sidebar__link[data-admin-tab]');
+
+    check('admin thấy menu dọc với đúng 10 mục có data-admin-tab',
+        menuLinks.length === 10,
+        menuLinks.length + ' mục');
+    check('menu có đủ 10 tab theo ADMIN_TABS',
+        ['posts', 'pending', 'reports', 'users', 'heroes', 'items', 'builds', 'log', 'data', 'settings']
+            .every((id) => menuLinks.some((link) => link.dataset.adminTab === id)),
+        menuLinks.map((link) => link.dataset.adminTab).join(', '));
+    check('mỗi mục menu trỏ vào admin.html?tab=<id>',
+        menuLinks.every((link) => (link.getAttribute('href') || '').includes('admin.html?tab=')),
+        menuLinks.map((link) => link.getAttribute('href')).join(', '));
+    check('nút "Thoát quản lý" nằm đầu menu và KHÔNG phải một tab',
+        adminMenu.querySelectorAll('.admin-sidebar__exit').length === 1
+        && adminMenu.querySelector('.admin-sidebar__exit').getAttribute('data-admin-tab') === null,
+        adminMenu.querySelector('.admin-sidebar__exit').getAttribute('data-admin-tab'));
+
+    const strangerMenu = stranger.el('admin-tabs');
+    check('user thường KHÔNG thấy menu quản lý (#admin-tabs rỗng, không có .admin-sidebar)',
+        strangerMenu.querySelectorAll('.admin-sidebar').length === 0
+        && strangerMenu.querySelectorAll('.admin-sidebar__link').length === 0
+        && strangerMenu.innerHTML === '',
+        strangerMenu.innerHTML.slice(0, 120));
 
     /* ---------- 3. Admin ẩn bài viết ---------- */
     section('3. Admin ẩn bài viết');
