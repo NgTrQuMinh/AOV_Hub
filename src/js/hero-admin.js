@@ -1,5 +1,11 @@
 /**
- * hero-admin.js - Trang quản lý tướng (src/pages/hero-admin.html)
+ * hero-admin.js - Quản lý tướng (chạy độc lập + là mục của trang Quản lý)
+ *
+ * File này vừa chạy như trang riêng (src/pages/hero-admin.html), vừa là MỘT mục
+ * của trang Quản lý (src/pages/admin.html?tab=heroes). Khi được nạp trong trang
+ * Quản lý (sau admin-shell.js), đoạn đăng ký ở CUỐI file gọi registerAdminSection()
+ * để shell gọi renderHeroAdminSection() mỗi lần mở mục "Tướng". Trang nào không có
+ * registerAdminSection (trang riêng cũ) thì handler DOMContentLoaded tự khởi tạo như cũ.
  *
  * Nhiệm vụ: giúp quản trị viên (tài khoản có role === 'admin') CRUD tướng:
  *   - thêm tướng mới: createHero() (heroData.js)
@@ -660,6 +666,52 @@ async function initHeroAdminPage() {
     renderHeroAdminTable();
 }
 
+/**
+ * Mục "Tướng" của trang Quản lý (đăng ký bằng registerAdminSection() ở cuối file).
+ * Shell tạo sẵn khung .admin-section + tiêu đề rồi truyền vào đây phần thân
+ * (container), nên hàm chỉ dựng mô tả + 4 id mà initHeroAdminPage() cần rồi vẽ.
+ * @param {Element} container phần thân .admin-section__body do shell cung cấp.
+ */
+async function renderHeroAdminSection(container) {
+    if (!container) return;
+
+    // Cấu trúc/class lấy đúng như hero-admin.html để không lệch giao diện cũ.
+    container.innerHTML = `
+        <p class="admin-section__desc">
+            Dành cho quản trị viên: thêm tướng mới, sửa thông tin tướng
+            (tên, ảnh, vai trò, độ khó, chỉ số, kỹ năng, trang bị đề xuất)
+            hoặc xoá tướng khỏi hệ thống. Thay đổi được lưu thẳng vào file
+            src/data/heroes.json và hiển thị ngay ở các trang đọc dữ liệu tướng.
+        </p>
+
+        <!-- Form thêm / sửa tướng: do renderHeroAdminForm() vẽ và gắn sự kiện -->
+        <div id="hero-admin-form"></div>
+
+        <!-- Ô tìm theo tên tướng + nút thêm mới -->
+        <div id="hero-admin-toolbar" class="feed-filter"></div>
+
+        <!-- Số tướng đang hiển thị / tổng số tướng trong hệ thống -->
+        <p id="hero-admin-count" class="feed-count" aria-live="polite"></p>
+
+        <!-- Bảng tướng: do renderHeroAdminTable() vẽ từ lớp dữ liệu heroData.js -->
+        <div id="hero-admin-list" class="card"></div>
+    `;
+
+    // Từ khoá tìm kiếm cũ không được dính sang lần mở mục sau.
+    heroAdminKeyword = '';
+
+    try {
+        await initHeroAdminPage();
+    } catch (error) {
+        // Không để trang trắng nếu lớp dữ liệu lỗi.
+        container.innerHTML = `
+            <p class="admin-empty">
+                Không hiển thị được mục Quản lý tướng. Hãy tải lại trang hoặc kiểm tra server.
+            </p>
+        `;
+    }
+}
+
 /* ---------- Sự kiện thêm / sửa / xoá ---------- */
 
 /*
@@ -668,6 +720,13 @@ async function initHeroAdminPage() {
  * đúng cách admin.js xử lý nút ẩn / xoá bài.
  */
 document.addEventListener('click', async (event) => {
+    // Chỉ xử lý click trong khu vực quản lý tướng để không bắt nhầm click của
+    // các mục admin khác (nhiều mục cùng nằm trong trang Quản lý).
+    if (!event.target || typeof event.target.closest !== 'function'
+        || !event.target.closest('#hero-admin-form, #hero-admin-toolbar, #hero-admin-list')) {
+        return;
+    }
+
     // Nút "Thêm tướng" trên thanh công cụ: quay về form trống.
     const addBtn = event.target.closest('[data-hero-add]');
     if (addBtn) {
@@ -754,9 +813,18 @@ document.addEventListener('click', async (event) => {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Trong trang Quản lý (admin.html) thì shell gọi renderHeroAdminSection() khi
+    // người dùng mở mục "Tướng"; ở đây không tự khởi tạo để tránh chạy hai lần.
+    if (typeof registerAdminSection === 'function') return;
+
     try {
         await initHeroAdminPage();
     } catch (error) {
         console.error('Không khởi tạo được trang Quản lý tướng', error);
     }
 });
+
+// Đăng ký mục "Tướng" vào trang Quản lý (chỉ có tác dụng khi admin-shell.js đã nạp).
+if (typeof registerAdminSection === 'function') {
+    registerAdminSection('heroes', 'hero-manager', 'Quản lý tướng', renderHeroAdminSection);
+}

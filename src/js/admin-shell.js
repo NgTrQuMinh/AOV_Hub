@@ -1,12 +1,12 @@
 /**
  * admin-shell.js - Khung trang quản trị nhiều tab (CM03)
  *
- * Trang: src/pages/admin.html (và dùng chung cho các trang quản trị riêng như
- * hero-admin.html nếu các trang đó đặt sẵn <div id="admin-tabs"></div>).
+ * Trang: src/pages/admin.html. Mọi mục quản lý đều mở ngay trong trang này với
+ * địa chỉ admin.html?tab=<id>; shell chỉ vẽ vào <div id="admin-tabs"></div>.
  *
  * MỤC ĐÍCH
  *   Trước đây phần khung trang Quản trị nằm chung trong admin.js nên nhiều người
- *   cùng sửa rất dễ đụng nhau. File này tách riêng phần "khung": vẽ thanh tab và
+ *   cùng sửa rất dễ đụng nhau. File này tách riêng phần "khung": vẽ menu dọc và
  *   nạp đúng file JS của từng tab. Mỗi tab là một file riêng (admin-pending.js,
  *   admin-users.js, admin-log.js...); file tab chỉ cần gọi registerAdminSection()
  *   để đăng ký các mục của mình, KHÔNG phải sửa chung admin.js.
@@ -22,22 +22,34 @@
  * DANH SÁCH TAB (giữ đúng thứ tự này)
  *   posts, pending, reports, users, heroes, items, builds, log, data, settings.
  *   - Tab "Dữ liệu" và "Cài đặt" là phần THÊM so với kế hoạch gốc.
- *   - Tab "Tướng", "Trang bị", "Build" là trang riêng (external), chỉ là liên kết.
- *   - File tab nào chưa viết xong (vd admin-reports.js chưa có) thì script 404 sẽ
- *     được bỏ qua êm; người dùng thấy "Mục này đang được phát triển." thay vì lỗi đỏ.
+ *   - Mọi mục đều mở trong admin.html?tab=<id>, không mục nào nhảy sang trang riêng.
+ *   - Mục "Tướng" do hero-admin.js tự đăng ký (file này được nạp tĩnh sau
+ *     admin-shell.js trong admin.html) nên không cần trường scripts.
+ *   - admin-items.js và admin-builds.js do người khác viết sau (nạp qua trường
+ *     scripts); chưa có file thì script 404 được bỏ qua êm và người dùng thấy
+ *     "Mục này đang được phát triển." thay vì lỗi đỏ.
  *
- * MENU DỌC (bước sau)
- *   Trang quản trị sẽ đổi thành MỘT mục "Quản lý": cột trái là danh sách mục quản lý
- *   chia theo nhóm, cột phải là nội dung. Để chuẩn bị dữ liệu, mỗi phần tử ADMIN_TABS
- *   đã được thêm hai trường: group (tên nhóm trong ADMIN_GROUPS) và icon (chuỗi <svg>
- *   inline vẽ biểu tượng). Hàm getAdminMenuGroups() trả về danh sách nhóm theo thứ tự
- *   ADMIN_GROUPS để bước sau vẽ menu dọc; giao diện hiện tại vẫn dùng thanh tab ngang.
+ * MENU DỌC
+ *   Trang quản trị là MỘT mục "Quản lý": cột trái là menu dọc chia theo nhóm, cột phải
+ *   là nội dung. Mỗi phần tử ADMIN_TABS có hai trường: group (tên nhóm trong
+ *   ADMIN_GROUPS) và icon (chuỗi <svg> inline vẽ biểu tượng). getAdminMenuGroups() trả
+ *   về danh sách nhóm theo thứ tự ADMIN_GROUPS; buildAdminSidebar() dựng cấu trúc:
+ *     <aside class="admin-sidebar">
+ *       <div class="admin-sidebar__brand"> (chứa __title và __sub tên tài khoản)
+ *       <nav class="admin-sidebar__nav"> chứa các __group; mỗi nhóm có các __link
+ *         (thêm is-active cho mục đang chọn), trong __link có __icon, __label và
+ *         __badge (chỉ khi mục có badge và số > 0).
+ *   Hợp đồng class: admin-sidebar, __brand, __title, __sub, __nav, __group, __link
+ *   (is-active), __icon, __label, __badge.
  *
- * DÙNG CHUNG KHUNG Ở TRANG RIÊNG
- *   hero-admin.html có thể đặt <div id="admin-tabs"></div> và
- *   <body data-admin-tab="heroes"> để dùng lại đúng thanh tab này. Shell đọc
- *   data-admin-tab trên <body> trước; không có thì đọc tham số ?tab= trên URL;
- *   vẫn không có thì mặc định 'posts'. Tên tab lạ cũng rơi về 'posts'.
+ * CHỌN TAB ĐANG MỞ
+ *   Shell đọc data-admin-tab trên <body> trước; không có thì đọc tham số ?tab= trên
+ *   URL; vẫn không có thì mặc định 'posts'. Tên tab lạ cũng rơi về 'posts'.
+ *
+ * GHI CHÚ GẮN KẾT
+ *   Shell vẽ vào <div id="admin-tabs"></div>. Phần tử tuỳ chọn <div id="admin-notices">
+ *   (nếu trang có) nhận cảnh báo dung lượng LocalStorage; trang không có thì cảnh báo
+ *   được nối vào cuối #admin-tabs (đã xử lý ở S2).
  *
  * AN NINH
  *   "admin" ở đây CHỈ là quy ước phía trình duyệt (role trong users.json), KHÔNG
@@ -52,19 +64,21 @@
  */
 
 /**
- * Các nhóm của menu quản lý dạng cột (bước sau), giữ đúng thứ tự này.
+ * Các nhóm của menu quản lý dạng cột, giữ đúng thứ tự này.
  * Mỗi phần tử ADMIN_TABS mang trường group chỉ đúng MỘT giá trị trong đây.
  */
 const ADMIN_GROUPS = ['Nội dung', 'Cộng đồng', 'Dữ liệu game', 'Hệ thống'];
 
 /**
- * Các tab của khung quản trị, giữ đúng thứ tự hiển thị trên thanh tab.
+ * Các tab của khung quản trị, giữ đúng thứ tự hiển thị trên menu dọc.
  *   id       mã tab (dùng trong URL ?tab= và data-admin-tab)
- *   label    chữ hiện trên tab
- *   page     file trang, nối sau BASE_PATH + 'src/pages/'
- *   scripts  các file JS của tab, nối sau BASE_PATH + 'src/js/'
+ *   label    chữ hiện trên mục
+ *   page     luôn là 'admin.html?tab=<id>' (mở ngay trong trang quản lý)
+ *   scripts  các file JS của tab, nối sau BASE_PATH + 'src/js/' (mục Tướng không
+ *            cần vì hero-admin.js được nạp tĩnh và tự đăng ký mục 'heroes')
  *   badge    'pending' | 'reports' — tab có gắn badge đếm số
- *   external tab trỏ sang trang riêng, shell chỉ vẽ liên kết, không nạp nội dung
+ *   external cờ cho mục trỏ sang trang riêng; hiện KHÔNG mục nào dùng, giữ lại để
+ *            showAdminTabContent() tương thích nếu sau này có mục như vậy
  *   group    tên nhóm (một giá trị trong ADMIN_GROUPS) để vẽ menu dọc "Quản lý"
  *   icon     chuỗi <svg> inline vẽ biểu tượng của mục cho menu dọc
  */
@@ -105,24 +119,23 @@ const ADMIN_TABS = [
     {
         id: 'heroes',
         label: 'Tướng',
-        page: 'hero-admin.html',
-        external: true,
+        page: 'admin.html?tab=heroes',
         group: 'Dữ liệu game',
         icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z"></path></svg>',
     },
     {
         id: 'items',
         label: 'Trang bị',
-        page: 'admin-items.html',
-        external: true,
+        page: 'admin.html?tab=items',
+        scripts: ['admin-items.js'],
         group: 'Dữ liệu game',
         icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"></path><line x1="3" y1="7" x2="12" y2="11"></line><line x1="12" y1="11" x2="21" y2="7"></line><line x1="12" y1="11" x2="12" y2="21"></line></svg>',
     },
     {
         id: 'builds',
         label: 'Build',
-        page: 'admin-builds.html',
-        external: true,
+        page: 'admin.html?tab=builds',
+        scripts: ['admin-builds.js'],
         group: 'Dữ liệu game',
         icon: '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>',
     },
@@ -153,7 +166,7 @@ const ADMIN_TABS = [
 ];
 
 /**
- * Trả về các nhóm mục quản lý để vẽ menu dọc "Quản lý" (bước sau).
+ * Trả về các nhóm mục quản lý để vẽ menu dọc "Quản lý".
  * Mỗi nhóm là { group: tên nhóm, tabs: [các phần tử ADMIN_TABS của nhóm, giữ
  * thứ tự trong ADMIN_TABS] }, sắp theo đúng thứ tự ADMIN_GROUPS. Nhóm nào
  * không có mục nào thì bỏ qua. Tab có group không nằm trong ADMIN_GROUPS
@@ -317,7 +330,7 @@ async function getAdminBadgeCounts() {
             }
         }
     } catch (error) {
-        // Không đọc được bài viết: coi như 0, không làm sập thanh tab.
+        // Không đọc được bài viết: coi như 0, không làm sập menu dọc.
     }
 
     // pending: cộng thêm số build đang chờ duyệt (nếu tab Build cung cấp hàm này).
@@ -342,9 +355,9 @@ async function getAdminBadgeCounts() {
 }
 
 /**
- * Tính lại số badge rồi chỉ cập nhật các .admin-tabs__badge trên thanh tab đang hiển
- * thị (thêm / đổi số / xóa), KHÔNG vẽ lại cả thanh tab. Các file tab gọi sau khi
- * duyệt hoặc từ chối bài để số trên tab đổi ngay.
+ * Tính lại số badge rồi chỉ cập nhật các .admin-sidebar__badge trên menu dọc đang
+ * hiển thị (thêm / đổi số / xóa), KHÔNG vẽ lại cả menu dọc. Các file tab gọi sau khi
+ * duyệt hoặc từ chối bài để số trên mục đổi ngay.
  * @returns {Promise<{ pending: number, reports: number }>} số vừa tính
  */
 async function refreshAdminBadges() {
@@ -361,52 +374,136 @@ async function refreshAdminBadges() {
         ADMIN_TABS.forEach((tab) => {
             if (!tab.badge) return;
 
-            const link = document.querySelector('.admin-tabs__link[data-admin-tab="' + tab.id + '"]');
+            const link = document.querySelector('.admin-sidebar__link[data-admin-tab="' + tab.id + '"]');
             if (!link) return;
 
-            const count = tab.badge === 'pending' ? counts.pending : counts.reports;
-            const badge = count > 0
-                ? '<span class="admin-tabs__badge">' + adminShellEscape(count) + '</span>'
-                : '';
-
-            // Chỉ ghi lại nội dung của đúng liên kết đó, không đụng các tab khác.
-            link.innerHTML = adminShellEscape(tab.label) + badge;
+            // Chỉ ghi lại nội dung của đúng liên kết đó, không đụng các mục khác.
+            link.innerHTML = buildAdminLinkInner(tab, getAdminTabBadgeCount(tab, counts));
         });
     } catch (error) {
-        // Không cập nhật được badge cũng không sao; thanh tab cũ vẫn dùng được.
+        // Không cập nhật được badge cũng không sao; menu dọc cũ vẫn dùng được.
     }
 
     return counts;
 }
 
-/* ---------- Vẽ thanh tab ---------- */
+/* ---------- Vẽ menu dọc ---------- */
 
 /**
- * Dựng HTML cho <nav class="admin-tabs">.
+ * Số badge của một mục: tab có badge 'pending' lấy counts.pending, badge 'reports'
+ * lấy counts.reports, còn lại 0. Mọi giá trị đều chuẩn hoá qua adminShellCount().
+ * @param {object} tab phần tử ADMIN_TABS
+ * @param {{ pending: number, reports: number }} counts
+ * @returns {number}
+ */
+function getAdminTabBadgeCount(tab, counts) {
+    if (!tab || !tab.badge) return 0;
+
+    const source = counts && typeof counts === 'object' ? counts : {};
+    if (tab.badge === 'pending') return adminShellCount(source.pending);
+    if (tab.badge === 'reports') return adminShellCount(source.reports);
+    return 0;
+}
+
+/**
+ * Dựng HTML bên trong một liên kết menu: icon, nhãn và (nếu có) badge đếm số.
+ * - Icon là chuỗi <svg> cố định lấy từ ADMIN_TABS nên KHÔNG escape.
+ * - Nhãn, số và tab.badge đều qua adminShellEscape.
+ * - Số lớn hơn 99 hiển thị "99+".
+ * @param {object} tab phần tử ADMIN_TABS
+ * @param {number} count số badge đã chuẩn hoá
+ * @returns {string}
+ */
+function buildAdminLinkInner(tab, count) {
+    const icon = '<span class="admin-sidebar__icon">' + (tab && tab.icon ? tab.icon : '') + '</span>';
+    const label = '<span class="admin-sidebar__label">' + adminShellEscape(tab ? tab.label : '') + '</span>';
+
+    let badge = '';
+    if (tab && tab.badge && count > 0) {
+        const text = count > 99 ? '99+' : String(count);
+        badge = '<span class="admin-sidebar__badge" data-admin-badge="' + adminShellEscape(tab.badge) + '">'
+            + adminShellEscape(text) + '</span>';
+    }
+
+    return icon + label + badge;
+}
+
+/**
+ * Tên người đang đăng nhập để hiện dưới tiêu đề "Quản lý". Dùng getCurrentUser()
+ * (auth.js) nếu có; mọi lỗi đều bị nuốt và trả chuỗi rỗng.
+ * @returns {string}
+ */
+function getAdminSidebarUser() {
+    try {
+        if (typeof getCurrentUser === 'function') {
+            const name = getCurrentUser();
+            return name ? String(name) : '';
+        }
+    } catch (error) {
+        // Không đọc được người dùng: coi như chưa có tên.
+    }
+
+    return '';
+}
+
+/**
+ * Dựng HTML cho <aside class="admin-sidebar">: thương hiệu "Quản lý", tên tài khoản,
+ * nút "Thoát quản lý" ở đầu menu, rồi các nhóm mục (getAdminMenuGroups) với liên kết
+ * của từng mục. Mục đang chọn có thêm class is-active và aria-current="page". href và
+ * data-admin-tab qua adminShellEscape.
+ * Nút thoát (class admin-sidebar__exit) trỏ về trang chủ và CỐ Ý không có data-admin-tab
+ * lẫn is-active để không bị getActiveAdminTab / đánh dấu mục đang chọn / refreshAdminBadges
+ * (duyệt theo .admin-sidebar__link[data-admin-tab]) nhầm là một tab.
+ * Hợp đồng class: admin-sidebar, __brand, __title, __sub, __nav, __group, __link
+ * (is-active), __exit, __icon, __label, __badge.
  * @param {string} activeTabId tab đang chọn
  * @param {{ pending: number, reports: number }} counts
  * @returns {string}
  */
-function buildAdminTabsNav(activeTabId, counts) {
-    const links = ADMIN_TABS.map((tab) => {
-        const isActive = tab.id === activeTabId;
-        const href = adminShellBasePath() + 'src/pages/' + tab.page;
-        const className = isActive ? 'admin-tabs__link is-active' : 'admin-tabs__link';
-        const current = isActive ? ' aria-current="page"' : '';
+function buildAdminSidebar(activeTabId, counts) {
+    const groups = getAdminMenuGroups();
 
-        const count = tab.badge === 'pending' ? counts.pending
-            : tab.badge === 'reports' ? counts.reports
-                : 0;
-        const badge = (tab.badge && count > 0)
-            ? '<span class="admin-tabs__badge">' + adminShellEscape(count) + '</span>'
-            : '';
+    let html = '<aside class="admin-sidebar" aria-label="Quản lý">';
 
-        return '<a class="' + className + '" href="' + adminShellEscape(href) + '"'
-            + ' data-admin-tab="' + adminShellEscape(tab.id) + '"' + current + '>'
-            + adminShellEscape(tab.label) + badge + '</a>';
-    }).join('');
+    const user = getAdminSidebarUser();
+    html += '<div class="admin-sidebar__brand">'
+        + '<strong class="admin-sidebar__title">Quản lý</strong>'
+        + (user ? '<span class="admin-sidebar__sub">' + adminShellEscape(user) + '</span>' : '')
+        + '</div>';
 
-    return '<nav class="admin-tabs" aria-label="Quản trị">' + links + '</nav>';
+    html += '<nav class="admin-sidebar__nav" aria-label="Các mục quản lý">';
+
+    // Thoát khu quản lý về trang chủ. Đặt đầu menu; không gắn data-admin-tab để
+    // nút này không tham gia đánh dấu mục đang chọn hay đếm badge.
+    html += '<a class="admin-sidebar__link admin-sidebar__exit"'
+        + ' href="' + adminShellEscape(adminShellBasePath() + 'index.html') + '"'
+        + ' title="Thoát khỏi khu quản lý, về website">'
+        + '<span class="admin-sidebar__icon" aria-hidden="true">'
+        + '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"'
+        + ' stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        + '<line x1="19" y1="12" x2="5" y2="12"></line>'
+        + '<polyline points="12 19 5 12 12 5"></polyline>'
+        + '</svg></span>'
+        + '<span class="admin-sidebar__label">Thoát quản lý</span>'
+        + '</a>';
+
+    for (const group of groups) {
+        html += '<p class="admin-sidebar__group">' + adminShellEscape(group.group) + '</p>';
+
+        for (const tab of group.tabs) {
+            const isActive = tab.id === activeTabId;
+            const href = adminShellBasePath() + 'src/pages/' + tab.page;
+            const className = isActive ? 'admin-sidebar__link is-active' : 'admin-sidebar__link';
+            const current = isActive ? ' aria-current="page"' : '';
+
+            html += '<a class="' + className + '" href="' + adminShellEscape(href) + '"'
+                + ' data-admin-tab="' + adminShellEscape(tab.id) + '"' + current + '>'
+                + buildAdminLinkInner(tab, getAdminTabBadgeCount(tab, counts)) + '</a>';
+        }
+    }
+
+    html += '</nav></aside>';
+    return html;
 }
 
 /**
@@ -613,7 +710,7 @@ function setAdminPanelVisible(id, visible) {
 /**
  * Hiển thị nội dung tương ứng với tab đang chọn.
  * - Tab posts: shell không vẽ nội dung, chỉ ẩn/hiện panel sẵn có của admin.js.
- * - Tab external: chỉ vẽ thanh tab, không đụng panel nào.
+ * - Tab external: chỉ vẽ menu dọc, không đụng panel nào.
  * - Tab động: ẩn panel Bài viết, hiện panel chung, nạp script rồi vẽ các mục đã đăng ký.
  * @param {object} tab một phần tử của ADMIN_TABS
  * @returns {Promise<void>}
@@ -639,7 +736,7 @@ async function showAdminTabContent(tab) {
 /* ---------- Điểm vào ---------- */
 
 /**
- * Vẽ toàn bộ khung quản trị: thanh tab + nội dung tab đang chọn.
+ * Vẽ toàn bộ khung quản trị: menu dọc + nội dung tab đang chọn.
  * Thoát im lặng nếu trang không có #admin-tabs; fail-closed nếu chưa chắc là admin.
  * @returns {Promise<void>}
  */
@@ -673,8 +770,16 @@ async function renderAdminShell() {
     const activeTabId = getActiveAdminTab();
     const activeTab = ADMIN_TABS.find((tab) => tab.id === activeTabId) || ADMIN_TABS[0];
 
+    container.innerHTML = buildAdminSidebar(activeTabId, counts);
+
+    // Cảnh báo dung lượng LocalStorage (chỉ có khi CM05 xong): đặt vào #admin-notices
+    // nếu trang có sẵn, không có thì nối vào cuối container (sau menu).
     const storageNotice = await buildAdminStorageNotice();
-    container.innerHTML = storageNotice + buildAdminTabsNav(activeTabId, counts);
+    if (storageNotice) {
+        const notices = typeof document !== 'undefined' ? document.getElementById('admin-notices') : null;
+        if (notices) notices.innerHTML = storageNotice;
+        else container.innerHTML += storageNotice;
+    }
 
     try {
         await showAdminTabContent(activeTab);

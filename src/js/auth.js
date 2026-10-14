@@ -49,8 +49,11 @@ const PROTECTED_PAGES = [
 /** Trang quản trị bài viết: chỉ tài khoản có role === 'admin' mới vào được. */
 const ADMIN_PAGE = BASE_PATH + 'src/pages/admin.html';
 
-/** Trang quản lý tướng (thêm/sửa/xoá): cũng chỉ tài khoản admin mới vào được. */
-const HERO_ADMIN_PAGE = BASE_PATH + 'src/pages/hero-admin.html';
+/**
+ * Mục "Tướng" trong trang Quản lý. Trang hero-admin.html cũ nay chỉ chuyển hướng,
+ * nên hằng số này trỏ thẳng vào tab heroes của ADMIN_PAGE.
+ */
+const HERO_ADMIN_PAGE = ADMIN_PAGE + '?tab=heroes';
 
 /* ---------- Đọc/ghi danh sách user ---------- */
 
@@ -437,7 +440,10 @@ function renderSuccess(container, message) {
 /* ---------- Task 8 + 33 - Khu vực Account trên Header ---------- */
 
 /**
- * Vẽ khu vực tài khoản trên Header (Đăng nhập/Đăng ký hoặc username + Đăng xuất).
+ * Vẽ khu vực tài khoản trên Header: chưa đăng nhập thì hiện Đăng nhập/Đăng ký;
+ * đã đăng nhập thì chỉ hiện tên tài khoản (link profile.html) và nút "Quản trị"
+ * (chỉ admin). Nút "Quản lý tướng" và nút "Đăng xuất" đã bỏ khỏi header — đăng
+ * xuất nằm ở trang hồ sơ (profile.html, nút #profile-logout).
  *
  * @param {boolean} [isRetry=false] cờ nội bộ: đã thử lại sau khi usersReady xong thì
  *        không chờ nữa, để tránh lặp vô hạn khi data/users.json tải lỗi.
@@ -464,15 +470,10 @@ function updateAccountUI(isRetry = false) {
                     ${escapeHtml(username)}
                 </a>
                 ${isAdmin() ? `<a class="btn btn-outline btn-sm" href="${ADMIN_PAGE}">Quản trị</a>` : ''}
-                ${isAdmin() ? `<a class="btn btn-outline btn-sm" href="${HERO_ADMIN_PAGE}">Quản lý tướng</a>` : ''}
-                <button type="button" class="btn btn-outline btn-sm" id="logout-btn">Đăng xuất</button>
             </div>
         `;
 
-        const logoutBtn = document.getElementById('logout-btn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', logout);
-        }
+        // Đăng xuất không còn ở header: nằm ở trang hồ sơ (profile.html, #profile-logout).
     } else {
         area.innerHTML = `
             <div class="account-area__guest">
