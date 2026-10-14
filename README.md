@@ -20,14 +20,14 @@ AOV-Hub/
 │   ├── partials/                 # header.html, footer.html (nạp bằng layout.js)
 │   ├── css/                      # reset, variables, common, home, hero, item,
 │   │   │                         #   build, compare, favorite, feed, auth,
-│   │   │                         #   admin, hero-admin
+│   │   │                         #   admin, hero-admin, search
 │   └── assets/images/            # ảnh tướng, trang bị, banner...
 │
 ├── src/
 │   ├── pages/                    # 404, login, register, profile,
 │   │                             #   heroes, hero-detail, items, item-detail,
 │   │                             #   builds, compare, favorite, feed,
-│   │                             #   post-detail, admin, hero-admin
+│   │                             #   post-detail, search, admin, hero-admin
 │   ├── data/                     # heroes.json, items.json, builds.json,
 │   │                             #   posts.json, users.json, comments.json, likes.json
 │   └── js/
@@ -39,6 +39,7 @@ AOV-Hub/
 │       ├── auth.js               # đăng ký/đăng nhập (PBKDF2-SHA256), guard trang
 │       ├── storage.js            # LocalStorage: favorites/history/compare
 │       ├── search.js             # chuẩn hoá từ khoá (bỏ dấu, không phân biệt hoa thường)
+│       ├── search-page.js        # Trang Tìm kiếm toàn cục (tướng/trang bị/build/bài viết)
 │       ├── favorite.js           # nút ♥ trên card/chi tiết
 │       ├── heroData.js           # lớp dữ liệu tướng (loadHeroes + API admin)
 │       ├── home.js               # Trang chủ: Tướng/Trang bị nổi bật
@@ -120,17 +121,17 @@ Không tự ý đổi tên các key cố định khi thêm tính năng — `stor
 ```bash
 npm install                 # cài phụ thuộc
 npm run dev                 # dev server (có API /api/heroes, /api/<collection>)
-npm test                    # 16 file test mini-DOM
+npm test                    # 17 file test mini-DOM
 npm run test:e2e:install    # cài Chromium (một lần)
 npm run test:e2e            # test trình duyệt thật (responsive + menu mobile)
-npm run build               # build 16 trang vào dist/
+npm run build               # build 17 trang vào dist/
 npm run preview             # xem bản build (vẫn có API /api/heroes, /api/<collection>)
 ```
 
 ### 6.2. Kết quả hiện tại
-- `npm test`: **16/16 file PASS** (mini-DOM).
-- `npm run test:e2e`: **77/77 PASS** — 15 trang × 5 mốc (360 / 480 / 768 / 1024 / 1280) không tràn ngang, cộng 2 test menu mobile.
-- `npm run build`: sinh đủ **16 trang HTML** + css/js/data/ảnh vào `dist/`; chạy `npm run preview` rồi mở để kiểm tra lại.
+- `npm test`: **17/17 file PASS** (mini-DOM).
+- `npm run test:e2e`: **82/82 PASS** — 16 trang × 5 mốc (360 / 480 / 768 / 1024 / 1280) không tràn ngang, cộng 2 test menu mobile.
+- `npm run build`: sinh đủ **17 trang HTML** + css/js/data/ảnh vào `dist/`; chạy `npm run preview` rồi mở để kiểm tra lại.
 
 ### 6.3. Tài khoản demo
 
