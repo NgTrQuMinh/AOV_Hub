@@ -841,6 +841,24 @@ main {
         flex: 1 1 100%;
     }
 
+    /* Điện thoại nhỏ: khu tài khoản co lại được, tên hiển thị cắt bớt
+       thay vì đẩy tràn header khi người dùng có tên dài. */
+    .account-area {
+        min-width: 0;
+        flex-shrink: 1;
+    }
+
+    .account-area__session,
+    .account-area__guest {
+        min-width: 0;
+    }
+
+    .account-area__username {
+        max-width: 40vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     h1 { font-size: var(--fs-2xl); }
     h2 { font-size: var(--fs-xl); }
 }

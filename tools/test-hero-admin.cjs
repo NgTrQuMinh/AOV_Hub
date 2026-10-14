@@ -8,7 +8,8 @@
  * Phạm vi kiểm tra:
  *   1. Guard trang: khách bị đưa về Login, user thường bị đưa về trang chủ kèm cảnh báo,
  *      admin thì vào được và thấy form + bảng tướng.
- *   1b. src/pages/hero-admin.html giờ chỉ là trang chuyển hướng (đọc file, không mở).
+ *   1b. src/pages/hero-admin.html dùng chung khung quản trị (admin-shell.js) và nạp
+ *      hero-admin.js / heroData.js cho mục "Tướng" (đọc file, không mở).
  *   2. Header không còn nút "Quản lý tướng"/"Đăng xuất"; menu dọc có mục "Tướng".
  *   3. Form thêm tướng: vai trò là radio (mỗi tướng chỉ chọn được 1), mở sẵn
  *      đúng 3 ô kỹ năng cố định (không nút Thêm / nút ✕), loại chiêu khoá theo
@@ -36,7 +37,6 @@ const path = require('path');
 const { ROOT, loadPage, fire, unescapeHtml } = require('./mini-dom.cjs');
 
 const ADMIN_PAGE = 'src/pages/admin.html';
-/** Trang cũ chỉ còn là trang chuyển hướng (kiểm tra bằng fs, không mở bằng mini-dom). */
 const HERO_ADMIN_PAGE = 'src/pages/hero-admin.html';
 /** Tab "Tướng" nằm trong trang Quản lý, mở bằng query string này. */
 const HERO_TAB_SEARCH = '?tab=heroes';
@@ -253,22 +253,21 @@ const formErrorsText = (page) => {
         [guest, stranger, admin].every((page) => page.errors.length === 0),
         [guest, stranger, admin].flatMap((page) => page.errors).join(' | '));
 
-    /* ---------- 1b. hero-admin.html giờ chỉ là trang chuyển hướng ---------- */
-    section('1b. hero-admin.html là trang chuyển hướng');
+    /* ---------- 1b. hero-admin.html dùng chung khung quản trị ---------- */
+    section('1b. hero-admin.html dùng chung khung quản trị');
 
-    // Đọc file bằng fs: mini-dom không có location.replace nên KHÔNG mở trang này.
-    const redirectHtml = fs.readFileSync(path.join(ROOT, HERO_ADMIN_PAGE), 'utf8');
-    check('hero-admin.html có meta refresh trỏ tới admin.html?tab=heroes',
-        /http-equiv="refresh"[^>]*admin\.html\?tab=heroes/.test(redirectHtml)
-        || /content="0;\s*url=[^"]*admin\.html\?tab=heroes/.test(redirectHtml),
-        redirectHtml.replace(/\s+/g, ' ').slice(0, 200));
-    check('hero-admin.html có location.replace tới cùng đích',
-        /location\.replace\([^)]*admin\.html\?tab=heroes/.test(redirectHtml),
-        redirectHtml.replace(/\s+/g, ' ').slice(0, 200));
-    check('hero-admin.html KHÔNG còn nạp hero-admin.js / heroData.js / guard requireAdmin',
-        !redirectHtml.includes('hero-admin.js')
-        && !redirectHtml.includes('heroData.js')
-        && !redirectHtml.includes('requireAdmin'));
+    // Đọc file bằng fs: mini-dom không chạy điều hướng nên KHÔNG mở trang này.
+    const heroAdminHtml = fs.readFileSync(path.join(ROOT, HERO_ADMIN_PAGE), 'utf8');
+    check('hero-admin.html đánh dấu mục "Tướng" (data-admin-tab="heroes")',
+        /data-admin-tab="heroes"/.test(heroAdminHtml),
+        heroAdminHtml.replace(/\s+/g, ' ').slice(0, 200));
+    check('hero-admin.html nạp khung quản trị chung (admin-shell.js)',
+        heroAdminHtml.includes('admin-shell.js'),
+        heroAdminHtml.replace(/\s+/g, ' ').slice(0, 200));
+    check('hero-admin.html nạp hero-admin.js + heroData.js cho mục "Tướng"',
+        heroAdminHtml.includes('hero-admin.js') && heroAdminHtml.includes('heroData.js'));
+    check('hero-admin.html có guard requireAdmin()',
+        /requireAdmin\(\)/.test(heroAdminHtml));
 
     /* ---------- 2. Header: bỏ "Quản lý tướng" và "Đăng xuất" ---------- */
     section('2. Header không còn "Quản lý tướng"/"Đăng xuất"');

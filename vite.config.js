@@ -24,6 +24,8 @@ import { fileURLToPath } from 'node:url';
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 const heroesFile = path.join(rootDir, 'src', 'data', 'heroes.json');
 
+const pagesDir = path.join(rootDir, 'src', 'pages');
+
 const HERO_ROLES = ['Xạ thủ', 'Sát thủ', 'Pháp sư', 'Đấu sĩ', 'Đỡ đòn', 'Trợ thủ'];
 const HERO_STAT_KEYS = ['hp', 'attack', 'defense', 'speed'];
 
@@ -230,6 +232,55 @@ function heroesApiMiddleware() {
     };
 }
 
+/**
+ * Danh sách đầu vào cho build nhiều trang.
+ *
+ * Mặc định Vite chỉ lấy `index.html` làm điểm vào nên 15 trang trong `src/pages/`
+ * không được sinh ra ở `dist/`. Liệt kê từng trang để bản build có đủ, giữ nguyên
+ * đường dẫn `/src/pages/...` mà các link trong trang đang trỏ tới.
+ */
+function pageInputs() {
+    const inputs = { index: path.join(rootDir, 'index.html') };
+
+    fs.readdirSync(pagesDir)
+        .filter((file) => file.endsWith('.html'))
+        .forEach((file) => {
+            inputs['pages/' + file.replace(/\.html$/, '')] = path.join(pagesDir, file);
+        });
+
+    return inputs;
+}
+
+/**
+ * Copy `src/js` + `src/data` sang output của build.
+ *
+ * Trang dùng thẻ <script> cổ điển (không phải type="module") nên Vite không gộp
+ * JS mà giữ nguyên các URL `/src/js/...`; tương tự trang fetch `/src/data/*.json`
+ * lúc chạy. Vì `src/` không nằm trong `public/`, phải chép hai thư mục này vào
+ * `dist/` để bản build chạy được.
+ */
+function copyRuntimePlugin() {
+    let outDir = path.join(rootDir, 'dist');
+
+    return {
+        name: 'aov-copy-src-runtime',
+        apply: 'build',
+        configResolved(config) {
+            outDir = path.resolve(rootDir, config.build.outDir);
+        },
+        closeBundle() {
+            ['js', 'data'].forEach((dir) => {
+                const from = path.join(rootDir, 'src', dir);
+                const to = path.join(outDir, 'src', dir);
+
+                if (fs.existsSync(from)) {
+                    fs.cpSync(from, to, { recursive: true });
+                }
+            });
+        },
+    };
+}
+
 export default defineConfig({
     server: {
         // heroes.json được API ghi trực tiếp; tắt theo dõi để không reload trang sau mỗi lần lưu.
@@ -237,6 +288,11 @@ export default defineConfig({
         // File System Access API, nên tắt theo dõi để form không bị reset sau khi lưu.
         watch: {
             ignored: ['**/src/data/*.json'],
+        },
+    },
+    build: {
+        rollupOptions: {
+            input: pageInputs(),
         },
     },
     plugins: [
@@ -249,5 +305,6 @@ export default defineConfig({
                 server.middlewares.use(heroesApiMiddleware());
             },
         },
+        copyRuntimePlugin(),
     ],
 });

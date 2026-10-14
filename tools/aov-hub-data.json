@@ -11,18 +11,20 @@
         ["Số trang bị (items.json)", 40, "40/40 có ảnh, mô tả và nội tại."],
         ["Số build (builds.json)", 13, "Phủ 13/32 tướng (xem L12)."],
         ["Số bài viết (posts.json)", 10, "Kèm category và heroId."],
-        ["Số trang HTML", 15, "index.html + 14 trang trong src/pages."],
+        ["Số trang HTML", 16, "index.html + 15 trang trong src/pages."],
         ["Số file CSS", 13, "public/css."],
-        ["Số file JS", 19, "src/js (chưa kể core/adapters/services/controllers/models)."],
-        ["Bộ test tự động", "15/15 file PASS", "687 kiểm tra PASS, 0 FAIL (mini-DOM, chưa chạy trình duyệt thật)."],
-        ["Công việc chính hoàn thành", 41, "STT 1-50, xem sheet 'Công việc chính'."],
-        ["Công việc chính làm một phần", 9, "STT 6,13,18,20,29,36,48,49,50."],
+        ["Số file JS", 20, "src/js (chưa kể core/adapters/services/controllers/models)."],
+        ["Bộ test tự động", "16/16 file PASS + 77 E2E PASS", "mini-DOM: 16 file PASS; Playwright (trình duyệt thật): 77 PASS."],
+        ["Responsive (trình duyệt thật)", "77/77 PASS", "15 trang × 360/480/768/1024/1280 không tràn ngang; menu mobile hoạt động."],
+        ["Đóng gói (npm run build)", "16/16 trang", "vite.config.js cấu hình multi-page; chép src/js + src/data vào dist; kiểm tra bằng npm run preview."],
+        ["Công việc chính hoàn thành", 44, "STT 1-50; các mục 48, 49, 50 nay đã xong."],
+        ["Công việc chính làm một phần", 6, "STT 6,13,18,20,29,36."],
         ["Công việc chính chưa làm", 0, "Không còn mục nào ở mức chưa làm trong 50 việc chính."],
         ["Lỗi đã xử lý trong lần review", "L14, L15, L17, L18, L23, L24", "open redirect, băm mật khẩu, backup.rar, README, trang 404, responsive admin."],
         ["Lỗi còn tồn", "L06, L12, L19, L20, L22", "lane/title, build còn thiếu, tách profile.js, header search, tiêu chí nổi bật."],
         ["Kế hoạch mở rộng đã xong", "CM02, KD01, KD02, AD01-AD04, AD10", "Nhật ký admin, trạng thái bài, duyệt trước, quản lý tướng CRUD."],
         ["Kế hoạch mở rộng kế tiếp", "KD03, AD05-AD09, HD01-HD10", "Duyệt/từ chối bài, quản lý trang bị/build, hướng dẫn build."],
-        ["Rủi ro chính", "Không backend; quyền admin chỉ ở trình duyệt", "Dữ liệu nằm ở JSON/LocalStorage/File System Access; lớp clean architecture chưa được nạp; test chưa chạy trên trình duyệt thật."]
+        ["Rủi ro chính", "Không backend; quyền admin chỉ ở trình duyệt", "Dữ liệu nằm ở JSON/LocalStorage/File System Access; lớp clean architecture chưa được nạp; đã có test Playwright trên trình duyệt thật (77 PASS) nhưng vẫn chỉ là demo, không phải bảo mật thật."]
       ]
     },
     {
@@ -77,9 +79,9 @@
         [45, "Chức năng xoá bình luận của mình", "Đã xong", "", "Ng Tr Quang Minh", "deleteComment() + canDeleteComment().", ""],
         [46, "Lọc/sắp xếp Feed", "Đã xong", "", "Ng Tr Quang Minh", "Lọc chuyên mục, sắp xếp, ghi URL (?category=, ?sort=).", ""],
         [47, "Trang quản trị bài viết", "Đã xong", "", "Ng Tr Quang Minh", "admin.html + admin.js; ẩn/hiện (hidden), xoá bài; test-admin-page 64 PASS.", ""],
-        [48, "Responsive: trang chủ, danh sách/chi tiết tướng/trang bị", "Một phần", "", "Cả nhóm", "hero/home/item/build/favorite/compare/admin đều có @media.", "Kiểm tra trên thiết bị thật."],
-        [49, "Responsive: Feed, chi tiết bài viết, form Account", "Một phần", "", "Cả nhóm", "feed.css (5 @media), common.css (5), auth.css (2).", "Kiểm tra trên thiết bị thật."],
-        [50, "Checklist test, fix lỗi, chuẩn bị demo", "Một phần", "", "Cả nhóm", "15 file test PASS, 687 kiểm tra, 0 FAIL (mini-DOM).", "Thêm test trình duyệt thật; lập checklist demo."]
+        [48, "Responsive: trang chủ, danh sách/chi tiết tướng/trang bị", "Đã xong", "", "Cả nhóm", "hero/home/item/build/favorite/compare/admin đều có @media; Playwright xác nhận 15 trang × 5 mốc không tràn ngang.", ""],
+        [49, "Responsive: Feed, chi tiết bài viết, form Account", "Đã xong", "", "Cả nhóm", "feed.css (5 @media), common.css (5), auth.css (2); kiểm tra thật ở 360/480/768/1024/1280.", ""],
+        [50, "Checklist test, fix lỗi, chuẩn bị demo", "Đã xong", "", "Cả nhóm", "16 file test mini-DOM PASS; 77 test Playwright PASS; build 16 trang; checklist demo ở README (mục 6).", ""]
       ]
     },
     {
@@ -168,7 +170,7 @@
         ["Trang So sánh tướng (compare.html, compare.js, compare.css)", "Đã xong", "2 ô chọn tướng không trùng, bảng so sánh, tô sáng chỉ số cao nhất, lưu aov_compare."],
         ["Lịch sử tra cứu", "Đã xong", "addHistory() tối đa 10 mục; tab Lịch sử trong trang Yêu thích."],
         ["Trang 404", "Đã xong", "404.html render renderNotFound() + nút về trang chủ (L23)."],
-        ["Bộ test tự động (tools/)", "Đã xong", "15 file test PASS, 687 kiểm tra PASS, 0 FAIL (mini-DOM)."],
+        ["Bộ test tự động (tools/ + tests/)", "Đã xong", "16 file test mini-DOM PASS; 77 test Playwright responsive PASS (trình duyệt thật)."],
         ["Phân trang danh sách tướng / trang bị", "Đã xong", "12 mục/trang, cuộn lại đầu danh sách khi đổi trang."],
         ["Trang Profile hiển thị thống kê", "Đã xong", "Lấy từ dataStore/storage.js và feed.js; code còn inline."],
         ["CSS cho trang Yêu thích / So sánh", "Đã xong", "favorite.css và compare.css đều có @media."],
