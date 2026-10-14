@@ -589,6 +589,53 @@ body[data-page="admin"] .account-area .btn[href$="admin.html"] {
     display: none;
 }
 
+/* =========================================
+ * S4b - MỞ RỘNG TRANG QUẢN LÝ
+ * Phần tử bọc giới hạn bề rộng trang là <main class="container section">
+ * (common.css: .container { max-width: var(--container-width) = 1200px }). Trên màn
+ * hình rộng trang bị bó hẹp nên bảng 9 cột phải cuộn ngang dù còn nhiều chỗ trống.
+ * Mọi rule dưới đây chỉ áp dụng khi body có data-page="admin" nên không đụng trang
+ * khác. Cột menu vẫn giữ 264px, cột nội dung tự chiếm phần còn lại.
+ * ========================================= */
+
+/* Nới rộng vùng nội dung trang quản lý, chỉ chừa lề vừa phải. */
+body[data-page="admin"] main.container {
+    max-width: 1600px;
+    width: 100%;
+    padding-left: var(--space-5);
+    padding-right: var(--space-5);
+}
+
+/* Header thẳng hàng với nội dung: logo mép trái menu, tài khoản mép phải nội dung. */
+body[data-page="admin"] .site-header__inner {
+    max-width: 1600px;
+    padding-left: var(--space-5);
+    padding-right: var(--space-5);
+}
+
+/* Bảng bài viết: giảm đệm ngang và bớt min-width cột Tiêu đề để đủ 9 cột trên
+   màn hình ≥1280px mà không phải cuộn ngang. Vẫn giữ overflow-x:auto bọc ngoài
+   bảng để màn hình hẹp cuộn được; cột Tiêu đề vẫn được phép xuống dòng. */
+@media (min-width: 1280px) {
+    body[data-page="admin"] #admin-list thead th,
+    body[data-page="admin"] #admin-list tbody td {
+        padding-left: var(--space-3);
+        padding-right: var(--space-3);
+    }
+
+    body[data-page="admin"] #admin-list tbody td:nth-child(3) {
+        min-width: 200px;
+    }
+}
+
+/* ≤900px: layout 1 cột như S4; giảm lề ngang để không tràn ở 375px. */
+@media (max-width: 900px) {
+    body[data-page="admin"] main.container {
+        padding-left: var(--space-3);
+        padding-right: var(--space-3);
+    }
+}
+
 /* ---------- C. Menu dọc ---------- */
 .admin-sidebar {
     background: var(--color-surface);
