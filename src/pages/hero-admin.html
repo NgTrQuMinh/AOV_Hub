@@ -3,22 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AOV HUB - Chuyển đến Quản lý</title>
+    <title>AOV HUB - Quản lý tướng</title>
+
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/feed.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/hero-admin.css">
+</head>
+<body data-page="admin" data-admin-tab="heroes">
 
     <!--
-        Trang quản lý tướng cũ đã được gộp vào mục "Tướng" của trang Quản lý
-        (/src/pages/admin.html?tab=heroes). Giữ file này để link cũ / bookmark
-        không bị hỏng: chuyển hướng bằng 2 lớp (meta refresh + script) cho chắc,
-        dùng location.replace để nút Back không quay lại trang chuyển hướng.
-        Quyền admin do admin.html tự kiểm tra (fail-closed), trang này không cần guard.
+        Guard quản trị: nạp config.js + auth.js trước mọi thứ và gọi requireAdmin()
+        ngay trong thẻ body để chặn sớm.
     -->
-    <meta http-equiv="refresh" content="0; url=/src/pages/admin.html?tab=heroes">
-    <script>location.replace('/src/pages/admin.html?tab=heroes');</script>
-</head>
-<body>
-    <div style="background:#FAF3E1; color:#3A2F1C; font:inherit; padding:48px; text-align:center;">
-        <p>Đang chuyển đến mục Quản lý tướng...</p>
-        <p><a href="/src/pages/admin.html?tab=heroes">bấm vào đây nếu trang không tự chuyển</a></p>
-    </div>
+    <script src="/src/js/config.js"></script>
+    <script src="/src/js/dataStore.js"></script>
+    <script src="/src/js/auth.js"></script>
+    <script>requireAdmin();</script>
+
+    <header id="site-header"></header>
+
+    <main class="container section">
+        <div class="admin-page-head">
+            <h1>Quản lý</h1>
+        </div>
+
+        <div class="admin-layout">
+            <!-- Menu dọc quản trị: admin-shell.js vẽ vào đây -->
+            <div id="admin-tabs" class="admin-layout__side"></div>
+
+            <div class="admin-layout__main">
+                <!-- Cảnh báo LocalStorage: admin-shell.js đổ vào nếu trang có phần tử này -->
+                <div id="admin-notices"></div>
+
+                <!-- Khung nội dung mục "Bài viết": chỉ dùng khi tab=posts -->
+                <div id="admin-posts-panel" hidden>
+                    <p>
+                        Dành cho quản trị viên: theo dõi toàn bộ bài viết của cộng đồng,
+                        ẩn bài vi phạm (bài bị ẩn sẽ không hiện trên Cộng đồng, trang chi tiết
+                        và trang cá nhân của người khác) hoặc xoá hẳn bài viết.
+                        Công tắc "Yêu cầu duyệt bài trước khi đăng" ở ngay bên dưới quyết định
+                        bài của user thường có phải chờ admin duyệt không.
+                    </p>
+
+                    <div id="admin-settings"></div>
+                    <div id="admin-toolbar" class="feed-filter"></div>
+                    <p id="admin-count" class="feed-count" aria-live="polite"></p>
+                    <div id="admin-list" class="card"></div>
+                </div>
+
+                <!-- Khung nội dung các tab động: admin-shell.js đổ vào đây -->
+                <div id="admin-panel" class="admin-panel"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="/src/js/loadData.js"></script>
+    <script src="/src/js/components.js"></script>
+    <script src="/src/js/search.js"></script>
+    <script src="/src/js/layout.js"></script>
+    <script src="/src/js/storage.js"></script>
+    <script src="/src/js/adminlog.js"></script>
+    <script src="/src/js/feed.js"></script>
+    <script src="/src/js/admin.js"></script>
+    <script src="/src/js/admin-shell.js"></script>
+    <script src="/src/js/heroData.js"></script>
+    <script src="/src/js/hero-admin.js"></script>
 </body>
 </html>
