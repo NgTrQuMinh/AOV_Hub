@@ -736,6 +736,13 @@ function loadPage(options) {
                 return handleHeroesApi(heroesApi, pathname, fetchOptions);
             }
 
+            // API dữ liệu dùng chung (/api/users, /api/posts, ...) không được mô phỏng:
+            // trả 404 để dataStore rơi về nhánh bản nháp LocalStorage, giống môi trường
+            // không có server (host tĩnh / Live Server).
+            if (pathname === '/api' || pathname.startsWith('/api/')) {
+                return { ok: false, status: 404, json: async () => { throw new Error('404'); }, text: async () => '' };
+            }
+
             const name = path.basename(target);
             const file = path.join(ROOT, 'src', 'data', name);
 

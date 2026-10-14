@@ -144,8 +144,41 @@ async function openDataStorePage() {
         run('__saved') === true,
         String(run('__saved')));
 
-    /* ---------- 8. Không lỗi JavaScript ---------- */
-    section('8. Không lỗi');
+    /* ---------- 8. sink ghi qua API nội bộ (/api/<collection>) ---------- */
+    section('8. sink ghi qua API nội bộ');
+
+    // Trang không seed -> dataStore chạy thật (không memoryOnly); auth.js đã gọi
+    // initDataStore nên sink mặc định đã được đăng ký cho mọi bộ.
+    const sinkPage = loadPage({ page: PAGE });
+    sinkPage.run();
+    await sinkPage.settled();
+
+    sinkPage.runInPage('window.__sinkValues = []; registerCollectionSink("users", function (value) { window.__sinkValues.push(value.length); return Promise.resolve(true); });');
+    sinkPage.runInPage('setCollection("users", [{ username: "u1", passwordHash: "h", salt: "s", role: "user" }])');
+    await sinkPage.settled();
+
+    check('setCollection gọi sink đã đăng ký với danh sách mới',
+        sinkPage.runInPage('JSON.stringify(__sinkValues)') === '[1]',
+        String(sinkPage.runInPage('JSON.stringify(__sinkValues)')));
+    check('sink thành công -> bỏ bản nháp aov_draft_users',
+        sinkPage.storage.__base.has('aov_draft_users') === false,
+        String(sinkPage.storage.__base.get('aov_draft_users')).slice(0, 60));
+
+    // Không override sink: mini-dom trả 404 cho /api/users (không có server) -> phải
+    // giữ bản nháp làm dự phòng, đúng như môi trường host tĩnh / Live Server.
+    const fallbackPage = loadPage({ page: PAGE });
+    fallbackPage.run();
+    await fallbackPage.settled();
+
+    fallbackPage.runInPage('setCollection("users", [{ username: "u2", passwordHash: "h", salt: "s", role: "user" }])');
+    await fallbackPage.settled();
+
+    check('sink thất bại (404) -> giữ bản nháp aov_draft_users',
+        /u2/.test(String(fallbackPage.storage.__base.get('aov_draft_users') || '')),
+        String(fallbackPage.storage.__base.get('aov_draft_users')).slice(0, 80));
+
+    /* ---------- 9. Không lỗi JavaScript ---------- */
+    section('9. Không lỗi');
     check('trang nạp dataStore không ném lỗi JavaScript',
         page.errors.filter((error) => !error.startsWith('console.error')).length === 0,
         page.errors.join(' | '));
