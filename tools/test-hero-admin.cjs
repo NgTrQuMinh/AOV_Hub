@@ -287,18 +287,60 @@ const formErrorsText = (page) => {
     `);
 
     const adminHeader = accountAreaHtml(await openHeroAdmin({ login: ADMIN_USERNAME }));
-    check('admin thấy link Quản lý tướng trên Header',
-        adminHeader.includes('Quản lý tướng') && adminHeader.includes('/src/pages/hero-admin.html'),
+    check('header admin KHÔNG còn link/nút "Quản lý tướng" và "Đăng xuất"',
+        !adminHeader.includes('Quản lý tướng') && !adminHeader.includes('Đăng xuất')
+        && !adminHeader.includes('/src/pages/hero-admin.html') && !adminHeader.includes('logout-btn'),
+        adminHeader.replace(/\s+/g, ' ').slice(0, 220));
+    check('header admin vẫn có nút "Quản trị" và link hồ sơ tài khoản',
+        adminHeader.includes('Quản trị') && adminHeader.includes('/src/pages/profile.html'),
         adminHeader.replace(/\s+/g, ' ').slice(0, 220));
 
     const userHeader = accountAreaHtml(await openFeed({ login: OTHER_USERNAME }));
     check('user thường không thấy link Quản lý tướng',
         !userHeader.includes('Quản lý tướng') && !userHeader.includes('/src/pages/hero-admin.html'),
         userHeader.replace(/\s+/g, ' ').slice(0, 220));
+    check('user thường cũng không còn nút Đăng xuất trên header',
+        !userHeader.includes('Đăng xuất') && !userHeader.includes('logout-btn'),
+        userHeader.replace(/\s+/g, ' ').slice(0, 220));
 
     const guestHeader = accountAreaHtml(await openFeed({ storage: new Map() }));
     check('khách không thấy link Quản lý tướng',
         !guestHeader.includes('Quản lý tướng') && guestHeader.includes('Đăng ký'));
+
+    /* ---------- 2b. Mục "Tướng" trong menu dọc trang Quản lý ---------- */
+    section('2b. Mục "Tướng" trong menu dọc trang Quản lý');
+
+    const menu = admin.el('admin-tabs');
+    const heroTabLink = menu.querySelector('.admin-sidebar__link[data-admin-tab="heroes"]');
+    const postsTabLink = menu.querySelector('.admin-sidebar__link[data-admin-tab="posts"]');
+
+    check('menu dọc có mục "Tướng" với data-admin-tab="heroes"',
+        Boolean(heroTabLink) && menu.innerHTML.includes('>Tướng</span>'),
+        heroTabLink ? heroTabLink.getAttribute('class') : 'không có mục heroes');
+    check('mục "Tướng" đang được chọn (is-active) khi mở ?tab=heroes',
+        Boolean(heroTabLink) && heroTabLink.getAttribute('class').includes('is-active')
+        && !(postsTabLink.getAttribute('class') || '').includes('is-active'),
+        heroTabLink ? heroTabLink.getAttribute('class') : '');
+    check('#admin-panel hiện nội dung mục Tướng, #admin-posts-panel bị ẩn',
+        admin.el('admin-panel').getAttribute('hidden') === null
+        && Boolean(admin.el('admin-panel').querySelector('#hero-admin-form'))
+        && admin.el('admin-posts-panel').getAttribute('hidden') !== null,
+        'panel hidden=' + admin.el('admin-panel').getAttribute('hidden')
+        + ', posts hidden=' + admin.el('admin-posts-panel').getAttribute('hidden'),
+    );
+
+    // Mở lại ?tab=heroes lần hai (mini-dom không bấm được link nên mô phỏng "quay lại tab"):
+    // phải có ĐÚNG MỘT form, ô tìm rỗng (từ khoá cũ không dính lại), đủ số tướng.
+    const reopenedHeroTab = await openHeroAdmin({ storage: admin.storage, login: ADMIN_USERNAME });
+    check('mở lại ?tab=heroes chỉ có đúng MỘT form #hero-admin-form (không nhân đôi)',
+        reopenedHeroTab.el('admin-panel').querySelectorAll('#hero-admin-form').length === 1,
+        reopenedHeroTab.el('admin-panel').querySelectorAll('#hero-admin-form').length + ' form');
+    check('mở lại ?tab=heroes ô tìm rỗng (từ khoá cũ không dính lại)',
+        reopenedHeroTab.el('admin-panel').querySelector('#hero-admin-keyword').value === '',
+        reopenedHeroTab.el('admin-panel').querySelector('#hero-admin-keyword').value);
+    check('mở lại ?tab=heroes vẫn đủ số tướng trong heroes.json',
+        tableRowCount(reopenedHeroTab) === HEROES_JSON.length,
+        tableRowCount(reopenedHeroTab) + ' dòng');
 
     /* ---------- 3. Form thêm tướng + validate ---------- */
     section('3. Form thêm tướng: radio vai trò, 3 ô kỹ năng, giới hạn, validate');
