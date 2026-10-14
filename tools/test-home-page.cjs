@@ -1,6 +1,7 @@
 /**
  * test-home-page.cjs - Kiểm tra Trang chủ (index.html): Tướng nổi bật + Trang bị
- * nổi bật (8 mục đầu mỗi loại), liên kết chi tiết và trạng thái nút yêu thích.
+ * nổi bật (lọc theo trường featured, tối đa 8 mục mỗi loại), liên kết chi tiết và
+ * trạng thái nút yêu thích.
  * Chạy: node tools/test-home-page.cjs
  */
 const fs = require('fs');
@@ -12,8 +13,10 @@ const PAGE = 'index.html';
 const HEROES_JSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/heroes.json'), 'utf8'));
 const ITEMS_JSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/items.json'), 'utf8'));
 
-const FEATURED_HEROES = HEROES_JSON.slice(0, 8);
-const FEATURED_ITEMS = ITEMS_JSON.slice(0, 8);
+/** Tướng / trang bị được đánh dấu nổi bật (featured === true), tối đa 8 mục. */
+const FEATURED_HEROES = HEROES_JSON.filter((hero) => hero.featured === true).slice(0, 8);
+const FEATURED_ITEMS = ITEMS_JSON.filter((item) => item.featured === true).slice(0, 8);
+
 
 /* ================= Test runner ================= */
 
@@ -54,9 +57,14 @@ function namesOf(el, className) {
     const base = await openHome();
     const heroesBox = base.el('featured-heroes');
 
-    check('khu vực Tướng nổi bật hiện đúng 8 card đầu heroes.json',
+    check('khu vực Tướng nổi bật hiện đúng 8 card theo trường featured',
         namesOf(heroesBox, 'hero-card__name').join(',') === FEATURED_HEROES.map((hero) => hero.name).join(','),
         namesOf(heroesBox, 'hero-card__name').join(','));
+    check('heroes.json có đúng 8 tướng featured === true (kiểu boolean)',
+        FEATURED_HEROES.length === 8
+        && HEROES_JSON.filter((hero) => hero.featured === true).length === 8
+        && HEROES_JSON.every((hero) => hero.featured === undefined || typeof hero.featured === 'boolean'),
+        String(HEROES_JSON.filter((hero) => hero.featured === true).length));
     check('mỗi card tướng liên kết tới trang chi tiết tướng',
         FEATURED_HEROES.every((hero) => heroesBox.innerHTML.includes(`hero-detail.html?id=${hero.id}`)));
 
@@ -64,9 +72,14 @@ function namesOf(el, className) {
     section('2. Trang bị nổi bật');
     const itemsBox = base.el('featured-items');
 
-    check('khu vực Trang bị nổi bật hiện đúng 8 card đầu items.json',
+    check('khu vực Trang bị nổi bật hiện đúng 8 card theo trường featured',
         namesOf(itemsBox, 'item-card__name').join(',') === FEATURED_ITEMS.map((item) => item.name).join(','),
         namesOf(itemsBox, 'item-card__name').join(','));
+    check('items.json có đúng 8 trang bị featured === true (kiểu boolean)',
+        FEATURED_ITEMS.length === 8
+        && ITEMS_JSON.filter((item) => item.featured === true).length === 8
+        && ITEMS_JSON.every((item) => item.featured === undefined || typeof item.featured === 'boolean'),
+        String(ITEMS_JSON.filter((item) => item.featured === true).length));
     check('mỗi card trang bị liên kết tới trang chi tiết trang bị',
         FEATURED_ITEMS.every((item) => itemsBox.innerHTML.includes(`item-detail.html?id=${item.id}`)));
 

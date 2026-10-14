@@ -315,6 +315,7 @@ function validateHeroForm(input) {
             stats,
             skills,
             recommendedBuild,
+            featured: source.featured === true,
         },
     };
 }
