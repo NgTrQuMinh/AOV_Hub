@@ -4,9 +4,11 @@
  *
  * Danh sách tài khoản:
  *   - nằm trong src/data/users.json (dữ liệu dùng chung), quản lý bởi dataStore.js;
- *     key LocalStorage cũ aov_users chỉ được đọc để gộp đúng một lần rồi bỏ;
- *     thay đổi (đăng ký) được giữ trong bản nháp aov_draft_users trước khi liên kết
- *     thư mục src/data để ghi thẳng vào users.json.
+ *     key LocalStorage cũ aov_users chỉ được đọc để gộp đúng một lần rồi bỏ.
+ *   - Khi chạy `npm run dev` / `npm run preview`, thay đổi (đăng ký, khoá/mở khoá,
+ *     cảnh cáo, nâng cấp mật khẩu cũ) được ghi thẳng vào users.json qua API nội bộ
+ *     /api/users. Không có server (host tĩnh / Live Server) thì giữ trong bản nháp
+ *     aov_draft_users và có thể ghi bằng cách liên kết thư mục src/data.
  *   - aov_current_user   - username đang đăng nhập (session, localStorage)
  *
  * Cấu trúc tài khoản: { username, passwordHash, salt, displayName, role, joinedAt }

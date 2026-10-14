@@ -4,7 +4,7 @@ Website tra cứu tướng, trang bị, build đề xuất và cộng đồng b�
 
 - Công nghệ: **HTML5 + CSS3 + Vanilla JavaScript**, dữ liệu **JSON tĩnh**, không framework, không database.
 - Đóng gói / dev server: **Vite**. Quản lý tướng ghi thẳng vào `src/data/heroes.json` qua API nội bộ `/api/heroes` do `vite.config.js` cung cấp (chỉ chạy khi `npm run dev` / `npm run preview`).
-- Dữ liệu dùng chung (`users`, `posts`, `comments`, `likes`) đi qua `src/js/dataStore.js` (File System Access API + dự phòng LocalStorage/tải file).
+- Dữ liệu dùng chung (`users`, `posts`, `comments`, `likes`) đi qua `src/js/dataStore.js`. Khi có dev/preview server, chúng được ghi thẳng vào `src/data/<collection>.json` qua API nội bộ `/api/<collection>`; không có server thì dự phòng File System Access API + LocalStorage/tải file.
 - Lưu tạm yêu thích / lịch sử / so sánh / phiên đăng nhập bằng **LocalStorage**.
 - Nhóm 4 thành viên.
 
@@ -13,7 +13,7 @@ Website tra cứu tướng, trang bị, build đề xuất và cộng đồng b�
 ```
 AOV-Hub/
 ├── index.html                    # Trang chủ
-├── vite.config.js                # Vite + API /api/heroes (đọc/ghi heroes.json)
+├── vite.config.js                # Vite + API /api/heroes, /api/<collection> (bảng điều khiển)
 ├── package.json                  # npm run dev / build / preview / test
 │
 ├── public/
@@ -70,10 +70,10 @@ Lệnh khác:
 
 ```bash
 npm run build    # đóng gói
-npm run preview  # xem bản build (vẫn có API /api/heroes)
+npm run preview  # xem bản build (vẫn có API /api/heroes, /api/<collection>)
 ```
 
-Live Server / `python -m http.server` vẫn xem được các trang, nhưng **trang Quản lý tướng sẽ không lưu** vì thiếu API `/api/heroes`.
+Live Server / `python -m http.server` vẫn xem được các trang, nhưng **trang Quản lý tướng và đăng ký/kiểm duyệt tài khoản sẽ không lưu** vì thiếu API nội bộ (`/api/heroes`, `/api/users`).
 
 ## 3. Chạy test / audit
 
@@ -112,19 +112,19 @@ Các key cũ (`aov_users`, `aov_posts`, `aov_comments`, `aov_likes`, `aov_posts_
 
 Không tự ý đổi tên các key cố định khi thêm tính năng — `storage.js`, `favorite.js`, `compare.js`, `feed.js` đều phụ thuộc.
 
-> Giới hạn: không có backend. "Dữ liệu dùng chung" thực chất là file JSON trong repo/máy demo; trình duyệt chỉ tự ghi được khi người dùng liên kết thư mục `src/data` (Chrome/Edge). "admin" là quy ước phía trình duyệt, không phải bảo mật thật.
+> Giới hạn: không có backend thật (chỉ API nội bộ của Vite khi dev/preview). "Dữ liệu dùng chung" là file JSON trong repo/máy demo; khi chạy dev/preview thì ghi thẳng qua `/api/<collection>`, còn host tĩnh thì trình duyệt chỉ tự ghi được khi người dùng liên kết thư mục `src/data` (Chrome/Edge). "admin" là quy ước phía trình duyệt, không phải bảo mật thật.
 
 ## 6. Checklist kiểm thử & demo
 
 ### 6.1. Lệnh
 ```bash
 npm install                 # cài phụ thuộc
-npm run dev                 # dev server (có API /api/heroes)
+npm run dev                 # dev server (có API /api/heroes, /api/<collection>)
 npm test                    # 16 file test mini-DOM
 npm run test:e2e:install    # cài Chromium (một lần)
 npm run test:e2e            # test trình duyệt thật (responsive + menu mobile)
 npm run build               # build 16 trang vào dist/
-npm run preview             # xem bản build (vẫn có API /api/heroes)
+npm run preview             # xem bản build (vẫn có API /api/heroes, /api/<collection>)
 ```
 
 ### 6.2. Kết quả hiện tại
@@ -152,5 +152,5 @@ npm run preview             # xem bản build (vẫn có API /api/heroes)
 ### 6.5. Lưu ý khi demo
 - Phải chạy qua `npm run dev` hoặc `npm run preview` (mở thẳng file sẽ lỗi CORS khi đọc JSON).
 - Trang Quản lý tướng chỉ lưu khi có API `/api/heroes` (chạy dev hoặc preview).
-- Dữ liệu cộng đồng (users/posts/comments/likes) muốn ghi thẳng vào `src/data` cần liên kết thư mục ở Chrome/Edge; nếu không sẽ lưu tạm bằng LocalStorage.
+- Dữ liệu cộng đồng (users/posts/comments/likes) ghi thẳng vào `src/data/*.json` qua API `/api/<collection>` khi chạy dev/preview; không có server thì lưu tạm bằng LocalStorage (hoặc liên kết thư mục ở Chrome/Edge).
 - "admin" chỉ là quy ước phía trình duyệt, không phải bảo mật thật; dự án không có backend.

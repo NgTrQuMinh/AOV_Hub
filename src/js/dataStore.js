@@ -13,11 +13,14 @@
  *   likes    -> likes.json    (object { "<postId>": [username, ...] })
  *
  * GIỚI HẠN (đọc kỹ trước khi mở rộng):
- *   - Không có backend riêng. "Dữ liệu dùng chung" thực chất là file JSON nằm trong
- *     repo / máy demo. Trình duyệt tự ghi được file chỉ khi người dùng liên kết thư mục
- *     src/data qua File System Access API (Chrome/Edge). Firefox/Safari không có
- *     showDirectoryPicker nên dùng nhánh "Tải JSON".
- *   - Khi host tĩnh (GitHub Pages...) JSON chỉ đọc được, không ghi được.
+ *   - Khi chạy `npm run dev` / `npm run preview`, mỗi bộ sưu tập được ghi thẳng vào
+ *     file JSON qua API nội bộ /api/<collection> (do vite.config.js cung cấp), nên
+ *     đăng ký tài khoản... là lưu ngay vào src/data/users.json. Việc ghi là best-effort:
+ *     thành công thì bỏ bản nháp, thất bại thì giữ bản nháp LocalStorage.
+ *   - Không có backend riêng ngoài API dev đó. Khi host tĩnh (GitHub Pages...) hoặc mở
+ *     bằng Live Server, /api/... không tồn tại: trình duyệt chỉ tự ghi được file khi
+ *     người dùng liên kết thư mục src/data qua File System Access API (Chrome/Edge).
+ *     Firefox/Safari không có showDirectoryPicker nên dùng nhánh "Tải JSON".
  *   - "admin" chỉ là quy ước phía trình duyệt (role trong users.json), không phải bảo mật thật.
  *
  * Phụ thuộc: BASE_PATH / DATA_PATH (config.js nạp trước).
@@ -66,6 +69,8 @@ const dataStoreState = {
     useSeedRef: false,   // chế độ test: dùng chính object seed làm bộ nhớ dùng chung
     writeQueue: Promise.resolve(),
     pendingWrites: 0,
+    sinks: {},           // name -> hàm ghi qua API nội bộ (nếu có), best-effort
+    apiSaved: false,     // đã từng ghi thành công qua API nội bộ chưa (để hiện trạng thái)
     folderHandle: null,
     folderInit: false,
     permission: 'prompt',
@@ -378,6 +383,14 @@ function initDataStore(options = {}) {
         if (opts.useSeedRef) dataStoreState.useSeedRef = true;
     }
 
+    // Ngoài chế độ test: mỗi bộ có thể ghi thẳng JSON qua API nội bộ (nếu đang chạy
+    // dev/preview); không có server thì tự rơi về bản nháp LocalStorage như trước.
+    if (!dataStoreState.memoryOnly) {
+        Object.keys(DATASTORE_SCHEMA).forEach((name) => {
+            if (!dataStoreState.sinks[name]) registerCollectionSink(name, dataStoreApiSink(name));
+        });
+    }
+
     dataStoreHookDom();
 
     if (!dataStoreState.memoryOnly) {
@@ -447,7 +460,10 @@ function setCollection(name, value) {
     if (getDataFolderStatus() === 'linked' && dataStoreState.folderHandle) {
         dataStoreEnqueueWrite(name);
     } else {
+        // Giữ bản nháp đồng bộ trước (dự phòng khi không có server), rồi thử ghi thẳng
+        // vào file JSON qua API nội bộ nếu có (npm run dev / npm run preview).
         dataStoreWriteDraft(name, dataStoreState.values[name]);
+        if (dataStoreState.sinks[name]) dataStoreEnqueueSink(name);
     }
 
     dataStoreRefreshBar();
@@ -457,6 +473,82 @@ function setCollection(name, value) {
 /** Promise hoàn tất khi hàng đợi ghi file rỗng (dùng cho form chờ và cho test). */
 function whenDataSaved() {
     return dataStoreState.writeQueue.then(() => undefined);
+}
+
+/* ================= Ghi qua API nội bộ (/api/<collection>) ================= */
+
+/** Đường dẫn API nội bộ của một bộ sưu tập (vite.config.js cung cấp khi chạy dev/preview). */
+function dataStoreApiPath(name) {
+    const base = typeof BASE_PATH === 'string' ? BASE_PATH : '/';
+    return base + 'api/' + name;
+}
+
+/**
+ * Đăng ký hàm ghi một bộ sưu tập qua API nội bộ. Ghi best-effort: thành công thì bỏ
+ * bản nháp và đánh dấu đã đồng bộ; thất bại (không có server: host tĩnh, Live Server,
+ * Firefox chưa liên kết thư mục) thì giữ nguyên bản nháp. Đăng ký lại thay hàm cũ.
+ * @returns {boolean} true nếu đăng ký được.
+ */
+function registerCollectionSink(name, writer) {
+    if (!DATASTORE_SCHEMA[name] || typeof writer !== 'function') return false;
+    dataStoreState.sinks[name] = writer;
+    return true;
+}
+
+/** Xếp hàng ghi một bộ qua API nội bộ (tuần tự theo writeQueue, chung với ghi file). */
+function dataStoreEnqueueSink(name) {
+    const sink = dataStoreState.sinks[name];
+    if (!sink) return whenDataSaved();
+
+    const snapshot = dataStoreClone(dataStoreState.values[name]);
+
+    dataStoreState.pendingWrites += 1;
+    dataStoreState.writeQueue = dataStoreState.writeQueue
+        .then(() => sink(snapshot))
+        .then((saved) => {
+            dataStoreState.pendingWrites = Math.max(0, dataStoreState.pendingWrites - 1);
+
+            if (saved) {
+                dataStoreState.apiSaved = true;
+                dataStoreState.dirty[name] = false;
+                dataStoreLocalRemove(DATASTORE_DRAFT_PREFIX + name);
+                dataStoreClearLegacy(name);
+                dataStoreBroadcast(name);
+            }
+            // Thất bại: giữ bản nháp đã ghi trước đó (không có API nội bộ).
+            dataStoreRefreshBar();
+        })
+        .catch(() => {
+            dataStoreState.pendingWrites = Math.max(0, dataStoreState.pendingWrites - 1);
+            dataStoreRefreshBar();
+        });
+
+    return dataStoreState.writeQueue;
+}
+
+/** Hàm ghi mặc định: PUT cả bộ rồi kiểm tra HTTP + kiểu nội dung JSON. */
+function dataStoreApiSink(name) {
+    return async function writeViaApi(value) {
+        try {
+            const response = await fetch(dataStoreApiPath(name), {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                cache: 'no-store',
+                body: JSON.stringify(value),
+            });
+
+            if (!response || !response.ok) return false;
+
+            const headers = response.headers;
+            const type = headers && typeof headers.get === 'function'
+                ? String(headers.get('content-type') || '')
+                : 'application/json';
+
+            return type.includes('json');
+        } catch (error) {
+            return false;
+        }
+    };
 }
 
 /* ================= Ghi file JSON (File System Access API) ================= */
@@ -804,7 +896,9 @@ function renderDataStatusBar() {
 
     const statusText = status === 'linked'
         ? 'Đã liên kết thư mục dữ liệu'
-        : 'Trình duyệt không hỗ trợ ghi file — dữ liệu lưu tạm trong trình duyệt';
+        : (dataStoreState.apiSaved
+            ? 'Đã ghi JSON qua API nội bộ (npm run dev / preview)'
+            : 'Chưa ghi được vào JSON — dữ liệu lưu tạm trong trình duyệt (chạy npm run dev để lưu)');
 
     const dirtyText = dirty.length
         ? `Có ${dirty.length} bộ dữ liệu chưa lưu vào JSON`
