@@ -184,21 +184,6 @@ function clearHistory() {
 
 /* ---------- So sánh: aov_compare = [id, id] (tối đa 2) ---------- */
 
-/**
- * Thêm tướng vào danh sách so sánh.
- * Nếu đã đủ 2 tướng thì KHÔNG thêm, trả về false để compare.js báo người dùng.
- */
-function addCompare(id) {
-    const heroId = toStorageId(id);
-    if (heroId === null) return false;
-
-    const compare = getCompare();
-    if (compare.includes(heroId)) return false;
-    if (compare.length >= COMPARE_LIMIT) return false;
-
-    return setStore(COMPARE_KEY, compare.concat(heroId));
-}
-
 function getCompare() {
     const compare = getStore(COMPARE_KEY, []);
     return Array.isArray(compare) ? compare : [];
@@ -224,10 +209,6 @@ function setCompare(ids) {
     });
 
     return setStore(COMPARE_KEY, result);
-}
-
-function clearCompare() {
-    return removeStore(COMPARE_KEY);
 }
 
 /* ---------- Đo dung lượng LocalStorage (task CM05) ---------- */
