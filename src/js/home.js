@@ -2,6 +2,9 @@
  * home.js - Trang chủ: render Tướng nổi bật + Trang bị nổi bật
  * Phụ trách: Người 1
  *
+ * Nổi bật được chọn theo trường `featured === true` trong heroes.json / items.json
+ * (admin bật ở form quản lý tướng), tối đa 8 mục mỗi khối.
+ *
  * Phụ thuộc: loadData.js, components.js (Người 1) — nạp trước home.js trong index.html.
  */
 async function renderFeaturedHeroes() {
@@ -9,7 +12,7 @@ async function renderFeaturedHeroes() {
     if (!container) return;
 
     const heroes = await loadHeroes();
-    const featured = heroes.slice(0, 8);
+    const featured = heroes.filter((hero) => hero.featured === true).slice(0, 8);
 
     container.innerHTML = featured.length
         ? featured.map(renderHeroCard).join('')
@@ -23,7 +26,7 @@ async function renderFeaturedItems() {
     if (!container) return;
 
     const items = await loadData(DATA_PATH.items);
-    const featured = items.slice(0, 8);
+    const featured = items.filter((item) => item.featured === true).slice(0, 8);
 
     container.innerHTML = featured.length
         ? featured.map(renderItemCard).join('')

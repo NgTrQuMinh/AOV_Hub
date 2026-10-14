@@ -135,6 +135,9 @@ function fillHeroForm(page, values) {
     form.querySelector('#hero-difficulty').value = String(values.difficulty === undefined ? 2 : values.difficulty);
     form.querySelector('#hero-build').value = values.build || '';
 
+    const featuredInput = form.querySelector('#hero-featured');
+    if (featuredInput) featuredInput.checked = values.featured === true;
+
     ['hp', 'attack', 'defense', 'speed'].forEach((key) => {
         const input = form.querySelector(`#hero-stat-${key}`);
         const value = values.stats && values.stats[key];
@@ -358,6 +361,11 @@ const formErrorsText = (page) => {
     check('ô hồi chiêu có max=59 (hồi chiêu phải nhỏ hơn 60 giây)',
         formHtml(admin).includes('max="59"'),
         (formHtml(admin).match(/max="\d+"/g) || []).join(' '));
+    check('form có ô #hero-featured (đặt ở khối Tướng nổi bật) và mặc định bỏ tick',
+        Boolean(setupForm.querySelector('#hero-featured'))
+        && setupForm.querySelector('#hero-featured').getAttribute('type') === 'checkbox'
+        && setupForm.querySelector('#hero-featured').checked !== true,
+        formHtml(admin).includes('hero-featured') ? 'có ô' : 'không có ô');
 
     const typeSelect = setupForm.querySelector('[data-skill-type]');
     const optionValues = typeSelect ? typeSelect.options.map((option) => option.getAttribute('value')) : [];
@@ -590,6 +598,7 @@ const formErrorsText = (page) => {
         stats: { hp: 1200, attack: 80, defense: 40, speed: 320 },
         skill: { name: 'Chiêu Test', description: 'Kỹ năng dùng cho test', cooldown: 5 },
         build: '101, 102',
+        featured: true,
     });
     await submitForm(admin, validForm);
 
@@ -621,6 +630,9 @@ const formErrorsText = (page) => {
     check('tướng mới có alias sinh từ tên',
         added && added.alias === 'test-tuong',
         JSON.stringify(added && added.alias));
+    check('tướng mới lưu đúng cờ featured = true khi tick ô nổi bật',
+        added && added.featured === true,
+        JSON.stringify(added && added.featured));
     check('danh sách tướng mẫu trong heroes.json không bị đổi',
         heroesAfterAdd.slice(0, HEROES_JSON.length).every((hero, index) => hero.id === HEROES_JSON[index].id),
         JSON.stringify(heroesAfterAdd.slice(0, 3).map((hero) => hero.id)));
@@ -837,6 +849,9 @@ const formErrorsText = (page) => {
     check('form điền sẵn vai trò đã tick trước đó',
         /value="Xạ thủ" checked/.test(formHtml(admin)) || /value="Xạ thủ"[^>]* checked/.test(formHtml(admin)),
         plainForm(admin).slice(0, 600));
+    check('form điền sẵn ô Tướng nổi bật đang tick của tướng đang sửa',
+        /id="hero-featured"[^>]* checked/.test(formHtml(admin)),
+        plainForm(admin).slice(0, 300));
 
     const editForm = fillHeroForm(admin, {
         name: 'Test Tướng Đã Sửa',
@@ -845,6 +860,7 @@ const formErrorsText = (page) => {
         stats: { hp: 2000, attack: 99, defense: 10, speed: 400 },
         skill: { name: 'Chiêu Mới', description: 'Đã sửa kỹ năng', cooldown: 8 },
         build: '103',
+        featured: true,
     });
     await submitForm(admin, editForm);
 
@@ -863,6 +879,9 @@ const formErrorsText = (page) => {
         && edited.skills[0].type === 'Chiêu 1'
         && JSON.stringify(edited.recommendedBuild) === JSON.stringify([103]),
         JSON.stringify(edited));
+    check('cờ featured giữ nguyên true sau khi sửa tướng',
+        edited && edited.featured === true,
+        JSON.stringify(edited && edited.featured));
     check('bảng hiển thị tên mới, không nhân đôi dòng',
         tableRowCount(admin) === HEROES_JSON.length + 1 && plainTable(admin).includes('Test Tướng Đã Sửa'),
         tableRowCount(admin) + ' dòng');

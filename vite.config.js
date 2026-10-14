@@ -109,6 +109,7 @@ function sanitizeHero(input, fallbackId) {
         stats,
         skills,
         recommendedBuild,
+        featured: source.featured === true,
     };
 }
 

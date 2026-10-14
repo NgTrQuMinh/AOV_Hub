@@ -32,6 +32,7 @@
   },
   {
     "id": 103,
+    "featured": true,
     "name": "Nanh Fenrir",
     "alias": "nanh-fenrir",
     "image": "items/nanh-fenrir.png",
@@ -172,6 +173,7 @@
   },
   {
     "id": 202,
+    "featured": true,
     "name": "Vương Miện Hecate",
     "alias": "vuong-mien-hecate",
     "image": "items/vuong-mien-hecate.png",
@@ -218,6 +220,7 @@
   },
   {
     "id": 205,
+    "featured": true,
     "name": "Sách Thánh",
     "alias": "sach-thanh",
     "image": "items/sach-thanh.png",
@@ -233,6 +236,7 @@
   },
   {
     "id": 206,
+    "featured": true,
     "name": "Quyền Trượng Rhea",
     "alias": "quyen-truong-rhea",
     "image": "items/quyen-truong-rhea.png",
@@ -311,6 +315,7 @@
   },
   {
     "id": 301,
+    "featured": true,
     "name": "Giáp Hộ Mệnh",
     "alias": "giap-ho-menh",
     "image": "items/giap-ho-menh.png",
@@ -418,6 +423,7 @@
   },
   {
     "id": 401,
+    "featured": true,
     "name": "Giày Kiên Cường",
     "alias": "giay-kien-cuong",
     "image": "items/giay-kien-cuong.png",
@@ -493,6 +499,7 @@
   },
   {
     "id": 501,
+    "featured": true,
     "name": "Đại Địa Ma Nhãn",
     "alias": "dai-dia-ma-nhan",
     "image": "items/dai-dia-ma-nhan.png",
@@ -557,6 +564,7 @@
   },
   {
     "id": 601,
+    "featured": true,
     "name": "Rìu Leviathan",
     "alias": "riu-leviathan",
     "image": "items/riu-leviathan.png",
