@@ -1,5 +1,6 @@
 /**
- * Test trang Quản lý tướng (src/pages/hero-admin.html + src/js/hero-admin.js + src/js/heroData.js).
+ * Test quản lý tướng chạy trong trang Quản lý
+ * (src/pages/admin.html?tab=heroes + src/js/hero-admin.js + src/js/heroData.js).
  *
  * Chạy code thật của dự án trong mini-dom: dựng trang thật, nạp script thật,
  * không mock logic. Chỉ "reload" mô phỏng bằng cách mở lại trang với cùng Map localStorage.
@@ -7,7 +8,8 @@
  * Phạm vi kiểm tra:
  *   1. Guard trang: khách bị đưa về Login, user thường bị đưa về trang chủ kèm cảnh báo,
  *      admin thì vào được và thấy form + bảng tướng.
- *   2. Link "Quản lý tướng" trên Header chỉ hiện với admin.
+ *   1b. src/pages/hero-admin.html giờ chỉ là trang chuyển hướng (đọc file, không mở).
+ *   2. Header không còn nút "Quản lý tướng"/"Đăng xuất"; menu dọc có mục "Tướng".
  *   3. Form thêm tướng: vai trò là radio (mỗi tướng chỉ chọn được 1), mở sẵn
  *      đúng 3 ô kỹ năng cố định (không nút Thêm / nút ✕), loại chiêu khoá theo
  *      thứ tự dòng Chiêu 1/2/3 (select disabled — không tự chọn được),
@@ -33,7 +35,11 @@ const path = require('path');
 
 const { ROOT, loadPage, fire, unescapeHtml } = require('./mini-dom.cjs');
 
+const ADMIN_PAGE = 'src/pages/admin.html';
+/** Trang cũ chỉ còn là trang chuyển hướng (kiểm tra bằng fs, không mở bằng mini-dom). */
 const HERO_ADMIN_PAGE = 'src/pages/hero-admin.html';
+/** Tab "Tướng" nằm trong trang Quản lý, mở bằng query string này. */
+const HERO_TAB_SEARCH = '?tab=heroes';
 const HEROES_PAGE = 'src/pages/heroes.html';
 const HERO_DETAIL_PAGE = 'src/pages/hero-detail.html';
 const FEED_PAGE = 'src/pages/feed.html';
@@ -88,12 +94,24 @@ async function open(page, options = {}) {
     return loaded;
 }
 
-const openHeroAdmin = (options) => open(HERO_ADMIN_PAGE, options);
+/**
+ * Mở mục "Tướng" trong trang Quản lý (admin.html?tab=heroes).
+ * Shell phải chờ usersReady rồi mới vẽ menu và mục đã đăng ký, nên chờ thêm một
+ * lượt settled() nữa cho renderHeroAdminSection() vẽ xong form + bảng.
+ */
+async function openHeroAdmin(options = {}) {
+    const page = await open(ADMIN_PAGE, Object.assign({ search: HERO_TAB_SEARCH }, options));
+    await page.settled();
+    return page;
+}
+
 const openFeed = (options) => open(FEED_PAGE, options);
 
-const formHtml = (page) => page.el('hero-admin-form').innerHTML;
-const tableHtml = (page) => page.el('hero-admin-list').innerHTML;
-const countText = (page) => page.el('hero-admin-count').textContent;
+// Các helper này phải an toàn khi phần tử chưa tồn tại: vai trò bị chặn (khách /
+// user thường) không được shell vẽ mục nên #hero-admin-* không có trong DOM.
+const formHtml = (page) => { const node = page.el('hero-admin-form'); return node ? node.innerHTML : ''; };
+const tableHtml = (page) => { const node = page.el('hero-admin-list'); return node ? node.innerHTML : ''; };
+const countText = (page) => { const node = page.el('hero-admin-count'); return node ? node.textContent : ''; };
 const plainTable = (page) => unescapeHtml(tableHtml(page));
 
 /** Toàn bộ tướng đang có trong "file" heroes.json (dùng chung qua API). */
@@ -211,8 +229,8 @@ const formErrorsText = (page) => {
         tableHtml(stranger).slice(0, 120));
 
     let admin = await openHeroAdmin({ login: ADMIN_USERNAME });
-    check('admin vào được trang (không bị điều hướng đi đâu)',
-        admin.location.href === '/' + HERO_ADMIN_PAGE,
+    check('admin vào được mục Tướng của trang Quản lý',
+        admin.location.href === '/' + ADMIN_PAGE + HERO_TAB_SEARCH,
         admin.location.href);
     check('admin không bị cảnh báo khi vào trang', admin.alerts.length === 0, JSON.stringify(admin.alerts));
     check('admin thấy form thêm tướng',
@@ -231,9 +249,29 @@ const formErrorsText = (page) => {
     check('trang quản lý tướng không ném lỗi JavaScript',
         admin.errors.length === 0,
         admin.errors.join(' | '));
+    check('mở mục Tướng bằng khách / user thường / admin đều không ném lỗi JavaScript',
+        [guest, stranger, admin].every((page) => page.errors.length === 0),
+        [guest, stranger, admin].flatMap((page) => page.errors).join(' | '));
 
-    /* ---------- 2. Link "Quản lý tướng" trên Header ---------- */
-    section('2. Link "Quản lý tướng" trên Header chỉ hiện với admin');
+    /* ---------- 1b. hero-admin.html giờ chỉ là trang chuyển hướng ---------- */
+    section('1b. hero-admin.html là trang chuyển hướng');
+
+    // Đọc file bằng fs: mini-dom không có location.replace nên KHÔNG mở trang này.
+    const redirectHtml = fs.readFileSync(path.join(ROOT, HERO_ADMIN_PAGE), 'utf8');
+    check('hero-admin.html có meta refresh trỏ tới admin.html?tab=heroes',
+        /http-equiv="refresh"[^>]*admin\.html\?tab=heroes/.test(redirectHtml)
+        || /content="0;\s*url=[^"]*admin\.html\?tab=heroes/.test(redirectHtml),
+        redirectHtml.replace(/\s+/g, ' ').slice(0, 200));
+    check('hero-admin.html có location.replace tới cùng đích',
+        /location\.replace\([^)]*admin\.html\?tab=heroes/.test(redirectHtml),
+        redirectHtml.replace(/\s+/g, ' ').slice(0, 200));
+    check('hero-admin.html KHÔNG còn nạp hero-admin.js / heroData.js / guard requireAdmin',
+        !redirectHtml.includes('hero-admin.js')
+        && !redirectHtml.includes('heroData.js')
+        && !redirectHtml.includes('requireAdmin'));
+
+    /* ---------- 2. Header: bỏ "Quản lý tướng" và "Đăng xuất" ---------- */
+    section('2. Header không còn "Quản lý tướng"/"Đăng xuất"');
 
     /*
      * mini-dom không nạp được public/partials/header.html (fetch trong mini-dom chỉ đọc
