@@ -114,6 +114,13 @@
     cursor: pointer;
 }
 
+/* Nhóm nút sao lưu/khôi phục: giãn rộng hơn và cho phép xuống dòng */
+.admin-settings__toggle--wrap {
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    white-space: normal;
+}
+
 /* Giải thích ngắn gọn ngay cạnh công tắc, không cần trang trợ giúp riêng */
 .admin-settings__hint {
     flex: 1 1 320px;

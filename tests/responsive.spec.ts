@@ -87,8 +87,9 @@ test.describe('menu mobile', () => {
         await page.waitForSelector('#site-header .nav-toggle__btn', { state: 'visible' });
 
         await expect(page.locator('#site-header .nav-toggle__btn')).toBeVisible();
-        await page.click('label.nav-toggle__btn');
+        await page.click('button.nav-toggle__btn');
         await expect(page.locator('.site-nav')).toHaveClass(/is-open/);
+        await expect(page.locator('#site-header .nav-toggle__btn')).toHaveAttribute('aria-expanded', 'true');
     });
 
     test('menu nằm ngang, không cần nút ở 1280px', async ({ page }) => {
