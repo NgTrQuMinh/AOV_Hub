@@ -16,6 +16,20 @@
  *   isAdmin() chỉ trả true khi role đúng bằng 'admin', nên tài khoản không có
  *   trường role (dữ liệu cũ) vẫn an toàn: không có quyền quản trị.
  *
+ * Trường kiểm duyệt (tuỳ chọn, tài khoản cũ thiếu vẫn hợp lệ = không bị khóa,
+ * không có cảnh cáo):
+ *   banned       -> true CHỈ khi tài khoản đang bị khóa (mở khóa thì XÓA hẳn
+ *                   các trường ban*, không để banned:false)
+ *   bannedAt     -> chuỗi ISO thời điểm khóa
+ *   bannedReason -> lý do khóa, tối đa 200 ký tự
+ *   bannedBy     -> username admin thực hiện khóa
+ *   warnings     -> mảng [{ at: ISO, reason: string (3..200 ký tự), by: admin }],
+ *                   giữ tối đa 20 cảnh cáo mới nhất (cảnh cáo mới ở cuối)
+ *   Tài khoản role 'admin' KHÔNG BAO GIỜ bị khóa (isUserBanned() luôn trả false
+ *   với admin, canModerateUser() từ chối tài khoản admin và chính mình).
+ *   Tài khoản bị khóa không đăng nhập được; nếu đang đăng nhập thì
+ *   enforceBanOnSession() xóa phiên và đưa về trang đăng nhập.
+ *
  * Mật khẩu KHÔNG BAO GIỜ lưu thô trong users.json / bản nháp / session — chỉ lưu
  * salt + passwordHash, giống tools/hash-users.cjs. Tài khoản cũ còn trường
  * `password` thô được nâng cấp lên hash ngay sau lần đăng nhập đúng đầu tiên.
@@ -31,6 +45,17 @@
  */
 
 const CURRENT_USER_KEY = 'aov_current_user';
+
+/**
+ * Lỗi đăng nhập của lần gọi loginUser() GẦN NHẤT (trang Login dùng để hiện thông
+ * báo riêng cho tài khoản bị khóa so với sai tài khoản/mật khẩu):
+ *   ''        -> đăng nhập thành công, hoặc chưa gọi loginUser lần nào
+ *   'invalid' -> sai username hoặc mật khẩu
+ *   'banned'  -> đúng mật khẩu nhưng tài khoản đang bị khóa
+ * Biến nội bộ cấp file, chỉ đọc qua getLastLoginError(); được cập nhật ở MỌI
+ * đường thoát của loginUser().
+ */
+let lastLoginError = '';
 
 /* Cấu hình băm mật khẩu (khớp tools/hash-users.cjs để cùng đọc users.json). */
 const PASSWORD_HASH_ITERATIONS = 100000;
@@ -243,6 +268,332 @@ function guardProtectedPages() {
 
 document.addEventListener('DOMContentLoaded', guardProtectedPages);
 
+/* ---------- Task KD09-a - Khóa tài khoản + cảnh cáo người dùng ---------- */
+
+/**
+ * Số cảnh cáo tối đa giữ lại cho mỗi tài khoản (cũ nhất bị loại khi vượt).
+ * Trần độ dài lý do (khóa/cảnh cáo) sau khi làm sạch.
+ */
+const MODERATION_MAX_WARNINGS = 20;
+const MODERATION_REASON_MAX = 200;
+const MODERATION_WARN_REASON_MIN = 3;
+
+/**
+ * Làm sạch chuỗi lý do kiểm duyệt: chỉ nhận chuỗi, bỏ ký tự điều khiển, gộp
+ * khoảng trắng thừa về một dấu cách, cắt khoảng trắng hai đầu rồi cắt độ dài.
+ * Không bao giờ ném lỗi; đầu vào không hợp lệ -> chuỗi rỗng.
+ *
+ * @param {*} reason lý do thô (có thể undefined/null/số...)
+ * @param {number} maxLength độ dài tối đa sau khi làm sạch
+ * @returns {string}
+ */
+function cleanModerationReason(reason, maxLength) {
+    try {
+        if (typeof reason !== 'string') return '';
+
+        const cleaned = reason
+            .replace(/[\u0000-\u001f\u007f]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        return cleaned.slice(0, maxLength);
+    } catch (error) {
+        return '';
+    }
+}
+
+/**
+ * Tài khoản này có đang bị khóa không.
+ *
+ * Fail-open có chủ ý: khóa tài khoản là công cụ kiểm duyệt phía trình duyệt,
+ * không phải hàng rào bảo mật. Tài khoản không tồn tại, lỗi đọc dữ liệu hoặc
+ * role 'admin' (admin KHÔNG BAO GIỜ bị khóa) đều trả false.
+ *
+ * @param {string} username
+ * @returns {boolean}
+ */
+function isUserBanned(username) {
+    try {
+        const user = findUser(username);
+        if (!user) return false;
+
+        return user.banned === true && user.role !== 'admin';
+    } catch (error) {
+        return false;
+    }
+}
+
+/**
+ * Danh sách cảnh cáo của một tài khoản (BẢN SAO), giữ đúng thứ tự đã lưu
+ * (mới nhất ở cuối). Chỉ nhận phần tử có trường reason là chuỗi; tài khoản
+ * không tồn tại / chưa có cảnh cáo / lỗi -> mảng rỗng.
+ *
+ * @param {string} username
+ * @returns {Array<{ at: string, reason: string, by: string }>}
+ */
+function getUserWarnings(username) {
+    try {
+        const user = findUser(username);
+        if (!user || !Array.isArray(user.warnings)) return [];
+
+        return user.warnings
+            .filter((warning) => warning && typeof warning === 'object' && typeof warning.reason === 'string')
+            .map((warning) => ({
+                at: typeof warning.at === 'string' ? warning.at : '',
+                reason: warning.reason,
+                by: typeof warning.by === 'string' ? warning.by : '',
+            }));
+    } catch (error) {
+        return [];
+    }
+}
+
+/**
+ * Thông tin kiểm duyệt của một tài khoản để hiển thị cho admin.
+ * TUYỆT ĐỐI không trả passwordHash / salt / password. Không tồn tại -> null.
+ *
+ * @param {string} username
+ * @returns {{ banned: boolean, bannedAt: string, bannedReason: string, bannedBy: string, warnings: Array }|null}
+ */
+function getUserModeration(username) {
+    try {
+        const user = findUser(username);
+        if (!user) return null;
+
+        return {
+            banned: user.banned === true && user.role !== 'admin',
+            bannedAt: typeof user.bannedAt === 'string' ? user.bannedAt : '',
+            bannedReason: typeof user.bannedReason === 'string' ? user.bannedReason : '',
+            bannedBy: typeof user.bannedBy === 'string' ? user.bannedBy : '',
+            warnings: getUserWarnings(username),
+        };
+    } catch (error) {
+        return null;
+    }
+}
+
+/**
+ * Người đang đăng nhập có được phép kiểm duyệt tài khoản mục tiêu không.
+ * Chỉ khi: là admin, mục tiêu tồn tại, mục tiêu KHÔNG phải admin, và mục tiêu
+ * KHÁC chính mình. Không bao giờ cho khóa/cảnh cáo admin hay tự khóa mình.
+ *
+ * @param {string} username tài khoản mục tiêu
+ * @returns {boolean}
+ */
+function canModerateUser(username) {
+    try {
+        if (!isAdmin()) return false;
+
+        const target = findUser(username);
+        if (!target) return false;
+        if (target.role === 'admin') return false;
+
+        const current = getCurrentUser();
+        if (!current) return false;
+
+        return target.username.toLowerCase() !== String(current).trim().toLowerCase();
+    } catch (error) {
+        return false;
+    }
+}
+
+/**
+ * Ghi lại danh sách user (đã đổi một tài khoản) rồi ghi nhật ký admin.
+ * @returns {boolean} true nếu `setUsers` lưu thành công.
+ */
+function persistUsersAndLog(users, action, targetId, detail) {
+    if (!setUsers(users)) return false;
+
+    // adminlog.js chỉ nạp ở trang Quản trị -> phải kiểm tra tồn tại trước khi gọi.
+    if (typeof logAdminAction === 'function') {
+        try {
+            logAdminAction(action, 'user', targetId, detail);
+        } catch (error) {
+            // Nhật ký lỗi không được làm hỏng thao tác kiểm duyệt.
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Khóa một tài khoản (chỉ admin, không khóa được admin/chính mình).
+ * Lý do tuỳ chọn: làm sạch, bỏ ký tự điều khiển, cắt còn 200 ký tự.
+ *
+ * @param {string} username
+ * @param {string} [reason]
+ * @returns {boolean} true nếu đã lưu.
+ */
+function banUser(username, reason) {
+    try {
+        if (!canModerateUser(username)) return false;
+
+        const cleanReason = cleanModerationReason(reason, MODERATION_REASON_MAX);
+        const users = getUsers();
+        const index = users.findIndex((user) => user.username.toLowerCase() === String(username).trim().toLowerCase());
+        if (index === -1) return false;
+        if (users[index].role === 'admin') return false;
+
+        users[index].banned = true;
+        users[index].bannedAt = new Date().toISOString();
+        users[index].bannedReason = cleanReason;
+        users[index].bannedBy = String(getCurrentUser() || '');
+
+        return persistUsersAndLog(users, 'user.ban', users[index].username, cleanReason);
+    } catch (error) {
+        return false;
+    }
+}
+
+/**
+ * Mở khóa một tài khoản (chỉ admin, mục tiêu phải tồn tại).
+ * XÓA hẳn các trường ban*, không để lại banned:false.
+ *
+ * @param {string} username
+ * @returns {boolean} true nếu đã lưu.
+ */
+function unbanUser(username) {
+    try {
+        if (!isAdmin()) return false;
+
+        const users = getUsers();
+        const index = users.findIndex((user) => user.username.toLowerCase() === String(username).trim().toLowerCase());
+        if (index === -1) return false;
+
+        delete users[index].banned;
+        delete users[index].bannedAt;
+        delete users[index].bannedReason;
+        delete users[index].bannedBy;
+
+        return persistUsersAndLog(users, 'user.unban', users[index].username, '');
+    } catch (error) {
+        return false;
+    }
+}
+
+/**
+ * Ghi một cảnh cáo cho tài khoản (chỉ admin, không cảnh cáo admin/chính mình).
+ * Lý do BẮT BUỘC: sau khi làm sạch phải có từ 3 đến 200 ký tự, sai -> false và
+ * không ghi gì. Giữ tối đa 20 cảnh cáo mới nhất.
+ *
+ * @param {string} username
+ * @param {string} reason
+ * @returns {boolean} true nếu đã lưu.
+ */
+function warnUser(username, reason) {
+    try {
+        if (!canModerateUser(username)) return false;
+
+        const cleanReason = cleanModerationReason(reason, MODERATION_REASON_MAX);
+        if (cleanReason.length < MODERATION_WARN_REASON_MIN) return false;
+
+        const users = getUsers();
+        const index = users.findIndex((user) => user.username.toLowerCase() === String(username).trim().toLowerCase());
+        if (index === -1) return false;
+
+        const warnings = Array.isArray(users[index].warnings) ? users[index].warnings.slice() : [];
+        warnings.push({
+            at: new Date().toISOString(),
+            reason: cleanReason,
+            by: String(getCurrentUser() || ''),
+        });
+
+        users[index].warnings = warnings.slice(-MODERATION_MAX_WARNINGS);
+
+        return persistUsersAndLog(users, 'user.warn', users[index].username, cleanReason);
+    } catch (error) {
+        return false;
+    }
+}
+
+/**
+ * Danh sách tài khoản để admin-users.js vẽ (KHÔNG chứa passwordHash/salt/password).
+ * Chỉ admin mới nhận được dữ liệu; người khác -> []. Sắp xếp theo joinedAt giảm
+ * dần (mới nhất trước); tài khoản thiếu/sai joinedAt bị đẩy xuống cuối.
+ *
+ * @returns {Array<object>}
+ */
+function getUsersForAdmin() {
+    try {
+        if (!isAdmin()) return [];
+
+        return getUsers()
+            .map((user) => ({
+                username: user.username,
+                displayName: typeof user.displayName === 'string' ? user.displayName : '',
+                role: user.role === 'admin' ? 'admin' : 'user',
+                joinedAt: typeof user.joinedAt === 'string' ? user.joinedAt : '',
+                banned: user.banned === true && user.role !== 'admin',
+                bannedAt: typeof user.bannedAt === 'string' ? user.bannedAt : '',
+                bannedReason: typeof user.bannedReason === 'string' ? user.bannedReason : '',
+                bannedBy: typeof user.bannedBy === 'string' ? user.bannedBy : '',
+                warnings: getUserWarnings(user.username),
+            }))
+            .sort((a, b) => {
+                const timeA = Date.parse(a.joinedAt);
+                const timeB = Date.parse(b.joinedAt);
+                return (Number.isNaN(timeB) ? -Infinity : timeB) - (Number.isNaN(timeA) ? -Infinity : timeA);
+            });
+    } catch (error) {
+        return [];
+    }
+}
+
+/**
+ * Lỗi của lần gọi loginUser() gần nhất: '' | 'invalid' | 'banned'.
+ * @returns {string}
+ */
+function getLastLoginError() {
+    try {
+        return lastLoginError;
+    } catch (error) {
+        return '';
+    }
+}
+
+/**
+ * Nếu tài khoản đang đăng nhập đã bị khóa thì kết thúc phiên ngay.
+ *
+ * KHÔNG gọi logout() (logout() chuyển trang ngay). Ở đây chỉ xóa phiên trong
+ * localStorage (bọc try/catch), vẽ lại khu vực tài khoản, rồi nếu đang đứng ở
+ * trang cần đăng nhập thì dùng requireAuth() để đưa về trang đăng nhập.
+ *
+ * @returns {boolean} true nếu đã xóa được phiên (kể cả khi đã đưa về Login).
+ */
+function enforceBanOnSession() {
+    try {
+        const username = getCurrentUser();
+        if (!username || !isUserBanned(username)) return false;
+
+        let removed = false;
+        try {
+            localStorage.removeItem(CURRENT_USER_KEY);
+            removed = true;
+        } catch (error) {
+            removed = false;
+        }
+
+        if (typeof updateAccountUI === 'function') {
+            try {
+                updateAccountUI();
+            } catch (error) {
+                // Vẽ lại header lỗi không quan trọng bằng việc đưa người bị khóa ra.
+            }
+        }
+
+        if (PROTECTED_PAGES.includes(window.location.pathname) && typeof requireAuth === 'function') {
+            requireAuth();
+        }
+
+        return removed;
+    } catch (error) {
+        return false;
+    }
+}
+
+// Chạy một lần sau khi danh sách user nạp xong; .catch rỗng để không sinh lỗi chưa bắt.
+usersReady.then(() => { enforceBanOnSession(); }).catch(() => {});
+
 /* ---------- Task 31 - Validate đăng ký ---------- */
 
 function validateRegisterForm(username, password, confirmPassword) {
@@ -377,10 +728,19 @@ async function registerUser(username, password) {
 
 /**
  * @returns {Promise<boolean>} true nếu đăng nhập thành công.
+ *
+ * Nếu mật khẩu đúng nhưng tài khoản đang bị khóa thì KHÔNG đăng nhập và trả false;
+ * getLastLoginError() sẽ là 'banned'. Việc kiểm tra khóa đặt SAU khi xác minh mật
+ * khẩu để người không biết mật khẩu không dò được tài khoản nào đang bị khóa.
  */
 async function loginUser(username, password) {
+    lastLoginError = '';
+
     const user = findUser(username);
-    if (!user) return false;
+    if (!user) {
+        lastLoginError = 'invalid';
+        return false;
+    }
 
     // Tài khoản đã băm (chuẩn hiện tại): xác minh bằng PBKDF2, so sánh thời gian hằng số.
     if (typeof user.passwordHash === 'string' && typeof user.salt === 'string') {
@@ -388,16 +748,32 @@ async function loginUser(username, password) {
         try {
             ok = await verifyPassword(password, user.salt, user.passwordHash);
         } catch (error) {
+            lastLoginError = 'invalid';
             return false;
         }
-        if (ok) setCurrentUser(user.username);
-        return ok;
+
+        if (!ok) {
+            lastLoginError = 'invalid';
+            return false;
+        }
+
+        // Mật khẩu đúng mới kiểm tra khóa.
+        if (isUserBanned(user.username)) {
+            lastLoginError = 'banned';
+            return false;
+        }
+
+        setCurrentUser(user.username);
+        return true;
     }
 
     // Tài khoản cũ còn mật khẩu thô (trước đợt băm): nâng cấp lên hash sau khi
     // xác minh đúng, để lần sau không còn mật khẩu thô trong dữ liệu.
     if (typeof user.password === 'string') {
-        if (user.password !== password) return false;
+        if (user.password !== password) {
+            lastLoginError = 'invalid';
+            return false;
+        }
 
         try {
             const hash = await hashPassword(password);
@@ -413,11 +789,18 @@ async function loginUser(username, password) {
             // Không nâng cấp được thì vẫn cho đăng nhập trong phiên này.
         }
 
+        // Mật khẩu đúng mới kiểm tra khóa.
+        if (isUserBanned(user.username)) {
+            lastLoginError = 'banned';
+            return false;
+        }
+
         setCurrentUser(user.username);
         return true;
     }
 
     // Tài khoản không có bất kỳ thông tin mật khẩu nào -> fail-closed.
+    lastLoginError = 'invalid';
     return false;
 }
 

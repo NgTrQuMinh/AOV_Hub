@@ -8,6 +8,12 @@
  * nên JSON hỏng / LocalStorage bị chặn (chế độ riêng tư) sẽ không làm sập trang.
  *
  * Không phụ thuộc file nào khác.
+ *
+ * Hàm đo dung lượng (task CM05):
+ *  - getStorageUsage(): ước lượng dung lượng LocalStorage đã dùng (số đo là ƯỚC LƯỢNG,
+ *    dựa trên độ dài UTF-16 của key + value), trả cả mức 'ok'/'warn'/'danger'.
+ *  - formatStorageSize(bytes): đổi số byte sang chuỗi dễ đọc ("1,5 MB").
+ * Khung Quản lý (admin-shell.js) và admin-storage.js dùng hai hàm này để cảnh báo / vẽ thanh đo.
  */
 
 const FAVORITES_KEY = 'aov_favorites';
@@ -16,6 +22,10 @@ const COMPARE_KEY = 'aov_compare';
 
 const HISTORY_LIMIT = 10;
 const COMPARE_LIMIT = 2;
+
+const STORAGE_LIMIT_BYTES = 5 * 1024 * 1024;   // hạn mức ước lượng 5 MB mỗi origin
+const STORAGE_WARN_PERCENT = 70;               // từ mức này trở lên: level 'warn'
+const STORAGE_DANGER_PERCENT = 90;             // từ mức này trở lên: level 'danger'
 
 /* ---------- Hàm nền: JSON an toàn ---------- */
 
@@ -218,4 +228,148 @@ function setCompare(ids) {
 
 function clearCompare() {
     return removeStore(COMPARE_KEY);
+}
+
+/* ---------- Đo dung lượng LocalStorage (task CM05) ---------- */
+
+/**
+ * Liệt kê tên key đang có trong LocalStorage.
+ * Ưu tiên giao diện chuẩn của trình duyệt (length + key(i)); nếu không hỗ trợ
+ * thì lùi về Object.keys(localStorage) (mini-dom / storage giả lập).
+ * @returns {string[]|null} danh sách key, hoặc null khi không đọc được.
+ */
+function collectStorageKeys() {
+    try {
+        if (typeof localStorage.key === 'function') {
+            const total = Number(localStorage.length) || 0;
+            const keys = [];
+            for (let i = 0; i < total; i++) {
+                const key = localStorage.key(i);
+                if (key !== null && key !== undefined) keys.push(String(key));
+            }
+            return keys;
+        }
+    } catch (error) {
+        // Không duyệt được bằng length/key(i): thử phương án dự phòng bên dưới.
+    }
+
+    try {
+        // Bỏ qua các thuộc tính là hàm của storage giả lập (getItem/setItem/...).
+        return Object.keys(localStorage).filter((key) => typeof localStorage[key] !== 'function');
+    } catch (error) {
+        return null;
+    }
+}
+
+/**
+ * Ước lượng dung lượng LocalStorage của origin hiện tại. Số đo là ƯỚC LƯỢNG:
+ * mỗi key tính (độ dài key + độ dài value) * 2 byte (UTF-16), cố ý thiên về
+ * thận trọng nên thường lớn hơn dung lượng thật.
+ * Dùng bởi khung Quản lý (admin-shell.js) và admin-storage.js.
+ *
+ * KHÔNG BAO GIỜ ném lỗi: LocalStorage bị chặn thì trả available: false.
+ * @returns {{
+ *   available: boolean,
+ *   usedBytes: number,
+ *   appBytes: number,
+ *   limitBytes: number,
+ *   percent: number,
+ *   level: 'ok'|'warn'|'danger',
+ *   items: Array<{ key: string, bytes: number, isApp: boolean }>
+ * }}
+ */
+function getStorageUsage() {
+    const fallback = {
+        available: false,
+        usedBytes: 0,
+        appBytes: 0,
+        limitBytes: STORAGE_LIMIT_BYTES,
+        percent: 0,
+        level: 'ok',
+        items: [],
+    };
+
+    try {
+        // Phép thử để phát hiện LocalStorage bị chặn (chế độ riêng tư): ném lỗi -> không có.
+        localStorage.getItem('__aov_storage_probe__');
+
+        const keys = collectStorageKeys();
+        if (keys === null) return fallback;
+
+        const items = [];
+        let usedBytes = 0;
+        let appBytes = 0;
+
+        keys.forEach((key) => {
+            const name = String(key);
+
+            let value = '';
+            try {
+                value = localStorage.getItem(name) || '';
+            } catch (error) {
+                // Một key đọc lỗi thì bỏ qua key đó, các key khác vẫn tính.
+                return;
+            }
+
+            const bytes = (name.length + String(value).length) * 2;
+            const isApp = name.indexOf('aov_') === 0;
+
+            items.push({ key: name, bytes: bytes, isApp: isApp });
+            usedBytes += bytes;
+            if (isApp) appBytes += bytes;
+        });
+
+        items.sort((a, b) => b.bytes - a.bytes);
+
+        const rawPercent = (usedBytes / STORAGE_LIMIT_BYTES) * 100;
+        const percent = Math.min(100, Math.max(0, Math.round(rawPercent * 10) / 10));
+        const level = percent >= STORAGE_DANGER_PERCENT ? 'danger'
+            : (percent >= STORAGE_WARN_PERCENT ? 'warn' : 'ok');
+
+        return {
+            available: true,
+            usedBytes: usedBytes,
+            appBytes: appBytes,
+            limitBytes: STORAGE_LIMIT_BYTES,
+            percent: percent,
+            level: level,
+            items: items,
+        };
+    } catch (error) {
+        console.error('Không đọc được dung lượng LocalStorage', error);
+        return fallback;
+    }
+}
+
+/**
+ * Đổi số byte sang chuỗi dễ đọc (dấu phẩy thập phân kiểu Việt: "1,5 MB").
+ * Giá trị không hợp lệ (NaN, âm, không phải số) trả "0 B".
+ * @param {number} bytes
+ * @returns {string}
+ */
+function formatStorageSize(bytes) {
+    try {
+        const value = Number(bytes);
+        if (!Number.isFinite(value) || value <= 0) return '0 B';
+
+        if (value < 1024) return Math.round(value) + ' B';
+        if (value < 1024 * 1024) return formatStorageNumber(value / 1024) + ' KB';
+
+        return formatStorageNumber(value / (1024 * 1024)) + ' MB';
+    } catch (error) {
+        return '0 B';
+    }
+}
+
+/**
+ * Làm tròn 1 chữ số thập phân và dùng dấu phẩy (vd 1.5 -> "1,5").
+ * @param {number} value
+ * @returns {string}
+ */
+function formatStorageNumber(value) {
+    try {
+        return (Math.round(value * 10) / 10).toFixed(1).replace('.', ',');
+    } catch (error) {
+        return '0,0';
+    }
 }
