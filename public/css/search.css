@@ -3,7 +3,7 @@
  * Phụ trách: bổ sung cho tính năng tìm kiếm ở Header (L20/N01).
  *
  * Dùng lại: .filter-bar (common.css), .grid (common.css) cho lưới Tướng/Trang bị,
- *           .page-head + .page-head__count (build.css) cho tiêu đề trang.
+ *           .page-head + .page-head__count (common.css) cho tiêu đề trang.
  * Ở đây chỉ thêm style cho từng nhóm kết quả và các dòng kết quả Build/Bài viết.
  * ========================================= */
 
