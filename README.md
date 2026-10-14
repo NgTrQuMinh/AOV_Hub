@@ -113,3 +113,44 @@ Các key cũ (`aov_users`, `aov_posts`, `aov_comments`, `aov_likes`, `aov_posts_
 Không tự ý đổi tên các key cố định khi thêm tính năng — `storage.js`, `favorite.js`, `compare.js`, `feed.js` đều phụ thuộc.
 
 > Giới hạn: không có backend. "Dữ liệu dùng chung" thực chất là file JSON trong repo/máy demo; trình duyệt chỉ tự ghi được khi người dùng liên kết thư mục `src/data` (Chrome/Edge). "admin" là quy ước phía trình duyệt, không phải bảo mật thật.
+
+## 6. Checklist kiểm thử & demo
+
+### 6.1. Lệnh
+```bash
+npm install                 # cài phụ thuộc
+npm run dev                 # dev server (có API /api/heroes)
+npm test                    # 16 file test mini-DOM
+npm run test:e2e:install    # cài Chromium (một lần)
+npm run test:e2e            # test trình duyệt thật (responsive + menu mobile)
+npm run build               # build 16 trang vào dist/
+npm run preview             # xem bản build (vẫn có API /api/heroes)
+```
+
+### 6.2. Kết quả hiện tại
+- `npm test`: **16/16 file PASS** (mini-DOM).
+- `npm run test:e2e`: **77/77 PASS** — 15 trang × 5 mốc (360 / 480 / 768 / 1024 / 1280) không tràn ngang, cộng 2 test menu mobile.
+- `npm run build`: sinh đủ **16 trang HTML** + css/js/data/ảnh vào `dist/`; chạy `npm run preview` rồi mở để kiểm tra lại.
+
+### 6.3. Tài khoản demo
+
+| Tài khoản | Mật khẩu | Vai trò |
+| --------- | -------- | ------- |
+| `demo`    | `123456` | user    |
+| `aovfan`  | `aov123` | user    |
+| `admin`   | `admin1` | admin   |
+
+### 6.4. Kịch bản demo
+1. **Trang chủ** — banner, điều hướng nhanh, khối nổi bật; thu nhỏ ≤768px thấy nút menu mobile.
+2. **Tướng** — tìm kiếm (bỏ dấu), lọc vai trò/độ khó, sắp xếp A-Z/Z-A, phân trang 12/trang; chi tiết có bảng kỹ năng (kèm hồi chiêu), bảng chỉ số, build đề xuất và nút ♥.
+3. **Trang bị** — tìm kiếm, lọc theo loại, phân trang; chi tiết có nội tại, giá, trang bị liên quan.
+4. **Yêu thích** (2 tab Yêu thích / Lịch sử) và **So sánh tướng** (tô sáng chỉ số cao hơn); bộ lọc/sắp xếp lưu trên URL nên F5 vẫn giữ.
+5. **Cộng đồng (Feed)** — lọc chuyên mục, sắp xếp, tìm kiếm; mở chi tiết, like/comment. Đăng bài khi đã đăng nhập (vào hàng chờ nếu bật duyệt trước).
+6. **Đăng ký → Đăng nhập → Profile → Đăng xuất**; Profile hiển thị thống kê và bài đã đăng.
+7. **Admin** (`admin` / `admin1`) — ẩn/hiện & xoá bài, công tắc duyệt trước; mục "Tướng" để thêm/sửa/xoá tướng.
+
+### 6.5. Lưu ý khi demo
+- Phải chạy qua `npm run dev` hoặc `npm run preview` (mở thẳng file sẽ lỗi CORS khi đọc JSON).
+- Trang Quản lý tướng chỉ lưu khi có API `/api/heroes` (chạy dev hoặc preview).
+- Dữ liệu cộng đồng (users/posts/comments/likes) muốn ghi thẳng vào `src/data` cần liên kết thư mục ở Chrome/Edge; nếu không sẽ lưu tạm bằng LocalStorage.
+- "admin" chỉ là quy ước phía trình duyệt, không phải bảo mật thật; dự án không có backend.
