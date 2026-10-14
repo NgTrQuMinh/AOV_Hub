@@ -448,10 +448,14 @@ function getAdminSidebarUser() {
 
 /**
  * Dựng HTML cho <aside class="admin-sidebar">: thương hiệu "Quản lý", tên tài khoản,
- * rồi các nhóm mục (getAdminMenuGroups) với liên kết của từng mục. Mục đang chọn có
- * thêm class is-active và aria-current="page". href và data-admin-tab qua adminShellEscape.
+ * nút "Thoát quản lý" ở đầu menu, rồi các nhóm mục (getAdminMenuGroups) với liên kết
+ * của từng mục. Mục đang chọn có thêm class is-active và aria-current="page". href và
+ * data-admin-tab qua adminShellEscape.
+ * Nút thoát (class admin-sidebar__exit) trỏ về trang chủ và CỐ Ý không có data-admin-tab
+ * lẫn is-active để không bị getActiveAdminTab / đánh dấu mục đang chọn / refreshAdminBadges
+ * (duyệt theo .admin-sidebar__link[data-admin-tab]) nhầm là một tab.
  * Hợp đồng class: admin-sidebar, __brand, __title, __sub, __nav, __group, __link
- * (is-active), __icon, __label, __badge.
+ * (is-active), __exit, __icon, __label, __badge.
  * @param {string} activeTabId tab đang chọn
  * @param {{ pending: number, reports: number }} counts
  * @returns {string}
@@ -468,6 +472,20 @@ function buildAdminSidebar(activeTabId, counts) {
         + '</div>';
 
     html += '<nav class="admin-sidebar__nav" aria-label="Các mục quản lý">';
+
+    // Thoát khu quản lý về trang chủ. Đặt đầu menu; không gắn data-admin-tab để
+    // nút này không tham gia đánh dấu mục đang chọn hay đếm badge.
+    html += '<a class="admin-sidebar__link admin-sidebar__exit"'
+        + ' href="' + adminShellEscape(adminShellBasePath() + 'index.html') + '"'
+        + ' title="Thoát khỏi khu quản lý, về website">'
+        + '<span class="admin-sidebar__icon" aria-hidden="true">'
+        + '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"'
+        + ' stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+        + '<line x1="19" y1="12" x2="5" y2="12"></line>'
+        + '<polyline points="12 19 5 12 12 5"></polyline>'
+        + '</svg></span>'
+        + '<span class="admin-sidebar__label">Thoát quản lý</span>'
+        + '</a>';
 
     for (const group of groups) {
         html += '<p class="admin-sidebar__group">' + adminShellEscape(group.group) + '</p>';
