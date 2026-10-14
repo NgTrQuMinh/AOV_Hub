@@ -65,6 +65,19 @@
                     -->
                     <div id="admin-settings"></div>
 
+                    <!-- Sao lưu / Khôi phục dữ liệu admin -->
+                    <div id="admin-backup" class="admin-settings">
+                        <div class="admin-settings__toggle" style="gap:12px;flex-wrap:wrap;align-items:center">
+                            <button type="button" class="btn btn-outline btn-sm" id="admin-export-json">Xuất toàn bộ JSON</button>
+                            <input type="file" id="admin-import-input" accept="application/json" hidden>
+                            <button type="button" class="btn btn-outline btn-sm" id="admin-import-json">Nhập từ JSON...</button>
+                        </div>
+                        <p class="admin-settings__hint">
+                            Xuất: tải file sao lưu gồm bài viết, lượt thích/bình luận, yêu thích, build, lịch sử tướng, cài đặt kiểm duyệt,...
+                            Nhập: ghi đè dữ liệu localStorage hiện tại. Chỉ admin mới được thao tác.
+                        </p>
+                    </div>
+
                     <!-- Ô tìm theo tiêu đề / tác giả: do admin.js vẽ và gắn sự kiện gõ -->
                     <div id="admin-toolbar" class="feed-filter"></div>
 

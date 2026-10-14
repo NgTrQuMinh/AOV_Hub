@@ -325,6 +325,22 @@ document.addEventListener('click', (event) => {
         }
 
         renderAdminTable();
+        return;
+    }
+
+    const exportBtn = event.target.closest('#admin-export-json');
+    if (exportBtn) {
+        triggerAdminExport();
+        return;
+    }
+
+    const importBtn = event.target.closest('#admin-import-json');
+    if (importBtn) {
+        const input = document.getElementById('admin-import-input');
+        if (input && typeof input.click === 'function') {
+            input.click();
+        }
+        return;
     }
 });
 
@@ -335,15 +351,170 @@ document.addEventListener('click', (event) => {
  */
 document.addEventListener('change', (event) => {
     const toggle = event.target.closest('[data-admin-require-approval]');
-    if (!toggle) return;
+    if (toggle) {
+        // setModSettings() kiểm tra lại quyền admin ở tầng dữ liệu; trả false là không lưu được.
+        if (!setModSettings({ requireApproval: Boolean(toggle.checked) })) {
+            alert('Không lưu được cấu hình kiểm duyệt. Bạn không có quyền quản trị.');
+            // Vẽ lại theo aov_mod_settings thật để checkbox không đứng ở trạng thái "giả mở".
+            renderAdminSettings();
+        }
+        return;
+    }
 
-    // setModSettings() kiểm tra lại quyền admin ở tầng dữ liệu; trả false là không lưu được.
-    if (!setModSettings({ requireApproval: Boolean(toggle.checked) })) {
-        alert('Không lưu được cấu hình kiểm duyệt. Bạn không có quyền quản trị.');
-        // Vẽ lại theo aov_mod_settings thật để checkbox không đứng ở trạng thái "giả mở".
-        renderAdminSettings();
+    const importInput = event.target.closest('#admin-import-input');
+    if (importInput) {
+        const file = importInput.files && importInput.files[0];
+        if (file) {
+            handleAdminImport(file);
+        }
+        // Cho phép chọn lại cùng file sau khi nhập xong.
+        importInput.value = '';
+        return;
     }
 });
+
+/**
+ * Các key localStorage cần sao lưu dữ liệu quản trị.
+ * Không backup users.json/heroes.json (file hệ thống).
+ */
+function getAdminBackupKeys() {
+    return [
+        'aov_posts',
+        'aov_mod_settings',
+        'aov_likes',
+        'aov_comments',
+        'aov_favorites',
+        'aov_builds',
+        'aov_hero_history',
+        'aov_hero_compare',
+        'aov_admin_log'
+    ];
+}
+
+/**
+ * Tạo object dữ liệu sao lưu toàn bộ (localStorage).
+ */
+function exportAdminData() {
+    const output = {
+        meta: {
+            app: 'AOV_HUB',
+            exportedAt: new Date().toISOString(),
+            version: '1.0'
+        },
+        data: {}
+    };
+
+    getAdminBackupKeys().forEach((key) => {
+        try {
+            const value = localStorage.getItem(key);
+            if (value !== null) {
+                output.data[key] = JSON.parse(value);
+            }
+        } catch (error) {
+            // Bỏ qua key không đọc được hoặc không phải JSON.
+        }
+    });
+
+    return output;
+}
+
+/**
+ * Tải file JSON sao lưu xuống máy.
+ */
+function triggerAdminExport() {
+    if (typeof Blob === 'undefined' || typeof URL === 'undefined') {
+        alert('Trình duyệt không hỗ trợ tải file.');
+        return false;
+    }
+
+    try {
+        const backup = exportAdminData();
+        const blob = new Blob([JSON.stringify(backup, null, 2) + '\n'], {
+            type: 'application/json;charset=utf-8'
+        });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        a.href = url;
+        a.download = `aov-hub-backup-${timestamp}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        return true;
+    } catch (error) {
+        console.error('Xuất dữ liệu sao lưu thất bại', error);
+        alert('Xuất dữ liệu sao lưu thất bại.');
+        return false;
+    }
+}
+
+/**
+ * Đọc file JSON nhập vào và khôi phục localStorage.
+ */
+async function handleAdminImport(file) {
+    if (!file) return false;
+
+    // Chỉ chấp nhận JSON.
+    if (file.type && file.type.indexOf('application/json') !== 0 && !file.name.endsWith('.json')) {
+        alert('Chỉ chấp nhận file .json.');
+        return false;
+    }
+
+    let text = '';
+    try {
+        text = await file.text();
+    } catch (error) {
+        console.error('Không đọc được file nhập', error);
+        alert('Không đọc được file nhập.');
+        return false;
+    }
+
+    let parsed;
+    try {
+        parsed = JSON.parse(text);
+    } catch (error) {
+        alert('File JSON không hợp lệ.');
+        return false;
+    }
+
+    if (!parsed || typeof parsed !== 'object') {
+        alert('File JSON không hợp lệ.');
+        return false;
+    }
+
+    const data = parsed.data;
+    if (!data || typeof data !== 'object') {
+        alert('File sao lưu không chứa dữ liệu (thiếu trường data).');
+        return false;
+    }
+
+    const confirmed = confirm('Ghi đè toàn bộ dữ liệu localStorage bằng file sao lưu này? Thao tác không thể hoàn tác.');
+    if (!confirmed) return false;
+
+    try {
+        const keys = getAdminBackupKeys();
+        keys.forEach((key) => {
+            if (Object.prototype.hasOwnProperty.call(data, key)) {
+                try {
+                    const value = data[key];
+                    // Lưu lại dưới dạng chuỗi JSON (đúng chuẩn localStorage hiện tại).
+                    localStorage.setItem(key, JSON.stringify(value));
+                } catch (error) {
+                    // Bỏ qua key không ghi được.
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Khôi phục dữ liệu thất bại', error);
+        alert('Khôi phục dữ liệu thất bại.');
+        return false;
+    }
+
+    alert('Khôi phục dữ liệu thành công. Trang sẽ tải lại để áp dụng.');
+    location.reload();
+    return true;
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
