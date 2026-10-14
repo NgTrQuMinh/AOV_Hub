@@ -38,6 +38,11 @@
  * canDeletePost() và canDeleteComment(); cả deletePost()/deleteComment() đều gọi lại
  * chính các hàm này nên không thể xoá nhầm chỉ bằng cách gọi trực tiếp từ console.
  *
+ * Tài khoản bị khóa (KD09) không đăng bài/sửa/bình luận/thích: xem
+ * isCurrentUserBanned()/getBannedNoticeText() và các dòng chặn ở createPost(),
+ * updatePost(), canEditPost(), toggleLike(), addComment(); người bị khóa vẫn tự xoá
+ * được nội dung của mình nên deletePost()/deleteComment() KHÔNG bị chặn.
+ *
  * Lọc và sắp xếp (chỉ có ở trang Feed, thanh lọc nằm ở #feed-filter-bar):
  *   - lọc theo chuyên mục và tìm theo tiêu đề (matchKeyword), sắp xếp theo
  *     mới nhất / nhiều like / nhiều bình luận (getVisiblePosts)
@@ -406,9 +411,13 @@ function validatePostForm(title, content, heroId, category) {
  * tạo "approved" ngay kèm reviewedBy/reviewedAt; đang tắt thì mọi bài ra
  * "approved" — luôn có trường status để bảng quản trị khỏi phải đoán.
  *
+ * Tài khoản bị khóa (KD09) không đăng bài/sửa/bình luận/thích: trả null ngay từ đầu.
+ *
  * @returns {object|null} bài vừa tạo, null nếu dữ liệu không hợp lệ hoặc lưu thất bại.
  */
 function createPost(title, content, heroId, category) {
+    if (isCurrentUserBanned()) return null;
+
     const checked = validatePostForm(title, content, heroId, category);
     if (!checked.valid) return null;
 
@@ -453,13 +462,63 @@ function createPost(title, content, heroId, category) {
 }
 
 /**
+ * Tài khoản đang đăng nhập có đang bị khóa không (KD09).
+ *
+ * Chỉ chặn khi chắc chắn: auth.js phải nạp và có hàm isUserBanned(), và phải có
+ * người đang đăng nhập. Thiếu auth.js / lỗi bất kỳ -> false để không chặn nhầm
+ * (nhất quán với fail-open của isUserBanned() bên auth.js).
+ *
+ * @returns {boolean}
+ */
+function isCurrentUserBanned() {
+    try {
+        if (typeof isUserBanned !== 'function') return false;
+
+        const username = getCurrentUser();
+        if (!username) return false;
+
+        return isUserBanned(username) === true;
+    } catch (error) {
+        return false;
+    }
+}
+
+/**
+ * Câu thông báo cho tài khoản bị khóa (KD09), kèm lý do nếu có.
+ * Trả chuỗi THÔ; nơi chèn vào HTML phải tự escapeHtml().
+ *
+ * @returns {string}
+ */
+function getBannedNoticeText() {
+    const base = 'Tài khoản của bạn đang bị khóa nên không thể đăng bài, bình luận hoặc thích bài viết.';
+
+    try {
+        if (typeof getUserModeration !== 'function') return base;
+
+        const moderation = getUserModeration(getCurrentUser());
+        const reason = moderation && typeof moderation.bannedReason === 'string'
+            ? moderation.bannedReason.trim()
+            : '';
+
+        return reason ? `${base} Lý do: ${reason}.` : base;
+    } catch (error) {
+        return base;
+    }
+}
+
+/**
  * Người dùng hiện tại có quyền sửa bài viết này không.
  * Dùng chung cho nút "Sửa" ở Feed và ở trang chi tiết, và cả updatePost() bên dưới
  * để không lộ nút sửa cho bài của người khác.
+ *
+ * Tài khoản bị khóa (KD09) không sửa được: nút "Sửa" biến mất và openPostEditForm()/
+ * updatePost() cũng từ chối vì đều dựa vào hàm này.
+ *
  * @param {object} post
  * @returns {boolean}
  */
 function canEditPost(post) {
+    if (isCurrentUserBanned()) return false;
     if (!post || !isLoggedIn()) return false;
 
     return isPostAuthor(post);
@@ -482,6 +541,8 @@ function canEditPost(post) {
  *         không phải tác giả, dữ liệu không hợp lệ hoặc lưu thất bại.
  */
 function updatePost(postId, title, content, heroId, category) {
+    if (isCurrentUserBanned()) return null;
+
     const id = normalizeId(postId);
     const posts = getPosts();
     const index = posts.findIndex((post) => normalizeId(post.id) === id);
@@ -733,10 +794,12 @@ function isLikedByCurrentUser(postId) {
  * Bật/tắt lượt thích của người dùng đang đăng nhập.
  * @returns {boolean} true nếu vừa thích, false nếu vừa bỏ thích, chưa đăng nhập,
  *         bài viết không còn tồn tại hoặc bài không hiển thị với người đang xem
- *         (bài ẩn, bài chờ duyệt / bị từ chối của người khác) — chặn cả khi
- *         gọi thẳng từ console.
+ *         (bài ẩn, bài chờ duyệt / bị từ chối của người khác), hoặc tài khoản bị khóa
+ *         (KD09) không thích được — chặn cả khi gọi thẳng từ console.
  */
 function toggleLike(postId) {
+    if (isCurrentUserBanned()) return false;
+
     const id = normalizeId(postId);
     const username = getCurrentUser();
     if (!id || !username) return false;
@@ -770,9 +833,12 @@ function getCommentsOfPost(postId) {
  * @returns {object|null} bình luận vừa tạo, null nếu chưa đăng nhập, nội dung rỗng,
  *         quá COMMENT_MAX ký tự, bài viết không còn tồn tại, bài không hiển thị
  *         với người đang xem (bài ẩn, bài chờ duyệt / bị từ chối của người khác —
- *         chặn cả khi gọi thẳng từ console) hoặc lưu thất bại.
+ *         chặn cả khi gọi thẳng từ console), tài khoản bị khóa (KD09) không bình luận
+ *         được, hoặc lưu thất bại.
  */
 function addComment(postId, content) {
+    if (isCurrentUserBanned()) return null;
+
     const id = normalizeId(postId);
     const text = String(content || '').trim();
     const author = getCurrentUser();
@@ -878,6 +944,16 @@ function renderPostForm(editingPost, formBox) {
             <div class="feed-form feed-form--guest">
                 <p>Bạn cần đăng nhập để đăng bài và bình luận.</p>
                 <a class="btn btn-primary" href="${BASE_PATH}src/pages/login.html?redirect=${encodeURIComponent(BASE_PATH + 'src/pages/feed.html')}">Đăng nhập</a>
+            </div>
+        `;
+        return;
+    }
+
+    // Tài khoản bị khóa (KD09): chỉ hiện thông báo, không vẽ form, không có link đăng nhập.
+    if (isCurrentUserBanned()) {
+        box.innerHTML = `
+            <div class="feed-form feed-form--guest">
+                <p>${escapeHtml(getBannedNoticeText())}</p>
             </div>
         `;
         return;
@@ -1377,7 +1453,7 @@ function renderPostCard(post) {
 
             <ul class="comment-list">${commentsHtml}</ul>
 
-            ${isLoggedIn() ? `
+            ${isLoggedIn() && !isCurrentUserBanned() ? `
                 <form class="comment-form" data-comment-form="${escapeHtml(post.id)}">
                     <input type="text" placeholder="Viết bình luận..." aria-label="Nội dung bình luận">
                     <button type="submit" class="btn btn-outline btn-sm">Gửi</button>
@@ -1508,7 +1584,9 @@ function renderPostDetailView(focusPostId) {
                 <h2>Bình luận (${comments.length})</h2>
                 <ul class="comment-list">${commentsHtml || '<li class="comment-list__empty">Chưa có bình luận nào.</li>'}</ul>
 
-                ${isLoggedIn() ? `
+                ${isLoggedIn() && isCurrentUserBanned() ? `
+                    <p class="post-detail__guest-note">${escapeHtml(getBannedNoticeText())}</p>
+                ` : isLoggedIn() ? `
                     <form class="comment-form" data-comment-form="${escapeHtml(post.id)}">
                         <input type="text" placeholder="Viết bình luận..." aria-label="Nội dung bình luận">
                         <button type="submit" class="btn btn-outline btn-sm">Gửi</button>
