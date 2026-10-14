@@ -12,6 +12,7 @@ const { ROOT, loadPage, fire, unescapeHtml } = require('./mini-dom.cjs');
 const PAGE = 'src/pages/builds.html';
 const BUILDS_JSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/builds.json'), 'utf8'));
 const HEROES_JSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/heroes.json'), 'utf8'));
+const ITEMS_JSON = JSON.parse(fs.readFileSync(path.join(ROOT, 'src/data/items.json'), 'utf8'));
 
 const heroNameOf = (heroId) => {
     const hero = HEROES_JSON.find((h) => h.id === heroId);
@@ -21,6 +22,14 @@ const heroNameOf = (heroId) => {
 /** Mọi build phải thuộc tướng có thật trong heroes.json và có tên build. */
 const validHeroLinks = BUILDS_JSON.every((build) =>
     HEROES_JSON.some((hero) => hero.id === build.heroId) && String(build.name || '').trim());
+
+/** Mọi trang bị trong build.items phải có thật trong items.json (không id lạ). */
+const validItemLinks = BUILDS_JSON.every((build) =>
+    (build.items || []).every((itemId) => ITEMS_JSON.some((item) => item.id === itemId)));
+
+/** Mọi tướng trong heroes.json đều phải có ít nhất một build (phủ 32/32). */
+const everyHeroCovered = HEROES_JSON.every((hero) =>
+    BUILDS_JSON.some((build) => build.heroId === hero.id));
 
 /* ================= Test runner ================= */
 
@@ -81,6 +90,12 @@ function cardCount(page) {
         && base.el('build-keyword').getAttribute('placeholder') !== null);
     check(`dữ liệu builds.json hợp lệ: ${BUILDS_JSON.length} build, mọi build đều có tướng thật`,
         validHeroLinks);
+    check('mọi trang bị trong builds.json đều có thật trong items.json',
+        validItemLinks,
+        validItemLinks ? '' : 'có item id không tồn tại');
+    check(`mọi tướng (${HEROES_JSON.length}/${HEROES_JSON.length}) đều có ít nhất một build`,
+        everyHeroCovered,
+        everyHeroCovered ? '' : 'còn tướng chưa có build');
 
     check(`không lọc: hiện đủ ${BUILDS_JSON.length} thẻ build`,
         cardCount(base) === BUILDS_JSON.length,
@@ -89,7 +104,8 @@ function cardCount(page) {
         buildNames(base).join('|') === BUILDS_JSON.map((build) => build.name).join('|'),
         buildNames(base).join('|'));
     const heroNamesOk = (() => {
-        const html = cardHtml(base);
+        // So trên HTML đã giải mã để tên có dấu nháy (vd Tel'Annas -> &#39;) vẫn khớp.
+        const html = unescapeHtml(cardHtml(base));
         return BUILDS_JSON.every((build) => html.includes(heroNameOf(build.heroId)));
     })();
     check('mỗi thẻ build có tên tướng chủ (trong các lần render đầu tiên)',
