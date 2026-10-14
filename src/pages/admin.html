@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AOV HUB - Quản trị bài viết</title>
+    <title>AOV HUB - Quản lý</title>
 
     <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/variables.css">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/feed.css">
     <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/hero-admin.css">
 </head>
 <body data-page="admin">
 
@@ -27,49 +28,61 @@
     <header id="site-header"></header>
 
     <main class="container section">
-        <h1>Quản trị bài viết</h1>
-        <p>
-            Dành cho quản trị viên: theo dõi toàn bộ bài viết của cộng đồng,
-            ẩn bài vi phạm (bài bị ẩn sẽ không hiện trên Cộng đồng, trang chi tiết
-            và trang cá nhân của người khác) hoặc xoá hẳn bài viết.
-            Công tắc "Yêu cầu duyệt bài trước khi đăng" ở ngay bên dưới quyết định
-            bài của user thường có phải chờ admin duyệt không.
-            Quản lý tướng (thêm / sửa / xoá) nằm ở trang riêng:
-            <a href="/src/pages/hero-admin.html">Quản lý tướng</a>.
-        </p>
-
-        <!--
-            Thanh tab quản trị: admin-shell.js vẽ vào đây (tab Bài viết, Chờ duyệt,
-            Báo cáo, Người dùng, Nhật ký, Dữ liệu, Cài đặt...). Để rỗng trong HTML.
-        -->
-        <div id="admin-tabs"></div>
-
-        <!--
-            Khung nội dung tab "Bài viết": giữ nguyên toàn bộ vùng do admin.js vẽ
-            (#admin-settings, #admin-toolbar, #admin-count, #admin-list).
-        -->
-        <div id="admin-posts-panel">
-            <!--
-                Công tắc "Yêu cầu duyệt bài trước khi đăng" (aov_mod_settings.requireApproval):
-                do admin.js vẽ và lắng nghe sự kiện change (event delegation) ở document.
-            -->
-            <div id="admin-settings"></div>
-
-            <!-- Ô tìm theo tiêu đề / tác giả: do admin.js vẽ và gắn sự kiện gõ -->
-            <div id="admin-toolbar" class="feed-filter"></div>
-
-            <!-- Số bài đang hiện / tổng số bài trong hệ thống -->
-            <p id="admin-count" class="feed-count" aria-live="polite"></p>
-
-            <!-- Bảng bài viết: do admin.js vẽ từ aov_posts (feed.js) -->
-            <div id="admin-list" class="card"></div>
+        <div class="admin-page-head">
+            <h1>Quản lý</h1>
         </div>
 
-        <!--
-            Khung rỗng cho các tab động còn lại (Chờ duyệt, Báo cáo, Người dùng,
-            Nhật ký, Dữ liệu, Cài đặt): admin-shell.js đổ nội dung vào, mặc định ẩn.
-        -->
-        <div id="admin-panel" class="admin-panel" hidden></div>
+        <div class="admin-layout">
+            <!--
+                Menu dọc quản lý: admin-shell.js vẽ vào đây (Bài viết, Chờ duyệt,
+                Báo cáo, Người dùng, Tướng, Trang bị, Build, Nhật ký, Dữ liệu,
+                Cài đặt...). Để rỗng trong HTML.
+            -->
+            <div id="admin-tabs" class="admin-layout__side"></div>
+
+            <div class="admin-layout__main">
+                <!-- Cảnh báo LocalStorage: admin-shell.js đổ vào nếu trang có phần tử này -->
+                <div id="admin-notices"></div>
+
+                <!--
+                    Khung nội dung mục "Bài viết": giữ nguyên toàn bộ vùng do admin.js vẽ
+                    (#admin-settings, #admin-toolbar, #admin-count, #admin-list).
+                -->
+                <div id="admin-posts-panel">
+                    <p>
+                        Dành cho quản trị viên: theo dõi toàn bộ bài viết của cộng đồng,
+                        ẩn bài vi phạm (bài bị ẩn sẽ không hiện trên Cộng đồng, trang chi tiết
+                        và trang cá nhân của người khác) hoặc xoá hẳn bài viết.
+                        Công tắc "Yêu cầu duyệt bài trước khi đăng" ở ngay bên dưới quyết định
+                        bài của user thường có phải chờ admin duyệt không.
+                        Quản lý tướng (thêm / sửa / xoá) nằm ở mục riêng:
+                        <a href="admin.html?tab=heroes">Quản lý tướng</a>.
+                    </p>
+
+                    <!--
+                        Công tắc "Yêu cầu duyệt bài trước khi đăng" (aov_mod_settings.requireApproval):
+                        do admin.js vẽ và lắng nghe sự kiện change (event delegation) ở document.
+                    -->
+                    <div id="admin-settings"></div>
+
+                    <!-- Ô tìm theo tiêu đề / tác giả: do admin.js vẽ và gắn sự kiện gõ -->
+                    <div id="admin-toolbar" class="feed-filter"></div>
+
+                    <!-- Số bài đang hiện / tổng số bài trong hệ thống -->
+                    <p id="admin-count" class="feed-count" aria-live="polite"></p>
+
+                    <!-- Bảng bài viết: do admin.js vẽ từ aov_posts (feed.js) -->
+                    <div id="admin-list" class="card"></div>
+                </div>
+
+                <!--
+                    Khung rỗng cho các mục động còn lại (Chờ duyệt, Báo cáo, Người dùng,
+                    Tướng, Trang bị, Build, Nhật ký, Dữ liệu, Cài đặt): admin-shell.js đổ
+                    nội dung vào, mặc định ẩn.
+                -->
+                <div id="admin-panel" class="admin-panel" hidden></div>
+            </div>
+        </div>
     </main>
 
     <footer id="site-footer"></footer>
@@ -85,7 +98,11 @@
     <!-- feed.js: lớp dữ liệu bài viết (getPosts/setPosts/setPostHidden/deletePost...) -->
     <script src="/src/js/feed.js"></script>
     <script src="/src/js/admin.js"></script>
-    <!-- admin-shell.js: khung tab quản trị, nạp ngay sau admin.js -->
+    <!-- admin-shell.js: khung quản trị (menu dọc), nạp ngay sau admin.js -->
     <script src="/src/js/admin-shell.js"></script>
+    <!-- heroData.js: lớp dữ liệu tướng; hero-admin.js đăng ký mục "Tướng" cho shell
+         nên phải nạp SAU admin-shell.js -->
+    <script src="/src/js/heroData.js"></script>
+    <script src="/src/js/hero-admin.js"></script>
 </body>
 </html>
