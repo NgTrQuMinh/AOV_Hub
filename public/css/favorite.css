@@ -32,7 +32,7 @@
 .tabs__list {
     display: flex;
     gap: 8px;
-    border-bottom: 2px solid #EFE3C6;
+    border-bottom: 2px solid var(--color-border);
     overflow-x: auto;
     scrollbar-width: none;
 }
@@ -51,21 +51,21 @@
     border-radius: 0;
     font-size: 17px;
     font-weight: 700;
-    color: #7A6A4A;
+    color: var(--color-text-muted);
     white-space: nowrap;
     cursor: pointer;
     transition: color var(--transition), border-color var(--transition);
 }
 
 .tabs__btn:hover {
-    color: #3A2F1C;
+    color: var(--color-text);
 }
 
 /* Tab đang chọn: favorite.js gắn class is-active + aria-selected="true" */
 .tabs__btn.is-active,
 .tabs__btn[aria-selected="true"] {
-    color: #3A2F1C;
-    border-bottom-color: #DDA532;
+    color: var(--color-text);
+    border-bottom-color: var(--color-gold);
 }
 
 .tabs__btn:focus-visible {
@@ -97,8 +97,8 @@
 .favorite-section__count {
     padding: 2px 12px;
     border-radius: var(--radius-pill);
-    background: #F5E5C3;
-    color: #7A5508;
+    background: var(--color-gold-soft);
+    color: var(--color-accent-strong);
     font-size: 13px;
     font-weight: 700;
     line-height: 1.6;
@@ -134,14 +134,14 @@
 
 /* Nút phụ "Xóa lịch sử": viền + chữ đỏ, hover nền đỏ nhạt */
 .favorite-toolbar__clear {
-    color: #C0392B;
-    border-color: #C0392B;
+    color: var(--color-danger);
+    border-color: var(--color-danger);
 }
 
 .favorite-toolbar__clear:hover {
-    background: #FDECEA;
-    border-color: #C0392B;
-    color: #C0392B;
+    background: var(--color-danger-soft);
+    border-color: var(--color-danger);
+    color: var(--color-danger);
 }
 
 /* ---------- 5. TRẠNG THÁI TRỐNG ---------- */

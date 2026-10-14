@@ -58,7 +58,7 @@ a {
 }
 
 a:hover {
-    color: var(--color-accent, var(--color-text-accent));
+    color: var(--color-text-accent);
 }
 
 img,
@@ -85,16 +85,16 @@ button {
 
 input::placeholder,
 textarea::placeholder {
-    color: var(--color-text-muted);
+    color: var(--color-text-placeholder);
 }
 
 :focus-visible {
-    outline: 2px solid var(--color-accent-dark, #DDA532);
+    outline: 2px solid var(--color-gold);
     outline-offset: 2px;
 }
 
 ::selection {
-    background: #F5E5C3;
+    background: var(--color-gold-soft);
     color: var(--color-text);
 }
 
@@ -107,7 +107,7 @@ textarea::placeholder {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #E5D3A8;
+    background: var(--color-scroll-thumb);
     border-radius: 8px;
 }
 

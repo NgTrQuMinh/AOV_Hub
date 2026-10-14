@@ -38,7 +38,7 @@
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: #7A5508;
+    color: var(--color-accent-strong);
     white-space: nowrap;
 }
 
@@ -53,7 +53,7 @@
     background: var(--color-gold-soft);
     border-radius: var(--radius-sm);
     font-size: 15px;
-    color: #7A5508;
+    color: var(--color-accent-strong);
 }
 
 /* ---------- 2. FILTER BAR ---------- */
@@ -98,7 +98,7 @@
 #item-search:focus-visible {
     outline: none;
     border-color: var(--color-gold);
-    box-shadow: 0 0 0 3px rgba(221, 165, 50, .25);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 25%, transparent);
 }
 
 .item-filter__types {
@@ -115,7 +115,7 @@
     background: var(--color-bg-elevated);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-pill);
-    color: #5A4A2E;
+    color: var(--color-text-soft);
     font-size: 16px;
     font-weight: 600;
     white-space: nowrap;
@@ -133,7 +133,7 @@
 .item-chip:focus-visible {
     outline: none;
     border-color: var(--color-gold);
-    box-shadow: 0 0 0 3px rgba(221, 165, 50, .25);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 25%, transparent);
 }
 
 .item-chip.is-active {
@@ -144,7 +144,7 @@
 
 .item-chip__count {
     padding: 0 var(--space-2);
-    background: rgba(58, 47, 28, .12);
+    background: color-mix(in srgb, var(--color-text) 12%, transparent);
     border-radius: var(--radius-pill);
     font-size: var(--fs-xs);
     font-weight: 700;
@@ -152,7 +152,7 @@
 }
 
 .item-chip.is-active .item-chip__count {
-    background: rgba(58, 47, 28, .2);
+    background: color-mix(in srgb, var(--color-text) 20%, transparent);
 }
 
 /* ---------- 3. GRID ITEM-CARD ---------- */
@@ -231,7 +231,7 @@
     margin-bottom: var(--space-3);
 }
 
-/* Tag loại trang bị: nền #F5E5C3, chữ #7A5508, 14px */
+/* Tag loại trang bị: nền var(--color-gold-soft), chữ var(--color-accent-strong), 14px */
 .item-card__meta .badge {
     padding: 4px 12px;
     background: var(--color-gold-soft);
@@ -239,7 +239,7 @@
     border-radius: var(--radius-pill);
     font-size: 14px;
     font-weight: 600;
-    color: #7A5508;
+    color: var(--color-accent-strong);
 }
 
 .item-card__price {
@@ -249,7 +249,7 @@
     border-radius: var(--radius-pill);
     font-size: 15px;
     font-weight: 700;
-    color: #7A5508;
+    color: var(--color-accent-strong);
     white-space: nowrap;
 }
 
@@ -277,7 +277,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: #5A4A2E;
+    color: var(--color-text-soft);
 }
 
 .item-card__stat-value {
@@ -481,13 +481,13 @@
     border-radius: var(--radius-pill);
     font-size: 14px;
     font-weight: 600;
-    color: #7A5508;
+    color: var(--color-accent-strong);
 }
 
 .item-detail__type:hover {
     background: var(--color-gold-subtle);
     border-color: var(--color-gold-light);
-    color: #7A5508;
+    color: var(--color-accent-strong);
 }
 
 .item-detail__price {
@@ -496,7 +496,7 @@
     border-radius: var(--radius-pill);
     font-size: 18px;
     font-weight: 700;
-    color: #7A5508;
+    color: var(--color-accent-strong);
     white-space: nowrap;
 }
 
@@ -522,7 +522,7 @@
     margin: 0;
     font-size: 17px;
     line-height: 1.6;
-    color: #5A4A2E;
+    color: var(--color-text-soft);
 }
 
 /* 5.3 Nội tại: ô vàng nhạt viền trái vàng (theo yêu cầu riêng, khác khối trắng bên dưới) */
@@ -540,14 +540,14 @@
     margin-bottom: var(--space-2);
     font-size: 17px;
     font-weight: 700;
-    color: #7A5508;
+    color: var(--color-accent-strong);
 }
 
 .item-detail__passive p {
     margin: 0;
     font-size: 17px;
     line-height: 1.6;
-    color: #5A4A2E;
+    color: var(--color-text-soft);
 }
 
 .item-detail__empty-note {
@@ -604,7 +604,7 @@
 
 .item-detail__stat-label {
     min-width: 0;
-    color: #5A4A2E;
+    color: var(--color-text-soft);
 }
 
 .item-detail__stat-value {
@@ -644,7 +644,7 @@
 }
 
 .item-related__all:hover {
-    color: #7A5508;
+    color: var(--color-accent-strong);
     text-decoration: underline;
 }
 

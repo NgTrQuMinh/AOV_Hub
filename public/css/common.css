@@ -464,11 +464,11 @@ main {
 #site-footer,
 .site-footer {
     width: 100%;
-    background: #EBDDB8;
-    border-top: 3px solid #DDA532;
+    background: var(--color-bg-footer);
+    border-top: 3px solid var(--color-gold);
     margin-top: auto;
     padding: 48px 0 24px;
-    color: #3A2F1C;
+    color: var(--color-text);
 }
 
 /* Bên trong dùng container 1200px, grid 3 cột */
@@ -484,15 +484,15 @@ main {
     font-weight: 800;
 }
 
-.site-footer .site-logo__mark { color: #9C6F10; }
-.site-footer .site-logo__text { color: #3A2F1C; }
+.site-footer .site-logo__mark { color: var(--color-text-accent); }
+.site-footer .site-logo__text { color: var(--color-text); }
 
 .site-footer__brand p {
     max-width: 320px;
     margin-top: var(--space-2);
     font-size: 16px;
     line-height: 1.6;
-    color: #5A4A2E;
+    color: var(--color-text-soft);
 }
 
 .site-footer__nav {
@@ -506,18 +506,18 @@ main {
     display: block;
     padding: 4px 0;
     font-size: 16px;
-    color: #5A4A2E;
+    color: var(--color-text-soft);
 }
 
 .site-footer__nav a:hover {
-    color: #9C6F10;
+    color: var(--color-text-accent);
     text-decoration: underline;
 }
 
 .site-footer__meta p {
     margin: 0;
     font-size: 16px;
-    color: #5A4A2E;
+    color: var(--color-text-soft);
 }
 
 /* Tiêu đề cột (nếu có trong HTML) */
@@ -529,22 +529,22 @@ main {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #7A5508;
+    color: var(--color-accent-strong);
     margin: 0 0 12px;
 }
 
 .site-footer__bottom {
-    border-top: 1px solid rgba(58, 47, 28, .15);
+    border-top: 1px solid color-mix(in srgb, var(--color-text) 15%, transparent);
     margin-top: 32px;
     padding-top: 20px;
     font-size: 15px;
     text-align: center;
-    color: #5A4A2E;
+    color: var(--color-text-soft);
 }
 
 .site-footer__bottom p {
     margin: 0;
-    color: #5A4A2E;
+    color: var(--color-text-soft);
 }
 
 /* ---------- 8. FILTER BAR / PAGINATION / NOT-FOUND ---------- */
@@ -677,7 +677,7 @@ main {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #3B8F5A;
+    background: var(--color-success);
     margin-right: 8px;
     vertical-align: middle;
 }
@@ -688,7 +688,7 @@ main {
 
 .data-status-bar__migrated {
     background: var(--color-gold-soft);
-    color: #7A5508;
+    color: var(--color-accent-strong);
     font-size: 13px;
     font-weight: 700;
     padding: 2px 10px;
@@ -703,17 +703,17 @@ main {
 }
 
 .data-status-bar--dirty {
-    background: #FFF3CD;
-    border-bottom-color: #F2DC93;
+    background: var(--color-warning-soft);
+    border-bottom-color: var(--color-warning-border);
 }
 
 .data-status-bar--dirty .data-status-bar__dirty {
-    color: #7A5508;
+    color: var(--color-accent-strong);
     font-weight: 700;
 }
 
 .data-status-bar--dirty .data-status-bar__state::before {
-    background: #E0A100;
+    background: var(--color-warning);
 }
 
 /* ---------- 9. RESPONSIVE ---------- */

@@ -59,7 +59,7 @@
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: #7A5508;
+    color: var(--color-accent-strong);
     white-space: nowrap;
 }
 
@@ -94,8 +94,8 @@
     gap: 32px;
     margin-bottom: var(--space-6);
     padding: 28px;
-    background: #FFFFFF;
-    border: 1px solid #EFE3C6;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 24px;
     box-shadow: var(--shadow-sm);
 }
@@ -106,7 +106,7 @@
     aspect-ratio: 1 / 1;
     object-fit: cover;
     background: var(--color-bg-elevated);
-    border: 3px solid #F5E5C3;
+    border: 3px solid var(--color-gold-soft);
     border-radius: 20px;
 }
 
@@ -129,7 +129,7 @@
 /* Danh hiệu tướng (nếu có) - ẩn khi rỗng để không chiếm khoảng cách thừa. */
 .hero-title {
     font-size: 18px;
-    color: #9C6F10;
+    color: var(--color-text-accent);
 }
 
 .hero-title:empty {
@@ -158,8 +158,8 @@
     margin-top: 24px;
     margin-bottom: var(--space-6);
     padding: 28px;
-    background: #FFFFFF;
-    border: 1px solid #EFE3C6;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 20px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -197,8 +197,8 @@
 .hero-stats-table__label {
     width: 40%;
     padding: var(--space-3) var(--space-4);
-    background: #FAF1DE;
-    color: #5A4A2E;
+    background: var(--color-gold-subtle);
+    color: var(--color-text-soft);
     font-weight: 700;
     text-align: left;
     white-space: nowrap;
@@ -216,18 +216,11 @@
     margin-top: 24px;
     margin-bottom: var(--space-6);
     padding: 28px;
-    background: #FFFFFF;
-    border: 1px solid #EFE3C6;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 20px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-}
-
-/* Dạng danh sách kỹ năng theo hàng (nếu markup dùng div thay cho bảng). */
-.skills-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
 }
 
 .hero-skills-table {
@@ -255,7 +248,7 @@
 .skill-item th,
 .skill-item td {
     padding: 16px;
-    border-top: 1px solid #EFE3C6;
+    border-top: 1px solid var(--color-border);
     vertical-align: top;
     text-align: left;
 }
@@ -271,7 +264,7 @@
 /* Cột "Loại" (Chiêu 1/2/3): nhãn nền vàng nhạt, chữ vàng sẫm. */
 .skill-item__type {
     min-width: 110px;
-    color: #7A5508;
+    color: var(--color-accent-strong);
     font-weight: 600;
     white-space: nowrap;
 }
@@ -279,7 +272,7 @@
 /* Mô tả là cột rộng nhất, chữ vừa phải cho dễ đọc đoạn văn. */
 .skill-item__desc {
     min-width: 320px;
-    color: #5A4A2E;
+    color: var(--color-text-soft);
     font-size: 17px;
     line-height: 1.6;
 }
@@ -309,8 +302,8 @@
     margin-top: 24px;
     margin-bottom: var(--space-6);
     padding: 28px;
-    background: #FFFFFF;
-    border: 1px solid #EFE3C6;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 20px;
 }
 
@@ -332,8 +325,8 @@
     align-items: center;
     min-width: 0;
     padding: 12px;
-    background: #FFFDF8;
-    border: 1px solid #EFE3C6;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
     border-radius: 16px;
     text-align: center;
     text-decoration: none;
@@ -348,7 +341,7 @@
     aspect-ratio: 1 / 1;
     object-fit: contain;
     margin-inline: auto;
-    background: #FFFFFF;
+    background: var(--color-surface);
     border-radius: 12px;
     transition: background var(--transition);
 }
@@ -359,7 +352,7 @@
     margin-top: 8px;
     font-size: 15px;
     font-weight: 600;
-    color: #3A2F1C;
+    color: var(--color-text);
     overflow: hidden;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -380,8 +373,8 @@
     width: 26px;
     height: 26px;
     border-radius: 50%;
-    background: #DDA532;
-    color: #3A2F1C;
+    background: var(--color-gold);
+    color: var(--color-text);
     font-size: 13px;
     font-weight: 800;
     line-height: 1;
@@ -390,16 +383,16 @@
 /* Hover: nhấc 3px + viền vàng + chữ đậm màu nhấn. */
 .hero-build .build-item:hover {
     transform: translateY(-3px);
-    border-color: #EFCC72;
+    border-color: var(--color-gold-light);
     box-shadow: var(--shadow-sm);
 }
 
 .hero-build .build-item:hover img {
-    background: #FFFFFF;
+    background: var(--color-surface);
 }
 
 .hero-build .build-item:hover span {
-    color: #9C6F10;
+    color: var(--color-text-accent);
 }
 
 /* ---------- 6. RESPONSIVE ---------- */
@@ -469,7 +462,7 @@
 /* ---------- 7. THANH LỌC & SẮP XẾP ---------- */
 /* Màn hình hẹp: ô tìm kiếm chiếm một dòng riêng, các select tự xuống hàng dưới
    (giống feed.css) vì thanh lọc đã có tới 4 ô: tìm + vai trò + độ khó + sắp xếp */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
     .filter-bar {
         flex-wrap: wrap;
         padding: var(--space-4);
