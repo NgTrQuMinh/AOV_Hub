@@ -228,6 +228,12 @@ main {
 
 .hero-card__name,
 .item-card__name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.7em;
     margin-bottom: var(--space-2);
 }
 
@@ -393,6 +399,7 @@ main {
 /* ---------- 6.1 ACCOUNT AREA (điền bởi updateAccountUI - js/auth.js) ---------- */
 .account-area {
     flex: 0 0 auto;
+    min-width: 0;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -419,9 +426,19 @@ main {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
+    min-width: 0;
+    max-width: 220px;
     font-size: 16px;
     font-weight: 600;
     color: var(--color-text);
+    white-space: nowrap;
+}
+
+/* Tên đăng nhập dài: cắt bằng "..." thay vì đẩy tràn header */
+.account-area__username-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
@@ -843,11 +860,6 @@ main {
 
     /* Điện thoại nhỏ: khu tài khoản co lại được, tên hiển thị cắt bớt
        thay vì đẩy tràn header khi người dùng có tên dài. */
-    .account-area {
-        min-width: 0;
-        flex-shrink: 1;
-    }
-
     .account-area__session,
     .account-area__guest {
         min-width: 0;
@@ -855,8 +867,6 @@ main {
 
     .account-area__username {
         max-width: 40vw;
-        overflow: hidden;
-        text-overflow: ellipsis;
     }
 
     h1 { font-size: var(--fs-2xl); }

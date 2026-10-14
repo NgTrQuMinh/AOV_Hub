@@ -852,7 +852,7 @@ function updateAccountUI(isRetry = false) {
             <div class="account-area__session">
                 <a class="account-area__username" href="${BASE_PATH}src/pages/profile.html">
                     <span class="account-area__avatar" aria-hidden="true">👤</span>
-                    ${escapeHtml(username)}
+                    <span class="account-area__username-text">${escapeHtml(username)}</span>
                 </a>
                 ${isAdmin() ? `<a class="btn btn-outline btn-sm" href="${ADMIN_PAGE}">Quản trị</a>` : ''}
             </div>
