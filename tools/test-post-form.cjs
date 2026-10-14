@@ -148,6 +148,11 @@ function cardIdsInHtml(html) {
     const created = posts[0];
 
     check('bài mới lưu vào aov_posts', Boolean(created), 'không có bài mới');
+    const idsInStore = feed.runInPage(
+        "getCollection('posts').map(function (p) { return String(p.id); })");
+    check('bài mới nằm trong collection posts của dataStore (kết nối form -> dataStore)',
+        Array.isArray(idsInStore) && idsInStore.indexOf(String(created.id)) !== -1,
+        JSON.stringify(idsInStore));
     check('bài mới lên đầu danh sách', created && created.title === 'Bài viết kiểm thử requirement 7',
         created ? created.title : 'null');
     check('lỗi được xoá sau khi đăng thành công', errorListOf(feed).length === 0, JSON.stringify(errorListOf(feed)));
