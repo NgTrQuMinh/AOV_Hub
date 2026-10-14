@@ -8,13 +8,19 @@
     /* Màu nền */
     --color-bg: #FAF3E1;              /* nền trang (kem) */
     --color-bg-elevated: #FFFDF8;     /* nền header / section sáng */
+    --color-bg-footer: #EBDDB8;       /* nền footer */
     --color-surface: #FFFFFF;         /* nền card / surface */
     --color-border: #EFE3C6;          /* viền */
+    --color-scroll-thumb: #E5D3A8;    /* thanh cuộn trình duyệt */
 
     /* Màu chữ */
     --color-text: #3A2F1C;            /* chữ chính (nâu đen) */
+    --color-text-soft: #5A4A2E;       /* chữ trên nền vàng nhạt / mô tả phụ */
     --color-text-muted: #7A6A4A;      /* chữ phụ */
     --color-text-accent: #9C6F10;     /* chữ nhấn / link / nhãn nhỏ (vàng sẫm) */
+    --color-text-accent-soft: #9C7A3C;/* chữ báo thiếu ảnh / nhấn nhạt */
+    --color-accent-strong: #7A5508;   /* vàng nâu đậm: nhãn, trạng thái cảnh báo */
+    --color-text-placeholder: #B5A27A;/* chữ gợi ý trong ô nhập */
 
     /* Màu nhấn - vàng */
     --color-gold: #DDA532;            /* vàng chính */
@@ -22,11 +28,22 @@
     --color-gold-dark: #C98F1E;       /* vàng đậm khi hover */
     --color-gold-soft: #F5E5C3;       /* nền vàng nhạt (badge, nav đang chọn) */
     --color-gold-subtle: #FAF1DE;     /* nền vàng nhạt hơn (vùng nhấn) */
+    --color-gold-tint: #F5EACC;       /* vàng rất nhạt (vòng trang trí) */
     --color-on-accent: #3A2F1C;       /* chữ trên nền vàng (màu tối) */
 
     /* Màu trạng thái */
     --color-danger: #C0392B;
+    --color-danger-soft: #FDECEA;     /* nền báo lỗi */
+    --color-danger-strong: #A93226;   /* chữ báo lỗi */
+    --color-danger-border: #F5C6C0;   /* viền báo lỗi */
     --color-success: #3B8F5A;
+    --color-success-soft: #E8F5EC;    /* nền báo thành công */
+    --color-success-strong: #2E7D4F;  /* chữ báo thành công */
+    --color-success-border: #BFE3CC;  /* viền báo thành công */
+    --color-warning: #E0A100;         /* chấm cảnh báo */
+    --color-warning-soft: #FFF3CD;    /* nền cảnh báo */
+    --color-warning-tint: #FFF8E1;    /* nền cảnh báo nhạt hơn */
+    --color-warning-border: #F2DC93;  /* viền cảnh báo */
     --color-crimson: #C0392B;         /* giữ tên cũ, ánh xạ sang danger */
 
     /* Gradient */
@@ -60,13 +77,17 @@
     --radius-sm: 8px;
     --radius: 12px;
     --radius-md: 12px;
-    --radius-lg: 20px;
+    --radius-card: 16px;      /* card nội dung (hero/item/post...) */
+    --radius-lg: 20px;        /* khối lớn: panel, section surface */
     --radius-pill: 999px;
 
-    /* Bóng */
-    --shadow-sm: 0 2px 8px rgba(122, 90, 20, .08);
-    --shadow-md: 0 8px 24px rgba(122, 90, 20, .12);
-    --shadow-gold: 0 6px 16px rgba(221, 165, 50, .35);
+    /* Bóng: nhiều lớp cho cảm giác mềm, thực tế hơn */
+    --shadow-sm: 0 1px 2px rgba(58, 47, 28, .05), 0 4px 12px rgba(122, 90, 20, .08);
+    --shadow-md: 0 2px 4px rgba(58, 47, 28, .06), 0 12px 28px rgba(122, 90, 20, .14);
+    --shadow-gold: 0 4px 12px rgba(221, 165, 50, .28), 0 8px 20px rgba(221, 165, 50, .22);
+
+    /* Vòng tiêu điểm bàn phím (dùng cùng --color-gold) */
+    --focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-gold) 45%, transparent);
 
     /* Transition */
     --transition: 180ms ease;

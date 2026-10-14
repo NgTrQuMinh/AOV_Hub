@@ -41,8 +41,8 @@
     gap: var(--space-2);
     min-width: 0;
     padding: 20px;
-    background: #FFFFFF;
-    border: 1px solid #EFE3C6;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 20px;
     box-shadow: var(--shadow-sm);
 }
@@ -58,8 +58,8 @@
 .compare-picker__select {
     width: 100%;
     padding: 12px 18px;
-    background: #FFFDF8;
-    border: 1px solid #EFE3C6;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-pill);
     color: var(--color-text);
     font-size: 17px;
@@ -68,8 +68,8 @@
 
 .compare-picker__select:focus {
     outline: none;
-    border-color: #DDA532;
-    box-shadow: 0 0 0 3px rgba(221, 165, 50, .25);
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 25%, transparent);
 }
 
 /* Vòng tròn "VS" nằm giữa 2 ô chọn */
@@ -80,16 +80,16 @@
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background: #DDA532;
-    color: #3A2F1C;
+    background: var(--color-gold);
+    color: var(--color-text);
     font-size: var(--fs-md);
     font-weight: 800;
 }
 
 /* ---------- 2. BẢNG SO SÁNH ---------- */
 #compare-table {
-    background: #FFFFFF;
-    border: 1px solid #EFE3C6;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 20px;
     box-shadow: var(--shadow-sm);
     overflow-x: auto;
@@ -105,12 +105,12 @@
     padding: 16px;
     text-align: center;
     vertical-align: middle;
-    border-bottom: 1px solid #EFE3C6;
+    border-bottom: 1px solid var(--color-border);
 }
 
 /* Hàng chẵn trong phần giá trị được tô nền nhạt */
 .compare-table__row:nth-child(even) {
-    background: #FFFDF8;
+    background: var(--color-bg-elevated);
 }
 
 /* Cột nhãn bên trái: nền nhạt, chữ đậm, dính bên trái khi cuộn ngang */
@@ -121,8 +121,8 @@
     z-index: 1;
     width: 160px;
     min-width: 160px;
-    background: #FAF1DE;
-    color: #5A4A2E;
+    background: var(--color-gold-subtle);
+    color: var(--color-text-soft);
     font-weight: 700;
     text-align: left;
     white-space: nowrap;
@@ -174,15 +174,15 @@
 /* compare.js dùng class .is-best cho ô thắng và tự chèn ▲ trong .compare-table__best */
 
 .compare-table__value.is-best {
-    background: #FAF1DE;
-    color: #7A5508;
+    background: var(--color-gold-subtle);
+    color: var(--color-accent-strong);
     font-weight: 800;
 }
 
 .compare-table__best {
     display: inline-block;
     margin-left: var(--space-2);
-    color: #7A5508;
+    color: var(--color-accent-strong);
     font-size: var(--fs-xs);
     vertical-align: middle;
 }
