@@ -126,10 +126,10 @@
         ["CM03", "P0", "Khung trang quản trị chung + menu/tab", "admin.html, hero-admin.html", "Đã xong", "admin-shell.js: menu dọc 4 nhóm, 10 tab (posts/pending/reports/users/heroes/items/builds/log/data/settings), badge, nút 'Thoát quản lý'; hero-admin.html vào thẳng khung ở tab Tướng."],
         ["CM04", "P1", "Sao lưu / khôi phục dữ liệu admin", "admin.html, admin.js", "Đã xong", "Nay ở tab Dữ liệu (admin-backup.js): sao lưu/khôi phục 9 khoá aov_* + nút Xuất/Nhập JSON."],
         ["CM05", "P2", "Cảnh báo dung lượng LocalStorage", "storage.js, admin.html", "Đã xong", "admin-storage.js vẽ mục 'Dung lượng LocalStorage' dùng getStorageUsage()/formatStorageSize() (đã có trong storage.js)."],
-        ["CM06", "P1", "Test tự động lớp gộp dữ liệu", "tools/", "Một phần", "Có test-admin-shell, test-admin-page, test-hero-admin, test-datastore; chưa có test-admin-data/items/builds riêng."],
+        ["CM06", "P1", "Test tự động lớp gộp dữ liệu", "tools/", "Đã xong", "test-admin-data.cjs: dữ liệu thật (32 tướng/40 trang bị/32 build) qua adminDataCheckRun() 0 lỗi; bắt được id trùng, heroId/trang bị/related hỏng; loadData() trả rỗng khi file thiếu/HTTP lỗi; adminDataCheckLoad() gom đủ items/builds/posts/users, 23 test PASS."],
         ["KD01", "P0", "Trạng thái duyệt bài viết (status) + lý do/người duyệt", "src/js/feed.js", "Đã xong", "status pending/approved/rejected + rejectReason/reviewedBy/reviewedAt/flagged."],
         ["KD02", "P0", "Chế độ duyệt trước khi đăng", "feed.js, feed.html", "Đã xong", "aov_mod_settings.requireApproval mặc định bật; admin đăng thẳng."],
-        ["KD03", "P0", "Tab Chờ duyệt + nút Duyệt/Từ chối", "admin.js, admin.html, feed.js", "Một phần", "Khung đã có mục 'Chờ duyệt' + badge đếm bài pending; admin-pending.js chưa viết (hiện 'Mục này đang được phát triển.'); chưa có approvePost()/rejectPost()."],
+        ["KD03", "P0", "Tab Chờ duyệt + nút Duyệt/Từ chối", "admin-pending.js, feed.js, admin.html", "Đã xong", "admin-pending.js vẽ mục 'Bài viết chờ duyệt' với nút Duyệt/Từ chối + ô lý do (tuỳ chọn); approvePost()/rejectPost() (chỉ admin) đổi status, ghi reviewedBy/reviewedAt + logAdminAction; badge 'Chờ duyệt' tự cập nhật. test-admin-pending.cjs 24 test PASS."],
         ["KD04", "P1", "Thông báo kết quả cho tác giả + gửi lại bài", "profile.html, feed.js", "Chưa làm", "Có ghi chú chờ duyệt khi đăng; chưa có luồng gửi lại trên UI."],
         ["KD05", "P1", "Báo cáo vi phạm từ người dùng", "feed.js, post-detail.html", "Chưa làm", "Chưa có key aov_reports; khung đã có mục 'Báo cáo' (chờ admin-reports.js)."],
         ["KD06", "P1", "Tab Báo cáo cho admin + tự ẩn khi bị báo nhiều", "admin.js, feed.js", "Chưa làm", "autoHideThreshold mới ở cấu hình, chưa dùng; badge 'Báo cáo' cần getOpenReportCount() (chưa có)."],
@@ -138,7 +138,7 @@
         ["KD09", "P2", "Quản lý người dùng: khoá / cảnh cáo", "auth.js, admin.js", "Chưa làm", "users.json chưa có banned/warnings; khung đã có mục 'Người dùng' (chờ admin-users.js)."],
         ["KD10", "P1", "Lọc theo trạng thái ở bảng bài viết admin", "admin.js", "Một phần", "Bảng hiện badge trạng thái; chưa có bộ lọc theo trạng thái (chỉ có ô tìm theo tiêu đề/tác giả)."],
         ["KD11", "P2", "Tab Nhật ký xem lịch sử kiểm duyệt", "admin.js, admin.html", "Một phần", "Khung đã có mục 'Nhật ký'; admin-log.js chưa viết (adminlog.js core đã có)."],
-        ["KD12", "P1", "Test kiểm duyệt", "tools/test-moderation.cjs", "Chưa làm", ""],
+        ["KD12", "P1", "Test kiểm duyệt", "tools/test-admin-pending.cjs", "Đã xong", "test-admin-pending.cjs: getPendingPosts() (chỉ bài pending, mới nhất trước), render + escapeHtml, approvePost()/rejectPost() (có/không lý do, ghi nhật ký), chặn quyền user thường/khách, bấm nút DOM + cập nhật badge; 24 test PASS."],
         ["AD01", "P0", "Trang admin Tướng: danh sách", "hero-admin.html, hero-admin.js", "Đã xong", "Nay là mục 'Tướng' trong khung quản trị: bảng, tìm theo tên, lọc vai trò, phân trang."],
         ["AD02", "P0", "Form thêm / sửa tướng", "hero-admin.js", "Đã xong", "Đủ trường + validate; lưu qua /api/heroes."],
         ["AD03", "P1", "Tải ảnh lên (không backend)", "hero-admin.js", "Đã xong", "shrinkHeroImage() thu nhỏ bằng canvas, lưu dataURL."],
@@ -149,7 +149,7 @@
         ["AD08", "P1", "Danh sách tướng chưa có build", "admin-builds.js", "Chưa làm", "Khung đã có mục 'Build'; admin-builds.js chưa viết."],
         ["AD09", "P2", "Công cụ Kiểm tra dữ liệu", "admin-datacheck.js", "Đã xong", "admin-datacheck.js (32KB) đăng ký mục 'Kiểm tra dữ liệu' trong tab Dữ liệu."],
         ["AD10", "P0", "Phân quyền cho các hàm CRUD", "heroData.js, admin-*.js", "Đã xong", "canManageHeroes()/requireAdmin() chặn ở tầng dữ liệu."],
-        ["AD11", "P1", "Test CRUD admin", "tools/", "Một phần", "test-hero-admin + test-admin-shell bao phủ tướng và khung; chưa có admin-items/builds."],
+        ["AD11", "P1", "Test CRUD admin", "tools/", "Một phần", "test-hero-admin + test-admin-shell bao phủ tướng và khung; test-admin-data.cjs bổ sung lớp kiểm tra/gộp dữ liệu; chưa có admin-items/builds."],
         ["HD01", "P0", "Mở rộng builds.json thành hướng dẫn", "builds.json", "Chưa làm", "Thiếu phases/notes/situational/skillOrder/tips/counters/lane/playstyle."],
         ["HD02", "P0", "Trang chi tiết hướng dẫn build", "build-detail.html/js", "Chưa làm", "Chưa có build-detail."],
         ["HD03", "P1", "Trang bị thay thế theo tình huống", "build-detail.js", "Chưa làm", ""],
@@ -219,8 +219,7 @@
       "header": ["Ưu tiên", "Việc nên làm", "Mã liên quan", "File phụ trách", "Ước lượng"],
       "rows": [
         ["P0", "Tích hợp lớp clean architecture vào trang (hoặc gỡ bỏ) để tránh code chết", "-", "src/js/core, adapters, services, controllers, models", "2-4 giờ"],
-        ["P0", "Viết 8 file tab admin còn thiếu để bỏ placeholder 'Mục này đang được phát triển.'", "CM03, KD03, KD11, AD05-AD08", "src/js/admin-pending/build-review/reports/users/items/builds/log/banned.js", "16-24 giờ"],
-        ["P0", "Tab Chờ duyệt + approvePost()/rejectPost() (duyệt/từ chối kèm lý do) — nối vào mục 'Chờ duyệt' đã có", "KD03", "src/js/admin-pending.js, admin.js, feed.js", "8 giờ"],
+        ["P0", "Viết 7 file tab admin còn thiếu để bỏ placeholder 'Mục này đang được phát triển.'", "CM03, KD11, AD05-AD08", "src/js/admin-build-review/reports/users/items/builds/log/banned.js", "14-21 giờ"],
         ["P1", "Thêm lane + title cho 32 tướng + select lọc đường đi", "L06", "src/data/heroes.json, hero.js, hero-admin.js", "4 giờ"],
         ["P1", "Báo cáo vi phạm (aov_reports) + tab xử lý cho admin", "KD05, KD06", "feed.js, admin-reports.js", "12 giờ"],
         ["P2", "Quản lý Trang bị (form thêm/sửa/xoá an toàn)", "AD05, AD06", "admin-items.js", "16 giờ"],
@@ -273,7 +272,7 @@
         ["Sửa bài", "Không", "Không", "Có", "Không", "Đã có", "canEditPost(): chỉ tác giả."],
         ["Xoá bài / bình luận", "Không", "Không", "Có", "Có", "Đã có", "canDeletePost(), canDeleteComment()."],
         ["Ẩn / hiện bài", "Không", "Không", "Không", "Có", "Đã có", "setPostHidden()."],
-        ["Duyệt / Từ chối bài", "Không", "Không", "Không", "Có", "Chưa làm", "KD03: mục 'Chờ duyệt' đã có trong khung nhưng chưa có approvePost()/rejectPost()."],
+        ["Duyệt / Từ chối bài", "Không", "Không", "Không", "Có", "Đã có", "KD03: approvePost()/rejectPost() kiểm tra admin ở tầng dữ liệu; mục 'Bài viết chờ duyệt' có nút Duyệt/Từ chối + ô lý do."],
         ["Sao lưu / Khôi phục dữ liệu", "Không", "Không", "Không", "Có", "Đã có", "Xuất/Nhập JSON ở #admin-backup (admin.js)."],
         ["Báo cáo bài / bình luận", "Không", "Có", "Không", "Có", "Chưa làm", "KD05: chưa có aov_reports (khung đã có mục 'Báo cáo')."],
         ["Xem và xử lý báo cáo", "Không", "Không", "Không", "Có", "Chưa làm", "KD06: chờ admin-reports.js + getOpenReportCount()."],
@@ -323,7 +322,10 @@
         ["15/10/2026", "Số liệu", "Cập nhật", "—", "posts.json 10 -> 11 bài (1 bài test khi chạy app); bỏ 'chưa merge' ở dòng chuẩn hoá design token; đồng bộ E2E 82 PASS."],
         ["15/10/2026", "STT 13 / L19", "Sửa trạng thái", "Một phần / Chưa làm -> Đã xong", "Tách code Profile khỏi profile.html sang src/js/profile.js (renderProfileHeader/Stats/Posts + logout); profile.html chỉ còn nạp script; feed.js vẫn gọi renderProfilePosts(). test-admin-page 72 PASS."],
         ["15/10/2026", "L05 / STT 21", "Sửa trạng thái", "Một phần / Đã xong -> Đã xong", "Sắp xếp tướng có select #hero-sort-filter (Mặc định/A-Z/Z-A) ghi lên URL; gỡ hàm syncHeroFilterUrl trùng trong hero.js; không còn tiêu chí giá. test-heroes-page 25 PASS."],
-        ["15/10/2026", "Tổng hợp", "Cập nhật số liệu", "—", "Số file JS top-level 24 -> 25 (thêm profile.js, tổng 36 file); 'Công việc chính làm một phần' 2 -> 1 (chỉ còn STT 20); 'Lỗi còn tồn' L06, L19 -> L06; bỏ 1 việc ở 'Việc nên làm tiếp'."]
+        ["15/10/2026", "Tổng hợp", "Cập nhật số liệu", "—", "Số file JS top-level 24 -> 25 (thêm profile.js, tổng 36 file); 'Công việc chính làm một phần' 2 -> 1 (chỉ còn STT 20); 'Lỗi còn tồn' L06, L19 -> L06; bỏ 1 việc ở 'Việc nên làm tiếp'."],
+        ["15/10/2026", "KD03", "Sửa trạng thái", "Một phần -> Đã xong", "admin-pending.js: mục 'Bài viết chờ duyệt' + nút Duyệt/Từ chối kèm ô lý do (tuỳ chọn); approvePost()/rejectPost() trong feed.js (chỉ admin, ghi reviewedBy/reviewedAt + nhật ký); badge 'Chờ duyệt' tự cập nhật."],
+        ["15/10/2026", "KD12 / CM06", "Sửa trạng thái", "Chưa làm / Một phần -> Đã xong", "test-admin-pending.cjs (24 PASS) kiểm duyệt; test-admin-data.cjs (23 PASS) lớp gộp dữ liệu (adminDataCheckRun/Load + loadData)."],
+        ["15/10/2026", "Số liệu", "Cập nhật", "—", "Thêm admin-pending.js (JS top-level 25 -> 26); test 17 -> 19 file; 'Việc nên làm tiếp' P0 admin-pending -> còn 7 file tab; npm test 18/19 PASS (test-feed-page đỏ do bài 'xcascsâccs' lúc chạy app trong posts.json, không liên quan)."]
       ]
     }
   ]

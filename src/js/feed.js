@@ -706,6 +706,117 @@ function setPostHidden(postId, hidden) {
     return true;
 }
 
+/**
+ * Danh sách bài viết đang chờ duyệt (status "pending"), bài mới nhất trước.
+ * Dùng cho mục "Bài viết chờ duyệt" ở tab Chờ duyệt (trang Quản trị) và cho test.
+ * Đọc qua getPostStatus() nên bài thiếu trường status (coi là đã duyệt) không lọt vào.
+ * @returns {Array}
+ */
+function getPendingPosts() {
+    // createdAt là chuỗi ISO nên dùng Date.parse để xử lý được giá trị thiếu (coi như 0).
+    const timeOf = (post) => {
+        const time = Date.parse(post.createdAt);
+        return Number.isNaN(time) ? 0 : time;
+    };
+
+    return getPosts()
+        .filter((post) => getPostStatus(post) === POST_STATUS_PENDING)
+        .sort((a, b) => timeOf(b) - timeOf(a));
+}
+
+/**
+ * Duyệt một bài viết: chuyển status sang "approved" và ghi lại ai duyệt, lúc nào.
+ *
+ * Chỉ admin mới gọi được (kiểm tra isAdmin(), giống setPostHidden()/setModSettings()),
+ * nên giao diện không phải tự tin nút bấm là của admin — tầng dữ liệu vẫn chặn lại.
+ * Duyệt xong thì xoá lý do từ chối cũ (nếu có) để bài không còn dấu vết lần bị từ chối
+ * trước. KHÔNG đụng hidden và KHÔNG xoá bài: đây là hàng đợi duyệt, khác với ẩn/hiện.
+ *
+ * Duyệt thành công mà trang có nạp adminlog.js thì logAdminAction() ghi
+ * 1 bản ghi 'approve-post' vào aov_admin_log.
+ *
+ * @param {number|string} postId
+ * @returns {boolean} true nếu đã ghi aov_posts; false nếu không đủ quyền, không
+ *          tìm thấy bài hoặc lưu thất bại (dữ liệu giữ nguyên, không ghi dở dang).
+ */
+function approvePost(postId) {
+    if (!isLoggedIn() || typeof isAdmin !== 'function' || !isAdmin()) return false;
+
+    const id = normalizeId(postId);
+    if (!id) return false;
+
+    const posts = getPosts();
+    const index = posts.findIndex((post) => normalizeId(post.id) === id);
+    if (index === -1) return false;
+
+    const updated = Object.assign({}, posts[index], {
+        status: POST_STATUS_APPROVED,
+        reviewedBy: getCurrentUser(),
+        reviewedAt: new Date().toISOString(),
+    });
+
+    // Duyệt lại bài từng bị từ chối: bỏ lý do cũ để không còn rác.
+    delete updated.rejectReason;
+
+    posts[index] = updated;
+
+    if (!setPosts(posts)) return false;
+
+    if (typeof logAdminAction === 'function') {
+        logAdminAction('approve-post', 'post', id, updated.title);
+    }
+
+    return true;
+}
+
+/**
+ * Từ chối một bài viết: chuyển status sang "rejected", kèm lý do (nếu có).
+ *
+ * Cùng cách chặn quyền như approvePost() (chỉ admin). Lý do KHÔNG bắt buộc: gửi
+ * chuỗi rỗng thì bài vẫn bị từ chối nhưng không ghi rejectReason (và xoá lý do cũ
+ * nếu bài từng bị từ chối trước đó). Người duyệt và thời điểm luôn được ghi lại.
+ *
+ * Từ chối thành công mà trang có nạp adminlog.js thì logAdminAction() ghi
+ * 1 bản ghi 'reject-post' (detail kèm lý do nếu có) vào aov_admin_log.
+ *
+ * @param {number|string} postId
+ * @param {string} [reason] lý do từ chối, không bắt buộc.
+ * @returns {boolean} true nếu đã ghi aov_posts; false nếu không đủ quyền, không
+ *          tìm thấy bài hoặc lưu thất bại (dữ liệu giữ nguyên, không ghi dở dang).
+ */
+function rejectPost(postId, reason) {
+    if (!isLoggedIn() || typeof isAdmin !== 'function' || !isAdmin()) return false;
+
+    const id = normalizeId(postId);
+    if (!id) return false;
+
+    const posts = getPosts();
+    const index = posts.findIndex((post) => normalizeId(post.id) === id);
+    if (index === -1) return false;
+
+    const cleanReason = String(reason || '').trim();
+
+    const updated = Object.assign({}, posts[index], {
+        status: POST_STATUS_REJECTED,
+        reviewedBy: getCurrentUser(),
+        reviewedAt: new Date().toISOString(),
+    });
+
+    if (cleanReason) updated.rejectReason = cleanReason;
+    else delete updated.rejectReason;
+
+    posts[index] = updated;
+
+    if (!setPosts(posts)) return false;
+
+    if (typeof logAdminAction === 'function') {
+        const detail = cleanReason ? updated.title + ' — ' + cleanReason : updated.title;
+        logAdminAction('reject-post', 'post', id, detail);
+    }
+
+    return true;
+}
+
 function getPostsByUser(username) {
     const name = String(username || '').trim();
     if (!name) return [];
