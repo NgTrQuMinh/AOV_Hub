@@ -85,23 +85,6 @@ function sortHeroes(list, sort) {
 }
 
 /**
- * Ghi cách sắp xếp lên URL (không tải lại trang) để F5 không mất bộ lọc.
- * Bỏ tham số rỗng cho URL gọn, và giữ lại tham số khác của trang (vd ?keyword=).
- * Vai trò / độ khó vốn không nằm trên URL nên không đụng tới.
- * @param {object} state trạng thái lọc hiện tại.
- */
-function syncHeroFilterUrl(state) {
-    const params = new URLSearchParams(window.location.search);
-
-    if (state.sort && state.sort !== HERO_SORT_DEFAULT) params.set("sort", state.sort);
-    else params.delete("sort");
-
-    const query = params.toString();
-
-    history.replaceState(null, "", query ? `${BASE_PATH}src/pages/heroes.html?${query}` : `${BASE_PATH}src/pages/heroes.html`);
-}
-
-/**
  * Trang Danh sách tướng (heroes.html) - render toàn bộ tướng trong heroes.json
  */
 function initHeroListPage(heroes) {
