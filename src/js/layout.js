@@ -15,6 +15,7 @@ async function includeLayout() {
     if (headerSlot) {
         try {
             const response = await fetch(BASE_PATH + 'partials/header.html');
+            if (!response.ok) throw new Error('HTTP ' + response.status);
             // Thay {{BASE}} trong partial bằng đường dẫn gốc thật của dự án
             headerSlot.innerHTML = (await response.text()).replaceAll('{{BASE}}', BASE_PATH);
             highlightActiveNav();
@@ -29,6 +30,7 @@ async function includeLayout() {
     if (footerSlot) {
         try {
             const response = await fetch(BASE_PATH + 'partials/footer.html');
+            if (!response.ok) throw new Error('HTTP ' + response.status);
             // Thay {{BASE}} trong partial bằng đường dẫn gốc thật của dự án
             footerSlot.innerHTML = (await response.text()).replaceAll('{{BASE}}', BASE_PATH);
             setFooterYear();

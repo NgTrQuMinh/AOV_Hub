@@ -102,22 +102,21 @@ function filterItems() {
         matchKeyword(`${item.name} ${item.type || ''}`, searchKeyword));
 }
 
-function findBuildHero(build) {
+function searchBuildHero(build) {
     return searchHeroes.find((hero) => hero.id === build.heroId);
 }
 
-function filterBuilds() {
+function filterSearchBuilds() {
     return searchBuilds.filter((build) => {
-        const hero = findBuildHero(build);
+        const hero = searchBuildHero(build);
         return matchKeyword(`${build.name} ${hero ? hero.name : ''}`, searchKeyword);
     });
 }
 
 function filterPosts() {
     return searchPosts.filter((post) => {
-        // Bỏ bài bị ẩn và bài chưa duyệt (pending) để không lộ nội dung dở dang.
-        if (!post || post.hidden) return false;
-        if (post.status && post.status !== 'approved') return false;
+        // posts.json là dữ liệu tĩnh đã được biên tập (không có trường hidden/status).
+        if (!post) return false;
 
         return matchKeyword(`${post.title || ''} ${post.author || ''} ${post.content || ''}`, searchKeyword);
     });
@@ -126,7 +125,7 @@ function filterPosts() {
 /* ---------- Render kết quả ---------- */
 
 function renderBuildResult(build) {
-    const hero = findBuildHero(build);
+    const hero = searchBuildHero(build);
     const heroName = hero ? hero.name : 'Tướng chưa xác định';
     // Build không có trang chi tiết riêng: trỏ về trang Build đã lọc sẵn theo tướng.
     const href = hero
@@ -167,7 +166,7 @@ function renderSearchResults() {
     const groups = [
         { key: 'heroes', title: 'Tướng', rows: filterHeroes(), grid: true, render: renderHeroCard },
         { key: 'items', title: 'Trang bị', rows: filterItems(), grid: true, render: renderItemCard },
-        { key: 'builds', title: 'Build đề xuất', rows: filterBuilds(), grid: false, render: renderBuildResult },
+        { key: 'builds', title: 'Build đề xuất', rows: filterSearchBuilds(), grid: false, render: renderBuildResult },
         { key: 'posts', title: 'Bài viết cộng đồng', rows: filterPosts(), grid: false, render: renderPostResult },
     ].filter((group) => group.rows.length);
 

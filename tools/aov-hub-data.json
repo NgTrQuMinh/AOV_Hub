@@ -5,27 +5,27 @@
       "widths": [34, 30, 80],
       "header": ["Hạng mục", "Giá trị", "Ghi chú"],
       "rows": [
-        ["Ngày review", "14/10/2026", "Đối chiếu trực tiếp mã nguồn trên nhánh main."],
-        ["Nhánh / commit gần nhất", "main (c7a1964) + feat/builds-va-tim-kiem-toan-cuc", "PR #57, #58 (Tướng/Trang bị nổi bật), #59 (API dữ liệu dùng chung) đã merge vào main; UI/responsive/a11y trên nhánh fix/ui-responsive-a11y (chưa merge); build + tìm kiếm toàn cục trên nhánh này."],
+        ["Ngày review", "15/10/2026", "Đối chiếu trực tiếp mã nguồn trên nhánh fix/ui-review-minor (HEAD aec1ed5)."],
+        ["Nhánh / commit gần nhất", "fix/ui-review-minor (aec1ed5)", "PR #60 (UI/responsive/a11y - nhánh fix/ui-responsive-a11y) và #61 (build đủ 32 tướng + Tìm kiếm toàn cục) đã merge vào main; trên nhánh này còn 3 commit refactor sau lần cập nhật Excel trước (ae278f2, 01585e4, aec1ed5)."],
         ["Số tướng (heroes.json)", 32, "Trước đây ghi 30, hiện có 32 tướng."],
         ["Số trang bị (items.json)", 40, "40/40 có ảnh, mô tả và nội tại."],
         ["Số build (builds.json)", 32, "Phủ 32/32 tướng (mỗi tướng 1 build)."],
-        ["Số bài viết (posts.json)", 10, "Kèm category và heroId."],
+        ["Số bài viết (posts.json)", 11, "10 bài seed + 1 bài test phát sinh khi chạy app (id 1792001024923, chưa commit); likes.json có khoá tương ứng."],
         ["Số trang HTML", 17, "index.html + 16 trang trong src/pages (đã thêm search.html)."],
         ["Số file CSS", 14, "public/css (đã thêm hero-admin.css, search.css)."],
-        ["Số file JS", 24, "src/js top-level (chưa kể 11 file core/adapters/services/controllers/models — tổng cộng 35 file)."],
+        ["Số file JS", 25, "src/js top-level (chưa kể 11 file core/adapters/services/controllers/models — tổng cộng 36 file); thêm profile.js (tách từ profile.html)."],
         ["Bộ test tự động", "17/17 file PASS + 82 E2E PASS", "mini-DOM: 17 file PASS; Playwright (trình duyệt thật): 82 PASS."],
         ["Responsive (trình duyệt thật)", "82/82 PASS", "16 trang × 360/480/768/1024/1280 không tràn ngang; menu mobile hoạt động."],
         ["Đóng gói (npm run build)", "17/17 trang", "vite.config.js cấu hình multi-page; chép src/js + src/data vào dist; kiểm tra bằng npm run preview."],
-        ["Công việc chính hoàn thành", 48, "STT 1-50; nay thêm STT 6, 18, 29, 36 đã xong."],
-        ["Công việc chính làm một phần", 2, "STT 13 (tách profile.js), 20 (lọc đường đi)."],
+        ["Công việc chính hoàn thành", 49, "STT 1-50; nay thêm STT 6, 13, 18, 29, 36 đã xong."],
+        ["Công việc chính làm một phần", 1, "STT 20 (lọc đường đi — chờ thêm lane)."],
         ["Công việc chính chưa làm", 0, "Không còn mục nào ở mức chưa làm trong 50 việc chính."],
-        ["Lỗi đã xử lý trong lần review", "L12, L14, L15, L17, L18, L20, L22, L23, L24", "open redirect, băm mật khẩu, backup.rar, README, trang 404, responsive admin, build đủ 32 tướng, tìm kiếm toàn cục, tiêu chí nổi bật."],
-        ["Lỗi còn tồn", "L06, L19", "lane/title 32 tướng; tách code Profile thành src/js/profile.js."],
+        ["Lỗi đã xử lý trong lần review", "L05, L12, L14, L15, L17, L18, L19, L20, L22, L23, L24", "sắp xếp tướng A-Z/Z-A (bỏ giá), open redirect, băm mật khẩu, backup.rar, README, tách profile.js, trang 404, responsive admin, build đủ 32 tướng, tìm kiếm toàn cục, tiêu chí nổi bật."],
+        ["Lỗi còn tồn", "L06", "lane/title 32 tướng."],
         ["Kế hoạch mở rộng đã xong", "CM02, CM03, CM04, CM05, KD01, KD02, AD01-AD04, AD09, AD10", "Nhật ký admin, khung quản trị đa tab, sao lưu/khôi phục + cảnh báo dung lượng, trạng thái bài, duyệt trước, quản lý tướng CRUD, kiểm tra dữ liệu."],
         ["Kế hoạch mở rộng kế tiếp", "KD03, KD05, KD06, KD11, AD05-AD08, HD01-HD10", "Duyệt/từ chối bài, báo cáo, nhật ký dạng tab, quản lý trang bị/build, hướng dẫn build."],
         ["Tab quản trị còn thiếu file", 8, "admin-shell.js khai báo 8 file tab chưa viết (admin-pending/build-review/reports/users/items/builds/log/banned.js); tab Dữ liệu đã đủ 3 file backup/storage/datacheck."],
-        ["Rủi ro chính", "Không backend; quyền admin chỉ ở trình duyệt", "Dữ liệu ở JSON/LocalStorage/File System Access; lớp clean architecture chưa được nạp; đã có test Playwright (77 PASS) và checklist demo nhưng vẫn chỉ là demo, không phải bảo mật thật."]
+        ["Rủi ro chính", "Không backend; quyền admin chỉ ở trình duyệt", "Dữ liệu ở JSON/LocalStorage/File System Access; lớp clean architecture chưa được nạp; đã có test Playwright (82 PASS) và checklist demo nhưng vẫn chỉ là demo, không phải bảo mật thật."]
       ]
     },
     {
@@ -45,7 +45,7 @@
         [10, "Trang đăng nhập + xác thực", "Đã xong", "", "Trần Anh Thư", "So khớp PBKDF2-SHA256 với users.json; điều hướng an toàn qua getSafeRedirect().", ""],
         [11, "Lưu phiên đăng nhập và hiện tên trên Header", "Đã xong", "", "Trần Anh Thư", "aov_current_user; layout.js gọi updateAccountUI().", "Kiểm tra lại trên trình duyệt thật."],
         [12, "Chức năng đăng xuất + reset Header", "Đã xong", "", "Trần Anh Thư", "logout() xoá phiên rồi về trang chủ; nút Đăng xuất nay nằm trong trang Profile, không còn ở Header.", ""],
-        [13, "Trang Profile: thông tin + bài đã đăng", "Một phần", "", "Trần Anh Thư", "Có thông tin, thống kê, bài đã đăng nhưng code còn inline trong profile.html.", "Tách thành src/js/profile.js (L19)."],
+        [13, "Trang Profile: thông tin + bài đã đăng", "Đã xong", "", "Trần Anh Thư", "Đã tách code khỏi profile.html sang src/js/profile.js (currentUsername + renderProfileHeader/Stats/Posts + logout); feed.js gọi lại renderProfilePosts() như cũ.", ""],
         [14, "Guard chặn truy cập trang cần đăng nhập", "Đã xong", "", "Trần Anh Thư", "requireAuth() + requireAdmin(); PROTECTED_PAGES gồm profile, admin, hero-admin.", ""],
         [15, "heroes.json tối thiểu 30 tướng", "Đã xong", "", "Trần Gia Bảo", "32 tướng, đủ ảnh, 3 kỹ năng, stats, recommendedBuild hợp lệ; còn thiếu lane/title.", "Thêm lane + title (L06)."],
         [16, "Component card tướng", "Đã xong", "", "Trần Gia Bảo", "renderHeroCard() dùng lại ở Home, Heroes, Build.", ""],
@@ -82,7 +82,7 @@
         [47, "Trang quản trị bài viết", "Đã xong", "", "Ng Tr Quang Minh", "admin.html + admin.js; ẩn/hiện (hidden), xoá bài; test-admin-page 64 PASS.", ""],
         [48, "Responsive: trang chủ, danh sách/chi tiết tướng/trang bị", "Đã xong", "", "Cả nhóm", "hero/home/item/build/favorite/compare/admin đều có @media; Playwright xác nhận 15 trang × 5 mốc không tràn ngang.", ""],
         [49, "Responsive: Feed, chi tiết bài viết, form Account", "Đã xong", "", "Cả nhóm", "feed.css (5 @media), common.css (5), auth.css (2); kiểm tra thật ở 360/480/768/1024/1280.", ""],
-        [50, "Checklist test, fix lỗi, chuẩn bị demo", "Đã xong", "", "Cả nhóm", "16 file test mini-DOM PASS; 77 test Playwright PASS; build 16 trang; checklist demo ở README (mục 6).", ""]
+        [50, "Checklist test, fix lỗi, chuẩn bị demo", "Đã xong", "", "Cả nhóm", "17 file test mini-DOM PASS; 82 test Playwright PASS; build 17 trang; checklist demo ở README (mục 6).", ""]
       ]
     },
     {
@@ -94,7 +94,7 @@
         ["L02", "P0", "Giao diện", "hero.css chỉ có comment TODO, thiếu style cho hero-detail-header, hero-stats, skill-item, build-items.", "public/css/hero.css", "Viết CSS cho heroes.html + hero-detail.html, kèm @media.", "22-25, 48", "Trần Gia Bảo", "Đã xong", "hero.css ~15KB, đủ style hero-detail/skill/stats + 5 khối @media."],
         ["L03", "P0", "Thiếu tính năng", "Trang Yêu thích chưa làm: không có renderFavoriteList(), không có tab.", "src/pages/favorite.html, src/js/favorite.js", "Render 2 tab dùng getFavorites()/getHistory() + renderHeroCard/renderItemCard.", "27", "Trần Gia Bảo", "Đã xong", "favorite.js có 2 tab, renderFavoriteList(), xử lý bỏ yêu thích."],
         ["L04", "P0", "Bảo mật", "deletePost() và deleteComment() không kiểm tra người gọi; chỉ ẩn nút ở giao diện.", "src/js/feed.js", "Thêm điều kiện tác giả === getCurrentUser() (hoặc admin) trước khi xoá.", "42, 45", "Ng Tr Quang Minh", "Đã xong", "canDeletePost()/canDeleteComment() (tác giả hoặc admin)."],
-        ["L05", "P1", "Thiếu tính năng", "Chưa có sắp xếp danh sách tướng; tướng không có giá.", "src/js/hero.js", "Thêm select sắp xếp; bỏ tiêu chí giá hoặc thêm price.", "21", "Trần Gia Bảo", "Một phần", "Đã có A-Z/Z-A; bỏ sắp theo giá (tướng không có giá)."],
+        ["L05", "P1", "Thiếu tính năng", "Chưa có sắp xếp danh sách tướng; tướng không có giá.", "src/js/hero.js", "Thêm select sắp xếp; bỏ tiêu chí giá hoặc thêm price.", "21", "Trần Gia Bảo", "Đã xong", "Select #hero-sort-filter (Mặc định/A-Z/Z-A) ghi lên URL; đã gỡ hàm syncHeroFilterUrl trùng; không còn tiêu chí giá; test-heroes-page 25 PASS."],
         ["L06", "P1", "Dữ liệu", "heroes.json không có trường lane (đường đi) và title (0/32).", "src/data/heroes.json", "Thêm lane + title; thêm select lọc đường đi; ẩn title khi rỗng.", "15, 20, 22", "Trần Gia Bảo", "Chưa làm", "Vẫn chỉ có id/name/alias/image/role/difficulty/stats/skills/recommendedBuild."],
         ["L07", "P1", "Thiếu tính năng", "Chưa có trang So sánh tướng; compare.js chỉ có TODO.", "src/pages/compare.html, src/js/compare.js", "2 ô chọn tướng, bảng so sánh HP/Sát thương/Giáp/Độ khó, tô sáng chỉ số cao hơn.", "Ngoài danh sách", "Ng Tr Quang Minh", "Đã xong", "compare.js đủ 2 ô chọn, bảng so sánh, tô sáng cao nhất, lưu aov_compare."],
         ["L08", "P1", "Thiếu tính năng", "Feed chưa có lọc/sắp xếp; posts chưa có trường chuyên mục.", "src/js/feed.js, src/data/posts.json", "Thêm category, select chuyên mục + sắp xếp Mới nhất/Nhiều like.", "46", "Ng Tr Quang Minh", "Đã xong", "Feed có tìm/lọc/sắp xếp; posts.json có category."],
@@ -108,7 +108,7 @@
         ["L16", "P2", "Dọn dẹp", "Thư mục src/js/data/ chứa JSON cũ, khác bản chính.", "src/js/data/", "Xoá thư mục để tránh nhầm bản dữ liệu.", "-", "Cả nhóm", "Đã xong", "Thư mục src/js/data/ không còn trong repo."],
         ["L17", "P2", "Dọn dẹp", "backup.rar (1.5MB) nằm trong repo và chưa được .gitignore.", "backup.rar, .gitignore", "Xoá khỏi repo hoặc thêm vào .gitignore.", "-", "Trần Anh Thư", "Đã xong", "Đã xoá; *.rar có trong .gitignore."],
         ["L18", "P2", "Tài liệu", "README mô tả cấu trúc cũ (pages/, css/, js/ ở gốc) và phân vai Người 1-4.", "README.md, src/pages/*.html", "Cập nhật README theo src/ + public/; xoá TODO đã làm.", "1", "Trần Anh Thư", "Đã xong", "README cập nhật public/ + src/, lệnh npm và khoá LocalStorage; đã xoá TODO trong hero-detail.html."],
-        ["L19", "P2", "Cấu trúc", "Code Profile viết inline trong profile.html.", "src/pages/profile.html", "Tách thành src/js/profile.js.", "13", "Trần Anh Thư", "Chưa làm", "profile.html vẫn nạp script inline; chưa có src/js/profile.js."],
+        ["L19", "P2", "Cấu trúc", "Code Profile viết inline trong profile.html.", "src/pages/profile.html", "Tách thành src/js/profile.js.", "13", "Trần Anh Thư", "Đã xong", "Đã tạo src/js/profile.js; profile.html chỉ còn nạp <script src=\"/src/js/profile.js\">; test-admin-page 72 PASS."],
         ["L20", "P2", "Thiếu tính năng", "Ô tìm kiếm Header chỉ chuyển sang trang Tướng; không tìm được Trang bị/Build.", "public/partials/header.html", "Cho chọn phạm vi hoặc chuyển hướng theo trang hiện tại.", "3", "Trần Anh Thư", "Đã xong", "Header form trỏ sang search.html (tìm tướng/trang bị/build/bài viết); có test-search-page 16 PASS."],
         ["L21", "P2", "Kiểm thử", "Chưa có test cho Auth/Hero/Favorite; test chạy trên mini-DOM, chưa phải trình duyệt thật.", "tools/, tests/", "Thêm test; test tay trên Chrome + điện thoại; lập checklist demo.", "50", "Cả nhóm", "Đã xong", "16 file test mini-DOM PASS + 77 test Playwright (trình duyệt thật) PASS; checklist demo ở README mục 6."],
         ["L22", "P2", "Giao diện", "Trang chủ lấy 8 tướng/trang bị đầu tiên làm nổi bật, chưa có tiêu chí.", "src/js/home.js", "Thêm trường featured hoặc chọn theo tiêu chí rõ ràng.", "6", "Trần Anh Thư", "Đã xong", "home.js lọc theo featured === true (8 tướng + 8 trang bị); ô #hero-featured trong quản lý tướng."],
@@ -173,7 +173,7 @@
         ["Trang 404", "Đã xong", "404.html render renderNotFound() + nút về trang chủ (L23)."],
         ["Bộ test tự động (tools/ + tests/)", "Đã xong", "17 file test mini-DOM PASS; 82 test Playwright responsive PASS (trình duyệt thật)."],
         ["Phân trang danh sách tướng / trang bị", "Đã xong", "12 mục/trang, cuộn lại đầu danh sách khi đổi trang."],
-        ["Trang Profile hiển thị thống kê", "Đã xong", "Lấy từ dataStore/storage.js và feed.js; code còn inline (L19)."],
+        ["Trang Profile hiển thị thống kê", "Đã xong", "Lấy từ dataStore/storage.js và feed.js; code đã tách sang src/js/profile.js (L19)."],
         ["CSS cho trang Yêu thích / So sánh", "Đã xong", "favorite.css và compare.css đều có @media."],
         ["Trang quản trị bài viết (admin.html + admin.js + admin.css)", "Đã xong", "Chỉ admin truy cập; ẩn/hiện, xoá bài; test-admin-page 64 PASS."],
         ["Lọc/sắp xếp lưu lên URL (heroes, feed, favorite)", "Đã xong", "F5 hoặc chia sẻ link vẫn giữ bộ lọc."],
@@ -192,7 +192,7 @@
         ["config.js, heroData.js, search.js dùng chung", "Đã xong", "BASE_PATH/DATA_PATH; lớp dữ liệu tướng; chuẩn hoá từ khoá bỏ dấu."],
         ["Trang Tìm kiếm toàn cục (search.html + search-page.js + search.css)", "Đã xong", "Ô tìm kiếm Header trỏ sang đây; gom 4 nhóm Tướng/Trang bị/Build/Bài viết; bỏ dấu; đồng bộ ?keyword= (L20/N01)."],
         ["Mục 'Dữ liệu' trong khung quản trị (admin-backup/storage/datacheck.js)", "Đã xong", "Đủ 3 mục con: Sao lưu & khôi phục, Dung lượng LocalStorage (getStorageUsage), Kiểm tra dữ liệu (AD09/CM05)."],
-        ["Chuẩn hoá design token + breakpoint + trợ năng (nhánh fix/ui-responsive-a11y)", "Đã xong (chưa merge)", "Đưa hex/rgba về var(--color-*); breakpoint 1200/1024/900/768/480; menu mobile <button> aria-expanded; aria-current; role=status; ảnh có width/height."]
+        ["Chuẩn hoá design token + breakpoint + trợ năng (nhánh fix/ui-responsive-a11y)", "Đã xong", "Đưa hex/rgba về var(--color-*); breakpoint 1200/1024/900/768/480; menu mobile <button> aria-expanded; aria-current; role=status; ảnh có width/height. Đã merge qua PR #60."]
       ]
     },
     {
@@ -222,7 +222,6 @@
         ["P0", "Viết 8 file tab admin còn thiếu để bỏ placeholder 'Mục này đang được phát triển.'", "CM03, KD03, KD11, AD05-AD08", "src/js/admin-pending/build-review/reports/users/items/builds/log/banned.js", "16-24 giờ"],
         ["P0", "Tab Chờ duyệt + approvePost()/rejectPost() (duyệt/từ chối kèm lý do) — nối vào mục 'Chờ duyệt' đã có", "KD03", "src/js/admin-pending.js, admin.js, feed.js", "8 giờ"],
         ["P1", "Thêm lane + title cho 32 tướng + select lọc đường đi", "L06", "src/data/heroes.json, hero.js, hero-admin.js", "4 giờ"],
-        ["P1", "Tách src/js/profile.js khỏi profile.html", "L19", "src/js/profile.js", "2 giờ"],
         ["P1", "Báo cáo vi phạm (aov_reports) + tab xử lý cho admin", "KD05, KD06", "feed.js, admin-reports.js", "12 giờ"],
         ["P2", "Quản lý Trang bị (form thêm/sửa/xoá an toàn)", "AD05, AD06", "admin-items.js", "16 giờ"],
         ["P2", "Quản lý Build + danh sách tướng thiếu build", "AD07, AD08", "admin-builds.js", "11 giờ"],
@@ -314,7 +313,17 @@
         ["14/10/2026", "STT 36", "Sửa trạng thái", "Một phần -> Đã xong", "test-post-form kiểm tra bài mới vào collection posts của dataStore."],
         ["14/10/2026", "CM05 / AD09", "Sửa trạng thái", "Một phần / Chưa làm -> Đã xong", "admin-backup/storage/datacheck.js đã có; tab Dữ liệu đủ 3 mục; 'Tab quản trị còn thiếu file' 11 -> 8."],
         ["14/10/2026", "Tổng hợp", "Cập nhật mốc", "main (1d779ef) -> main (c7a1964)", "PR #58 (Tướng/Trang bị nổi bật) + #59 (API dữ liệu dùng chung) đã merge; UI/responsive trên fix/ui-responsive-a11y; build + tìm kiếm trên feat/builds-va-tim-kiem-toan-cuc."],
-        ["14/10/2026", "Số liệu", "Cập nhật", "—", "Build 13->32; trang HTML 16->17; CSS 13->14; JS top-level 20->24; test 16->17 file + 77->82 E2E."]
+        ["14/10/2026", "Số liệu", "Cập nhật", "—", "Build 13->32; trang HTML 16->17; CSS 13->14; JS top-level 20->24; test 16->17 file + 77->82 E2E."],
+        ["15/10/2026", "Tổng hợp", "Cập nhật mốc", "main (c7a1964) -> fix/ui-review-minor (aec1ed5)", "PR #60 + #61 đã merge; trên nhánh còn 3 commit refactor ae278f2, 01585e4, aec1ed5."],
+        ["15/10/2026", "PR #60 / L21 / N08", "Sửa trạng thái", "Đã xong (chưa merge) -> Đã xong", "Nhánh fix/ui-responsive-a11y merge: design token var(--color-*), breakpoint 1200/1024/900/768/480, menu mobile aria-expanded, aria-current, role=status."],
+        ["15/10/2026", "PR #61 / L12, L20, STT18/29/36, N01", "Sửa trạng thái", "—", "Build 32/32 tướng + trang Tìm kiếm toàn cục đã merge vào main."],
+        ["15/10/2026", "ae278f2", "Refactor UI", "—", "Chia sẻ .page-head/.page-head__count từ build.css sang common.css; thêm aria-live cho #search-count và #search-results."],
+        ["15/10/2026", "01585e4", "Refactor JS", "—", "storage.js gỡ addCompare()/clearCompare() trùng; layout.js thêm kiểm tra response.ok; search-page.js đổi tên hàm và đơn giản hoá lọc bài viết."],
+        ["15/10/2026", "aec1ed5", "Refactor admin", "—", "Gỡ UI 'Sao lưu/Khôi phục' trùng ở tab Bài viết (admin.html + admin.js, -182 dòng) vì đã có trong tab Dữ liệu."],
+        ["15/10/2026", "Số liệu", "Cập nhật", "—", "posts.json 10 -> 11 bài (1 bài test khi chạy app); bỏ 'chưa merge' ở dòng chuẩn hoá design token; đồng bộ E2E 82 PASS."],
+        ["15/10/2026", "STT 13 / L19", "Sửa trạng thái", "Một phần / Chưa làm -> Đã xong", "Tách code Profile khỏi profile.html sang src/js/profile.js (renderProfileHeader/Stats/Posts + logout); profile.html chỉ còn nạp script; feed.js vẫn gọi renderProfilePosts(). test-admin-page 72 PASS."],
+        ["15/10/2026", "L05 / STT 21", "Sửa trạng thái", "Một phần / Đã xong -> Đã xong", "Sắp xếp tướng có select #hero-sort-filter (Mặc định/A-Z/Z-A) ghi lên URL; gỡ hàm syncHeroFilterUrl trùng trong hero.js; không còn tiêu chí giá. test-heroes-page 25 PASS."],
+        ["15/10/2026", "Tổng hợp", "Cập nhật số liệu", "—", "Số file JS top-level 24 -> 25 (thêm profile.js, tổng 36 file); 'Công việc chính làm một phần' 2 -> 1 (chỉ còn STT 20); 'Lỗi còn tồn' L06, L19 -> L06; bỏ 1 việc ở 'Việc nên làm tiếp'."]
       ]
     }
   ]
