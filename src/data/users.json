@@ -37,6 +37,27 @@
     "salt": "b1a4b72253d57e473cd43f4e8a1dcfef",
     "displayName": "anhthu",
     "role": "user",
-    "joinedAt": "2026-10-16T07:46:46.739Z"
+    "joinedAt": "2026-10-16T07:46:46.739Z",
+    "banned": true,
+    "bannedAt": "2026-10-16T09:06:09.378Z",
+    "bannedReason": "Tự động khóa: vi phạm nội dung nhiều lần",
+    "bannedBy": "system",
+    "warnings": [
+      {
+        "at": "2026-10-16T09:05:32.239Z",
+        "reason": "Vi phạm nội dung (Vi phạm): địt, địt con mẹ, mẹ mày, con mẹ mày",
+        "by": "system"
+      },
+      {
+        "at": "2026-10-16T09:05:49.666Z",
+        "reason": "Vi phạm nội dung (Vi phạm): địt, địt con mẹ, mẹ mày, con mẹ mày",
+        "by": "system"
+      },
+      {
+        "at": "2026-10-16T09:06:09.378Z",
+        "reason": "Vi phạm nội dung (Vi phạm): đm, cmm",
+        "by": "system"
+      }
+    ]
   }
 ]
