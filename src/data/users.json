@@ -30,5 +30,13 @@
     "displayName": "ngtrquminh",
     "role": "user",
     "joinedAt": "2026-10-15T04:46:51.697Z"
+  },
+  {
+    "username": "anhthu",
+    "passwordHash": "c29085651b3a8d97043bb706104d6583c014f5b5a4bf1da00458d24f53bb0a33",
+    "salt": "b1a4b72253d57e473cd43f4e8a1dcfef",
+    "displayName": "anhthu",
+    "role": "user",
+    "joinedAt": "2026-10-16T07:46:46.739Z"
   }
 ]

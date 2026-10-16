@@ -15,10 +15,12 @@
  * Bình luận:  [ { id, postId, author, content, createdAt } ]
  * Lượt thích: { "<postId>": [username, ...] }
  *
- * aov_mod_settings  { requireApproval: boolean, bannedWords: [string],
+ * aov_mod_settings  { requireApproval: boolean,
+ *                     bannedWords: [string | { word, level, fold }],
  *                     autoHideThreshold: number }
  *                     cấu hình kiểm duyệt; key còn ở LocalStorage (ngoại lệ), chưa
- *                     ghi thì lấy MOD_SETTINGS_DEFAULTS (xem getModSettings)
+ *                     ghi thì lấy MOD_SETTINGS_DEFAULTS (xem getModSettings);
+ *                     bannedWords: chuỗi (mức 2) hoặc object mức độ, xem KD07-c
  *
  * Mỗi lần mở Feed/Profile/chi tiết, seedPostsFromJson() chỉ await initDataStore rồi
  * trả getPosts(): bản nháp (nếu có) ưu tiên hơn file, bài đã xoá không "sống lại",
@@ -76,6 +78,15 @@
  *     đang bật duyệt trước thì user thường tạo "pending", admin tạo "approved"
  *     (kèm reviewedBy/reviewedAt); tắt chế độ thì ai cũng tạo "approved" —
  *     xem mục "Cấu hình kiểm duyệt" bên dưới
+ *
+ * Kiểm duyệt nội dung theo mức từ cấm (KD07-c) — MỚI, CHƯA nối vào
+ * createPost()/addComment() (nối ở bước KD07-d), các hàm cũ giữ nguyên hành vi:
+ *   - bannedWords giờ chứa chuỗi (cũ, coi mức 2) HOẶC object { word, level:
+ *     0|1|2|3, fold? }; level 0 = gỡ một từ khỏi danh sách mẫu (sanitizeBannedWords)
+ *   - getBannedEntries / moderateContent / buildModerationNotice (thông báo
+ *     tiếng Việt thuần, không HTML) / set|get|clearLastModerationNotice
+ *   - aov_mod_alerts: kho thông báo vi phạm (MOD_ALERTS_KEY, addModAlert,
+ *     getModAlerts, countUnreadModAlerts, markModAlertsRead, removeModAlert)
  */
 
 /**
@@ -206,6 +217,62 @@ const MOD_SETTINGS_DEFAULTS = {
     autoHideThreshold: 5,
 };
 
+/** Số mục tối đa và độ dài tối đa (ký tự) của một mục từ cấm admin nhập. */
+const MOD_BANNED_WORDS_MAX = 500;
+const MOD_BANNED_WORD_MAX = 80;
+
+/**
+ * Làm sạch mảng cấu hình từ cấm (KD07-c). Hợp lệ: chuỗi không rỗng (giữ NGUYÊN
+ * kiểu chuỗi, khi lọc coi là mức 2) hoặc object có word chuỗi không rỗng (word
+ * cắt khoảng trắng; level không thuộc 0|1|2|3 -> 2; fold lạ -> bỏ trường fold).
+ * Số, null, object thiếu word, word rỗng đều bị bỏ.
+ * @param {*} list mảng phần tử (không phải mảng -> []).
+ * @param {object} [options] { dedupe: bỏ trùng theo chữ thường, maxItems, maxWord }
+ * @returns {Array<string|{word: string, level: number, fold?: string}>}
+ */
+function sanitizeBannedWords(list, options) {
+    try {
+        const opts = options && typeof options === 'object' ? options : {};
+        const maxItems = Number.isFinite(opts.maxItems) ? opts.maxItems : Infinity;
+        const maxWord = Number.isFinite(opts.maxWord) ? opts.maxWord : Infinity;
+        if (!Array.isArray(list)) return [];
+        const out = [];
+        const seen = Object.create(null);
+
+        for (let i = 0; i < list.length && out.length < maxItems; i++) {
+            const item = list[i];
+            let entry = null;
+
+            if (typeof item === 'string') {
+                const word = item.trim();
+                if (word && word.length <= maxWord) entry = word;
+            } else if (item && typeof item === 'object' && !Array.isArray(item)
+                && typeof item.word === 'string') {
+                const word = item.word.trim();
+                if (word && word.length <= maxWord) {
+                    const level = Number.isInteger(item.level) && item.level >= 0
+                        && item.level <= 3 ? item.level : 2;
+                    entry = { word, level };
+                    if (item.fold === 'full' || item.fold === 'review' || item.fold === 'off') {
+                        entry.fold = item.fold;
+                    }
+                }
+            }
+
+            if (!entry) continue;
+
+            const key = (typeof entry === 'string' ? entry : entry.word).toLowerCase();
+            if (opts.dedupe && seen[key]) continue;
+            seen[key] = true;
+            out.push(entry);
+        }
+
+        return out;
+    } catch (error) {
+        return [];
+    }
+}
+
 /**
  * Đọc cấu hình kiểm duyệt từ aov_mod_settings.
  *
@@ -214,7 +281,10 @@ const MOD_SETTINGS_DEFAULTS = {
  * phải kiểm tra null. Đọc từng trường theo kiểu dữ liệu của nó, nên giá trị
  * lạ ("yes", mảng, object...) không làm hỏng được cấu hình.
  *
- * @returns {{ requireApproval: boolean, bannedWords: string[], autoHideThreshold: number }}
+ * bannedWords đi qua sanitizeBannedWords(): chỉ giữ chuỗi hoặc object hợp lệ,
+ * chuỗi cũ VẪN là chuỗi (dữ liệu cũ không bị đổi kiểu).
+ *
+ * @returns {{ requireApproval: boolean, bannedWords: Array<string|{word: string, level: number, fold?: string}>, autoHideThreshold: number }}
  */
 function getModSettings() {
     const stored = getStore(MOD_SETTINGS_KEY, null);
@@ -225,7 +295,7 @@ function getModSettings() {
             ? source.requireApproval
             : MOD_SETTINGS_DEFAULTS.requireApproval,
         bannedWords: Array.isArray(source.bannedWords)
-            ? source.bannedWords.filter((word) => typeof word === 'string' && word.trim())
+            ? sanitizeBannedWords(source.bannedWords)
             : MOD_SETTINGS_DEFAULTS.bannedWords,
         autoHideThreshold: typeof source.autoHideThreshold === 'number'
             && Number.isFinite(source.autoHideThreshold)
@@ -241,6 +311,10 @@ function getModSettings() {
  * và KHÔNG ghi gì, nên user thường gọi thẳng từ console cũng không đổi được.
  * Chỉ ba trường của MOD_SETTINGS_DEFAULTS được nhận; trường lạ trong patch bị
  * bỏ qua để aov_mod_settings không bao giờ bị ghi rác.
+ *
+ * patch.bannedWords là mảng thì làm sạch theo sanitizeBannedWords(): giữ chuỗi
+ * hoặc object hợp lệ, cắt khoảng trắng, bỏ mục rỗng/quá 80 ký tự, bỏ trùng theo
+ * chữ thường (giữ mục đầu) và tối đa 500 mục (KD07-c).
  *
  * @param {object} patch phần muốn đổi, ví dụ { requireApproval: false }
  * @returns {boolean} true nếu đã ghi được aov_mod_settings.
@@ -259,10 +333,11 @@ function setModSettings(patch) {
     if (typeof patch.requireApproval === 'boolean') next.requireApproval = patch.requireApproval;
 
     if (Array.isArray(patch.bannedWords)) {
-        next.bannedWords = patch.bannedWords
-            .filter((word) => typeof word === 'string')
-            .map((word) => word.trim())
-            .filter(Boolean);
+        next.bannedWords = sanitizeBannedWords(patch.bannedWords, {
+            dedupe: true,
+            maxItems: MOD_BANNED_WORDS_MAX,
+            maxWord: MOD_BANNED_WORD_MAX,
+        });
     }
 
     if (typeof patch.autoHideThreshold === 'number' && Number.isFinite(patch.autoHideThreshold)) {
@@ -270,6 +345,354 @@ function setModSettings(patch) {
     }
 
     return setStore(MOD_SETTINGS_KEY, next);
+}
+
+/* ---------- Kiểm duyệt nội dung theo mức từ cấm (KD07-c) ---------- */
+
+/**
+ * Danh sách từ cấm HIỆU LỰC = mẫu của search.js gộp cấu hình admin
+ * (aov_mod_settings.bannedWords, entry level 0 GỠ một từ mẫu).
+ * Thiếu search.js -> [] (không lọc gì); mọi lỗi -> [], không ném ra ngoài.
+ * @returns {Array<{word: string, level: number, fold: string}>}
+ */
+function getBannedEntries() {
+    try {
+        if (typeof getDefaultBannedEntries !== 'function'
+            || typeof mergeBannedEntries !== 'function') return [];
+
+        return mergeBannedEntries(getDefaultBannedEntries(), getModSettings().bannedWords);
+    } catch (error) {
+        return [];
+    }
+}
+
+/** Gộp source vào out, bỏ trùng theo chữ thường của item hoặc item[keyField]. */
+function mergeUniqueMod(out, seen, source, keyField) {
+    if (!Array.isArray(source)) return;
+
+    source.forEach((item) => {
+        const key = typeof item === 'string' ? item : item && item[keyField];
+        if (typeof key !== 'string' || !key) return;
+        const low = key.toLowerCase();
+        if (seen[low]) return;
+        seen[low] = true;
+        out.push(item);
+    });
+}
+
+/**
+ * Kiểm tra nội dung theo từ cấm, lấy mức CAO NHẤT trong các đoạn văn.
+ * texts: chuỗi hoặc mảng chuỗi; kind: 'post'/'comment' (lạ -> 'post'). LUÔN
+ * trả { level, action, label, words, matches, kind }, words/matches gộp không
+ * trùng. Không lọc khi thiếu classifyContent (chưa nạp search.js), đầu vào
+ * rỗng/lỗi hoặc người đang đăng nhập là admin. Hàm thuần, không ném lỗi.
+ */
+function moderateContent(texts, kind) {
+    const cleanKind = kind === 'comment' ? 'comment' : 'post';
+    const empty = { level: 0, action: 'ok', label: '', words: [], matches: [], kind: cleanKind };
+
+    try {
+        if (typeof classifyContent !== 'function') return empty;
+        if (typeof isLoggedIn === 'function' && isLoggedIn()
+            && typeof isAdmin === 'function' && isAdmin()) return empty;
+
+        const parts = (Array.isArray(texts) ? texts : [texts])
+            .filter((text) => typeof text === 'string' && text.trim());
+        if (!parts.length) return empty;
+
+        const entries = getBannedEntries();
+        const words = [];
+        const matches = [];
+        const seen = { words: Object.create(null), matches: Object.create(null) };
+        let level = 0;
+        let label = '';
+
+        for (const text of parts) {
+            const one = classifyContent(text, entries);
+            if (!one || typeof one !== 'object') continue;
+            const oneLevel = Number.isFinite(one.level) ? one.level : 0;
+            if (oneLevel > level) {
+                level = oneLevel;
+                label = typeof one.label === 'string' ? one.label : '';
+            }
+            mergeUniqueMod(words, seen.words, one.words, 'word');
+            mergeUniqueMod(matches, seen.matches, one.matches, 'word');
+        }
+
+        if (!level) return empty;
+        return {
+            level,
+            action: level === 1 ? 'review' : level === 2 ? 'block' : 'severe',
+            label, words, matches, kind: cleanKind,
+        };
+    } catch (error) {
+        return empty;
+    }
+}
+
+/** Số từ tối đa nêu trong một câu thông báo kiểm duyệt. */
+const MOD_NOTICE_WORDS_MAX = 5;
+
+/**
+ * Dựng thông báo tiếng Việt cho người dùng (thuần, không đụng DOM, KHÔNG chèn
+ * HTML: words giữ thô, nơi hiển thị tự escapeHtml). review -> type 'info',
+ * block/severe -> 'danger', 'ok' -> type 'ok' với title/message rỗng; tối đa 5 từ.
+ * penalty là object auth.js recordViolation() trả (thiếu thì coi counted=false):
+ * counted -> thêm "Đây là cảnh cáo thứ N", chưa bị khóa thì thêm "Còn tối đa M
+ * lần..."; banned -> thêm câu tự động khóa và bỏ câu "Còn tối đa...".
+ * @param {{ action?: string, level?: number, label?: string, words?: Array }} [result]
+ * @param {{ counted?: boolean, warningNumber?: number, remaining?: number, banned?: boolean }} [penalty]
+ * @param {'post'|'comment'} kind
+ * @returns {{ type: 'info'|'danger'|'ok', title: string, message: string, words: string[], level: number, label: string }}
+ */
+function buildModerationNotice(result, penalty, kind) {
+    try {
+        const res = result && typeof result === 'object' ? result : {};
+        const action = typeof res.action === 'string' ? res.action : 'ok';
+        const cleanKind = kind === 'comment' ? 'comment' : 'post';
+        const level = Number.isFinite(res.level) ? res.level : 0;
+        const label = typeof res.label === 'string' ? res.label : '';
+        const words = (Array.isArray(res.words) ? res.words : [])
+            .filter((word) => typeof word === 'string' && word.trim())
+            .slice(0, MOD_NOTICE_WORDS_MAX);
+
+        const notice = { type: 'ok', title: '', message: '', words, level, label };
+        if (action !== 'review' && action !== 'block' && action !== 'severe') return notice;
+
+        const joined = words.join(', ');
+        let title = '';
+        let message = '';
+
+        if (action === 'review') {
+            notice.type = 'info';
+            if (cleanKind === 'comment') {
+                title = 'Bình luận cần được xem xét';
+                message = `Bình luận của bạn có từ cần xem xét (${joined}). `
+                    + 'Bình luận vẫn được đăng và đã được báo cho quản trị viên.';
+            } else {
+                title = 'Bài viết cần được xem xét';
+                message = `Bài của bạn có từ cần xem xét (${joined}) `
+                    + 'nên đã được gửi và đang chờ quản trị viên duyệt.';
+            }
+        } else if (action === 'block') {
+            notice.type = 'danger';
+            title = 'Nội dung vi phạm quy tắc cộng đồng';
+            message = `Nội dung của bạn chứa từ ngữ không được phép (${joined}) nên không được đăng.`;
+        } else {
+            notice.type = 'danger';
+            title = 'Vi phạm nghiêm trọng';
+            message = `Nội dung của bạn có lời lẽ đe dọa hoặc thù ghét (${joined}) `
+                + 'nên không được đăng. Vi phạm này đã được báo cho quản trị viên.';
+        }
+
+        const info = penalty && typeof penalty === 'object' ? penalty : {};
+        const banned = info.banned === true;
+
+        if (info.counted === true) {
+            message += ` Đây là cảnh cáo thứ ${Number.isFinite(info.warningNumber) ? info.warningNumber : 1}.`;
+            if (!banned) {
+                message += ` Còn tối đa ${Number.isFinite(info.remaining) ? info.remaining : 0}`
+                    + ' lần vi phạm nữa tài khoản sẽ bị khóa.';
+            }
+        }
+
+        if (banned) {
+            message += ' Tài khoản của bạn đã bị tự động khóa do vi phạm nhiều lần'
+                + ' và sẽ bị đăng xuất khi tải lại trang.';
+        }
+
+        notice.title = title;
+        notice.message = message;
+        return notice;
+    } catch (error) {
+        return { type: 'ok', title: '', message: '', words: [], level: 0, label: '' };
+    }
+}
+
+/* ---------- Trạng thái "thông báo kiểm duyệt gần nhất" (dùng ở KD07-d) ---------- */
+
+/**
+ * Thông báo kiểm duyệt của lần gần nhất (giao diện đọc khi createPost/
+ * addComment trả null). Giữ trong bộ nhớ, sao chép hai chiều hai đầu vào/ra.
+ */
+let lastModerationNotice = null;
+
+/** Ghi thông báo gần nhất (null/không phải object thì xoá). @returns {boolean} */
+function setLastModerationNotice(notice) {
+    try {
+        lastModerationNotice = notice && typeof notice === 'object'
+            ? JSON.parse(JSON.stringify(notice))
+            : null;
+        return true;
+    } catch (error) {
+        lastModerationNotice = null;
+        return false;
+    }
+}
+
+/** Đọc bản sao thông báo gần nhất, chưa có thì null. */
+function getLastModerationNotice() {
+    try {
+        return lastModerationNotice ? JSON.parse(JSON.stringify(lastModerationNotice)) : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+/** Xoá thông báo gần nhất. @returns {boolean} */
+function clearLastModerationNotice() {
+    try {
+        lastModerationNotice = null;
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+/* ---------- Kho thông báo vi phạm cho admin (aov_mod_alerts, KD07-c) ---------- */
+
+const MOD_ALERTS_KEY = 'aov_mod_alerts';          // kho thông báo cho admin
+const MOD_ALERTS_MAX = 200;                       // giữ 200 mục mới nhất
+const MOD_ALERT_ACTIONS = ['review', 'block', 'severe'];   // 'ok' không ghi kho
+const MOD_ALERT_WORDS_MAX = 10;                   // tối đa 10 từ mỗi mục
+const MOD_ALERT_WORD_MAX = 40;                    // mỗi từ tối đa 40 ký tự
+const MOD_ALERT_LABEL_MAX = 80;
+const MOD_ALERT_EXCERPT_MAX = 120;                // trích dẫn tối đa 120 ký tự
+
+/** Chuỗi cho mục thông báo: bỏ ký tự điều khiển, gộp khoảng trắng, cắt tối đa. */
+function cleanModAlertText(value, max) {
+    return String(value === null || value === undefined ? '' : value)
+        .replace(/[\u0000-\u001f\u007f]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, max);
+}
+
+/**
+ * Đọc toàn bộ aov_mod_alerts: JSON rác / LocalStorage hỏng / không phải mảng
+ * đều coi là danh sách rỗng, không ném lỗi. @returns {Array<object>} mới nhất trước.
+ */
+function getModAlertList() {
+    try {
+        const stored = getStore(MOD_ALERTS_KEY, []);
+        return Array.isArray(stored)
+            ? stored.filter((item) => item && typeof item === 'object' && !Array.isArray(item))
+            : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+/**
+ * Ghi một thông báo vi phạm vào aov_mod_alerts cho admin theo dõi.
+ * user LUÔN lấy từ getCurrentUser() (bỏ qua user trong data, chống giả mạo);
+ * bắt buộc đã đăng nhập và action thuộc 'review'|'block'|'severe', sai -> null.
+ * Mục mới luôn read:false; urgent = level 3; kho giữ tối đa MOD_ALERTS_MAX mục.
+ * @param {{ kind?, targetId?, commentId?, action, level?, label?, words?, excerpt?, penalty? }} data
+ * @returns {object|null} mục vừa ghi, null nếu không hợp lệ hoặc ghi thất bại.
+ */
+function addModAlert(data) {
+    try {
+        if (typeof isLoggedIn !== 'function' || !isLoggedIn()) return null;
+
+        const info = data && typeof data === 'object' && !Array.isArray(data) ? data : {};
+        const action = MOD_ALERT_ACTIONS.indexOf(info.action) === -1 ? '' : info.action;
+        if (!action) return null;
+
+        const levelOf = { review: 1, block: 2, severe: 3 };
+        const level = (info.level === 1 || info.level === 2 || info.level === 3)
+            ? info.level
+            : levelOf[action];
+        const words = (Array.isArray(info.words) ? info.words : [])
+            .filter((word) => typeof word === 'string' && word.trim())
+            .slice(0, MOD_ALERT_WORDS_MAX)
+            .map((word) => word.trim().slice(0, MOD_ALERT_WORD_MAX));
+        const penalty = info.penalty && typeof info.penalty === 'object' ? info.penalty : {};
+
+        const alerts = getModAlertList();
+        const alert = {
+            id: nextFeedId(alerts.map((item) => item.id)),
+            at: new Date().toISOString(),
+            user: String(getCurrentUser() || ''),
+            kind: info.kind === 'comment' ? 'comment' : 'post',
+            targetId: info.targetId === null || info.targetId === undefined ? '' : info.targetId,
+            commentId: typeof info.commentId === 'string' ? info.commentId : '',
+            action, level,
+            label: cleanModAlertText(info.label, MOD_ALERT_LABEL_MAX),
+            words, excerpt: cleanModAlertText(info.excerpt, MOD_ALERT_EXCERPT_MAX),
+            penalty: { warned: penalty.warned === true, banned: penalty.banned === true },
+            urgent: level === 3, read: false,
+        };
+
+        alerts.unshift(alert);
+        if (alerts.length > MOD_ALERTS_MAX) alerts.length = MOD_ALERTS_MAX;
+
+        return setStore(MOD_ALERTS_KEY, alerts) ? alert : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+/** Kho thông báo: CHỈ admin nhận dữ liệu (mới nhất trước, bản sao), khác -> []. */
+function getModAlerts() {
+    try {
+        if (typeof isAdmin !== 'function' || !isAdmin()) return [];
+        return JSON.parse(JSON.stringify(getModAlertList()));
+    } catch (error) {
+        return [];
+    }
+}
+
+/** Số thông báo CHƯA đọc của admin; không phải admin -> 0. */
+function countUnreadModAlerts() {
+    try {
+        if (typeof isAdmin !== 'function' || !isAdmin()) return 0;
+        return getModAlertList().filter((item) => item.read === false).length;
+    } catch (error) {
+        return 0;
+    }
+}
+
+/**
+ * Đánh dấu đã đọc; CHỈ admin. ids bỏ trống / không phải mảng = đánh dấu TẤT CẢ.
+ * @param {Array<number|string>} [ids]
+ * @returns {boolean} true nếu đã ghi aov_mod_alerts.
+ */
+function markModAlertsRead(ids) {
+    try {
+        if (typeof isAdmin !== 'function' || !isAdmin()) return false;
+
+        const alerts = getModAlertList();
+        const wanted = new Set((Array.isArray(ids) && ids.length ? ids : []).map(normalizeId));
+
+        alerts.forEach((item) => {
+            if (item.read !== true && (!wanted.size || wanted.has(normalizeId(item.id)))) {
+                item.read = true;
+            }
+        });
+
+        return setStore(MOD_ALERTS_KEY, alerts);
+    } catch (error) {
+        return false;
+    }
+}
+
+/** Xoá một thông báo; CHỈ admin. @returns {boolean} true nếu mục đã bị xoá. */
+function removeModAlert(id) {
+    try {
+        if (typeof isAdmin !== 'function' || !isAdmin()) return false;
+
+        const target = normalizeId(id);
+        if (!target) return false;
+
+        const alerts = getModAlertList();
+        const next = alerts.filter((item) => normalizeId(item.id) !== target);
+        if (next.length === alerts.length) return false;
+
+        return setStore(MOD_ALERTS_KEY, next);
+    } catch (error) {
+        return false;
+    }
 }
 
 /* ---------- Tìm bài viết ---------- */
