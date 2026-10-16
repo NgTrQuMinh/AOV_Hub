@@ -24,6 +24,11 @@
  *   findBannedWords()     - mảng chuỗi các từ bị bắt
  *   containsBannedWord()  - boolean
  *   classifyContent()     - { level, action, matches, words, label }
+ *   DEFAULT_BANNED_ENTRIES    - hằng danh sách từ cấm MẪU chia 3 mức (không có level 0)
+ *   getDefaultBannedEntries() - bản sao sâu của DEFAULT_BANNED_ENTRIES
+ *   mergeBannedEntries()      - gộp danh sách mẫu với danh sách admin tự thêm;
+ *                               trùng khoá lấy mức cao hơn, fold của mục đến sau;
+ *                               entry level 0 = GỠ một từ mẫu khỏi kết quả
  *
  * Nạp sau components.js (dùng chung escapeHtml/imageUrl) và trước file gọi tới nó.
  */
@@ -499,5 +504,117 @@ function classifyContent(text, entries) {
         };
     } catch (e) {
         return { level: 0, action: 'ok', matches: [], words: [], label: '' };
+    }
+}
+
+// ===== DANH SÁCH TỪ CẤM MẪU + GỘP DANH SÁCH (KD07) =====
+
+/**
+ * Danh sách từ cấm mẫu, chia 3 mức. Không ghi fold = 'full'.
+ * Danh sách mẫu không chứa mục level 0 (mức 0 chỉ phát sinh khi admin gỡ từ).
+ * Không chứa số/địa danh đứng riêng (36, 37, Thanh Hóa, Hà Nội...).
+ */
+const DEFAULT_BANNED_ENTRIES = (function () {
+    const out = [];
+    // Ghép một dãy từ ';' cùng mức; không truyền fold thì không đặt trường fold
+    const add = function (level, fold, text) {
+        const parts = String(text === null || text === undefined ? '' : text).split(';');
+        for (let i = 0; i < parts.length; i++) {
+            const word = parts[i].trim();
+            if (!word) continue;
+            const item = { word: word, level: level };
+            if (fold) item.fold = fold;
+            out.push(item);
+        }
+    };
+
+    // Mức 3 - nghiêm trọng: đe dọa, thù ghét nhóm người
+    add(3, null, 'giết mày; chém mày; đâm mày; đập mày; đánh chết mày; giết cả nhà mày; đốt nhà mày; tìm đến nhà mày; tao tìm mày; cho mày chết; xử mày; mày chết với tao');
+    add(3, null, 'bọn bắc kỳ; lũ bắc kỳ; bọn nam kỳ; lũ nam kỳ; bọn trung kỳ; lũ trung kỳ; bọn nhà quê; lũ nhà quê; bọn tỉnh lẻ; lũ tỉnh lẻ; bọn pê đê; lũ pê đê; bọn mọi; lũ mọi; mọi đen; bọn khựa; lũ khựa');
+
+    // Mức 2 - vi phạm, fold 'full'
+    add(2, 'full', 'địt; địt mẹ; địt con mẹ; địt bố; địt má; đụ mẹ; đụ má; đù má; đủ má; đm; đcm; đjt; cmm; clm; vcl; vkl; dmcs; fuck; fucking; fck; shit; bitch; asshole; motherfucker');
+    add(2, 'full', 'ngu; đồ ngu; thằng ngu; con ngu; ngu như chó; óc chó; não chó; não tàn; vô học; mất dạy; vô liêm sỉ; súc vật; súc sinh; đồ khốn; thằng khốn; con khốn; chó má; thằng hãm; con hãm; thằng chó; đồ chó; chó điên; thằng điên; con điên; đồ điên; thiểu năng; thằng thiểu năng; đồ khuyết tật; đồ tàn tật; bố láo; mẹ mày; con mẹ mày; biết tay tao');
+    add(2, 'full', 'đồ pê đê; đồ nhà quê; dân nhà quê; đồ tỉnh lẻ; dân tỉnh lẻ; dân quê mùa; parky; namkiki; khựa; tàu khựa; đồ mọi rợ');
+
+    // Mức 2 - fold 'review': gõ không dấu chỉ hạ xuống mức 1 (dễ nhầm)
+    add(2, 'review', 'đéo; đếch; lồn; cặc; buồi');
+
+    // Mức 2 - fold 'off': chỉ bắt khi gõ đúng dấu (bỏ dấu trùng từ thông thường)
+    add(2, 'off', 'con đĩ; đĩ; cứt; điếm');
+
+    // Mức 1 - cần xem xét, fold 'full'
+    add(1, 'full', 'cc; cl; wtf; vl; cmn; bắc kỳ; nam kỳ; trung kỳ; cút đi; biến đi; chết đi; đáng bị đánh; liệu hồn; ăn hại; đồ rác; cặn bã; thứ rẻ rách; đồ bệnh hoạn');
+
+    return out;
+})();
+
+/**
+ * Trả bản sao sâu của danh sách mẫu (sửa kết quả không làm đổi hằng gốc).
+ * @returns {Array<{word: string, level: number, fold?: string}>}
+ */
+function getDefaultBannedEntries() {
+    try {
+        return JSON.parse(JSON.stringify(DEFAULT_BANNED_ENTRIES));
+    } catch (e) {
+        return [];
+    }
+}
+
+/**
+ * Gộp hai mảng entry: mẫu mặc định trước, admin thêm sau.
+ * Mỗi phần tử đi qua parseBannedEntry (chuỗi -> mức 2); không hợp lệ bị bỏ.
+ * Khoá trùng = các token kd của word nối một khoảng trắng ("ngu" != "ngủ").
+ * Trùng khoá: lấy mức CAO hơn, fold lấy của mục đến SAU; mục level 0 thì GỠ khoá.
+ * Kết quả: mảng { word, level, fold } không trùng, theo thứ tự xuất hiện đầu tiên.
+ * @param {*} defaults - mảng entry mẫu (không phải mảng -> coi như rỗng)
+ * @param {*} custom - mảng entry admin thêm (không phải mảng -> coi như rỗng)
+ * @returns {Array<{word: string, level: number, fold: string}>}
+ */
+function mergeBannedEntries(defaults, custom) {
+    try {
+        const buckets = [];
+        const index = Object.create(null);
+
+        const take = function (arr) {
+            if (!Array.isArray(arr)) return;
+            for (let i = 0; i < arr.length; i++) {
+                const parsed = parseBannedEntry(arr[i]);
+                if (!parsed) continue;
+                const toks = tokenizeForFilter(parsed.word);
+                if (!toks.length) continue;
+                const key = toks.map(function (t) { return t.kd; }).join(' ');
+
+                if (parsed.level === 0) {
+                    // level 0 = gỡ từ khoá này khỏi kết quả
+                    if (index[key] !== undefined) buckets[index[key]] = null;
+                    delete index[key];
+                    continue;
+                }
+                if (index[key] !== undefined) {
+                    const prev = buckets[index[key]];
+                    if (!prev) {
+                        buckets[index[key]] = parsed;
+                    } else {
+                        if (parsed.level > prev.level) prev.level = parsed.level;
+                        prev.fold = parsed.fold; // fold của mục đến sau
+                    }
+                } else {
+                    index[key] = buckets.length;
+                    buckets.push(parsed);
+                }
+            }
+        };
+
+        take(defaults);
+        take(custom);
+
+        const out = [];
+        for (let i = 0; i < buckets.length; i++) {
+            if (buckets[i] && buckets[i].level !== 0) out.push(buckets[i]);
+        }
+        return out;
+    } catch (e) {
+        return [];
     }
 }
