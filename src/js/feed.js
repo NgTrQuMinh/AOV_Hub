@@ -10,8 +10,11 @@
  *
  * Cấu trúc từng bài viết:
  *   [ { id, author, title, content, heroId, category, createdAt,
- *       status?, rejectReason?, reviewedBy?, reviewedAt?, flagged?, hidden? } ]
+ *       status?, rejectReason?, reviewedBy?, reviewedAt?, flagged?, hidden?,
+ *       resubmittedAt?, resubmitCount?, lastRejectReason? } ]
  *   các trường có "?" là tùy chọn, bài cũ không có cũng chạy được
+ *   (resubmittedAt = lúc tác giả gửi lại, resubmitCount = số lần đã gửi lại,
+ *    lastRejectReason = lý do của lần bị từ chối gần nhất, xem KD04-a)
  * Bình luận:  [ { id, postId, author, content, createdAt } ]
  * Lượt thích: { "<postId>": [username, ...] }
  *
@@ -79,6 +82,16 @@
  *     (kèm reviewedBy/reviewedAt); tắt chế độ thì ai cũng tạo "approved" —
  *     xem mục "Cấu hình kiểm duyệt" bên dưới
  *
+ * Thông báo kết quả duyệt + gửi lại bài bị từ chối (KD04-a):
+ *   - getMyReviewNotices()/countUnseenReviewNotices()/markReviewNoticesSeen():
+ *     hàng thông báo cho tác giả biết bài đã được duyệt / bị từ chối (kèm lý do),
+ *     hoặc đang chờ duyệt; trạng thái "đã xem" lưu ở LocalStorage theo key
+ *     aov_review_seen = { "<username>": { "<postId>": "<reviewedAt>" } } (chỉ ghi
+ *     cho chính người đang đăng nhập; profile.html dùng để hiện danh sách).
+ *   - resubmitPost(): tác giả gửi lại bài đã bị từ chối (tối đa 3 lần), chuyển bài
+ *     về "pending" và ghi lastRejectReason/resubmittedAt/resubmitCount; sửa bài qua
+ *     updatePost() vẫn chuyển về "pending" như cũ nhưng KHÔNG giới hạn số lần.
+ *
  * Kiểm duyệt nội dung theo mức từ cấm (KD07-c) — MỚI, CHƯA nối vào
  * createPost()/addComment() (nối ở bước KD07-d), các hàm cũ giữ nguyên hành vi:
  *   - bannedWords giờ chứa chuỗi (cũ, coi mức 2) HOẶC object { word, level:
@@ -96,6 +109,12 @@
  * trong LocalStorage như ngoại lệ đã thống nhất.
  */
 const MOD_SETTINGS_KEY = 'aov_mod_settings';
+
+// Trạng thái "đã xem kết quả duyệt" của từng tác giả (KD04-a). Không phải collection
+// nên nằm ở LocalStorage: { "<username>": { "<postId>": "<reviewedAt>" } }.
+const REVIEW_SEEN_KEY = 'aov_review_seen';
+const RESUBMIT_MAX = 3;                 // tối đa 3 lần gửi lại mỗi bài
+const LAST_REJECT_REASON_MAX = 200;     // lý do từ chối gần nhất lưu tối đa 200 ký tự
 
 let feedHeroes = [];
 
@@ -1233,6 +1252,14 @@ function updatePost(postId, title, content, heroId, category) {
 
     if (wasRejected) {
         updated.status = POST_STATUS_PENDING;
+
+        // KD04-a: giữ lại lý do lần từ chối trước và tăng số lần đã gửi lại
+        // (sửa bài để gửi duyệt lại KHÔNG bị giới hạn 3 lần như resubmitPost).
+        if (typeof current.rejectReason === 'string' && current.rejectReason.trim()) {
+            updated.lastRejectReason = current.rejectReason.trim().slice(0, LAST_REJECT_REASON_MAX);
+        }
+        updated.resubmitCount = (Number.isFinite(Number(current.resubmitCount)) ? Number(current.resubmitCount) : 0) + 1;
+
         delete updated.rejectReason;
     }
 
@@ -1561,6 +1588,284 @@ function getPostsByUser(username) {
     return getPosts().filter((post) => (
         String(post.author || '').trim() === name && isPostVisibleForViewer(post)
     ));
+}
+
+/* ---------- Thông báo kết quả duyệt cho tác giả (KD04-a, key aov_review_seen) ---------- */
+
+/**
+ * Mốc thời gian của một thông báo duyệt, dùng để sắp xếp và so sánh "đã xem".
+ * Chuỗi ISO nên Date.parse xử lý được; giá trị thiếu/sai -> 0.
+ * @param {string} value
+ * @returns {number}
+ */
+function reviewNoticeTime(value) {
+    const time = Date.parse(value);
+    return Number.isNaN(time) ? 0 : time;
+}
+
+/**
+ * Đọc bảng "đã xem kết quả duyệt" từ aov_review_seen.
+ * Dữ liệu LocalStorage hỏng / không đúng kiểu (không phải object, giá trị con
+ * không phải chuỗi...) đều bị bỏ qua, luôn trả object sạch, không ném lỗi.
+ * @returns {Object<string, Object<string, string>>}
+ */
+function getReviewSeenMap() {
+    try {
+        const stored = getStore(REVIEW_SEEN_KEY, {});
+        if (!stored || typeof stored !== 'object' || Array.isArray(stored)) return {};
+
+        const out = {};
+        Object.keys(stored).forEach((user) => {
+            const per = stored[user];
+            if (!per || typeof per !== 'object' || Array.isArray(per)) return;
+
+            const clean = {};
+            Object.keys(per).forEach((postId) => {
+                const at = per[postId];
+                if (typeof at === 'string') clean[normalizeId(postId)] = at;
+            });
+            out[user] = clean;
+        });
+
+        return out;
+    } catch (error) {
+        return {};
+    }
+}
+
+/** Bảng "đã xem" riêng của một tài khoản (chưa có -> object rỗng). */
+function getReviewSeenFor(username) {
+    const name = String(username || '').trim();
+    const all = getReviewSeenMap();
+    const per = name ? all[name] : null;
+    return per && typeof per === 'object' ? per : {};
+}
+
+/**
+ * Danh sách thông báo kết quả duyệt của người đang đăng nhập, mới nhất trước.
+ * Mỗi mục: { postId, title, status, reason, at, flagged?, seen }.
+ * Quy tắc (bài bị admin ẩn luôn bỏ qua):
+ *   - rejected : thông báo bị từ chối, kèm lý do (nếu có); seen theo aov_review_seen;
+ *   - approved : chỉ khi có reviewedAt VÀ reviewedBy khác chính tác giả (loại bài tự
+ *                động duyệt / bài cũ chưa từng qua duyệt); seen theo aov_review_seen;
+ *   - pending  : thông tin "đang chờ duyệt", luôn coi đã xem (không tính chưa xem).
+ * Chưa đăng nhập / lỗi bất kỳ -> []. Trả bản sao mới của từng mục.
+ * @returns {Array<object>}
+ */
+function getMyReviewNotices() {
+    try {
+        if (typeof isLoggedIn !== 'function' || !isLoggedIn()) return [];
+
+        const username = String(getCurrentUser() || '').trim();
+        if (!username) return [];
+
+        const seen = getReviewSeenFor(username);
+        const notices = [];
+
+        getPostsByUser(username).forEach((post) => {
+            if (isPostHidden(post)) return;
+
+            const status = getPostStatus(post);
+            const postId = normalizeId(post.id);
+
+            if (status === POST_STATUS_REJECTED) {
+                const at = post.reviewedAt || post.updatedAt || post.createdAt || '';
+                notices.push({
+                    postId: post.id,
+                    title: post.title,
+                    status: POST_STATUS_REJECTED,
+                    reason: typeof post.rejectReason === 'string' ? post.rejectReason : '',
+                    at,
+                    seen: seen[postId] === String(at),
+                });
+                return;
+            }
+
+            if (status === POST_STATUS_APPROVED) {
+                // Bỏ qua bài cũ chưa từng qua duyệt và bài tự động duyệt (reviewedBy là chính tác giả).
+                if (!post.reviewedAt) return;
+                if (!post.reviewedBy) return;
+                if (String(post.reviewedBy).trim() === username) return;
+
+                notices.push({
+                    postId: post.id,
+                    title: post.title,
+                    status: POST_STATUS_APPROVED,
+                    reason: '',
+                    at: post.reviewedAt,
+                    seen: seen[postId] === String(post.reviewedAt),
+                });
+                return;
+            }
+
+            if (status === POST_STATUS_PENDING) {
+                notices.push({
+                    postId: post.id,
+                    title: post.title,
+                    status: POST_STATUS_PENDING,
+                    reason: '',
+                    at: post.createdAt || post.updatedAt || '',
+                    flagged: Boolean(post.flagged),
+                    seen: true,
+                });
+            }
+        });
+
+        return notices
+            .sort((a, b) => reviewNoticeTime(b.at) - reviewNoticeTime(a.at))
+            .map((notice) => Object.assign({}, notice));
+    } catch (error) {
+        return [];
+    }
+}
+
+/** Số thông báo approved/rejected CHƯA xem của người đang đăng nhập; chưa đăng nhập -> 0. */
+function countUnseenReviewNotices() {
+    try {
+        if (typeof isLoggedIn !== 'function' || !isLoggedIn()) return 0;
+
+        return getMyReviewNotices().filter((notice) => (
+            (notice.status === POST_STATUS_APPROVED || notice.status === POST_STATUS_REJECTED)
+            && notice.seen === false
+        )).length;
+    } catch (error) {
+        return 0;
+    }
+}
+
+/**
+ * Đánh dấu "đã xem" cho người ĐANG đăng nhập (không nhận username từ ngoài).
+ * postIds: mảng id cần đánh dấu; bỏ trống / không phải mảng / mảng rỗng = tất cả
+ * thông báo approved/rejected hiện có. Chỉ ghi lại đúng mốc reviewedAt đang có nên
+ * lần admin duyệt/từ chối sau (reviewedAt mới) sẽ trở thành chưa xem trở lại.
+ * @param {Array<number|string>} [postIds]
+ * @returns {boolean} true nếu đã ghi aov_review_seen.
+ */
+function markReviewNoticesSeen(postIds) {
+    try {
+        if (typeof isLoggedIn !== 'function' || !isLoggedIn()) return false;
+
+        const username = String(getCurrentUser() || '').trim();
+        if (!username) return false;
+
+        const wanted = Array.isArray(postIds) && postIds.length
+            ? new Set(postIds.map(normalizeId))
+            : null;
+
+        const map = getReviewSeenMap();
+        const per = map[username] && typeof map[username] === 'object' ? map[username] : {};
+
+        getMyReviewNotices()
+            .filter((notice) => notice.status === POST_STATUS_APPROVED || notice.status === POST_STATUS_REJECTED)
+            .forEach((notice) => {
+                const postId = normalizeId(notice.postId);
+                if (wanted && !wanted.has(postId)) return;
+                per[postId] = String(notice.at);
+            });
+
+        map[username] = per;
+        return setStore(REVIEW_SEEN_KEY, map);
+    } catch (error) {
+        return false;
+    }
+}
+
+/** Thông báo duyệt của một bài (nếu có) cho người đang đăng nhập, dùng cho giao diện. */
+function findMyReviewNotice(postId) {
+    try {
+        const id = normalizeId(postId);
+        if (!id) return null;
+
+        return getMyReviewNotices().find((notice) => normalizeId(notice.postId) === id) || null;
+    } catch (error) {
+        return null;
+    }
+}
+
+/**
+ * Gửi lại bài đã bị từ chối để admin duyệt lại (KD04-a).
+ *
+ * Chỉ tác giả (canEditPost) và chỉ khi bài đang "rejected"; tài khoản bị khóa hoặc
+ * bài không tồn tại -> null. Giới hạn tối đa RESUBMIT_MAX lần gửi lại mỗi bài
+ * (trường resubmitCount); vượt giới hạn -> null kèm lastModerationNotice 'danger'
+ * (tác giả phải sửa nội dung rồi lưu qua updatePost, không tính vào giới hạn này).
+ *
+ * Kiểm tra lại từ cấm trên nội dung hiện tại: mức 2/3 ('block'/'severe') -> null,
+ * KHÔNG phạt tài khoản, KHÔNG sửa bài; mức 1 ('review') -> vẫn gửi và giữ/đặt
+ * flagged:true.
+ *
+ * Thành công: status -> 'pending', xoá rejectReason, ghi resubmittedAt + tăng
+ * resubmitCount, lưu lastRejectReason (lý do lần từ chối trước, tối đa 200 ký tự);
+ * giữ nguyên id/createdAt/nội dung.
+ *
+ * @param {number|string} postId
+ * @returns {object|null} bài sau khi gửi lại, null nếu không hợp lệ/chưa đủ điều kiện.
+ */
+function resubmitPost(postId) {
+    try {
+        // Thông báo cũ không được lẫn sang lần gửi này (UI đọc sau khi trả null).
+        clearLastModerationNotice();
+
+        if (isCurrentUserBanned()) return null;
+
+        const id = normalizeId(postId);
+        if (!id) return null;
+
+        const posts = getPosts();
+        const index = posts.findIndex((post) => normalizeId(post.id) === id);
+        if (index === -1) return null;
+
+        const current = posts[index];
+
+        if (!canEditPost(current)) return null;
+        if (getPostStatus(current) !== POST_STATUS_REJECTED) return null;
+
+        const count = Number.isFinite(Number(current.resubmitCount)) ? Number(current.resubmitCount) : 0;
+
+        if (count >= RESUBMIT_MAX) {
+            setLastModerationNotice({
+                type: 'danger',
+                title: 'Không thể gửi lại',
+                message: 'Bài này đã được gửi lại tối đa 3 lần. Hãy sửa nội dung rồi lưu để gửi duyệt.',
+                words: [],
+                level: 0,
+                label: '',
+            });
+            return null;
+        }
+
+        const moderation = moderateContent([current.title, current.content], 'post');
+
+        // Mức 2/3: chặn, không sửa bài, KHÔNG phạt tài khoản ở bước gửi lại.
+        if (moderation.action === 'block' || moderation.action === 'severe') {
+            setLastModerationNotice(buildModerationNotice(moderation, null, 'post'));
+            return null;
+        }
+
+        const updated = Object.assign({}, current, {
+            status: POST_STATUS_PENDING,
+            resubmittedAt: new Date().toISOString(),
+            resubmitCount: count + 1,
+        });
+
+        // Lưu lại lý do lần từ chối trước để tác giả/admin còn đối chiếu.
+        if (typeof current.rejectReason === 'string' && current.rejectReason.trim()) {
+            updated.lastRejectReason = current.rejectReason.trim().slice(0, LAST_REJECT_REASON_MAX);
+        }
+
+        delete updated.rejectReason;
+
+        // Mức 1: vẫn gửi nhưng gắn cờ cho admin chú ý.
+        if (moderation.action === 'review') updated.flagged = true;
+
+        posts[index] = updated;
+
+        if (!setPosts(posts)) return null;
+
+        return updated;
+    } catch (error) {
+        return null;
+    }
 }
 
 /* ---------- Thích ---------- */
@@ -2234,6 +2539,120 @@ function renderPostStatusBadge(post) {
     return `<span class="badge post-status--${escapeHtml(status)}">${escapeHtml(label)}</span>`;
 }
 
+/**
+ * Khối thông báo kết quả duyệt ngay trên thẻ bài/trang chi tiết (KD04-a).
+ * CHỈ gọi khi người xem là tác giả (canEditPost(post) === true). Trả '' khi
+ * không áp dụng:
+ *   - rejected : "Bài viết chưa được duyệt." + lý do (nếu có) + gợi ý sửa/gửi lại;
+ *   - pending  : nhắc đang chờ duyệt, thêm "(có nội dung cần xem xét)" nếu flagged;
+ *   - approved : chỉ khi đã qua duyệt (reviewedBy khác tác giả) và tác giả CHƯA xem.
+ * KHÔNG nêu từ cấm. Mọi chuỗi đưa vào HTML đều qua escapeHtml().
+ * @param {object} post
+ * @returns {string}
+ */
+function renderPostReviewNote(post) {
+    try {
+        const status = getPostStatus(post);
+
+        if (status === POST_STATUS_REJECTED) {
+            const reason = typeof post.rejectReason === 'string' ? post.rejectReason : '';
+            return `
+                <div class="post-review-note post-review-note--rejected">
+                    <p><strong>Bài viết chưa được duyệt.</strong></p>
+                    ${reason ? `<p>Lý do: ${escapeHtml(reason)}</p>` : ''}
+                    <p>Bạn có thể sửa bài rồi lưu, hoặc gửi lại nếu thấy không cần sửa.</p>
+                </div>
+            `;
+        }
+
+        if (status === POST_STATUS_PENDING) {
+            const reviewHint = post.flagged ? ' (có nội dung cần xem xét)' : '';
+            return `<div class="post-review-note post-review-note--pending">Bài đang chờ quản trị viên duyệt.${reviewHint}</div>`;
+        }
+
+        if (status === POST_STATUS_APPROVED) {
+            const notice = findMyReviewNotice(post.id);
+            if (notice && notice.status === POST_STATUS_APPROVED && notice.seen === false) {
+                return '<div class="post-review-note post-review-note--approved">Bài của bạn đã được duyệt.</div>';
+            }
+        }
+
+        return '';
+    } catch (error) {
+        return '';
+    }
+}
+
+/**
+ * Nút "Gửi lại duyệt" cho bài bị từ chối (chỉ tác giả thấy, nằm cạnh nút Sửa).
+ * Đã gửi lại đủ RESUBMIT_MAX lần thì ẩn nút, chỉ còn câu nhắc sửa bài. Trả ''
+ * cho bài không bị từ chối.
+ * @param {object} post
+ * @returns {string}
+ */
+function renderPostResubmitAction(post) {
+    try {
+        if (getPostStatus(post) !== POST_STATUS_REJECTED) return '';
+
+        const count = Number.isFinite(Number(post.resubmitCount)) ? Number(post.resubmitCount) : 0;
+        if (count >= RESUBMIT_MAX) {
+            return ' <span class="post-card__resubmit-note">Đã gửi lại tối đa 3 lần, hãy sửa bài.</span>';
+        }
+
+        return ` <button type="button" class="post-card__resubmit" data-post-resubmit="${escapeHtml(post.id)}">Gửi lại duyệt</button>`;
+    } catch (error) {
+        return '';
+    }
+}
+
+/**
+ * Hiện thông báo gửi lại thất bại ngay trong thẻ bài, dưới khối post-review-note.
+ * Tạo (hoặc tái sử dụng) phần tử [data-post-notice]; dùng class thông báo có sẵn
+ * của trang (form-errors / form-success) nên không cần CSS mới. Không có
+ * lastModerationNotice thì hiện câu "Chưa gửi lại được bài viết.".
+ * @param {Element} btn nút [data-post-resubmit] vừa bấm
+ * @param {number|string} postId
+ */
+function showPostResubmitNotice(btn, postId) {
+    try {
+        const card = btn && typeof btn.closest === 'function' ? btn.closest('[data-post-id]') : null;
+        const host = card || (typeof document !== 'undefined' ? document.getElementById('post-detail') : null);
+        if (!host || typeof host.querySelector !== 'function') return;
+
+        const html = moderationNoticeHtml(getLastModerationNotice())
+            || '<ul class="form-errors"><li>Chưa gửi lại được bài viết.</li></ul>';
+
+        const existing = host.querySelector('[data-post-notice]');
+        if (existing) {
+            existing.innerHTML = html;
+            return;
+        }
+
+        if (typeof document === 'undefined' || typeof document.createElement !== 'function') return;
+
+        const box = document.createElement('div');
+        box.setAttribute('data-post-notice', '');
+        // DOM rút gọn của bộ test không tự đồng bộ dataset khi setAttribute().
+        if (box.dataset) box.dataset.postNotice = '';
+        box.innerHTML = html;
+
+        // Chèn ngay sau khối post-review-note (nếu có) trong cùng một node cha.
+        const note = host.querySelector('.post-review-note');
+        const parent = note && note.parent ? note.parent : null;
+
+        if (note && parent && Array.isArray(parent.children)) {
+            const index = parent.children.indexOf(note);
+            box.parent = parent;
+            parent.children.splice(index + 1, 0, box);
+            return;
+        }
+
+        appendModerationChild(host, box);
+    } catch (error) {
+        // Thông báo chỉ là phần phụ, không được làm hỏng luồng gửi lại.
+    }
+}
+
 function renderPostCard(post) {
     const hero = feedHeroes.find((record) => record.id === post.heroId);
     const likeUsers = getLikeUsers(post.id);
@@ -2252,6 +2671,10 @@ function renderPostCard(post) {
     // Bài chờ duyệt / bị từ chối cũng chỉ hiện với tác giả, kèm huy hiệu tương ứng
     // (renderPostStatusBadge() tự bỏ qua bài approved và bài đang có nhãn "Đã bị ẩn").
     const statusBadge = renderPostStatusBadge(post);
+
+    // Thông báo duyệt + nút gửi lại CHỈ dành cho tác giả (KD04-a).
+    const reviewNote = canEdit ? renderPostReviewNote(post) : '';
+    const resubmitAction = canEdit ? renderPostResubmitAction(post) : '';
 
     const commentsHtml = comments.map((comment) => `
         <li class="comment">
@@ -2280,9 +2703,12 @@ function renderPostCard(post) {
                 </div>
                 <div class="post-card__owner-actions">
                     ${canEdit ? `<button type="button" class="post-card__edit" data-post-edit="${escapeHtml(post.id)}">Sửa</button>` : ''}
+                    ${resubmitAction}
                     ${canDelete ? `<button type="button" class="post-card__delete" data-post-delete="${escapeHtml(post.id)}">Xoá bài</button>` : ''}
                 </div>
             </header>
+
+            ${reviewNote}
 
             <p class="post-card__content">${escapeHtml(post.content)}</p>
 
@@ -2383,6 +2809,11 @@ function renderPostDetailView(focusPostId) {
     const liked = isLikedByCurrentUser(post.id);
     const comments = getCommentsOfPost(post.id);
     const canDelete = canDeletePost(post);
+    const canEdit = canEditPost(post);
+
+    // Thông báo duyệt + nút gửi lại CHỈ dành cho tác giả (KD04-a).
+    const reviewNote = canEdit ? renderPostReviewNote(post) : '';
+    const resubmitAction = canEdit ? renderPostResubmitAction(post) : '';
 
     const commentsHtml = comments.map((comment) => `
         <li class="comment">
@@ -2412,6 +2843,8 @@ function renderPostDetailView(focusPostId) {
                 </p>
             </header>
 
+            ${reviewNote}
+
             <div class="post-detail__content">${escapeHtml(post.content)}</div>
 
             <div class="post-detail__actions">
@@ -2422,7 +2855,8 @@ function renderPostDetailView(focusPostId) {
                     ♥ Thích (${likeUsers.length})
                 </button>
                 <span class="post-action">💬 ${comments.length} bình luận</span>
-                ${canEditPost(post) ? `<button type="button" class="post-card__edit" data-post-edit="${escapeHtml(post.id)}">Sửa bài</button>` : ''}
+                ${canEdit ? `<button type="button" class="post-card__edit" data-post-edit="${escapeHtml(post.id)}">Sửa bài</button>` : ''}
+                ${resubmitAction}
                 ${canDelete ? `<button type="button" class="post-card__delete" data-post-delete="${escapeHtml(post.id)}">Xoá bài</button>` : ''}
             </div>
 
@@ -2516,6 +2950,22 @@ document.addEventListener('click', (event) => {
 
         rerenderFeedView(deleteBtn.dataset.postDelete);
         if (typeof renderProfilePosts === 'function') renderProfilePosts();
+        return;
+    }
+
+    const resubmitBtn = event.target.closest('[data-post-resubmit]');
+    if (resubmitBtn) {
+        // resubmitPost() tự kiểm tra lại quyền + trạng thái + từ cấm ở tầng dữ liệu.
+        const result = resubmitPost(resubmitBtn.dataset.postResubmit);
+
+        if (result) {
+            rerenderFeedView(result.id);
+            if (typeof renderProfilePosts === 'function') renderProfilePosts();
+            return;
+        }
+
+        // Thất bại: hiện thông báo ngay trong thẻ bài đó, KHÔNG dùng alert/confirm.
+        showPostResubmitNotice(resubmitBtn, resubmitBtn.dataset.postResubmit);
         return;
     }
 
