@@ -7,16 +7,23 @@
  *   matchKeyword()  - so khớp không phân biệt hoa/thường và không phân biệt dấu tiếng Việt
  *   debounce()      - trì hoãn xử lý khi gõ liên tục
  *
- * Bộ lọc từ cấm KD07 (danh sách truyền qua tham số, không đọc LocalStorage):
+ * Bộ lọc từ cấm KD07 (danh sách truyền qua tham số, không đọc LocalStorage).
+ * Mô hình CÓ XÉT DẤU: gõ đúng dấu mới khớp "đúng"; gõ không dấu (né lọc) vẫn bắt
+ * theo cờ fold (full = giữ mức, review = hạ còn mức 1, off = chỉ bắt đúng dấu),
+ * kèm bắt kiểu lách: chèn dấu/gạch, kéo dài chữ (squeezed), số thay chữ (deleet),
+ * tách từng chữ (glued). Từ dễ nhầm khi bỏ dấu (đéo/lồn/cặc/buồi) dùng fold 'review'.
  *   Hằng mức độ: MOD_LEVEL_REVIEW/BLOCK/SEVERE, MOD_LEVEL_LABELS
- *   Entry = chuỗi (coi là mức 2) hoặc { word, level: 1|2|3 }
- *   normalizeForFilter()  - chuẩn hoá văn bản để so khớp
- *   buildFilterVariants() - sinh biến thể chống lách (deleet/glued/squeezed)
- *   parseBannedEntry()    - đọc 1 mục từ cấm (chuỗi hoặc object)
- *   findBannedMatches()   - trả [{ word, level }] mà đoạn văn chứa
+ *   Entry = chuỗi (coi là mức 2) hoặc { word, level: 0|1|2|3, fold?: 'full'|'review'|'off' }
+ *           (level 0 = gỡ từ khi gộp, bị bỏ qua khi so khớp; fold mặc định 'full')
+ *   normalizeForFilter()  - chuẩn hoá văn bản (giữ hành vi cũ, dùng nơi khác)
+ *   tokenizeForFilter()   - tách token { orig, kd, f, marked } để so khớp
+ *   parseBannedEntry()    - đọc 1 mục từ cấm -> { word, level, fold } hoặc null
+ *   findBannedMatches()   - trả [{ word, level, loose }] mà đoạn văn chứa
  *   findBannedWords()     - mảng chuỗi các từ bị bắt
  *   containsBannedWord()  - boolean
  *   classifyContent()     - { level, action, matches, words, label }
+ *   DEFAULT_BANNED_ENTRIES / getDefaultBannedEntries() - danh sách mẫu (bản sao)
+ *   mergeBannedEntries()  - gộp mặc định + custom; custom level 0 để gỡ từ mẫu
  *
  * Nạp sau components.js (dùng chung escapeHtml/imageUrl) và trước file gọi tới nó.
  */

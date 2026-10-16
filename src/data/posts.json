@@ -9,7 +9,8 @@
     "createdAt": "2026-10-16T01:26:48.162Z",
     "status": "rejected",
     "reviewedBy": "admin",
-    "reviewedAt": "2026-10-16T01:31:47.296Z"
+    "reviewedAt": "2026-10-16T01:31:47.296Z",
+    "hidden": true
   },
   {
     "id": 1792039649393,
@@ -21,7 +22,8 @@
     "createdAt": "2026-10-15T04:47:29.393Z",
     "status": "approved",
     "reviewedBy": "admin",
-    "reviewedAt": "2026-10-15T04:47:54.257Z"
+    "reviewedAt": "2026-10-15T04:47:54.257Z",
+    "hidden": true
   },
   {
     "id": 9001,
