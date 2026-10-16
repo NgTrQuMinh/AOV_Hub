@@ -23,7 +23,7 @@
     width: 420px;
     height: 420px;
     transform: translateX(-50%);
-    background: #F5EACC;
+    background: var(--color-gold-tint);
     border-radius: 50%;
     opacity: .6;
     filter: blur(12px);
@@ -87,24 +87,24 @@ body[data-page="register"] .auth-card {
 }
 
 .form-group input::placeholder {
-    color: #B5A27A;
+    color: var(--color-text-placeholder);
 }
 
 .form-group input:focus {
     outline: none;
     background: var(--color-surface);
     border-color: var(--color-gold);
-    box-shadow: 0 0 0 3px rgba(221, 165, 50, 0.25);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 25%, transparent);
 }
 
 /* ---------- Thông báo lỗi / thành công của form ---------- */
 .form-errors {
     margin-bottom: var(--space-5);
     padding: 12px 16px;
-    background: #FDECEA;
+    background: var(--color-danger-soft);
     border: 1px solid color-mix(in srgb, var(--color-danger) 30%, transparent);
     border-radius: var(--radius-md);
-    color: #A93226;
+    color: var(--color-danger-strong);
     font-size: var(--fs-base);
 }
 
@@ -116,10 +116,10 @@ body[data-page="register"] .auth-card {
 .form-success {
     margin-bottom: var(--space-5);
     padding: 12px 16px;
-    background: #E8F5EC;
-    border: 1px solid color-mix(in srgb, #2E7D4F 30%, transparent);
+    background: var(--color-success-soft);
+    border: 1px solid color-mix(in srgb, var(--color-success-strong) 30%, transparent);
     border-radius: var(--radius-md);
-    color: #2E7D4F;
+    color: var(--color-success-strong);
     font-size: var(--fs-base);
 }
 
@@ -141,7 +141,7 @@ body[data-page="register"] .auth-card {
     margin-top: 24px;
     font-size: var(--fs-base);
     text-align: center;
-    color: #5A4A2E;
+    color: var(--color-text-soft);
 }
 
 .auth-card__switch a {
@@ -247,7 +247,7 @@ body[data-page="profile"] .section__header h2 {
 }
 
 .profile-card .btn:hover {
-    background: #FDECEA;
+    background: var(--color-danger-soft);
     color: var(--color-danger);
 }
 

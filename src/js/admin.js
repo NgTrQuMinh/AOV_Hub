@@ -325,6 +325,7 @@ document.addEventListener('click', (event) => {
         }
 
         renderAdminTable();
+        return;
     }
 });
 
@@ -335,13 +336,14 @@ document.addEventListener('click', (event) => {
  */
 document.addEventListener('change', (event) => {
     const toggle = event.target.closest('[data-admin-require-approval]');
-    if (!toggle) return;
-
-    // setModSettings() kiểm tra lại quyền admin ở tầng dữ liệu; trả false là không lưu được.
-    if (!setModSettings({ requireApproval: Boolean(toggle.checked) })) {
-        alert('Không lưu được cấu hình kiểm duyệt. Bạn không có quyền quản trị.');
-        // Vẽ lại theo aov_mod_settings thật để checkbox không đứng ở trạng thái "giả mở".
-        renderAdminSettings();
+    if (toggle) {
+        // setModSettings() kiểm tra lại quyền admin ở tầng dữ liệu; trả false là không lưu được.
+        if (!setModSettings({ requireApproval: Boolean(toggle.checked) })) {
+            alert('Không lưu được cấu hình kiểm duyệt. Bạn không có quyền quản trị.');
+            // Vẽ lại theo aov_mod_settings thật để checkbox không đứng ở trạng thái "giả mở".
+            renderAdminSettings();
+        }
+        return;
     }
 });
 

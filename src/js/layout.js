@@ -13,20 +13,30 @@ async function includeLayout() {
     const footerSlot = document.getElementById('site-footer');
 
     if (headerSlot) {
-        const response = await fetch(BASE_PATH + 'partials/header.html');
-        // Thay {{BASE}} trong partial bằng đường dẫn gốc thật của dự án
-        headerSlot.innerHTML = (await response.text()).replaceAll('{{BASE}}', BASE_PATH);
-        highlightActiveNav();
-        initMobileMenu();
-        // Khu vực tài khoản (Đăng nhập/Đăng ký hoặc username + Đăng xuất) do auth.js lo.
-        if (typeof updateAccountUI === 'function') updateAccountUI();
+        try {
+            const response = await fetch(BASE_PATH + 'partials/header.html');
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            // Thay {{BASE}} trong partial bằng đường dẫn gốc thật của dự án
+            headerSlot.innerHTML = (await response.text()).replaceAll('{{BASE}}', BASE_PATH);
+            highlightActiveNav();
+            initMobileMenu();
+            // Khu vực tài khoản (Đăng nhập/Đăng ký hoặc username + Đăng xuất) do auth.js lo.
+            if (typeof updateAccountUI === 'function') updateAccountUI();
+        } catch (error) {
+            console.warn('Không nạp được header:', error);
+        }
     }
 
     if (footerSlot) {
-        const response = await fetch(BASE_PATH + 'partials/footer.html');
-        // Thay {{BASE}} trong partial bằng đường dẫn gốc thật của dự án
-        footerSlot.innerHTML = (await response.text()).replaceAll('{{BASE}}', BASE_PATH);
-        setFooterYear();
+        try {
+            const response = await fetch(BASE_PATH + 'partials/footer.html');
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            // Thay {{BASE}} trong partial bằng đường dẫn gốc thật của dự án
+            footerSlot.innerHTML = (await response.text()).replaceAll('{{BASE}}', BASE_PATH);
+            setFooterYear();
+        } catch (error) {
+            console.warn('Không nạp được footer:', error);
+        }
     }
 }
 
@@ -34,20 +44,49 @@ function highlightActiveNav() {
     const currentPage = document.body.dataset.page || 'home';
 
     document.querySelectorAll('.site-nav__link').forEach((link) => {
-        if (link.dataset.page === currentPage) {
-            link.classList.add('is-active');
+        const isActive = link.dataset.page === currentPage;
+        link.classList.toggle('is-active', isActive);
+        if (isActive) {
+            link.setAttribute('aria-current', 'page');
+        } else {
+            link.removeAttribute('aria-current');
         }
     });
 }
 
 function initMobileMenu() {
-    const toggle = document.getElementById('nav-toggle');
+    const toggle = document.querySelector('.nav-toggle__btn');
     const nav = document.querySelector('.site-nav');
 
     if (!toggle || !nav) return;
 
-    toggle.addEventListener('change', () => {
-        nav.classList.toggle('is-open', toggle.checked);
+    const setOpen = (isOpen) => {
+        nav.classList.toggle('is-open', isOpen);
+        toggle.setAttribute('aria-expanded', String(isOpen));
+    };
+
+    toggle.addEventListener('click', () => {
+        setOpen(!nav.classList.contains('is-open'));
+    });
+
+    // Đóng menu khi bấm 1 mục điều hướng (chuẩn bị chuyển trang).
+    nav.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => setOpen(false));
+    });
+
+    // Đóng menu khi bấm ra ngoài hoặc nhấn Escape (trả tiêu điểm về nút).
+    document.addEventListener('click', (event) => {
+        if (nav.classList.contains('is-open')
+            && !nav.contains(event.target) && !toggle.contains(event.target)) {
+            setOpen(false);
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && nav.classList.contains('is-open')) {
+            setOpen(false);
+            toggle.focus();
+        }
     });
 }
 

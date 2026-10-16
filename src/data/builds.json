@@ -89,5 +89,138 @@
         "name": "Build hồi sinh và kháng công",
         "items": [501, 103, 301, 302, 109, 604],
         "description": "Maloch đánh trực diện giữa team, dựng giáp dày với Giáp Gaia rồi thêm Giáp Hộ Mệnh cho chắc chắn trong các trận kéo dài."
+    },
+    {
+        "id": 14,
+        "heroId": 2,
+        "name": "Build xạ thủ chí mạng tầm xa",
+        "items": [405, 103, 102, 106, 108, 109],
+        "description": "Tel'Annas bắn xa nên ưu tiên chí mạng và tốc đánh, thêm một món xuyên giáp để dọn tanker."
+    },
+    {
+        "id": 15,
+        "heroId": 4,
+        "name": "Build sát thủ đi rừng",
+        "items": [602, 401, 104, 103, 109, 110],
+        "description": "Murad đi rừng cần xuyên giáp sớm để gank, kết hợp hút máu và Miễn tử để outplay."
+    },
+    {
+        "id": 16,
+        "heroId": 7,
+        "name": "Build phép sư dồn công phép",
+        "items": [404, 201, 202, 203, 205, 208],
+        "description": "Krixi dồn công phép và xuyên phép, Quả Cầu Băng Sương bảo hiểm khi bị áp sát."
+    },
+    {
+        "id": 17,
+        "heroId": 9,
+        "name": "Build đấu sĩ hút máu trụ lâu",
+        "items": [401, 104, 107, 304, 302, 301],
+        "description": "Lu Bu vào giao tranh trực diện, vừa hút máu vừa lên giáp để trụ lâu trong các trận kéo dài."
+    },
+    {
+        "id": 18,
+        "heroId": 10,
+        "name": "Build sát thủ rừng xuyên giáp",
+        "items": [602, 401, 104, 103, 304, 110],
+        "description": "Zuka đi rừng tốc độ, xuyên giáp và hút máu giúp dọn gank nhanh rồi rút an toàn."
+    },
+    {
+        "id": 19,
+        "heroId": 13,
+        "name": "Build tường chắn tuyến đầu",
+        "items": [401, 301, 302, 303, 304, 307],
+        "description": "Arum làm tường chắn tuyến đầu, ưu tiên máu, giáp và kháng phép để mở giao tranh."
+    },
+    {
+        "id": 20,
+        "heroId": 14,
+        "name": "Build xạ thủ tốc đánh cơ động",
+        "items": [405, 103, 102, 106, 108, 109],
+        "description": "Capheny di chuyển liên tục nên cần tốc đánh, chí mạng và hút máu để giữ vị trí bắn."
+    },
+    {
+        "id": 21,
+        "heroId": 16,
+        "name": "Build phép sư hồi chiêu hút máu",
+        "items": [403, 201, 206, 203, 205, 208],
+        "description": "Lauriel đánh liên tục nhờ hồi chiêu và hút máu, Băng Sương cứu nguy khi bị dồn."
+    },
+    {
+        "id": 22,
+        "heroId": 17,
+        "name": "Build phép sư xuyên phép",
+        "items": [404, 201, 203, 202, 205, 208],
+        "description": "Tulen sốc sát thương phép nên dồn xuyên phép và công phép tối đa cho combos."
+    },
+    {
+        "id": 23,
+        "heroId": 18,
+        "name": "Build đấu sĩ sát thủ cân bằng",
+        "items": [401, 104, 107, 103, 304, 301],
+        "description": "Ryoma đấu sĩ/sát thủ cần xuyên giáp, hút máu và một món giáp để chịu đòn."
+    },
+    {
+        "id": 24,
+        "heroId": 19,
+        "name": "Build xạ thủ tốc độ đánh",
+        "items": [405, 106, 105, 102, 108, 103],
+        "description": "Hayate bắn liên tục nên tối ưu tốc đánh và chí mạng, thêm hút máu bù lại lượng máu thấp."
+    },
+    {
+        "id": 25,
+        "heroId": 21,
+        "name": "Build lao vào vừa công vừa thủ",
+        "items": [401, 104, 302, 304, 301, 307],
+        "description": "Superman vừa lao vào vừa chịu đòn nên cân bằng công và giáp, ưu tiên máu tối đa."
+    },
+    {
+        "id": 26,
+        "heroId": 22,
+        "name": "Build đấu sĩ giữ vùng",
+        "items": [401, 104, 107, 304, 302, 301],
+        "description": "Richter đấu sĩ giữ vùng, lên giáp và xuyên giáp để vừa chịu đòn vừa phản công."
+    },
+    {
+        "id": 27,
+        "heroId": 24,
+        "name": "Build phép sư sốc sát thương",
+        "items": [404, 201, 202, 203, 205, 208],
+        "description": "Veera dồn công phép vào một điểm, xuyên phép và Băng Sương để thoát khi bị áp sát."
+    },
+    {
+        "id": 28,
+        "heroId": 26,
+        "name": "Build trợ thủ bảo vệ đồng đội",
+        "items": [401, 502, 210, 302, 303, 301],
+        "description": "Alice trợ thủ tuyến sau, lên kháng phép, hồi chiêu và đồ giải khống chế cho đồng đội."
+    },
+    {
+        "id": 29,
+        "heroId": 28,
+        "name": "Build đỡ đòn mở giao tranh",
+        "items": [402, 301, 302, 304, 307, 306],
+        "description": "Baldum mở giao tranh, cần giáp dày và khiên máu ảo để trụ vững tuyến đầu."
+    },
+    {
+        "id": 30,
+        "heroId": 29,
+        "name": "Build đỡ đòn chủ lực",
+        "items": [401, 301, 302, 303, 307, 304],
+        "description": "Cresht đỡ đòn chủ lực, ưu tiên máu, kháng phép và khiên để mở giao tranh an toàn."
+    },
+    {
+        "id": 31,
+        "heroId": 31,
+        "name": "Build xạ thủ chí mạng cuối trận",
+        "items": [405, 103, 102, 106, 108, 109],
+        "description": "Trần Gia Bảo xạ thủ tầm xa, chí mạng và tốc đánh là ưu tiên, thêm xuyên giáp cuối trận."
+    },
+    {
+        "id": 32,
+        "heroId": 32,
+        "name": "Build phép sư xuyên phép sinh tồn",
+        "items": [404, 201, 202, 203, 205, 208],
+        "description": "Sky pháp sư sốc sát thương, dồn công phép, xuyên phép và một món sinh tồn."
     }
 ]

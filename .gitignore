@@ -15,6 +15,12 @@ dist-ssr
 # Audit output
 audit-result.json
 
+# Playwright (test trình duyệt thật)
+test-results
+playwright-report
+blob-report
+playwright/.cache
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

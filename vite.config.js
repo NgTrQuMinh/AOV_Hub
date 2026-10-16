@@ -1,5 +1,5 @@
 /**
- * vite.config.js - Cấu hình Vite + API quản lý tướng
+ * vite.config.js - Cấu hình Vite + API quản lý tướng + API dữ liệu dùng chung
  *
  * Trình duyệt không tự ghi được vào file trong dự án, nên thao tác thêm / sửa / xoá
  * tướng của admin được gửi tới API nội bộ dưới đây; API đọc/ghi thẳng vào
@@ -10,11 +10,19 @@
  *   PUT    /api/heroes/:id    -> sửa tướng theo id, trả tướng sau khi sửa
  *   DELETE /api/heroes/:id    -> xoá tướng theo id
  *
- * Dữ liệu gửi lên đã được validateHeroForm() kiểm tra ở trình duyệt; server chuẩn hoá
- * lại lần nữa để không bao giờ ghi dữ liệu sai kiểu vào file.
+ * Các bộ sưu tập dùng chung (đăng ký tài khoản, bài viết, bình luận, lượt thích, trang bị)
+ * đi qua API /api/<collection> cùng cơ chế, ghi thẳng vào src/data/<collection>.json:
  *
- * Lưu ý: file heroes.json nằm trong vùng Vite theo dõi, mỗi lần ghi sẽ kích hoạt tải
- * lại trang. server.watch.ignored tắt việc đó để form quản trị không bị reset sau khi lưu.
+ *   GET    /api/users         -> mảng users.json
+ *   PUT    /api/users         -> thay cả mảng (đã làm sạch) rồi ghi users.json
+ *   GET/PUT /api/posts | /api/comments | /api/likes | /api/items   (tương tự)
+ *
+ * Dữ liệu gửi lên đã được validateHeroForm() kiểm tra ở trình duyệt; server chuẩn hoá
+ * lại lần nữa để không bao giờ ghi dữ liệu sai kiểu vào file (users.json bị lọc trường,
+ * loại mật khẩu thô).
+ *
+ * Lưu ý: các file trong src/data/ nằm trong vùng Vite theo dõi, mỗi lần ghi sẽ kích hoạt
+ * tải lại trang. server.watch.ignored tắt việc đó để form quản trị không bị reset sau khi lưu.
  */
 import { defineConfig } from 'vite';
 import fs from 'node:fs';
@@ -22,10 +30,22 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
-const heroesFile = path.join(rootDir, 'src', 'data', 'heroes.json');
+const dataDir = path.join(rootDir, 'src', 'data');
+const heroesFile = path.join(dataDir, 'heroes.json');
+
+const pagesDir = path.join(rootDir, 'src', 'pages');
 
 const HERO_ROLES = ['Xạ thủ', 'Sát thủ', 'Pháp sư', 'Đấu sĩ', 'Đỡ đòn', 'Trợ thủ'];
 const HERO_STAT_KEYS = ['hp', 'attack', 'defense', 'speed'];
+
+/** Các bộ sưu tập dùng chung có API /api/<collection> (mỗi bộ một file JSON). */
+const DATA_RESOURCES = ['users', 'posts', 'comments', 'likes', 'items'];
+
+/** Trường được phép ghi vào users.json (loại mật khẩu thô "password" và mọi rác lạ). */
+const USER_FIELDS = [
+    'username', 'passwordHash', 'salt', 'displayName', 'role', 'joinedAt',
+    'banned', 'bannedAt', 'bannedReason', 'bannedBy', 'warnings',
+];
 
 /** Chuẩn hoá id về chuỗi để so sánh ("9001" và 9001 là một). */
 function normalizeId(value) {
@@ -107,6 +127,7 @@ function sanitizeHero(input, fallbackId) {
         stats,
         skills,
         recommendedBuild,
+        featured: source.featured === true,
     };
 }
 
@@ -230,6 +251,164 @@ function heroesApiMiddleware() {
     };
 }
 
+/* ================= API dữ liệu dùng chung (/api/<collection>) ================= */
+
+function collectionFile(resource) {
+    return path.join(dataDir, resource + '.json');
+}
+
+/** Đọc một file collection; lỗi -> null (middleware tự trả 500). */
+function readCollectionFile(resource) {
+    try {
+        return JSON.parse(fs.readFileSync(collectionFile(resource), 'utf8'));
+    } catch (error) {
+        console.error('[aov-data-api] Không đọc được ' + resource + '.json:', error.message);
+        return null;
+    }
+}
+
+function writeCollectionFile(resource, value) {
+    fs.writeFileSync(collectionFile(resource), JSON.stringify(value, null, 2) + '\n', 'utf8');
+}
+
+/** Chỉ giữ trường hợp lệ của một tài khoản; loại mật khẩu thô và tài khoản thiếu username. */
+function sanitizeUser(input) {
+    const source = input && typeof input === 'object' && !Array.isArray(input) ? input : null;
+    if (!source) return null;
+
+    const username = typeof source.username === 'string' ? source.username.trim() : '';
+    if (!username) return null;
+
+    const user = {};
+    USER_FIELDS.forEach((key) => {
+        if (source[key] !== undefined) user[key] = source[key];
+    });
+    user.username = username;
+
+    if (user.warnings !== undefined && !Array.isArray(user.warnings)) delete user.warnings;
+
+    return user;
+}
+
+function sanitizeUserList(value) {
+    if (!Array.isArray(value)) return null;
+    return value.map(sanitizeUser).filter(Boolean);
+}
+
+/** Mảng object (posts/comments/items): bỏ phần tử không phải object. */
+function sanitizeArrayOfObjects(value) {
+    if (!Array.isArray(value)) return null;
+    return value.filter((item) => item && typeof item === 'object' && !Array.isArray(item));
+}
+
+/** likes.json là object { "<postId>": [username, ...] }. */
+function sanitizeLikes(value) {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+    return value;
+}
+
+const COLLECTION_SANITIZERS = {
+    users: sanitizeUserList,
+    posts: sanitizeArrayOfObjects,
+    comments: sanitizeArrayOfObjects,
+    items: sanitizeArrayOfObjects,
+    likes: sanitizeLikes,
+};
+
+/** Middleware GET/PUT /api/<collection>: thay cả file bằng dữ liệu đã làm sạch. */
+function collectionApiMiddleware(resource) {
+    const base = '/api/' + resource;
+    const sanitize = COLLECTION_SANITIZERS[resource];
+
+    return async (req, res, next) => {
+        const pathname = new URL(req.url, 'http://localhost').pathname.replace(/\/+$/, '');
+
+        if (pathname !== base) {
+            next();
+            return;
+        }
+
+        try {
+            if (req.method === 'GET') {
+                const value = readCollectionFile(resource);
+                if (value === null) {
+                    sendJson(res, 500, { error: 'Không đọc được ' + resource + '.json' });
+                    return;
+                }
+                sendJson(res, 200, value);
+                return;
+            }
+
+            if (req.method === 'PUT') {
+                const body = await readJsonBody(req);
+                const clean = body === null ? null : sanitize(body);
+                if (clean === null) {
+                    sendJson(res, 400, { error: 'Dữ liệu sai kiểu' });
+                    return;
+                }
+
+                writeCollectionFile(resource, clean);
+                sendJson(res, 200, { ok: true, count: Array.isArray(clean) ? clean.length : undefined });
+                return;
+            }
+
+            sendJson(res, 405, { error: 'Phương thức không được hỗ trợ' });
+        } catch (error) {
+            console.error('[aov-data-api] Lỗi ' + resource + ':', error);
+            sendJson(res, 500, { error: 'Lỗi máy chủ' });
+        }
+    };
+}
+
+/**
+ * Danh sách đầu vào cho build nhiều trang.
+ *
+ * Mặc định Vite chỉ lấy `index.html` làm điểm vào nên 15 trang trong `src/pages/`
+ * không được sinh ra ở `dist/`. Liệt kê từng trang để bản build có đủ, giữ nguyên
+ * đường dẫn `/src/pages/...` mà các link trong trang đang trỏ tới.
+ */
+function pageInputs() {
+    const inputs = { index: path.join(rootDir, 'index.html') };
+
+    fs.readdirSync(pagesDir)
+        .filter((file) => file.endsWith('.html'))
+        .forEach((file) => {
+            inputs['pages/' + file.replace(/\.html$/, '')] = path.join(pagesDir, file);
+        });
+
+    return inputs;
+}
+
+/**
+ * Copy `src/js` + `src/data` sang output của build.
+ *
+ * Trang dùng thẻ <script> cổ điển (không phải type="module") nên Vite không gộp
+ * JS mà giữ nguyên các URL `/src/js/...`; tương tự trang fetch `/src/data/*.json`
+ * lúc chạy. Vì `src/` không nằm trong `public/`, phải chép hai thư mục này vào
+ * `dist/` để bản build chạy được.
+ */
+function copyRuntimePlugin() {
+    let outDir = path.join(rootDir, 'dist');
+
+    return {
+        name: 'aov-copy-src-runtime',
+        apply: 'build',
+        configResolved(config) {
+            outDir = path.resolve(rootDir, config.build.outDir);
+        },
+        closeBundle() {
+            ['js', 'data'].forEach((dir) => {
+                const from = path.join(rootDir, 'src', dir);
+                const to = path.join(outDir, 'src', dir);
+
+                if (fs.existsSync(from)) {
+                    fs.cpSync(from, to, { recursive: true });
+                }
+            });
+        },
+    };
+}
+
 export default defineConfig({
     server: {
         // heroes.json được API ghi trực tiếp; tắt theo dõi để không reload trang sau mỗi lần lưu.
@@ -237,6 +416,11 @@ export default defineConfig({
         // File System Access API, nên tắt theo dõi để form không bị reset sau khi lưu.
         watch: {
             ignored: ['**/src/data/*.json'],
+        },
+    },
+    build: {
+        rollupOptions: {
+            input: pageInputs(),
         },
     },
     plugins: [
@@ -249,5 +433,19 @@ export default defineConfig({
                 server.middlewares.use(heroesApiMiddleware());
             },
         },
+        {
+            name: 'aov-data-api',
+            configureServer(server) {
+                DATA_RESOURCES.forEach((resource) => {
+                    server.middlewares.use(collectionApiMiddleware(resource));
+                });
+            },
+            configurePreviewServer(server) {
+                DATA_RESOURCES.forEach((resource) => {
+                    server.middlewares.use(collectionApiMiddleware(resource));
+                });
+            },
+        },
+        copyRuntimePlugin(),
     ],
 });

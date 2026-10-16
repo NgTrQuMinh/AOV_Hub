@@ -262,6 +262,7 @@ function defaultHeroFormValues() {
         stats: { hp: '', attack: '', defense: '', speed: '' },
         skills: padHeroSkillRows([]),
         recommendedBuild: [],
+        featured: false,
     };
 }
 
@@ -287,6 +288,7 @@ function heroFormValuesFromHero(hero) {
             ? hero.skills.map((skill) => Object.assign({}, HERO_SKILL_EMPTY_ROW, skill))
             : []),
         recommendedBuild: Array.isArray(hero.recommendedBuild) ? hero.recommendedBuild.slice() : [],
+        featured: hero.featured === true,
     };
 }
 
@@ -319,6 +321,8 @@ function readHeroFormValues(form) {
         .filter((input) => input.checked)
         .map((input) => input.value);
 
+    const featuredInput = form.querySelector('#hero-featured');
+
     return {
         name: valueOf(form, '#hero-name'),
         image: valueOf(form, '#hero-image'),
@@ -327,6 +331,7 @@ function readHeroFormValues(form) {
         stats,
         skills,
         recommendedBuild: valueOf(form, '#hero-build'),
+        featured: Boolean(featuredInput && featuredInput.checked),
     };
 }
 
@@ -550,6 +555,13 @@ function renderHeroAdminForm(editingHero) {
             <div class="form-group">
                 <label for="hero-build">Trang bị đề xuất</label>
                 <input type="text" id="hero-build" placeholder="101, 102, 103 (mã trang bị, cách nhau dấu phẩy)" value="${escapeHtml((values.recommendedBuild || []).join(', '))}">
+            </div>
+
+            <div class="form-group">
+                <label class="hero-featured-option" for="hero-featured">
+                    <input type="checkbox" id="hero-featured"${values.featured ? ' checked' : ''}>
+                    Đặt ở khối Tướng nổi bật trên Trang chủ (tối đa 8 tướng)
+                </label>
             </div>
 
             <div class="feed-form__actions">

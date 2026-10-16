@@ -8,7 +8,8 @@
  * Phạm vi kiểm tra:
  *   1. Guard trang: khách bị đưa về Login, user thường bị đưa về trang chủ kèm cảnh báo,
  *      admin thì vào được và thấy form + bảng tướng.
- *   1b. src/pages/hero-admin.html giờ chỉ là trang chuyển hướng (đọc file, không mở).
+ *   1b. src/pages/hero-admin.html dùng chung khung quản trị (admin-shell.js) và nạp
+ *      hero-admin.js / heroData.js cho mục "Tướng" (đọc file, không mở).
  *   2. Header không còn nút "Quản lý tướng"/"Đăng xuất"; menu dọc có mục "Tướng".
  *   3. Form thêm tướng: vai trò là radio (mỗi tướng chỉ chọn được 1), mở sẵn
  *      đúng 3 ô kỹ năng cố định (không nút Thêm / nút ✕), loại chiêu khoá theo
@@ -36,7 +37,6 @@ const path = require('path');
 const { ROOT, loadPage, fire, unescapeHtml } = require('./mini-dom.cjs');
 
 const ADMIN_PAGE = 'src/pages/admin.html';
-/** Trang cũ chỉ còn là trang chuyển hướng (kiểm tra bằng fs, không mở bằng mini-dom). */
 const HERO_ADMIN_PAGE = 'src/pages/hero-admin.html';
 /** Tab "Tướng" nằm trong trang Quản lý, mở bằng query string này. */
 const HERO_TAB_SEARCH = '?tab=heroes';
@@ -134,6 +134,9 @@ function fillHeroForm(page, values) {
     form.querySelector('#hero-image').value = values.image || '';
     form.querySelector('#hero-difficulty').value = String(values.difficulty === undefined ? 2 : values.difficulty);
     form.querySelector('#hero-build').value = values.build || '';
+
+    const featuredInput = form.querySelector('#hero-featured');
+    if (featuredInput) featuredInput.checked = values.featured === true;
 
     ['hp', 'attack', 'defense', 'speed'].forEach((key) => {
         const input = form.querySelector(`#hero-stat-${key}`);
@@ -253,22 +256,21 @@ const formErrorsText = (page) => {
         [guest, stranger, admin].every((page) => page.errors.length === 0),
         [guest, stranger, admin].flatMap((page) => page.errors).join(' | '));
 
-    /* ---------- 1b. hero-admin.html giờ chỉ là trang chuyển hướng ---------- */
-    section('1b. hero-admin.html là trang chuyển hướng');
+    /* ---------- 1b. hero-admin.html dùng chung khung quản trị ---------- */
+    section('1b. hero-admin.html dùng chung khung quản trị');
 
-    // Đọc file bằng fs: mini-dom không có location.replace nên KHÔNG mở trang này.
-    const redirectHtml = fs.readFileSync(path.join(ROOT, HERO_ADMIN_PAGE), 'utf8');
-    check('hero-admin.html có meta refresh trỏ tới admin.html?tab=heroes',
-        /http-equiv="refresh"[^>]*admin\.html\?tab=heroes/.test(redirectHtml)
-        || /content="0;\s*url=[^"]*admin\.html\?tab=heroes/.test(redirectHtml),
-        redirectHtml.replace(/\s+/g, ' ').slice(0, 200));
-    check('hero-admin.html có location.replace tới cùng đích',
-        /location\.replace\([^)]*admin\.html\?tab=heroes/.test(redirectHtml),
-        redirectHtml.replace(/\s+/g, ' ').slice(0, 200));
-    check('hero-admin.html KHÔNG còn nạp hero-admin.js / heroData.js / guard requireAdmin',
-        !redirectHtml.includes('hero-admin.js')
-        && !redirectHtml.includes('heroData.js')
-        && !redirectHtml.includes('requireAdmin'));
+    // Đọc file bằng fs: mini-dom không chạy điều hướng nên KHÔNG mở trang này.
+    const heroAdminHtml = fs.readFileSync(path.join(ROOT, HERO_ADMIN_PAGE), 'utf8');
+    check('hero-admin.html đánh dấu mục "Tướng" (data-admin-tab="heroes")',
+        /data-admin-tab="heroes"/.test(heroAdminHtml),
+        heroAdminHtml.replace(/\s+/g, ' ').slice(0, 200));
+    check('hero-admin.html nạp khung quản trị chung (admin-shell.js)',
+        heroAdminHtml.includes('admin-shell.js'),
+        heroAdminHtml.replace(/\s+/g, ' ').slice(0, 200));
+    check('hero-admin.html nạp hero-admin.js + heroData.js cho mục "Tướng"',
+        heroAdminHtml.includes('hero-admin.js') && heroAdminHtml.includes('heroData.js'));
+    check('hero-admin.html có guard requireAdmin()',
+        /requireAdmin\(\)/.test(heroAdminHtml));
 
     /* ---------- 2. Header: bỏ "Quản lý tướng" và "Đăng xuất" ---------- */
     section('2. Header không còn "Quản lý tướng"/"Đăng xuất"');
@@ -359,6 +361,11 @@ const formErrorsText = (page) => {
     check('ô hồi chiêu có max=59 (hồi chiêu phải nhỏ hơn 60 giây)',
         formHtml(admin).includes('max="59"'),
         (formHtml(admin).match(/max="\d+"/g) || []).join(' '));
+    check('form có ô #hero-featured (đặt ở khối Tướng nổi bật) và mặc định bỏ tick',
+        Boolean(setupForm.querySelector('#hero-featured'))
+        && setupForm.querySelector('#hero-featured').getAttribute('type') === 'checkbox'
+        && setupForm.querySelector('#hero-featured').checked !== true,
+        formHtml(admin).includes('hero-featured') ? 'có ô' : 'không có ô');
 
     const typeSelect = setupForm.querySelector('[data-skill-type]');
     const optionValues = typeSelect ? typeSelect.options.map((option) => option.getAttribute('value')) : [];
@@ -591,6 +598,7 @@ const formErrorsText = (page) => {
         stats: { hp: 1200, attack: 80, defense: 40, speed: 320 },
         skill: { name: 'Chiêu Test', description: 'Kỹ năng dùng cho test', cooldown: 5 },
         build: '101, 102',
+        featured: true,
     });
     await submitForm(admin, validForm);
 
@@ -622,6 +630,9 @@ const formErrorsText = (page) => {
     check('tướng mới có alias sinh từ tên',
         added && added.alias === 'test-tuong',
         JSON.stringify(added && added.alias));
+    check('tướng mới lưu đúng cờ featured = true khi tick ô nổi bật',
+        added && added.featured === true,
+        JSON.stringify(added && added.featured));
     check('danh sách tướng mẫu trong heroes.json không bị đổi',
         heroesAfterAdd.slice(0, HEROES_JSON.length).every((hero, index) => hero.id === HEROES_JSON[index].id),
         JSON.stringify(heroesAfterAdd.slice(0, 3).map((hero) => hero.id)));
@@ -838,6 +849,9 @@ const formErrorsText = (page) => {
     check('form điền sẵn vai trò đã tick trước đó',
         /value="Xạ thủ" checked/.test(formHtml(admin)) || /value="Xạ thủ"[^>]* checked/.test(formHtml(admin)),
         plainForm(admin).slice(0, 600));
+    check('form điền sẵn ô Tướng nổi bật đang tick của tướng đang sửa',
+        /id="hero-featured"[^>]* checked/.test(formHtml(admin)),
+        plainForm(admin).slice(0, 300));
 
     const editForm = fillHeroForm(admin, {
         name: 'Test Tướng Đã Sửa',
@@ -846,6 +860,7 @@ const formErrorsText = (page) => {
         stats: { hp: 2000, attack: 99, defense: 10, speed: 400 },
         skill: { name: 'Chiêu Mới', description: 'Đã sửa kỹ năng', cooldown: 8 },
         build: '103',
+        featured: true,
     });
     await submitForm(admin, editForm);
 
@@ -864,6 +879,9 @@ const formErrorsText = (page) => {
         && edited.skills[0].type === 'Chiêu 1'
         && JSON.stringify(edited.recommendedBuild) === JSON.stringify([103]),
         JSON.stringify(edited));
+    check('cờ featured giữ nguyên true sau khi sửa tướng',
+        edited && edited.featured === true,
+        JSON.stringify(edited && edited.featured));
     check('bảng hiển thị tên mới, không nhân đôi dòng',
         tableRowCount(admin) === HEROES_JSON.length + 1 && plainTable(admin).includes('Test Tướng Đã Sửa'),
         tableRowCount(admin) + ' dòng');
