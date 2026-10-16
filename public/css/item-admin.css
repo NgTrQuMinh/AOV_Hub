@@ -1,0 +1,181 @@
+/* =========================================
+ * item-admin.css - Style mục "Trang bị" của trang Quản lý (admin.html?tab=items)
+ *
+ * Mục Trang bị nằm ngay trong khung quản trị (không có trang riêng) nên form nối tiếp
+ * style .feed-form của feed.css và bảng mượn bố cục #hero-admin-list của hero-admin.css
+ * nhưng đổi selector sang #item-admin-list. File này chỉ bù phần mà feed.css / hero-admin.css
+ * không có: lưới chỉ số, ảnh xem trước và khung bảng của riêng mục Trang bị.
+ * Dùng chung biến màu của variables.css nên không cần khai báo lại màu.
+ * ========================================= */
+
+/* ---------- Form thêm / sửa trang bị ---------- */
+
+#item-admin-form {
+    margin-bottom: var(--space-6);
+}
+
+#item-admin-form .feed-form__actions {
+    margin-top: var(--space-5);
+}
+
+/* Ô nhập loại + giá + ảnh xếp gọn trên một hàng khi đủ chỗ */
+#item-admin-form #item-type,
+#item-admin-form #item-price {
+    max-width: 320px;
+}
+
+/* Ảnh xem trước ngay dưới ô đường dẫn ảnh, cập nhật khi gõ */
+#item-image-preview {
+    margin-top: var(--space-2);
+}
+
+#item-image-preview:empty {
+    display: none;
+}
+
+#item-image-preview img {
+    display: block;
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-elevated);
+}
+
+/* Lưới chỉ số: mỗi ô gồm nhãn + ô nhập, 4 cột trên màn hình rộng */
+.item-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-3);
+}
+
+.item-stat-field label {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+/* Ô tick "Trang bị nổi bật": nhãn là cả hàng, bấm vào chữ cũng tick */
+.item-featured-option {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+}
+
+.item-featured-option input {
+    margin: 0;
+    accent-color: var(--color-gold);
+}
+
+/* ---------- Thanh tìm + bảng danh sách trang bị ---------- */
+
+#item-admin-toolbar .filter-bar {
+    margin-bottom: var(--space-4);
+}
+
+#item-admin-toolbar .filter-bar__keyword:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 22%, transparent);
+}
+
+#item-admin-toolbar .btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* Bảng cho phép cuộn ngang thay vì vỡ bố cục trên màn hình nhỏ */
+#item-admin-list.card {
+    overflow-x: auto;
+    padding: var(--space-2);
+}
+
+#item-admin-list table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-sm);
+    white-space: nowrap;
+}
+
+#item-admin-list thead th {
+    background: var(--color-bg-elevated);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-align: left;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    /* Dính đầu bảng khi bảng dài, cuộn xuống vẫn thấy tên cột */
+    position: sticky;
+    top: 0;
+}
+
+#item-admin-list tbody td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+}
+
+/* Kẻ sọc xen kẽ để đuổi mắt khi bảng có nhiều dòng */
+#item-admin-list tbody tr:nth-child(even) {
+    background: var(--color-bg-elevated);
+}
+
+#item-admin-list tbody tr:hover {
+    background: var(--color-surface);
+}
+
+/* Tên trang bị là link sang trang chi tiết */
+#item-admin-list tbody td:nth-child(2) a {
+    color: var(--color-text-accent);
+    font-weight: 600;
+}
+
+#item-admin-list tbody td:nth-child(2) a:hover {
+    text-decoration: underline;
+}
+
+/* Cột ID căn phải cho dễ so sánh */
+#item-admin-list tbody td:nth-child(1) {
+    text-align: right;
+}
+
+/* Cột giá căn phải cho thẳng hàng */
+#item-admin-list tbody td:nth-child(4) {
+    text-align: right;
+}
+
+/* Cột thao tác: hai nút nằm cạnh nhau, không xuống dòng */
+#item-admin-list tbody td:last-child {
+    display: flex;
+    gap: var(--space-2);
+}
+
+#item-admin-list .btn-sm {
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--fs-xs);
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+#item-admin-list .btn-sm:hover {
+    border-color: var(--color-crimson);
+    color: var(--color-crimson);
+}
+
+/* ---------- Màn hình hẹp ---------- */
+
+@media (max-width: 768px) {
+    .item-stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .item-stat-grid {
+        grid-template-columns: 1fr;
+    }
+}
