@@ -15,7 +15,7 @@
  *
  *   GET    /api/users         -> mảng users.json
  *   PUT    /api/users         -> thay cả mảng (đã làm sạch) rồi ghi users.json
- *   GET/PUT /api/posts | /api/comments | /api/likes | /api/items   (tương tự)
+ *   GET/PUT /api/posts | /api/comments | /api/likes | /api/items | /api/builds   (tương tự)
  *
  * Dữ liệu gửi lên đã được validateHeroForm() kiểm tra ở trình duyệt; server chuẩn hoá
  * lại lần nữa để không bao giờ ghi dữ liệu sai kiểu vào file (users.json bị lọc trường,
@@ -39,7 +39,7 @@ const HERO_ROLES = ['Xạ thủ', 'Sát thủ', 'Pháp sư', 'Đấu sĩ', 'Đ�
 const HERO_STAT_KEYS = ['hp', 'attack', 'defense', 'speed'];
 
 /** Các bộ sưu tập dùng chung có API /api/<collection> (mỗi bộ một file JSON). */
-const DATA_RESOURCES = ['users', 'posts', 'comments', 'likes', 'items'];
+const DATA_RESOURCES = ['users', 'posts', 'comments', 'likes', 'items', 'builds'];
 
 /** Trường được phép ghi vào users.json (loại mật khẩu thô "password" và mọi rác lạ). */
 const USER_FIELDS = [
@@ -312,6 +312,7 @@ const COLLECTION_SANITIZERS = {
     posts: sanitizeArrayOfObjects,
     comments: sanitizeArrayOfObjects,
     items: sanitizeArrayOfObjects,
+    builds: sanitizeArrayOfObjects,
     likes: sanitizeLikes,
 };
 
