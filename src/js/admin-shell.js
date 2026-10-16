@@ -50,6 +50,7 @@
  *   Shell vẽ vào <div id="admin-tabs"></div>. Phần tử tuỳ chọn <div id="admin-notices">
  *   (nếu trang có) nhận cảnh báo dung lượng LocalStorage; trang không có thì cảnh báo
  *   được nối vào cuối #admin-tabs (đã xử lý ở S2).
+ *   #admin-notices nay hiện thêm banner vi phạm nội dung (đếm từ countUnreadModAlerts, liên kết tới tab Cài đặt).
  *
  * AN NINH
  *   "admin" ở đây CHỈ là quy ước phía trình duyệt (role trong users.json), KHÔNG
@@ -554,6 +555,47 @@ async function buildAdminStorageNotice() {
     }
 }
 
+/**
+ * Tạo banner báo vi phạm nội dung cho admin (KD07-e): đếm số thông báo CHƯA đọc từ
+ * countUnreadModAlerts() (feed.js) rồi liên kết tới tab Cài đặt. Dùng màu 'danger'
+ * khi có vi phạm nghiêm trọng (urgent) chưa đọc, ngược lại 'warn'.
+ * Chưa nạp feed.js hoặc không có vi phạm nào -> trả chuỗi rỗng.
+ * @returns {Promise<string>} HTML của .admin-notice, hoặc ''
+ */
+async function buildAdminModerationNotice() {
+    try {
+        if (typeof countUnreadModAlerts !== 'function') return '';
+
+        const total = adminShellCount(countUnreadModAlerts());
+        if (!total) return '';
+
+        // Vi phạm nghiêm trọng CHƯA đọc: thiếu getModAlerts() hoặc lỗi thì coi như 0.
+        let urgent = 0;
+        try {
+            if (typeof getModAlerts === 'function') {
+                const alerts = getModAlerts();
+                if (Array.isArray(alerts)) {
+                    urgent = alerts.filter((item) => item && item.read === false && item.urgent === true).length;
+                }
+            }
+        } catch (error) {
+            urgent = 0;
+        }
+
+        const modifier = urgent > 0 ? 'admin-notice--danger' : 'admin-notice--warn';
+        const link = adminShellBasePath() + 'src/pages/admin.html?tab=settings';
+        const urgentText = urgent > 0 ? ' Trong đó ' + urgent + ' vi phạm nghiêm trọng.' : '';
+
+        return '<div class="admin-notice ' + modifier + '" data-mod-alert-banner>'
+            + '<strong>Có ' + total + ' vi phạm nội dung mới.</strong>'
+            + urgentText
+            + ' <a href="' + adminShellEscape(link) + '">Xem chi tiết</a>'
+            + '</div>';
+    } catch (error) {
+        return '';
+    }
+}
+
 /* ---------- Nạp script và vẽ mục của tab ---------- */
 
 /**
@@ -772,13 +814,16 @@ async function renderAdminShell() {
 
     container.innerHTML = buildAdminSidebar(activeTabId, counts);
 
-    // Cảnh báo dung lượng LocalStorage (chỉ có khi CM05 xong): đặt vào #admin-notices
-    // nếu trang có sẵn, không có thì nối vào cuối container (sau menu).
+    // Gom cảnh báo vào #admin-notices: banner vi phạm nội dung (KD07-e) đứng trước
+    // cảnh báo dung lượng LocalStorage (CM05). Mỗi lần tải lại trang đều tính lại;
+    // cả hai đều rỗng thì không đụng gì tới #admin-notices (giữ hành vi cũ).
+    const moderationNotice = await buildAdminModerationNotice();
     const storageNotice = await buildAdminStorageNotice();
-    if (storageNotice) {
+    const noticesHtml = moderationNotice + storageNotice;
+    if (noticesHtml) {
         const notices = typeof document !== 'undefined' ? document.getElementById('admin-notices') : null;
-        if (notices) notices.innerHTML = storageNotice;
-        else container.innerHTML += storageNotice;
+        if (notices) notices.innerHTML = noticesHtml;
+        else container.innerHTML += noticesHtml;
     }
 
     try {
