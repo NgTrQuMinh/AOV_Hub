@@ -616,7 +616,7 @@ function addModAlert(data) {
             user: String(getCurrentUser() || ''),
             kind: info.kind === 'comment' ? 'comment' : 'post',
             targetId: info.targetId === null || info.targetId === undefined ? '' : info.targetId,
-            commentId: typeof info.commentId === 'string' ? info.commentId : '',
+            commentId: info.commentId === null || info.commentId === undefined ? '' : info.commentId,
             action, level,
             label: cleanModAlertText(info.label, MOD_ALERT_LABEL_MAX),
             words, excerpt: cleanModAlertText(info.excerpt, MOD_ALERT_EXCERPT_MAX),
@@ -692,6 +692,214 @@ function removeModAlert(id) {
         return setStore(MOD_ALERTS_KEY, next);
     } catch (error) {
         return false;
+    }
+}
+
+/* ---------- Nối kiểm duyệt vào đăng bài / bình luận (KD07-d) ---------- */
+
+/**
+ * Kiểm duyệt nội dung sắp đăng và ghi "thông báo gần nhất" cho giao diện đọc.
+ * - 'ok'        : xoá thông báo cũ, blocked/review đều false (hành vi cũ giữ nguyên).
+ * - 'block'/'severe': phạt tài khoản qua recordViolation (lỗi -> penalty null),
+ *   dựng notice và ghi vào lastModerationNotice, blocked true -> người gọi trả null.
+ * - 'review'    : KHÔNG phạt tài khoản, notice mức 'info', review true -> vẫn tạo
+ *   nhưng bài/bình luận được gắn cờ chờ admin xử lý.
+ * Không gọi addModAlert ở đây: chỗ đăng bài/bình luận tự ghi sau khi lưu thành công.
+ *
+ * @param {string|string[]} texts nội dung cần kiểm (tiêu đề + nội dung hoặc 1 bình luận)
+ * @param {'post'|'comment'} kind
+ * @returns {{ result: object, penalty: object|null, blocked: boolean, review: boolean }}
+ */
+function applyModeration(texts, kind) {
+    const out = {
+        result: { level: 0, action: 'ok', label: '', words: [], matches: [], kind: kind === 'comment' ? 'comment' : 'post' },
+        penalty: null,
+        blocked: false,
+        review: false,
+    };
+
+    try {
+        const result = moderateContent(texts, kind);
+        out.result = result;
+
+        if (result.action === 'ok') {
+            clearLastModerationNotice();
+            return out;
+        }
+
+        let penalty = null;
+        if (result.action === 'block' || result.action === 'severe') {
+            // recordViolation tự bọc lỗi và tự bỏ qua admin; lỗi ở đây -> penalty null.
+            if (typeof recordViolation === 'function') {
+                try {
+                    penalty = recordViolation(result.level, {
+                        label: result.label,
+                        words: result.words,
+                        kind: result.kind,
+                    });
+                } catch (error) {
+                    penalty = null;
+                }
+            }
+            out.blocked = true;
+        }
+
+        out.penalty = penalty;
+        out.review = result.action === 'review';
+        setLastModerationNotice(buildModerationNotice(result, penalty, kind));
+        return out;
+    } catch (error) {
+        return out;
+    }
+}
+
+/**
+ * Dựng dữ liệu aov_mod_alerts từ kết quả applyModeration, dùng chung cho đăng bài,
+ * sửa bài và bình luận: blocked -> action thật + penalty; review -> action 'review'
+ * và penalty { warned:false, banned:false }.
+ * @param {{ result: object, penalty: object|null, review: boolean }} moderation
+ * @param {'post'|'comment'} kind
+ * @param {number|string} targetId id bài (bình luận thì thêm commentId ở nơi gọi)
+ * @param {string} excerpt trích dẫn nội dung cho admin xem nhanh
+ * @returns {object} đối tượng truyền thẳng cho addModAlert()
+ */
+function buildModAlertData(moderation, kind, targetId, excerpt) {
+    const result = moderation && moderation.result ? moderation.result : {};
+    const penalty = moderation && moderation.penalty ? moderation.penalty : {};
+
+    return {
+        kind,
+        targetId,
+        commentId: '',
+        action: moderation && moderation.review ? 'review' : (result.action || 'block'),
+        level: result.level,
+        label: result.label,
+        words: result.words,
+        excerpt,
+        penalty: { warned: penalty.counted === true, banned: penalty.banned === true },
+    };
+}
+
+/**
+ * Khối HTML thông báo kiểm duyệt cho #post-errors / form bình luận (KD07-d).
+ * Dùng lại class có sẵn của trang (form-errors / form-success) nên không cần CSS mới;
+ * escapeHtml toàn bộ chữ từ dữ liệu người dùng. Trả chuỗi rỗng nếu notice rỗng.
+ * @param {{ type?: string, title?: string, message?: string, words?: string[] }} notice
+ * @returns {string}
+ */
+function moderationNoticeHtml(notice) {
+    try {
+        if (!notice || typeof notice !== 'object') return '';
+
+        const title = String(notice.title || '').trim();
+        const message = String(notice.message || '').trim();
+        const words = (Array.isArray(notice.words) ? notice.words : [])
+            .filter((word) => typeof word === 'string' && word.trim())
+            .slice(0, MOD_NOTICE_WORDS_MAX);
+
+        const lines = [];
+        if (title) lines.push(`<strong>${escapeHtml(title)}</strong>`);
+        if (message) lines.push(escapeHtml(message));
+        if (words.length) lines.push(`Từ vi phạm: ${escapeHtml(words.join(', '))}`);
+        if (!lines.length) return '';
+
+        if (notice.type === 'info') return `<p class="form-success">${lines.join('<br>')}</p>`;
+        return `<ul class="form-errors">${lines.map((line) => `<li>${line}</li>`).join('')}</ul>`;
+    } catch (error) {
+        return '';
+    }
+}
+
+/**
+ * Gắn một phần tử con vào phần tử cha theo cách an toàn với cả hai kiểu DOM:
+ * trình duyệt thật (appendChild) và DOM rút gọn của bộ test (children là mảng
+ * thật, không có appendChild). Không được ném lỗi để không chặn thao tác người dùng.
+ * @param {Element} parent
+ * @param {Element} child
+ * @returns {boolean} true nếu đã gắn được
+ */
+function appendModerationChild(parent, child) {
+    try {
+        if (!parent || !child) return false;
+
+        if (typeof parent.appendChild === 'function') {
+            parent.appendChild(child);
+            return true;
+        }
+
+        if (Array.isArray(parent.children) && typeof parent.children.push === 'function') {
+            child.parent = parent;
+            parent.children.push(child);
+            return true;
+        }
+    } catch (error) {
+        // Bỏ qua: thông báo chỉ là phần phụ, không được làm hỏng luồng gửi.
+    }
+
+    return false;
+}
+
+/**
+ * Hiện thông báo kiểm duyệt ngay dưới ô nhập của form bình luận đang gửi.
+ * Tạo phần tử con [data-comment-notice] nếu chưa có, có thì tái sử dụng (không nhân bản).
+ * @param {Element} form thẻ <form data-comment-form>
+ * @param {object} notice nội dung từ getLastModerationNotice()
+ */
+function showCommentNotice(form, notice) {
+    try {
+        if (!form || typeof form.querySelector !== 'function' || !notice) return;
+
+        const html = moderationNoticeHtml(notice);
+        if (!html) return;
+
+        const existing = form.querySelector('[data-comment-notice]');
+        if (existing) {
+            existing.innerHTML = html;
+            return;
+        }
+
+        if (typeof document === 'undefined' || typeof document.createElement !== 'function') return;
+
+        const box = document.createElement('div');
+        box.setAttribute('data-comment-notice', '');
+        // DOM rút gọn của bộ test không tự đồng bộ dataset khi setAttribute().
+        if (box.dataset) box.dataset.commentNotice = '';
+        box.innerHTML = html;
+
+        appendModerationChild(form, box);
+    } catch (error) {
+        // Lỗi hiển thị không được chặn thao tác bình luận của người dùng.
+    }
+}
+
+/** Xoá khối thông báo bình luận (nếu còn) trước khi gửi lại / gửi thành công. */
+function clearCommentNotice(form) {
+    try {
+        if (!form || typeof form.querySelector !== 'function') return;
+
+        const box = form.querySelector('[data-comment-notice]');
+        if (!box) return;
+
+        if (typeof box.remove === 'function') {
+            box.remove();
+            return;
+        }
+
+        // DOM rút gọn của bộ test: cha giữ mảng children thật, không có removeChild().
+        const parent = box.parentNode || box.parent;
+        if (!parent) return;
+
+        if (typeof parent.removeChild === 'function') {
+            parent.removeChild(box);
+            return;
+        }
+
+        if (Array.isArray(parent.children)) {
+            const index = parent.children.indexOf(box);
+            if (index !== -1) parent.children.splice(index, 1);
+        }
+    } catch (error) {
+        // Bỏ qua: khối thông báo cũ không quan trọng bằng thao tác tiếp theo.
     }
 }
 
@@ -836,13 +1044,29 @@ function validatePostForm(title, content, heroId, category) {
  *
  * Tài khoản bị khóa (KD09) không đăng bài/sửa/bình luận/thích: trả null ngay từ đầu.
  *
- * @returns {object|null} bài vừa tạo, null nếu dữ liệu không hợp lệ hoặc lưu thất bại.
+ * Kiểm duyệt nội dung (KD07-d): từ cấm mức 2/3 -> trả null, ghi cảnh cáo và một mục
+ * aov_mod_alerts cho admin; mức 1 (cần xem xét) -> bài VẪN tạo nhưng luôn ở trạng
+ * thái "pending" + flagged:true dù duyệt trước đang tắt, kèm một mục alert kind 'post'.
+ *
+ * @returns {object|null} bài vừa tạo, null nếu dữ liệu không hợp lệ, nội dung bị
+ *         chặn bởi kiểm duyệt hoặc lưu thất bại.
  */
 function createPost(title, content, heroId, category) {
     if (isCurrentUserBanned()) return null;
 
+    // Thông báo cũ không được lẫn sang lần gửi này (UI đọc sau khi trả null).
+    clearLastModerationNotice();
+
     const checked = validatePostForm(title, content, heroId, category);
     if (!checked.valid) return null;
+
+    const moderation = applyModeration([checked.values.title, checked.values.content], 'post');
+
+    // Bị chặn: KHÔNG tạo bài, KHÔNG ghi posts; đã có lastModerationNotice cho giao diện.
+    if (moderation.blocked) {
+        addModAlert(buildModAlertData(moderation, 'post', '', `${checked.values.title} - ${checked.values.content}`));
+        return null;
+    }
 
     const posts = getPosts();
     const id = nextFeedId(posts.map((row) => row.id));
@@ -850,6 +1074,9 @@ function createPost(title, content, heroId, category) {
 
     const approvalOn = getModSettings().requireApproval;
     const posterIsAdmin = typeof isAdmin === 'function' && isAdmin();
+
+    // Bài có từ cần xem xét luôn chờ duyệt, bất kể requireApproval đang bật hay tắt.
+    const waitingReview = moderation.review === true;
 
     const post = {
         id,
@@ -859,8 +1086,10 @@ function createPost(title, content, heroId, category) {
         heroId: checked.values.heroId,
         category: checked.values.category,
         createdAt,
-        status: approvalOn && !posterIsAdmin ? POST_STATUS_PENDING : POST_STATUS_APPROVED,
+        status: waitingReview || (approvalOn && !posterIsAdmin) ? POST_STATUS_PENDING : POST_STATUS_APPROVED,
     };
+
+    if (waitingReview) post.flagged = true;
 
     // Admin đăng trong lúc đang bật duyệt trước -> duyệt luôn, ghi lại ai duyệt
     // và lúc nào để bảng quản trị truy vết được (đúng reviewedBy/reviewedAt của KD01).
@@ -880,6 +1109,9 @@ function createPost(title, content, heroId, category) {
         likes[id] = [];
         setLikes(likes);
     }
+
+    // Bài chờ admin duyệt vì có từ cần xem xét -> báo cho admin theo dõi.
+    if (waitingReview) addModAlert(buildModAlertData(moderation, 'post', post.id, `${post.title} - ${post.content}`));
 
     return post;
 }
@@ -961,10 +1193,15 @@ function canEditPost(post) {
  * @param {string} [category] chuyên mục mới. Bỏ trống thì giữ chuyên mục đang có
  *        của bài (gọi từ test hoặc từ code cũ chỉ truyền 3 tham số vẫn chạy được).
  * @returns {object|null} bài sau khi sửa, null nếu không tìm thấy bài,
- *         không phải tác giả, dữ liệu không hợp lệ hoặc lưu thất bại.
+ *         không phải tác giả, dữ liệu không hợp lệ, nội dung mới bị kiểm duyệt
+ *         chặn (KD07-d) hoặc lưu thất bại. Sửa mà nội dung có từ cần xem xét thì
+ *         bài chuyển về "pending" + flagged:true và ghi một mục aov_mod_alerts.
  */
 function updatePost(postId, title, content, heroId, category) {
     if (isCurrentUserBanned()) return null;
+
+    // Thông báo cũ không được lẫn sang lần gửi này (UI đọc sau khi trả null).
+    clearLastModerationNotice();
 
     const id = normalizeId(postId);
     const posts = getPosts();
@@ -978,6 +1215,14 @@ function updatePost(postId, title, content, heroId, category) {
 
     const checked = validatePostForm(title, content, heroId, category || current.category);
     if (!checked.valid) return null;
+
+    const moderation = applyModeration([checked.values.title, checked.values.content], 'post');
+
+    // Bị chặn: giữ nguyên bài cũ, không ghi gì; ghi alert cho admin theo dõi.
+    if (moderation.blocked) {
+        addModAlert(buildModAlertData(moderation, 'post', current.id, `${checked.values.title} - ${checked.values.content}`));
+        return null;
+    }
 
     // Sửa bài bị từ chối = gửi duyệt lại: chuyển về "pending" và bỏ lý do
     // từ chối cũ. Bài "approved" giữ nguyên (đã duyệt rồi, sửa nội dung không
@@ -998,9 +1243,22 @@ function updatePost(postId, title, content, heroId, category) {
         delete updated.rejectReason;
     }
 
+    // Nội dung mới có từ cần xem xét -> gửi lại chờ admin duyệt và gắn cờ vi phạm.
+    if (moderation.review) {
+        updated.status = POST_STATUS_PENDING;
+        updated.flagged = true;
+        delete updated.rejectReason;
+    }
+
     posts[index] = updated;
 
-    return setPosts(posts) ? updated : null;
+    if (!setPosts(posts)) return null;
+
+    if (moderation.review) {
+        addModAlert(buildModAlertData(moderation, 'post', updated.id, `${updated.title} - ${updated.content}`));
+    }
+
+    return updated;
 }
 
 /**
@@ -1368,10 +1626,15 @@ function getCommentsOfPost(postId) {
  *         quá COMMENT_MAX ký tự, bài viết không còn tồn tại, bài không hiển thị
  *         với người đang xem (bài ẩn, bài chờ duyệt / bị từ chối của người khác —
  *         chặn cả khi gọi thẳng từ console), tài khoản bị khóa (KD09) không bình luận
- *         được, hoặc lưu thất bại.
+ *         được, nội dung bị kiểm duyệt chặn (KD07-d) hoặc lưu thất bại.
+ *         Bình luận có từ cần xem xét VẪN được tạo nhưng gắn flagged:true và ghi
+ *         một mục aov_mod_alerts kind 'comment' cho admin.
  */
 function addComment(postId, content) {
     if (isCurrentUserBanned()) return null;
+
+    // Thông báo cũ không được lẫn sang lần gửi này (giao diện đọc sau khi trả null).
+    clearLastModerationNotice();
 
     const id = normalizeId(postId);
     const text = String(content || '').trim();
@@ -1389,6 +1652,14 @@ function addComment(postId, content) {
     // Chặn bình luận quá dài để một bình luận không làm phình toàn bộ aov_comments.
     if (text.length > COMMENT_MAX) return null;
 
+    const moderation = applyModeration([text], 'comment');
+
+    // Bị chặn: không tạo bình luận; lastModerationNotice còn để giao diện hiển thị.
+    if (moderation.blocked) {
+        addModAlert(buildModAlertData(moderation, 'comment', id, text));
+        return null;
+    }
+
     const comments = getComments();
     const comment = {
         id: nextFeedId(comments.map((row) => row.id)),
@@ -1398,9 +1669,20 @@ function addComment(postId, content) {
         createdAt: new Date().toISOString(),
     };
 
+    // Bình luận vẫn hiển thị bình thường cho mọi người; cờ chỉ để admin xử lý sau.
+    if (moderation.review) comment.flagged = true;
+
     comments.push(comment);
 
-    return setComments(comments) ? comment : null;
+    if (!setComments(comments)) return null;
+
+    if (moderation.review) {
+        const alertData = buildModAlertData(moderation, 'comment', id, text);
+        alertData.commentId = comment.id;
+        addModAlert(alertData);
+    }
+
+    return comment;
 }
 
 /**
@@ -1570,7 +1852,18 @@ function renderPostForm(editingPost, formBox) {
             // Sửa bài cũ: giữ nguyên id và createdAt, chỉ đổi nội dung + ghi updatedAt.
             const updated = updatePost(editId, title, content, heroId, category);
             if (!updated) {
-                renderErrors(errorBox, ['Không lưu được bài viết. Bạn chỉ có thể sửa bài của chính mình.']);
+                // Lỗi kiểm duyệt (KD07-d) có lastModerationNotice -> hiện đúng thông báo
+                // đó; còn lỗi quyền/lưu thì giữ câu báo cáo cũ. Không xoá chữ đã gõ.
+                const notice = getLastModerationNotice();
+                const noticeHtml = notice && notice.type !== 'ok' ? moderationNoticeHtml(notice) : '';
+                if (noticeHtml) {
+                    errorBox.innerHTML = noticeHtml;
+                } else {
+                    renderErrors(errorBox, ['Không lưu được bài viết. Bạn chỉ có thể sửa bài của chính mình.']);
+                }
+
+                // Vừa bị tự động khóa -> vẽ lại form ở trạng thái "tài khoản bị khóa" (KD09).
+                if (isCurrentUserBanned()) renderPostForm(null, box);
                 return;
             }
 
@@ -1589,6 +1882,15 @@ function renderPostForm(editingPost, formBox) {
                 ` <a href="${BASE_PATH}src/pages/post-detail.html?id=${encodeURIComponent(updated.id)}">Xem bài vừa sửa</a>`,
             );
 
+            // Bài sửa có từ cần xem xét -> hiện thêm thông báo 'info' (KD07-d).
+            const editNotice = getLastModerationNotice();
+            if (editNotice && editNotice.type === 'info') {
+                updatedForm.querySelector('#post-errors').insertAdjacentHTML(
+                    'beforeend',
+                    moderationNoticeHtml(editNotice),
+                );
+            }
+
             rerenderFeedView(updated.id);
             if (typeof renderProfilePosts === 'function') renderProfilePosts();
 
@@ -1597,7 +1899,18 @@ function renderPostForm(editingPost, formBox) {
 
         const newPost = createPost(title, content, heroId, category);
         if (!newPost) {
-            renderErrors(errorBox, ['Không lưu được bài viết. Hãy thử lại hoặc kiểm tra dung lượng trình duyệt.']);
+            // Bị kiểm duyệt chặn (KD07-d) -> hiện thông báo vi phạm thay vì câu chung chung;
+            // giữ nguyên chữ trong ô để người dùng sửa lại.
+            const notice = getLastModerationNotice();
+            const noticeHtml = notice && notice.type !== 'ok' ? moderationNoticeHtml(notice) : '';
+            if (noticeHtml) {
+                errorBox.innerHTML = noticeHtml;
+            } else {
+                renderErrors(errorBox, ['Không lưu được bài viết. Hãy thử lại hoặc kiểm tra dung lượng trình duyệt.']);
+            }
+
+            // Vừa bị tự động khóa -> vẽ lại form ở trạng thái "tài khoản bị khóa" (KD09).
+            if (isCurrentUserBanned()) renderPostForm(null, box);
             return;
         }
 
@@ -1617,6 +1930,12 @@ function renderPostForm(editingPost, formBox) {
             'beforeend',
             ` <a href="${BASE_PATH}src/pages/post-detail.html?id=${encodeURIComponent(newPost.id)}">${waitingApproval ? 'Xem bài' : 'Xem bài vừa đăng'}</a>`,
         );
+
+        // Bài đăng nhưng có từ cần xem xét -> hiện thêm thông báo 'info' (KD07-d).
+        const notice = getLastModerationNotice();
+        if (notice && notice.type === 'info') {
+            form.querySelector('#post-errors').insertAdjacentHTML('beforeend', moderationNoticeHtml(notice));
+        }
 
         rerenderFeedView();
         if (typeof renderProfilePosts === 'function') renderProfilePosts();
@@ -2232,11 +2551,35 @@ document.addEventListener('submit', (event) => {
     const content = input.value.trim();
     const postId = form.dataset.commentForm;
 
-    if (!content || !addComment(postId, content)) return;
+    if (!content) return;
+
+    const comment = addComment(postId, content);
+
+    if (!comment) {
+        // Bị kiểm duyệt chặn (KD07-d): hiện thông báo ngay dưới ô nhập của CHÍNH form
+        // này và giữ nguyên chữ người dùng đã gõ để họ sửa lại.
+        const notice = getLastModerationNotice();
+        if (notice && notice.type !== 'ok') showCommentNotice(form, notice);
+
+        // Vừa bị tự động khóa (KD09) -> vẽ lại để form chuyển sang trạng thái bị khóa.
+        if (isCurrentUserBanned()) rerenderFeedView(postId);
+        return;
+    }
+
+    clearCommentNotice(form);
+
+    // Bình luận có từ cần xem xét vẫn được đăng; hiện thêm notice 'info' ngắn
+    // trên form vừa vẽ lại (tự mất ở lần render tiếp theo).
+    const notice = getLastModerationNotice();
+    const infoNotice = notice && notice.type === 'info' ? notice : null;
 
     input.value = '';
     rerenderFeedView(postId);
     if (typeof renderProfilePosts === 'function') renderProfilePosts();
+
+    if (infoNotice) {
+        showCommentNotice(document.querySelector(`[data-comment-form="${postId}"]`), infoNotice);
+    }
 });
 
 /**
