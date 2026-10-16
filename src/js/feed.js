@@ -430,13 +430,11 @@ function moderateContent(texts, kind) {
     }
 }
 
-/** Số từ tối đa nêu trong một câu thông báo kiểm duyệt. */
-const MOD_NOTICE_WORDS_MAX = 5;
-
 /**
  * Dựng thông báo tiếng Việt cho người dùng (thuần, không đụng DOM, KHÔNG chèn
- * HTML: words giữ thô, nơi hiển thị tự escapeHtml). review -> type 'info',
- * block/severe -> 'danger', 'ok' -> type 'ok' với title/message rỗng; tối đa 5 từ.
+ * HTML: nơi hiển thị tự escapeHtml). KHÔNG nêu từ vi phạm ra giao diện (admin
+ * vẫn xem trong kho aov_mod_alerts). review -> type 'info', block/severe -> 'danger',
+ * 'ok' -> type 'ok' với title/message rỗng.
  * penalty là object auth.js recordViolation() trả (thiếu thì coi counted=false):
  * counted -> thêm "Đây là cảnh cáo thứ N", chưa bị khóa thì thêm "Còn tối đa M
  * lần..."; banned -> thêm câu tự động khóa và bỏ câu "Còn tối đa...".
@@ -452,14 +450,11 @@ function buildModerationNotice(result, penalty, kind) {
         const cleanKind = kind === 'comment' ? 'comment' : 'post';
         const level = Number.isFinite(res.level) ? res.level : 0;
         const label = typeof res.label === 'string' ? res.label : '';
-        const words = (Array.isArray(res.words) ? res.words : [])
-            .filter((word) => typeof word === 'string' && word.trim())
-            .slice(0, MOD_NOTICE_WORDS_MAX);
 
-        const notice = { type: 'ok', title: '', message: '', words, level, label };
+        // words LUÔN rỗng ở đây: từ vi phạm không được lộ ra giao diện người dùng.
+        const notice = { type: 'ok', title: '', message: '', words: [], level, label };
         if (action !== 'review' && action !== 'block' && action !== 'severe') return notice;
 
-        const joined = words.join(', ');
         let title = '';
         let message = '';
 
@@ -467,22 +462,23 @@ function buildModerationNotice(result, penalty, kind) {
             notice.type = 'info';
             if (cleanKind === 'comment') {
                 title = 'Bình luận cần được xem xét';
-                message = `Bình luận của bạn có từ cần xem xét (${joined}). `
+                message = 'Bình luận của bạn có nội dung cần xem xét. '
                     + 'Bình luận vẫn được đăng và đã được báo cho quản trị viên.';
             } else {
                 title = 'Bài viết cần được xem xét';
-                message = `Bài của bạn có từ cần xem xét (${joined}) `
-                    + 'nên đã được gửi và đang chờ quản trị viên duyệt.';
+                message = 'Bài của bạn có nội dung cần xem xét nên đã được gửi '
+                    + 'và đang chờ quản trị viên duyệt.';
             }
         } else if (action === 'block') {
             notice.type = 'danger';
             title = 'Nội dung vi phạm quy tắc cộng đồng';
-            message = `Nội dung của bạn chứa từ ngữ không được phép (${joined}) nên không được đăng.`;
+            message = 'Nội dung của bạn chứa từ ngữ không được phép nên không được đăng. '
+                + 'Vui lòng chỉnh sửa lại cho phù hợp với quy tắc cộng đồng.';
         } else {
             notice.type = 'danger';
             title = 'Vi phạm nghiêm trọng';
-            message = `Nội dung của bạn có lời lẽ đe dọa hoặc thù ghét (${joined}) `
-                + 'nên không được đăng. Vi phạm này đã được báo cho quản trị viên.';
+            message = 'Nội dung của bạn có lời lẽ đe dọa hoặc thù ghét nên không được đăng. '
+                + 'Vi phạm này đã được báo cho quản trị viên.';
         }
 
         const info = penalty && typeof penalty === 'object' ? penalty : {};
@@ -783,8 +779,9 @@ function buildModAlertData(moderation, kind, targetId, excerpt) {
 /**
  * Khối HTML thông báo kiểm duyệt cho #post-errors / form bình luận (KD07-d).
  * Dùng lại class có sẵn của trang (form-errors / form-success) nên không cần CSS mới;
- * escapeHtml toàn bộ chữ từ dữ liệu người dùng. Trả chuỗi rỗng nếu notice rỗng.
- * @param {{ type?: string, title?: string, message?: string, words?: string[] }} notice
+ * escapeHtml toàn bộ chữ từ dữ liệu người dùng. KHÔNG in từ vi phạm cho người dùng
+ * (KD07-d2). Trả chuỗi rỗng nếu notice rỗng.
+ * @param {{ type?: string, title?: string, message?: string }} notice
  * @returns {string}
  */
 function moderationNoticeHtml(notice) {
@@ -793,14 +790,10 @@ function moderationNoticeHtml(notice) {
 
         const title = String(notice.title || '').trim();
         const message = String(notice.message || '').trim();
-        const words = (Array.isArray(notice.words) ? notice.words : [])
-            .filter((word) => typeof word === 'string' && word.trim())
-            .slice(0, MOD_NOTICE_WORDS_MAX);
 
         const lines = [];
         if (title) lines.push(`<strong>${escapeHtml(title)}</strong>`);
         if (message) lines.push(escapeHtml(message));
-        if (words.length) lines.push(`Từ vi phạm: ${escapeHtml(words.join(', '))}`);
         if (!lines.length) return '';
 
         if (notice.type === 'info') return `<p class="form-success">${lines.join('<br>')}</p>`;
