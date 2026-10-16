@@ -26,9 +26,16 @@
  *   bannedReason -> lý do khóa, tối đa 200 ký tự
  *   bannedBy     -> username admin thực hiện khóa
  *   warnings     -> mảng [{ at: ISO, reason: string (3..200 ký tự), by: admin }],
- *                   giữ tối đa 20 cảnh cáo mới nhất (cảnh cáo mới ở cuối)
- *   Tài khoản role 'admin' KHÔNG BAO GIỜ bị khóa (isUserBanned() luôn trả false
- *   với admin, canModerateUser() từ chối tài khoản admin và chính mình).
+ *                   giữ tối đa 20 cảnh cáo mới nhất (cảnh cáo mới ở cuối).
+ *                   Cảnh cáo tự động của bộ lọc từ cấm dùng by: 'system'.
+ *   strikes      -> { total, severe, lastAt }: bộ đếm vi phạm nội dung (tuỳ chọn).
+ *                   total = số lần vi phạm mức 2/3, severe = số lần mức 3. Khi đủ
+ *                   ngưỡng AUTO_BAN_TOTAL_STRIKES / AUTO_BAN_SEVERE_STRIKES thì
+ *                   recordViolation() tự khóa tài khoản (bannedBy: 'system').
+ *                   Tài khoản cũ thiếu trường strikes coi như chưa vi phạm lần nào.
+ *   Tài khoản role 'admin' KHÔNG BAO GIỜ bị khóa hay bị phạt (isUserBanned() luôn
+ *   trả false với admin, canModerateUser() từ chối tài khoản admin và chính mình,
+ *   recordViolation() bỏ qua admin).
  *   Tài khoản bị khóa không đăng nhập được; nếu đang đăng nhập thì
  *   enforceBanOnSession() xóa phiên và đưa về trang đăng nhập.
  *
@@ -281,6 +288,14 @@ const MODERATION_REASON_MAX = 200;
 const MODERATION_WARN_REASON_MIN = 3;
 
 /**
+ * Ngưỡng TỰ KHÓA tài khoản do vi phạm nội dung (chỉnh ở đây khi cần đổi chính sách):
+ * đủ AUTO_BAN_TOTAL_STRIKES lần vi phạm mức 2/3, HOẶC đủ AUTO_BAN_SEVERE_STRIKES
+ * lần vi phạm mức 3 thì khóa (đạt MỘT trong hai điều kiện là khóa).
+ */
+const AUTO_BAN_TOTAL_STRIKES = 3;
+const AUTO_BAN_SEVERE_STRIKES = 2;
+
+/**
  * Làm sạch chuỗi lý do kiểm duyệt: chỉ nhận chuỗi, bỏ ký tự điều khiển, gộp
  * khoảng trắng thừa về một dấu cách, cắt khoảng trắng hai đầu rồi cắt độ dài.
  * Không bao giờ ném lỗi; đầu vào không hợp lệ -> chuỗi rỗng.
@@ -351,6 +366,33 @@ function getUserWarnings(username) {
 }
 
 /**
+ * Bộ đếm vi phạm nội dung của một tài khoản (KD07-b).
+ * Tài khoản cũ không có trường strikes coi như chưa vi phạm lần nào.
+ * LUÔN trả đủ trường số (0) và không bao giờ ném lỗi; không lộ thông tin mật khẩu.
+ *
+ * @param {string} username
+ * @returns {{ total: number, severe: number, lastAt: string }}
+ */
+function getUserStrikes(username) {
+    const empty = { total: 0, severe: 0, lastAt: '' };
+    try {
+        const user = findUser(username);
+        if (!user || !user.strikes || typeof user.strikes !== 'object') return empty;
+
+        const total = Number(user.strikes.total);
+        const severe = Number(user.strikes.severe);
+
+        return {
+            total: Number.isFinite(total) ? Math.max(0, Math.floor(total)) : 0,
+            severe: Number.isFinite(severe) ? Math.max(0, Math.floor(severe)) : 0,
+            lastAt: typeof user.strikes.lastAt === 'string' ? user.strikes.lastAt : '',
+        };
+    } catch (error) {
+        return empty;
+    }
+}
+
+/**
  * Thông tin kiểm duyệt của một tài khoản để hiển thị cho admin.
  * TUYỆT ĐỐI không trả passwordHash / salt / password. Không tồn tại -> null.
  *
@@ -368,6 +410,7 @@ function getUserModeration(username) {
             bannedReason: typeof user.bannedReason === 'string' ? user.bannedReason : '',
             bannedBy: typeof user.bannedBy === 'string' ? user.bannedBy : '',
             warnings: getUserWarnings(username),
+            strikes: getUserStrikes(username),
         };
     } catch (error) {
         return null;
@@ -466,6 +509,9 @@ function unbanUser(username) {
         delete users[index].bannedAt;
         delete users[index].bannedReason;
         delete users[index].bannedBy;
+        // Xóa luôn bộ đếm vi phạm để người vừa mở khóa không bị khóa lại ngay
+        // ở lần vi phạm kế tiếp (mảng warnings/lịch sử cảnh cáo vẫn giữ nguyên).
+        delete users[index].strikes;
 
         return persistUsersAndLog(users, 'user.unban', users[index].username, '');
     } catch (error) {
@@ -509,6 +555,88 @@ function warnUser(username, reason) {
 }
 
 /**
+ * Ghi một vi phạm nội dung cho CHÍNH tài khoản đang đăng nhập (KD07-b).
+ *
+ * Cố ý KHÔNG nhận tham số username: người dùng không thể tự phạt người khác
+ * từ console. Chỉ mức 2 (vi phạm) và mức 3 (nghiêm trọng) mới bị tính; mức 1
+ * (cần xem xét) không phạt tài khoản. Khi đủ ngưỡng, tài khoản bị tự khóa với
+ * bannedBy: 'system'. KHÔNG gọi logAdminAction (người ghi không phải admin).
+ *
+ * @param {number} level mức vi phạm: 1, 2 hoặc 3
+ * @param {{ label?: string, words?: string[], kind?: string }} [detail] thông tin phụ
+ * @returns {{ counted: boolean, level: number, warningNumber: number, strikesTotal: number,
+ *            strikesSevere: number, remaining: number, banned: boolean }}
+ */
+function recordViolation(level, detail) {
+    const result = {
+        counted: false, level: 0, warningNumber: 0,
+        strikesTotal: 0, strikesSevere: 0, remaining: 0, banned: false,
+    };
+    try {
+        const username = getCurrentUser();
+        if (!username) return result;
+
+        const user = findUser(username);
+        if (!user) return result;
+        if (user.role === 'admin') return result;    // admin không bao giờ bị phạt
+        if (user.banned === true) return result;      // đã khóa thì không đếm thêm
+        if (level !== 2 && level !== 3) return result; // mức 1 không phạt tài khoản
+
+        const info = detail && typeof detail === 'object' ? detail : {};
+        const label = typeof info.label === 'string' ? info.label.trim() : '';
+        const words = Array.isArray(info.words)
+            ? info.words.filter((word) => typeof word === 'string' && word.trim())
+            : [];
+
+        let reason = 'Vi phạm nội dung';
+        if (label) reason += ' (' + label + ')';
+        if (words.length) reason += ': ' + words.join(', ');
+        reason = cleanModerationReason(reason, MODERATION_REASON_MAX);
+        if (reason.length < MODERATION_WARN_REASON_MIN) reason = 'Vi phạm nội dung';
+
+        const users = getUsers();
+        const index = users.findIndex((u) => u.username.toLowerCase() === String(username).trim().toLowerCase());
+        if (index === -1) return result;
+
+        const current = getUserStrikes(username);
+        const total = current.total + 1;
+        const severe = current.severe + (level === 3 ? 1 : 0);
+        const at = new Date().toISOString();
+
+        const warnings = Array.isArray(users[index].warnings) ? users[index].warnings.slice() : [];
+        warnings.push({ at: at, reason: reason, by: 'system' });
+
+        users[index].strikes = { total: total, severe: severe, lastAt: at };
+        users[index].warnings = warnings.slice(-MODERATION_MAX_WARNINGS);
+
+        const shouldBan = total >= AUTO_BAN_TOTAL_STRIKES || severe >= AUTO_BAN_SEVERE_STRIKES;
+        if (shouldBan) {
+            users[index].banned = true;
+            users[index].bannedAt = at;
+            users[index].bannedReason = 'Tự động khóa: vi phạm nội dung nhiều lần';
+            users[index].bannedBy = 'system';
+        }
+
+        if (!setUsers(users)) return result;
+
+        return {
+            counted: true,
+            level: level,
+            warningNumber: users[index].warnings.length,
+            strikesTotal: total,
+            strikesSevere: severe,
+            remaining: Math.max(0, Math.min(
+                AUTO_BAN_TOTAL_STRIKES - total,
+                AUTO_BAN_SEVERE_STRIKES - severe
+            )),
+            banned: shouldBan,
+        };
+    } catch (error) {
+        return result;
+    }
+}
+
+/**
  * Danh sách tài khoản để admin-users.js vẽ (KHÔNG chứa passwordHash/salt/password).
  * Chỉ admin mới nhận được dữ liệu; người khác -> []. Sắp xếp theo joinedAt giảm
  * dần (mới nhất trước); tài khoản thiếu/sai joinedAt bị đẩy xuống cuối.
@@ -530,6 +658,7 @@ function getUsersForAdmin() {
                 bannedReason: typeof user.bannedReason === 'string' ? user.bannedReason : '',
                 bannedBy: typeof user.bannedBy === 'string' ? user.bannedBy : '',
                 warnings: getUserWarnings(user.username),
+                strikes: getUserStrikes(user.username),
             }))
             .sort((a, b) => {
                 const timeA = Date.parse(a.joinedAt);

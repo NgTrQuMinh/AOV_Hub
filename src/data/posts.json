@@ -1,5 +1,18 @@
 [
   {
+    "id": 1792114008162,
+    "author": "anhthu",
+    "title": "dịt con mẹ mày",
+    "content": "dcmmmmmmmmmmmmm",
+    "heroId": null,
+    "category": "Build trang bị",
+    "createdAt": "2026-10-16T01:26:48.162Z",
+    "status": "rejected",
+    "reviewedBy": "admin",
+    "reviewedAt": "2026-10-16T01:31:47.296Z",
+    "hidden": true
+  },
+  {
     "id": 1792039649393,
     "author": "ngtrquminh",
     "title": "daubuoiiccc",
@@ -9,19 +22,8 @@
     "createdAt": "2026-10-15T04:47:29.393Z",
     "status": "approved",
     "reviewedBy": "admin",
-    "reviewedAt": "2026-10-15T04:47:54.257Z"
-  },
-  {
-    "id": 1792001024923,
-    "author": "admin",
-    "title": "xcascsâccs",
-    "content": "áccsacssấcc",
-    "heroId": null,
-    "category": "Build trang bị",
-    "createdAt": "2026-10-14T18:03:44.923Z",
-    "status": "approved",
-    "reviewedBy": "admin",
-    "reviewedAt": "2026-10-14T18:03:44.923Z"
+    "reviewedAt": "2026-10-15T04:47:54.257Z",
+    "hidden": true
   },
   {
     "id": 9001,
