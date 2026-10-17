@@ -1,0 +1,239 @@
+/* =========================================
+ * build-admin.css - Style mục "Build" của trang Quản lý (admin.html?tab=builds)
+ *
+ * Tab Build gồm hai mục:
+ *   - "Quản lý build"         (#build-admin-form / #build-admin-toolbar / #build-admin-list)
+ *   - "Tướng chưa có build"   (#missing-build-toolbar / #missing-build-list)
+ * Cả hai nằm ngay trong khung quản trị nên form nối tiếp style .feed-form của feed.css;
+ * bảng mượn bố cục #item-admin-list của item-admin.css nhưng đổi selector sang
+ * #build-admin-list / #missing-build-list. File này chỉ bù phần riêng của tab Build:
+ * lưới hai cột, khung các dòng động (pha / tình huống / tướng khắc chế) và nhãn trang bị.
+ * Dùng chung biến màu của variables.css nên không cần khai báo lại màu.
+ * ========================================= */
+
+/* ---------- Form thêm / sửa build ---------- */
+
+#build-admin-form {
+    margin-bottom: var(--space-6);
+}
+
+#build-admin-form .feed-form__actions {
+    margin-top: var(--space-5);
+}
+
+/* Tướng + đường đi nằm cạnh nhau khi đủ chỗ, tự xuống một cột trên màn hình hẹp */
+.build-admin-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+}
+
+/* Khung chung cho các nhóm dòng động (pha / tình huống / tướng khắc chế) */
+.build-admin-rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
+}
+
+/* Một dòng động: các ô nhập xếp hàng ngang, nút xoá luôn nằm cuối */
+.build-admin-row {
+    display: grid;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.build-admin-row--phase {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr) minmax(0, 1.6fr) auto;
+}
+
+.build-admin-row--situational {
+    grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 0.8fr)) minmax(0, 1.4fr) auto;
+}
+
+.build-admin-row--counter {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 2fr) auto;
+}
+
+/* Ô nhập của dòng động theo đúng phong cách ô nhập của .feed-form */
+.build-admin-row input,
+.build-admin-row select {
+    width: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-bg-elevated);
+    color: var(--color-text);
+    font-size: var(--fs-sm);
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.build-admin-row input:focus,
+.build-admin-row select:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 22%, transparent);
+}
+
+/* Nút xoá dòng "×" không co lại theo nội dung */
+.build-admin-row .btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* ---------- Xem trước trang bị chính ---------- */
+
+.build-admin-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+}
+
+.build-admin-chips:empty {
+    display: none;
+}
+
+.build-admin-chip {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-bg-elevated);
+    color: var(--color-text);
+    font-size: var(--fs-xs);
+    white-space: nowrap;
+}
+
+/* Nhãn trang bị: mã không tìm thấy trong items.json được tô đỏ để dễ nhận ra */
+.build-admin-chip.is-missing {
+    border-color: var(--color-crimson);
+    color: var(--color-crimson);
+}
+
+/* Chữ mờ cho ô chưa xác định được (vd tướng không còn trong dữ liệu) */
+.build-admin-muted {
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* ---------- Thanh tìm + bảng danh sách build ---------- */
+
+#build-admin-toolbar .filter-bar,
+#missing-build-toolbar .filter-bar {
+    margin-bottom: var(--space-4);
+}
+
+#build-admin-toolbar .filter-bar__keyword:focus,
+#build-admin-toolbar .filter-bar__select:focus,
+#missing-build-toolbar .filter-bar__keyword:focus,
+#missing-build-toolbar .filter-bar__select:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-gold) 22%, transparent);
+}
+
+#build-admin-toolbar .btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* Bảng cho phép cuộn ngang thay vì vỡ bố cục trên màn hình nhỏ */
+#build-admin-list.card,
+#missing-build-list.card {
+    overflow-x: auto;
+    padding: var(--space-2);
+}
+
+#build-admin-list table,
+#missing-build-list table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-sm);
+    white-space: nowrap;
+}
+
+#build-admin-list thead th,
+#missing-build-list thead th {
+    background: var(--color-bg-elevated);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-align: left;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    /* Dính đầu bảng khi bảng dài, cuộn xuống vẫn thấy tên cột */
+    position: sticky;
+    top: 0;
+}
+
+#build-admin-list tbody td,
+#missing-build-list tbody td {
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: middle;
+}
+
+/* Kẻ sọc xen kẽ để đuổi mắt khi bảng có nhiều dòng */
+#build-admin-list tbody tr:nth-child(even),
+#missing-build-list tbody tr:nth-child(even) {
+    background: var(--color-bg-elevated);
+}
+
+#build-admin-list tbody tr:hover,
+#missing-build-list tbody tr:hover {
+    background: var(--color-surface);
+}
+
+/* Tên tướng / tên build là link sang trang chi tiết */
+#build-admin-list tbody td:nth-child(2) a,
+#missing-build-list tbody td:nth-child(2) a {
+    color: var(--color-text-accent);
+    font-weight: 600;
+}
+
+#build-admin-list tbody td:nth-child(2) a:hover,
+#missing-build-list tbody td:nth-child(2) a:hover {
+    text-decoration: underline;
+}
+
+/* Cột ID căn phải cho dễ so sánh */
+#build-admin-list tbody td:nth-child(1),
+#missing-build-list tbody td:nth-child(1) {
+    text-align: right;
+}
+
+/* Cột thao tác: hai nút nằm cạnh nhau, không xuống dòng */
+#build-admin-list tbody td:last-child,
+#missing-build-list tbody td:last-child {
+    display: flex;
+    gap: var(--space-2);
+}
+
+#build-admin-list .btn-sm,
+#missing-build-list .btn-sm {
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--fs-xs);
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+#build-admin-list .btn-sm:hover,
+#missing-build-list .btn-sm:hover {
+    border-color: var(--color-crimson);
+    color: var(--color-crimson);
+}
+
+/* ---------- Màn hình hẹp ---------- */
+
+@media (max-width: 768px) {
+    .build-admin-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .build-admin-row--phase,
+    .build-admin-row--situational,
+    .build-admin-row--counter {
+        grid-template-columns: 1fr;
+    }
+}
