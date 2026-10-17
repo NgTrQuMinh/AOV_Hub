@@ -13,7 +13,7 @@
         ["Số bài viết (posts.json)", 11, "10 bài seed + 1 bài test phát sinh khi chạy app (id 1792001024923, chưa commit); likes.json có khoá tương ứng."],
         ["Số trang HTML", 17, "index.html + 16 trang trong src/pages (đã thêm search.html)."],
         ["Số file CSS", 14, "public/css (đã thêm hero-admin.css, search.css)."],
-        ["Số file JS", 25, "src/js top-level (chưa kể 11 file core/adapters/services/controllers/models — tổng cộng 36 file); thêm profile.js (tách từ profile.html)."],
+        ["Số file JS", 26, "src/js top-level (chưa kể 11 file core/adapters/services/controllers/models — tổng cộng 37 file); thêm profile.js (tách từ profile.html) + admin-log.js (tab Nhật ký, KD11)."],
         ["Bộ test tự động", "17/17 file PASS + 82 E2E PASS", "mini-DOM: 17 file PASS; Playwright (trình duyệt thật): 82 PASS."],
         ["Responsive (trình duyệt thật)", "82/82 PASS", "16 trang × 360/480/768/1024/1280 không tràn ngang; menu mobile hoạt động."],
         ["Đóng gói (npm run build)", "17/17 trang", "vite.config.js cấu hình multi-page; chép src/js + src/data vào dist; kiểm tra bằng npm run preview."],
@@ -22,9 +22,9 @@
         ["Công việc chính chưa làm", 0, "Không còn mục nào ở mức chưa làm trong 50 việc chính."],
         ["Lỗi đã xử lý trong lần review", "L05, L12, L14, L15, L17, L18, L19, L20, L22, L23, L24", "sắp xếp tướng A-Z/Z-A (bỏ giá), open redirect, băm mật khẩu, backup.rar, README, tách profile.js, trang 404, responsive admin, build đủ 32 tướng, tìm kiếm toàn cục, tiêu chí nổi bật."],
         ["Lỗi còn tồn", "L06", "lane/title 32 tướng."],
-        ["Kế hoạch mở rộng đã xong", "CM02, CM03, CM04, CM05, KD01, KD02, AD01-AD04, AD09, AD10", "Nhật ký admin, khung quản trị đa tab, sao lưu/khôi phục + cảnh báo dung lượng, trạng thái bài, duyệt trước, quản lý tướng CRUD, kiểm tra dữ liệu."],
-        ["Kế hoạch mở rộng kế tiếp", "KD03, KD05, KD06, KD11, AD05-AD08, HD01-HD10", "Duyệt/từ chối bài, báo cáo, nhật ký dạng tab, quản lý trang bị/build, hướng dẫn build."],
-        ["Tab quản trị còn thiếu file", 8, "admin-shell.js khai báo 8 file tab chưa viết (admin-pending/build-review/reports/users/items/builds/log/banned.js); tab Dữ liệu đã đủ 3 file backup/storage/datacheck."],
+        ["Kế hoạch mở rộng đã xong", "CM02, CM03, CM04, CM05, KD01, KD02, KD11, AD01-AD04, AD09, AD10", "Nhật ký admin, khung quản trị đa tab, sao lưu/khôi phục + cảnh báo dung lượng, trạng thái bài, duyệt trước, quản lý tướng CRUD, kiểm tra dữ liệu."],
+        ["Kế hoạch mở rộng kế tiếp", "KD03, KD05, KD06, AD05-AD08, HD01-HD10", "Duyệt/từ chối bài, báo cáo, quản lý trang bị/build, hướng dẫn build."],
+        ["Tab quản trị còn thiếu file", 2, "admin-shell.js còn 2 file tab chưa viết (admin-build-review.js, admin-reports.js); các tab pending/items/users/builds/log/banned/Dữ liệu đã đủ file."],
         ["Rủi ro chính", "Không backend; quyền admin chỉ ở trình duyệt", "Dữ liệu ở JSON/LocalStorage/File System Access; lớp clean architecture chưa được nạp; đã có test Playwright (82 PASS) và checklist demo nhưng vẫn chỉ là demo, không phải bảo mật thật."]
       ]
     },
@@ -137,7 +137,7 @@
         ["KD08", "P2", "Kiểm duyệt bình luận", "feed.js, admin.js", "Một phần", "Có deleteComment + quyền; chưa có trường hidden cho bình luận + UI admin."],
         ["KD09", "P2", "Quản lý người dùng: khoá / cảnh cáo", "auth.js, admin.js", "Chưa làm", "users.json chưa có banned/warnings; khung đã có mục 'Người dùng' (chờ admin-users.js)."],
         ["KD10", "P1", "Lọc theo trạng thái ở bảng bài viết admin", "admin.js", "Một phần", "Bảng hiện badge trạng thái; chưa có bộ lọc theo trạng thái (chỉ có ô tìm theo tiêu đề/tác giả)."],
-        ["KD11", "P2", "Tab Nhật ký xem lịch sử kiểm duyệt", "admin.js, admin.html", "Một phần", "Khung đã có mục 'Nhật ký'; admin-log.js chưa viết (adminlog.js core đã có)."],
+        ["KD11", "P2", "Tab Nhật ký xem lịch sử kiểm duyệt", "admin-log.js, adminlog.js", "Đã xong", "admin-log.js: mục 'Nhật ký thao tác' (lọc từ khoá + loại đối tượng, 3 ô đếm, bảng hành động/đối tượng/chi tiết, nút Làm mới + Xoá nhật ký); adminlog.js thêm clearAdminLog() (chỉ admin). test-admin-log.cjs 23 test PASS."],
         ["KD12", "P1", "Test kiểm duyệt", "tools/test-admin-pending.cjs", "Đã xong", "test-admin-pending.cjs: getPendingPosts() (chỉ bài pending, mới nhất trước), render + escapeHtml, approvePost()/rejectPost() (có/không lý do, ghi nhật ký), chặn quyền user thường/khách, bấm nút DOM + cập nhật badge; 24 test PASS."],
         ["AD01", "P0", "Trang admin Tướng: danh sách", "hero-admin.html, hero-admin.js", "Đã xong", "Nay là mục 'Tướng' trong khung quản trị: bảng, tìm theo tên, lọc vai trò, phân trang."],
         ["AD02", "P0", "Form thêm / sửa tướng", "hero-admin.js", "Đã xong", "Đủ trường + validate; lưu qua /api/heroes."],
@@ -181,7 +181,7 @@
         ["Thanh lọc bài viết Feed", "Đã xong", "renderFeedFilterBar() trong feed.js."],
         ["dataStore.js - dữ liệu dùng chung users/posts/comments/likes", "Đã xong", "API nội bộ GET/PUT /api/<collection> (users/posts/comments/likes/items) ghi thẳng src/data/*.json + File System Access API + migrate khoá cũ; đồng bộ nhiều tab."],
         ["Quản lý tướng (hero-admin.html + hero-admin.js + API /api/heroes)", "Đã xong", "hero-admin.html nay vào thẳng khung quản trị ở tab Tướng (data-admin-tab=heroes); CRUD ghi thẳng heroes.json qua Vite middleware."],
-        ["Nhật ký admin (adminlog.js)", "Đã xong", "CM02: logAdminAction(), tối đa 200 bản ghi."],
+        ["Nhật ký admin (adminlog.js + admin-log.js)", "Đã xong", "CM02 + KD11: logAdminAction()/clearAdminLog() (tối đa 200 bản ghi) + tab UI 'Nhật ký thao tác' (admin-log.js)."],
         ["Kiểm duyệt: status bài + requireApproval", "Đã xong", "KD01/KD02: aov_mod_settings + getPostStatus()/isPostVisibleForViewer()."],
         ["Băm mật khẩu PBKDF2-SHA256 (auth.js + tools/hash-users.cjs)", "Đã xong", "L15/N09: users.json đã băm kèm salt."],
         ["Khung quản trị đa tab (admin-shell.js + admin.html/hero-admin.html)", "Đã xong", "CM03: menu dọc 4 nhóm, 10 tab, badge pending/reports, nút 'Thoát quản lý'; tab thiếu file hiện 'Mục này đang được phát triển.'."],
@@ -220,7 +220,7 @@
       "header": ["Ưu tiên", "Việc nên làm", "Mã liên quan", "File phụ trách", "Ước lượng"],
       "rows": [
         ["P0", "Tích hợp lớp clean architecture vào trang (hoặc gỡ bỏ) để tránh code chết", "-", "src/js/core, adapters, services, controllers, models", "2-4 giờ"],
-        ["P0", "Viết 7 file tab admin còn thiếu để bỏ placeholder 'Mục này đang được phát triển.'", "CM03, KD11, AD05-AD08", "src/js/admin-build-review/reports/users/items/builds/log/banned.js", "14-21 giờ"],
+        ["P0", "Viết 2 file tab admin còn thiếu để bỏ placeholder 'Mục này đang được phát triển.'", "CM03, KD06", "src/js/admin-build-review.js, src/js/admin-reports.js", "4-6 giờ"],
         ["P1", "Thêm lane + title cho 32 tướng + select lọc đường đi", "L06", "src/data/heroes.json, hero.js, hero-admin.js", "4 giờ"],
         ["P1", "Báo cáo vi phạm (aov_reports) + tab xử lý cho admin", "KD05, KD06", "feed.js, admin-reports.js", "12 giờ"],
         ["P2", "Quản lý Trang bị (form thêm/sửa/xoá an toàn)", "AD05, AD06", "admin-items.js", "16 giờ"],
@@ -229,7 +229,6 @@
         ["P2", "Áp dụng bộ lọc từ khoá cấm vào nội dung", "KD07", "feed.js, search.js", "5 giờ"],
         ["P2", "Kiểm duyệt bình luận (trường hidden + UI admin)", "KD08", "feed.js, admin.js", "5 giờ"],
         ["P2", "Quản lý người dùng: khoá / cảnh cáo", "KD09", "auth.js, admin-users.js", "6 giờ"],
-        ["P2", "Tab Nhật ký admin (dùng adminlog.js đã có)", "CM02, KD11", "admin-log.js", "3 giờ"],
         ["P3", "Trình dựng build + chia sẻ link + bình chọn Hữu ích", "N02, N05, HD07, HD09", "build.js, build-detail.js", "12 giờ"],
         ["P3", "Dark/Light mode", "N03", "variables.css, layout.js", "3 giờ"],
         ["P3", "So sánh trang bị", "N04", "compare.js", "4 giờ"],
@@ -248,7 +247,7 @@
         ["Bình luận", "comments.json + dataStore.js", "id, postId, author, content, createdAt", "hỗn hợp", "Bình luận theo bài; deleteComment() kiểm tra quyền", "Đã triển khai; chưa có trường hidden (KD08)"],
         ["Lượt thích", "likes.json + dataStore.js", "{ postId: [username] }", "object", "Mỗi người một lượt/bài", "Đã triển khai"],
         ["Cài đặt kiểm duyệt", "aov_mod_settings (LocalStorage)", "requireApproval, bannedWords, autoHideThreshold", "boolean/mảng/số", "Duyệt trước khi đăng và cấu hình kiểm duyệt", "Đã có key; mới dùng requireApproval (bannedWords/autoHideThreshold chưa áp dụng)"],
-        ["Nhật ký admin", "aov_admin_log (LocalStorage)", "id, time, admin, action, targetType, targetId, detail", "hỗn hợp", "Giữ tối đa 200 bản ghi mới nhất", "Đã triển khai (chưa có tab UI — KD11)"],
+        ["Nhật ký admin", "aov_admin_log (LocalStorage)", "id, time, admin, action, targetType, targetId, detail", "hỗn hợp", "Giữ tối đa 200 bản ghi mới nhất", "Đã triển khai + tab UI (admin-log.js, KD11)"],
         ["Bản sao lưu admin", "File JSON tải về (aov-hub-backup-*.json)", "meta{app, exportedAt, version} + data{aov_posts, aov_mod_settings, aov_likes, aov_comments, aov_favorites, aov_builds, aov_hero_history, aov_hero_compare, aov_admin_log}", "object", "Xuất/nhập toàn bộ qua admin.js; khôi phục ghi đè localStorage rồi tải lại trang", "Đã triển khai (CM04)"],
         ["Tướng", "heroes.json (ghi qua API /api/heroes)", "id, name, alias, image, role, difficulty, stats, skills, recommendedBuild", "hỗn hợp", "32 tướng; admin CRUD ghi thẳng file JSON", "Đã triển khai; thiếu lane, title (L06)"],
         ["Trang bị", "items.json", "id, name, alias, image, type, price, stats, passive, description, related", "hỗn hợp", "40 trang bị; ID theo nhóm 1xx-6xx", "Đã triển khai"],
@@ -286,7 +285,7 @@
         ["Xem build đã duyệt và hướng dẫn", "Có", "Có", "Có", "Có", "Đã có", "builds.html."],
         ["Gửi hướng dẫn build", "Không", "Có", "Có", "Có", "Chưa làm", "HD06."],
         ["Bình chọn Hữu ích cho build", "Không", "Có", "Có", "Có", "Chưa làm", "HD07: mỗi người 1 lượt/build."],
-        ["Xem nhật ký admin", "Không", "Không", "Không", "Có", "Một phần", "adminlog.js đã có + mục 'Nhật ký' trong khung; chưa có tab UI (KD11)."]
+        ["Xem nhật ký admin", "Không", "Không", "Không", "Có", "Đã có", "admin-log.js: mục 'Nhật ký thao tác' trong tab Nhật ký (lọc, đếm, bảng, xoá nhật ký — KD11)."]
       ]
     },
     {
@@ -327,7 +326,8 @@
         ["15/10/2026", "Tổng hợp", "Cập nhật số liệu", "—", "Số file JS top-level 24 -> 25 (thêm profile.js, tổng 36 file); 'Công việc chính làm một phần' 2 -> 1 (chỉ còn STT 20); 'Lỗi còn tồn' L06, L19 -> L06; bỏ 1 việc ở 'Việc nên làm tiếp'."],
         ["15/10/2026", "KD03", "Sửa trạng thái", "Một phần -> Đã xong", "admin-pending.js: mục 'Bài viết chờ duyệt' + nút Duyệt/Từ chối kèm ô lý do (tuỳ chọn); approvePost()/rejectPost() trong feed.js (chỉ admin, ghi reviewedBy/reviewedAt + nhật ký); badge 'Chờ duyệt' tự cập nhật."],
         ["15/10/2026", "KD12 / CM06", "Sửa trạng thái", "Chưa làm / Một phần -> Đã xong", "test-admin-pending.cjs (24 PASS) kiểm duyệt; test-admin-data.cjs (23 PASS) lớp gộp dữ liệu (adminDataCheckRun/Load + loadData)."],
-        ["15/10/2026", "Số liệu", "Cập nhật", "—", "Thêm admin-pending.js (JS top-level 25 -> 26); test 17 -> 19 file; 'Việc nên làm tiếp' P0 admin-pending -> còn 7 file tab; npm test 18/19 PASS (test-feed-page đỏ do bài 'xcascsâccs' lúc chạy app trong posts.json, không liên quan)."]
+        ["15/10/2026", "Số liệu", "Cập nhật", "—", "Thêm admin-pending.js (JS top-level 25 -> 26); test 17 -> 19 file; 'Việc nên làm tiếp' P0 admin-pending -> còn 7 file tab; npm test 18/19 PASS (test-feed-page đỏ do bài 'xcascsâccs' lúc chạy app trong posts.json, không liên quan)."],
+        ["17/10/2026", "KD11 / admin-log.js", "Sửa trạng thái", "Một phần -> Đã xong", "admin-log.js: mục 'Nhật ký thao tác' trong tab Nhật ký (lọc từ khoá + loại đối tượng, 3 ô đếm, bảng hành động/đối tượng/chi tiết, nút Làm mới/Xoá nhật ký); adminlog.js thêm clearAdminLog() (chỉ admin); test-admin-log.cjs 23 test PASS. Bỏ dòng 'Tab Nhật ký admin' khỏi 'Việc nên làm tiếp'; 'Tab quản trị còn thiếu file' chỉnh về 2 (admin-build-review.js, admin-reports.js)."]
       ]
     }
   ]

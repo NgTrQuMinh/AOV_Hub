@@ -477,19 +477,150 @@ main {
 }
 
 /* ---------- 7. FOOTER ---------- */
-/* HTML thật: <footer id="site-footer"> được layout.js bơm partial vào.
-   CSS cũ chỉ có .site-footer nên không khớp — nay phủ cả #site-footer. */
-#site-footer,
-.site-footer {
+/* Trang có <footer id="site-footer">, layout.js bơm partial vào bên trong.
+   Partial mới: .site-footer > .footer-grid (5 khối) + .footer-bottom.
+   Footer là khối tối duy nhất của site: nền #3A2F1C, chữ #E9D9B0. */
+#site-footer {
     width: 100%;
-    background: var(--color-bg-footer);
-    border-top: 3px solid var(--color-gold);
-    margin-top: auto;
-    padding: 48px 0 24px;
-    color: var(--color-text);
+    color: #E9D9B0;
 }
 
-/* Bên trong dùng container 1200px, grid 3 cột */
+/* Nền tối tràn viền + nội dung căn theo container (--container-max) */
+.site-footer {
+    width: 100%;
+    background: #3A2F1C;
+    border-top: 3px solid var(--color-gold);
+    margin-top: 64px;
+    padding: 50px max(24px, calc((100% - var(--container-max)) / 2)) 24px;
+    color: #E9D9B0;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 36px;
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.footer-logo {
+    font-size: var(--fs-xl);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: #EFCC72;
+}
+
+.footer-logo b {
+    color: #FFFFFF;
+}
+
+.footer-about {
+    max-width: 260px;
+    margin: 0;
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+    color: #E9D9B0;
+}
+
+.footer-social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.footer-social a {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border: 1px solid rgba(250, 243, 225, .25);
+    border-radius: var(--radius-pill);
+    font-size: var(--fs-sm);
+    line-height: 1;
+    color: #E9D9B0;
+    transition: color var(--transition), border-color var(--transition);
+}
+
+.footer-social a:hover {
+    color: #EFCC72;
+    border-color: #EFCC72;
+}
+
+.footer-col h4 {
+    margin: 0 0 var(--space-4);
+    font-size: var(--fs-md);
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+.footer-col ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-col a {
+    font-size: var(--fs-base);
+    color: #E9D9B0;
+    transition: color var(--transition);
+}
+
+.footer-col a:hover {
+    color: #EFCC72;
+}
+
+.footer-project p {
+    max-width: 240px;
+    margin: 0;
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+    color: #E9D9B0;
+}
+
+.footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-7);
+    padding-top: var(--space-5);
+    border-top: 1px solid rgba(250, 243, 225, .18);
+    font-size: var(--fs-sm);
+    color: rgba(233, 217, 176, .78);
+}
+
+/* Responsive: 1024 (3 cột) / 768 (2 cột) / 480 (1 cột) */
+@media (max-width: 1024px) {
+    .footer-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* --- Selector footer CŨ không còn dùng trong footer.html mới (giữ lại, không xóa) --- */
 .site-footer__inner {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
