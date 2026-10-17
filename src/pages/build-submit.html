@@ -8,14 +8,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/public/css/variables.css" />
-    <link rel="stylesheet" href="/public/css/common.css" />
-    <link rel="stylesheet" href="/public/css/header.css" />
-    <link rel="stylesheet" href="/public/css/footer.css" />
-    <link rel="stylesheet" href="/public/css/build-submit.css" />
+    <link rel="stylesheet" href="/css/reset.css" />
+    <link rel="stylesheet" href="/css/variables.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/build-submit.css" />
 </head>
-<body class="build-submit-page">
-    <div id="app-header" class="app-header"></div>
+<body class="build-submit-page" data-page="builds">
+    <header id="site-header"></header>
 
     <main id="main" class="main">
         <section class="container build-submit-container">
@@ -134,7 +133,7 @@
         </section>
     </main>
 
-    <div id="app-footer" class="app-footer"></div>
+    <footer id="site-footer"></footer>
 
     <script src="/src/js/config.js"></script>
     <script src="/src/js/dataStore.js"></script>
