@@ -19,6 +19,7 @@
   <main>
     <section class="hero-banner">
       <div class="container hero-banner__inner">
+        <span class="hero-tag">Mùa giải mới · Cập nhật meta</span>
         <h1 class="hero-banner__title">Tra cứu <span>Tướng</span> &amp; <span>Trang bị</span> Arena of Valor</h1>
         <p class="hero-banner__desc">
           AOV HUB tổng hợp thông tin tướng, trang bị và gợi ý lên đồ, giúp bạn chuẩn bị
@@ -28,6 +29,29 @@
           <a class="btn btn-primary" href="/src/pages/heroes.html">Khám phá Tướng</a>
           <a class="btn btn-outline" href="/src/pages/items.html">Xem Trang bị</a>
         </div>
+        <div class="hero-trending">
+          <span class="hero-trending-label">Được tìm nhiều:</span>
+          <div id="hero-trending"></div>
+        </div>
+        <div class="hero-visual" id="hero-visual">
+          <img class="hero-visual-img" id="hero-week-img" src="/assets/images/placeholder.svg" alt="Tướng của tuần">
+          <div class="hero-float hero-float-name">
+            <small>Tướng của tuần</small>
+            <b id="hero-week-name"></b>
+            <span id="hero-week-role"></span>
+          </div>
+          <div class="hero-float hero-float-win">
+            <small>Tỉ lệ thắng</small>
+            <b id="hero-week-win"></b>
+          </div>
+          <div class="hero-controls">
+            <div id="hero-dots"></div>
+            <div class="hero-arrows">
+              <button type="button" id="hero-prev" aria-label="Trước">‹</button>
+              <button type="button" id="hero-next" aria-label="Sau">›</button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -36,28 +60,53 @@
         <a class="quick-nav__item" href="/src/pages/heroes.html">
           <span class="quick-nav__icon" aria-hidden="true">⚔️</span>
           Danh sách Tướng
+          <small class="quick-desc">Lọc theo vai trò, độ khó</small>
+          <span class="quick-go">→</span>
         </a>
         <a class="quick-nav__item" href="/src/pages/items.html">
           <span class="quick-nav__icon" aria-hidden="true">🛡️</span>
           Danh sách Trang bị
+          <small class="quick-desc">Chỉ số và nội tại</small>
+          <span class="quick-go">→</span>
         </a>
         <a class="quick-nav__item" href="/src/pages/compare.html">
           <span class="quick-nav__icon" aria-hidden="true">⚖️</span>
           So sánh Tướng
+          <small class="quick-desc">Đặt hai tướng cạnh nhau</small>
+          <span class="quick-go">→</span>
         </a>
         <a class="quick-nav__item" href="/src/pages/favorite.html">
           <span class="quick-nav__icon" aria-hidden="true">⭐</span>
           Yêu thích
+          <small class="quick-desc">Tướng bạn đã lưu</small>
+          <span class="quick-go">→</span>
         </a>
       </nav>
     </div>
 
-    <section class="section">
+    <section class="home-section" id="roles-section">
       <div class="container">
-        <div class="section__header">
-          <h2>Tướng nổi bật</h2>
-          <a class="section__link" href="/src/pages/heroes.html">Xem tất cả &rarr;</a>
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Chọn theo lối chơi</span>
+            <h2>Khám phá theo vai trò</h2>
+          </div>
+          <a class="section-link" href="/src/pages/heroes.html">Xem tất cả →</a>
         </div>
+        <div id="role-grid"></div>
+      </div>
+    </section>
+
+    <section class="section home-section" id="featured-section">
+      <div class="container">
+        <div class="section__header section-head">
+          <div>
+            <span class="eyebrow">Được xem nhiều</span>
+            <h2>Tướng nổi bật</h2>
+          </div>
+          <a class="section__link section-link" href="/src/pages/heroes.html">Xem tất cả →</a>
+        </div>
+        <div id="role-tabs"></div>
         <div class="grid grid--heroes" id="featured-heroes"></div>
       </div>
     </section>
@@ -69,6 +118,60 @@
           <a class="section__link" href="/src/pages/items.html">Xem tất cả &rarr;</a>
         </div>
         <div class="grid grid--items" id="featured-items"></div>
+      </div>
+    </section>
+
+    <section class="home-section" id="builds-section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Cộng đồng chia sẻ</span>
+            <h2>Bản lên đồ được yêu thích</h2>
+          </div>
+          <a class="section-link" href="/src/pages/builds.html">Xem tất cả Build →</a>
+        </div>
+        <div id="hot-builds"></div>
+      </div>
+    </section>
+
+    <section class="home-section" id="news-section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Tin tức &amp; cộng đồng</span>
+            <h2>Có gì mới?</h2>
+          </div>
+          <a class="section-link" href="/src/pages/feed.html">Xem bảng tin →</a>
+        </div>
+        <div class="news-grid">
+          <div id="news-feature"></div>
+          <div id="news-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section" id="promo-section">
+      <div class="container">
+        <div class="promo-grid">
+          <a class="promo-card promo-light" href="/src/pages/builds.html">
+            <div class="promo-text">
+              <span class="promo-eyebrow">Công cụ lên đồ</span>
+              <h3>Tự ghép 6 trang bị cho tướng của bạn</h3>
+              <p>Chọn tướng, xếp trang bị, lưu lại và chia sẻ với cộng đồng.</p>
+              <span class="promo-btn">Bắt đầu lên đồ →</span>
+            </div>
+            <img class="promo-img" src="/assets/images/placeholder.svg" alt="Công cụ lên đồ">
+          </a>
+          <a class="promo-card promo-dark" href="/src/pages/compare.html">
+            <div class="promo-text">
+              <span class="promo-eyebrow">So sánh Tướng</span>
+              <h3>Đặt hai tướng cạnh nhau, chọn người phù hợp</h3>
+              <p>Xem chỉ số, kỹ năng và vai trò song song trên một màn hình.</p>
+              <span class="promo-btn">So sánh ngay →</span>
+            </div>
+            <img class="promo-img" src="/assets/images/placeholder.svg" alt="So sánh tướng">
+          </a>
+        </div>
       </div>
     </section>
   </main>
