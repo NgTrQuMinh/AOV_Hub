@@ -1,26 +1,55 @@
 <!-- Footer dùng chung — Phụ trách: Người 1 — nạp bằng js/layout.js -->
-<div class="container site-footer__inner">
-    <div class="site-footer__brand">
-        <a class="site-logo" href="{{BASE}}index.html">
-            <span class="site-logo__mark">AOV</span><span class="site-logo__text">HUB</span>
-        </a>
-        <p>Website tra cứu tướng, trang bị và build đề xuất dành cho Arena of Valor. Dữ liệu tổng hợp phục vụ mục đích học tập.</p>
+<div class="site-footer">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <span class="footer-logo">AOV<b>HUB</b></span>
+            <p class="footer-about">Nơi tra cứu tướng, trang bị và chia sẻ bản lên đồ Arena of Valor dành cho cộng đồng game thủ Việt.</p>
+            <div class="footer-social">
+                <a href="#">Facebook</a>
+                <a href="#">YouTube</a>
+                <a href="#">TikTok</a>
+                <a href="#">Discord</a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4>Khám phá</h4>
+            <ul>
+                <li><a href="{{BASE}}src/pages/heroes.html">Danh sách Tướng</a></li>
+                <li><a href="{{BASE}}src/pages/items.html">Danh sách Trang bị</a></li>
+                <li><a href="{{BASE}}src/pages/builds.html">Build</a></li>
+                <li><a href="{{BASE}}src/pages/compare.html">So sánh Tướng</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Cộng đồng</h4>
+            <ul>
+                <li><a href="{{BASE}}src/pages/feed.html">Bảng tin</a></li>
+                <li><a href="#">Đăng bài</a></li>
+                <li><a href="{{BASE}}src/pages/favorite.html">Yêu thích</a></li>
+                <li><a href="#">Hồ sơ của tôi</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4>Hỗ trợ</h4>
+            <ul>
+                <li><a href="#">Giới thiệu dự án</a></li>
+                <li><a href="#">Báo lỗi dữ liệu</a></li>
+                <li><a href="#">Liên hệ</a></li>
+                <li><a href="#">Điều khoản sử dụng</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col footer-project">
+            <h4>Về dự án</h4>
+            <p>Dự án học tập dùng dữ liệu mẫu, không có máy chủ và không thu thập thông tin cá nhân.</p>
+        </div>
     </div>
 
-    <nav class="site-footer__nav" aria-label="Liên kết nhanh">
-        <a href="{{BASE}}index.html">Trang chủ</a>
-        <a href="{{BASE}}src/pages/heroes.html">Tướng</a>
-        <a href="{{BASE}}src/pages/items.html">Trang bị</a>
-        <a href="{{BASE}}src/pages/compare.html">So sánh</a>
-        <a href="{{BASE}}src/pages/favorite.html">Yêu thích</a>
-    </nav>
-
-    <div class="site-footer__meta">
-        <p>Đồ án môn học — HTML/CSS/JS thuần.</p>
-        <p>Dữ liệu JSON, lưu tạm bằng LocalStorage.</p>
+    <div class="footer-bottom">
+        <span>&copy; <span id="footer-year">2026</span> AOV Hub. Dự án học tập, không liên kết với nhà phát hành game.</span>
+        <span>Chính sách bảo mật · Điều khoản</span>
     </div>
-</div>
-
-<div class="site-footer__bottom">
-    <p>&copy; <span id="footer-year"></span> AOV HUB. Sản phẩm đồ án sinh viên, không liên kết với Garena/Tencent Games.</p>
 </div>
