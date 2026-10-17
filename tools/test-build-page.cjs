@@ -1,7 +1,8 @@
 /**
  * test-build-page.cjs - Kiểm tra trang Build đề xuất (src/pages/builds.html):
- * danh sách build, ghép tên tướng + trang bị, ô tìm build theo từ khoá (debounce)
- * và đếm kết quả.
+ * danh sách build, ghép tên tướng + trang bị, ô tìm build theo từ khoá (debounce),
+ * bộ lọc đường / vai trò / sắp xếp (HD08), liên kết sang trang chi tiết build (HD02),
+ * ghi bộ lọc lên URL và đếm kết quả.
  * Chạy: node tools/test-build-page.cjs
  */
 const fs = require('fs');
@@ -80,6 +81,27 @@ function cardCount(page) {
     return (cardHtml(page).match(/class="build-card"/g) || []).length;
 }
 
+/** Các id build xuất hiện trong link build-detail.html?id=... của danh sách. */
+function detailLinksOf(page) {
+    return [...cardHtml(page).matchAll(/build-detail\.html\?id=(\d+)/g)].map((match) => Number(match[1]));
+}
+
+/** Chọn 1 giá trị cho <select> rồi bắn 'change' (bộ lọc select chạy ngay, không debounce). */
+function pickOption(page, id, value) {
+    const select = page.el(id);
+    select.value = value;
+    fire(select, 'change', page.doc);
+    return select;
+}
+
+/** Tên build theo thứ tự sau khi sắp xếp y hệt build.js (localeCompare 'vi', không phân biệt dấu). */
+function sortedBuildNames(builds, direction) {
+    return builds
+        .slice()
+        .sort((a, b) => direction * String(a.name).localeCompare(String(b.name), 'vi', { sensitivity: 'base' }))
+        .map((build) => build.name);
+}
+
 (async () => {
     /* ---------- 1. Thanh lọc + danh sách ban đầu ---------- */
     section('1. Danh sách build');
@@ -120,6 +142,45 @@ function cardCount(page) {
         itemLinks >= BUILDS_JSON.length,
         String(itemLinks));
 
+    /* ---------- 1b. Bộ lọc + liên kết chi tiết (HD08/HD02) ---------- */
+    check('trang có đủ bộ lọc đường / vai trò / sắp xếp',
+        ['build-lane-filter', 'build-role-filter', 'build-sort-filter'].every((id) => Boolean(base.el(id))));
+
+    const laneOptions = base.el('build-lane-filter').options.map((option) => unescapeHtml(option.getAttribute('value') || ''));
+    const laneValues = [...new Set(BUILDS_JSON.map((build) => build.lane))];
+    check('ô lọc đường có đủ các đường trong builds.json + "Tất cả đường"',
+        laneValues.every((lane) => laneOptions.includes(lane)) && laneOptions.includes('all'),
+        laneOptions.join(' | '));
+
+    const roleOptions = base.el('build-role-filter').options.map((option) => unescapeHtml(option.getAttribute('value') || ''));
+    const roleValues = [...new Set(HEROES_JSON.flatMap((hero) => hero.role || []))];
+    check('ô lọc vai trò có đủ vai trò trong heroes.json + "Tất cả vai trò"',
+        roleValues.every((role) => roleOptions.includes(role)) && roleOptions.includes('all'),
+        roleOptions.join(' | '));
+
+    const detailLinks = detailLinksOf(base);
+    check('mỗi thẻ build liên kết tới build-detail.html?id=<id> của chính nó',
+        BUILDS_JSON.every((build) => detailLinks.includes(build.id)),
+        `có ${detailLinks.length} link`);
+
+    const laneBadgesOk = BUILDS_JSON.every((build) =>
+        cardHtml(base).includes(`build-card__lane">${build.lane}<`));
+    check('mỗi thẻ build hiển thị huy hiệu đường đi',
+        laneBadgesOk,
+        laneBadgesOk ? '' : 'thiếu huy hiệu đường đi');
+
+    const skillFactsOk = BUILDS_JSON.every((build) =>
+        !build.skillOrder || unescapeHtml(cardHtml(base)).includes(build.skillOrder));
+    check('mỗi thẻ build hiển thị thứ tự nâng kỹ năng',
+        skillFactsOk,
+        skillFactsOk ? '' : 'thiếu thứ tự kỹ năng');
+
+    const playstyleOk = BUILDS_JSON.every((build) =>
+        !build.playstyle || unescapeHtml(cardHtml(base)).includes(build.playstyle));
+    check('mỗi thẻ build hiển thị lối chơi (playstyle)',
+        playstyleOk,
+        playstyleOk ? '' : 'thiếu lối chơi');
+
     /* ---------- 2. Tìm theo tên tướng (gõ từ khoá, debounce) ---------- */
     section('2. Tìm theo từ khoá');
     // Build của khách hàng đầu (Valhein, heroId 1): lọc theo tên tướng chính xác.
@@ -153,12 +214,104 @@ function cardCount(page) {
         && buildNames(fromUrl).join('|') === targetBuilds.map((build) => build.name).join('|'),
         buildNames(fromUrl).join('|'));
 
-    /* ---------- 5. Không lỗi JavaScript ---------- */
-    section('5. Không lỗi');
+    /* ---------- 5. Lọc theo đường (lane) ---------- */
+    section('5. Lọc theo đường');
+    const lanePage = await openBuilds();
+    const lane = 'Rừng';
+    const laneBuilds = BUILDS_JSON.filter((build) => build.lane === lane);
+    pickOption(lanePage, 'build-lane-filter', lane);
+    check(`lọc đường "${lane}" -> còn ${laneBuilds.length} build đúng đường`,
+        cardCount(lanePage) === laneBuilds.length
+        && buildNames(lanePage).join('|') === laneBuilds.map((build) => build.name).join('|'),
+        buildNames(lanePage).join('|'));
+    check('đếm kết quả đổi theo bộ lọc đường',
+        lanePage.el('build-count').textContent === `${laneBuilds.length} build`,
+        String(lanePage.el('build-count').textContent));
+    check('bộ lọc đường được ghi lên URL (?lane=)',
+        decodeURIComponent(lanePage.location.search).includes(`lane=${lane}`),
+        lanePage.location.search);
+
+    /* ---------- 6. Lọc theo vai trò tướng ---------- */
+    section('6. Lọc theo vai trò');
+    const rolePage = await openBuilds();
+    const role = 'Xạ thủ';
+    const roleHeroIds = HEROES_JSON.filter((hero) => (hero.role || []).includes(role)).map((hero) => hero.id);
+    const roleBuilds = BUILDS_JSON.filter((build) => roleHeroIds.includes(build.heroId));
+    pickOption(rolePage, 'build-role-filter', role);
+    check(`lọc vai trò "${role}" -> còn ${roleBuilds.length} build của tướng vai trò đó`,
+        cardCount(rolePage) === roleBuilds.length
+        && buildNames(rolePage).join('|') === roleBuilds.map((build) => build.name).join('|'),
+        buildNames(rolePage).join('|'));
+
+    /* ---------- 7. Sắp xếp theo tên ---------- */
+    section('7. Sắp xếp theo tên');
+    const sortPage = await openBuilds();
+    pickOption(sortPage, 'build-sort-filter', 'name-asc');
+    check('sắp xếp A → Z đúng thứ tự tên build',
+        buildNames(sortPage).join('|') === sortedBuildNames(BUILDS_JSON, 1).join('|'),
+        buildNames(sortPage).slice(0, 3).join('|'));
+    pickOption(sortPage, 'build-sort-filter', 'name-desc');
+    check('sắp xếp Z → A đảo ngược thứ tự tên build (vẫn đủ build)',
+        sortPage.el('build-count').textContent === `${BUILDS_JSON.length} build`
+        && buildNames(sortPage).join('|') === sortedBuildNames(BUILDS_JSON, -1).join('|'),
+        buildNames(sortPage).slice(0, 3).join('|'));
+
+    /* ---------- 8. Kết hợp nhiều bộ lọc ---------- */
+    section('8. Kết hợp bộ lọc');
+    const comboPage = await openBuilds();
+    const comboHeroIds = HEROES_JSON.filter((hero) => (hero.role || []).includes(role)).map((hero) => hero.id);
+    const comboBuilds = BUILDS_JSON.filter((build) => build.lane === lane && comboHeroIds.includes(build.heroId));
+    pickOption(comboPage, 'build-lane-filter', lane);
+    pickOption(comboPage, 'build-role-filter', role);
+    check(`đường "${lane}" + vai trò "${role}" -> ${comboBuilds.length} build`,
+        cardCount(comboPage) === comboBuilds.length
+        && buildNames(comboPage).join('|') === comboBuilds.map((build) => build.name).join('|'),
+        buildNames(comboPage).join('|'));
+
+    /* ---------- 9. Bộ lọc đọc lại từ URL ---------- */
+    section('9. Bộ lọc đọc lại từ URL');
+    const laneUrl = await openBuilds('?lane=' + encodeURIComponent(lane));
+    check(`mở bằng ?lane=${lane} -> lọc sẵn đúng đường`,
+        cardCount(laneUrl) === laneBuilds.length
+        && buildNames(laneUrl).join('|') === laneBuilds.map((build) => build.name).join('|'),
+        buildNames(laneUrl).join('|'));
+    check('ô lọc đường hiển thị đúng giá trị đọc từ URL',
+        laneUrl.el('build-lane-filter').value === lane,
+        String(laneUrl.el('build-lane-filter').value));
+
+    const roleUrl = await openBuilds('?role=' + encodeURIComponent(role));
+    check(`mở bằng ?role=${role} -> lọc sẵn đúng vai trò`,
+        cardCount(roleUrl) === roleBuilds.length,
+        String(cardCount(roleUrl)));
+    check('ô lọc vai trò hiển thị đúng giá trị đọc từ URL',
+        roleUrl.el('build-role-filter').value === role,
+        String(roleUrl.el('build-role-filter').value));
+
+    const sortUrl = await openBuilds('?sort=name-asc');
+    check('mở bằng ?sort=name-asc -> sắp xếp sẵn đúng thứ tự',
+        buildNames(sortUrl).join('|') === sortedBuildNames(BUILDS_JSON, 1).join('|'));
+    check('ô sắp xếp hiển thị đúng giá trị đọc từ URL',
+        sortUrl.el('build-sort-filter').value === 'name-asc',
+        String(sortUrl.el('build-sort-filter').value));
+
+    /* ---------- 9b. Giá trị lạ trên URL không làm vỡ trang ---------- */
+    section('9b. URL lạ');
+    const bogus = await openBuilds('?lane=Không-Có&role=Sai&sort=zzz');
+    check('lane/role/sort lạ trên URL -> bỏ qua, hiện đủ build như mặc định',
+        cardCount(bogus) === BUILDS_JSON.length
+        && bogus.el('build-lane-filter').value === 'all'
+        && bogus.el('build-role-filter').value === 'all'
+        && bogus.el('build-sort-filter').value === 'default',
+        `lane=${bogus.el('build-lane-filter').value} role=${bogus.el('build-role-filter').value} sort=${bogus.el('build-sort-filter').value}`);
+
+    /* ---------- 10. Không lỗi JavaScript ---------- */
+    section('10. Không lỗi');
+    const allPages = [base, fromUrl, lanePage, rolePage, sortPage, comboPage, laneUrl, roleUrl, sortUrl, bogus];
     check('mọi lần mở trang không ném lỗi JavaScript',
-        [base, fromUrl].every((page) =>
+        allPages.every((page) =>
             page.errors.filter((error) => !error.startsWith('console.error')).length === 0),
-        [base, fromUrl].flatMap((page) => page.errors).join(' | '));
+        allPages.flatMap((page) => page.errors).join(' | '));
+
 
     console.log(`\n${passed} test PASS, ${failures.length} test FAIL`);
     if (failures.length) {
