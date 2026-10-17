@@ -1,8 +1,8 @@
-﻿/**
+/**
  * HD06-c - build-submit.css
- * Trang Ã¡p dá»¥ng: src/pages/build-submit.html
- * CSS giao diá»‡n nháº¹ nhÃ ng, dÃ¹ng biáº¿n trong public/css/variables.css khi cÃ³.
- * CÃ¡c nhÃ³m class Ä‘Ã£ style: build-submit-page, build-submit-container, build-submit-header,
+ * Trang áp dụng: src/pages/build-submit.html
+ * CSS giao diện nhẹ nhàng, dùng biến trong public/css/variables.css khi có.
+ * Các nhóm class đã style: build-submit-page, build-submit-container, build-submit-header,
  * build-submit-desc, build-submit-field, form-hint, form-error, build-submit-phase,
  * build-submit-filter, build-submit-items-grid, build-submit-item, build-submit-preview,
  * build-submit-preview__item, build-submit-tip, build-submit-actions.
