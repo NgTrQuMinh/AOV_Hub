@@ -353,9 +353,9 @@ function walkAll(root, visit) {
 
 /* ================= API quản lý tướng (mô phỏng vite.config.js) ================= */
 
-/** Đọc nội dung heroes.json thật làm dữ liệu khởi tạo cho "file" của API. */
-function readHeroesFile() {
-    const file = path.join(ROOT, 'src', 'data', 'heroes.json');
+/** Đọc nội dung một file data/*.json thật làm dữ liệu khởi tạo cho "file" của API. */
+function readDataFile(fileName) {
+    const file = path.join(ROOT, 'src', 'data', fileName);
     if (!fs.existsSync(file)) return [];
 
     try {
@@ -366,14 +366,15 @@ function readHeroesFile() {
 }
 
 /**
- * "File" heroes.json dùng chung giữa nhiều lần mở trang trong test (giống file thật).
- * store.heroes = null nghĩa là chưa nạp, lần request đầu sẽ đọc từ heroes.json.
+ * Các "file" JSON mà API nội bộ đọc/ghi (heroes / items / builds) dùng chung giữa
+ * nhiều lần mở trang trong test (giống file thật).
+ * store.<tên> = null nghĩa là chưa nạp, lần request đầu sẽ đọc từ data/<tên>.json.
  */
-function createHeroesApi(initial) {
-    return { heroes: Array.isArray(initial) ? initial : null };
+function createDataApi() {
+    return { heroes: null, items: null, builds: null };
 }
 
-function heroesApiResponse(status, payload) {
+function jsonResponse(status, payload) {
     return {
         ok: status >= 200 && status < 300,
         status,
@@ -384,14 +385,14 @@ function heroesApiResponse(status, payload) {
 
 /** Mô phỏng đúng các route /api/heroes của plugin trong vite.config.js. */
 function handleHeroesApi(store, pathname, options) {
-    if (!Array.isArray(store.heroes)) store.heroes = readHeroesFile();
+    if (!Array.isArray(store.heroes)) store.heroes = readDataFile('heroes.json');
 
     const method = String((options && options.method) || 'GET').toUpperCase();
     const id = pathname.startsWith('/api/heroes/')
         ? decodeURIComponent(pathname.slice('/api/heroes/'.length))
         : '';
 
-    if (method === 'GET' && !id) return heroesApiResponse(200, store.heroes.slice());
+    if (method === 'GET' && !id) return jsonResponse(200, store.heroes.slice());
 
     let body = {};
     if (options && options.body) {
@@ -402,7 +403,7 @@ function handleHeroesApi(store, pathname, options) {
         }
     }
 
-    if (body === null) return heroesApiResponse(400, { error: 'JSON không hợp lệ' });
+    if (body === null) return jsonResponse(400, { error: 'JSON không hợp lệ' });
 
     if (method === 'POST' && !id) {
         const max = store.heroes.reduce((current, hero) => {
@@ -412,29 +413,61 @@ function handleHeroesApi(store, pathname, options) {
 
         const hero = Object.assign({}, body, { id: Math.floor(max) + 1 });
         store.heroes.push(hero);
-        return heroesApiResponse(201, hero);
+        return jsonResponse(201, hero);
     }
 
     if (method === 'PUT' && id) {
         const index = store.heroes.findIndex((hero) => String(hero.id) === String(id));
-        if (index === -1) return heroesApiResponse(404, { error: 'Không tìm thấy tướng' });
+        if (index === -1) return jsonResponse(404, { error: 'Không tìm thấy tướng' });
 
         const hero = Object.assign({}, store.heroes[index], body, {
             id: store.heroes[index].id,
             updatedAt: new Date().toISOString(),
         });
         store.heroes[index] = hero;
-        return heroesApiResponse(200, hero);
+        return jsonResponse(200, hero);
     }
 
     if (method === 'DELETE' && id) {
         const before = store.heroes.length;
         store.heroes = store.heroes.filter((hero) => String(hero.id) !== String(id));
-        if (store.heroes.length === before) return heroesApiResponse(404, { error: 'Không tìm thấy tướng' });
-        return heroesApiResponse(200, { ok: true });
+        if (store.heroes.length === before) return jsonResponse(404, { error: 'Không tìm thấy tướng' });
+        return jsonResponse(200, { ok: true });
     }
 
-    return heroesApiResponse(405, { error: 'Phương thức không được hỗ trợ' });
+    return jsonResponse(405, { error: 'Phương thức không được hỗ trợ' });
+}
+
+/**
+ * Mô phỏng các route bộ sưu tập ghi CẢ mảng của vite.config.js: /api/items và
+ * /api/builds chỉ có GET (đọc cả mảng) và PUT (ghi đè cả mảng) — không có POST,
+ * PUT theo id hay DELETE như /api/heroes. Mọi thao tác CRUD của admin-items.js
+ * (thêm / sửa / xoá + dọn tham chiếu) đều đi qua PUT này.
+ */
+function handleCollectionApi(store, name, options) {
+    if (!Array.isArray(store[name])) store[name] = readDataFile(name + '.json');
+
+    const method = String((options && options.method) || 'GET').toUpperCase();
+
+    if (method === 'GET') return jsonResponse(200, store[name].slice());
+
+    if (method === 'PUT') {
+        let body = null;
+        if (options && options.body) {
+            try {
+                body = JSON.parse(options.body);
+            } catch (error) {
+                body = null;
+            }
+        }
+
+        if (!Array.isArray(body)) return jsonResponse(400, { error: 'Body phải là một mảng' });
+
+        store[name] = body;
+        return jsonResponse(200, { ok: true, count: body.length });
+    }
+
+    return jsonResponse(405, { error: 'Phương thức không được hỗ trợ' });
 }
 
 /**
@@ -587,9 +620,10 @@ function loadPage(options) {
     const { page, search = '', storage = new Map(), login = null, failData = [], data = {}, api = null, seed = null } = options;
     const brokenFiles = new Set(Array.isArray(failData) ? failData : [failData].filter(Boolean));
 
-    // "File" heroes.json dùng chung cho API /api/heroes. Truyền cùng object api qua
-    // nhiều lần open() để mô phỏng file được ghi bền (giống chạy thật).
-    const heroesApi = api || createHeroesApi(null);
+    // "File" heroes.json / items.json / builds.json dùng chung cho API nội bộ.
+    // Truyền cùng object api qua nhiều lần open() để mô phỏng file được ghi bền
+    // (giống chạy thật).
+    const dataApi = api || createDataApi();
 
     const html = fs.readFileSync(path.join(ROOT, page), 'utf8');
     const scripts = [...html.matchAll(/<script src="\/src\/js\/([^"]+)"><\/script>/g)].map((m) => m[1]);
@@ -733,7 +767,16 @@ function loadPage(options) {
 
             // API quản lý tướng (đọc/ghi "file" heroes.json) — giống vite.config.js.
             if (pathname === '/api/heroes' || pathname.startsWith('/api/heroes/')) {
-                return handleHeroesApi(heroesApi, pathname, fetchOptions);
+                return handleHeroesApi(dataApi, pathname, fetchOptions);
+            }
+
+            // API bộ sưu tập ghi CẢ mảng (/api/items, /api/builds) — GET/PUT như
+            // vite.config.js (không có POST / PUT theo id như /api/heroes).
+            if (pathname === '/api/items') {
+                return handleCollectionApi(dataApi, 'items', fetchOptions);
+            }
+            if (pathname === '/api/builds') {
+                return handleCollectionApi(dataApi, 'builds', fetchOptions);
             }
 
             // API dữ liệu dùng chung (/api/users, /api/posts, ...) không được mô phỏng:
@@ -799,8 +842,8 @@ function loadPage(options) {
         alerts,
         /** Map localStorage của lần mở trang này (đã copy, không phải Map gốc truyền vào). */
         storage: local,
-        /** "File" heroes.json mà API /api/heroes đang đọc/ghi. */
-        api: heroesApi,
+        /** Các "file" JSON mà API nội bộ đang đọc/ghi (heroes / items / builds). */
+        api: dataApi,
         run: start,
         el: (id) => document.getElementById(id),
         settled: () => new Promise((resolve) => setTimeout(resolve, 60)),
