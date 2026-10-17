@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gửi build hướng dẫn - AOV HUB</title>
+    <meta name="description" content="Gửi build hướng dẫn tướng, các giai đoạn trang bị và mẹo chơi. Sẽ được admin duyệt trước khi hiển thị." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/public/css/variables.css" />
+    <link rel="stylesheet" href="/public/css/common.css" />
+    <link rel="stylesheet" href="/public/css/header.css" />
+    <link rel="stylesheet" href="/public/css/footer.css" />
+    <link rel="stylesheet" href="/public/css/build-submit.css" />
+</head>
+<body class="build-submit-page">
+    <div id="app-header" class="app-header"></div>
+
+    <main id="main" class="main">
+        <section class="container build-submit-container">
+            <header class="build-submit-header">
+                <h1>Gửi build hướng dẫn</h1>
+                <p class="build-submit-desc">Build sẽ được admin duyệt trước khi hiển thị.</p>
+            </header>
+
+            <div id="build-submit-gate">
+                <p>Bạn cần đăng nhập để gửi build. <a href="login.html">Đăng nhập</a></p>
+            </div>
+
+            <form id="build-submit-form" novalidate hidden>
+                <div class="build-submit-field">
+                    <label for="bs-hero">Chọn tướng</label>
+                    <select id="bs-hero" name="hero"></select>
+                    <small class="form-hint">Chọn tướng mà build hướng dẫn.</small>
+                    <p class="form-error" data-error-for="hero" hidden></p>
+                </div>
+
+                <div class="build-submit-field">
+                    <label for="bs-name">Tên build</label>
+                    <input id="bs-name" name="name" type="text" maxlength="60" autocomplete="off" />
+                    <small class="form-hint">Tối đa 60 ký tự.</small>
+                    <p class="form-error" data-error-for="name" hidden></p>
+                </div>
+
+                <div class="build-submit-field">
+                    <label for="bs-lane">Đường</label>
+                    <select id="bs-lane" name="lane">
+                        <option value="">-- Chọn đường --</option>
+                        <option value="Đường Rồng">Đường Rồng</option>
+                        <option value="Rừng">Rừng</option>
+                        <option value="Đường Giữa">Đường Giữa</option>
+                        <option value="Đường Trên">Đường Trên</option>
+                    </select>
+                    <small class="form-hint">Chọn đường chơi cho build.</small>
+                    <p class="form-error" data-error-for="lane" hidden></p>
+                </div>
+
+                <div class="build-submit-field">
+                    <label for="bs-playstyle">Lối chơi</label>
+                    <textarea id="bs-playstyle" name="playstyle" maxlength="500" rows="4"></textarea>
+                    <small class="form-hint">Mô tả lối chơi, cách vận dụng kỹ năng. Tối đa 500 ký tự.</small>
+                    <p class="form-error" data-error-for="playstyle" hidden></p>
+                </div>
+
+                <div class="build-submit-field">
+                    <label for="bs-skill-order">Thứ tự nâng kỹ năng</label>
+                    <input id="bs-skill-order" name="skillOrder" type="text" maxlength="120" autocomplete="off" />
+                    <small class="form-hint">VD: 1 → 2 → 1 → 3 → 1 → R → 1</small>
+                    <p class="form-error" data-error-for="skillOrder" hidden></p>
+                </div>
+
+                <fieldset class="build-submit-phase">
+                    <legend>Đầu trận</legend>
+                    <div class="build-submit-field">
+                        <label>Trang bị</label>
+                        <div id="bs-phase-0-items"></div>
+                        <small class="form-hint">Chọn các trang bị giai đoạn đầu trận.</small>
+                    </div>
+                    <div class="build-submit-field">
+                        <label for="bs-phase-0-note">Ghi chú</label>
+                        <textarea id="bs-phase-0-note" name="phase0Note" maxlength="200" rows="2"></textarea>
+                        <small class="form-hint">Tối đa 200 ký tự.</small>
+                        <p class="form-error" data-error-for="phase0Note" hidden></p>
+                    </div>
+                </fieldset>
+
+                <fieldset class="build-submit-phase">
+                    <legend>Giữa trận</legend>
+                    <div class="build-submit-field">
+                        <label>Trang bị</label>
+                        <div id="bs-phase-1-items"></div>
+                        <small class="form-hint">Chọn các trang bị giai đoạn giữa trận.</small>
+                    </div>
+                    <div class="build-submit-field">
+                        <label for="bs-phase-1-note">Ghi chú</label>
+                        <textarea id="bs-phase-1-note" name="phase1Note" maxlength="200" rows="2"></textarea>
+                        <small class="form-hint">Tối đa 200 ký tự.</small>
+                        <p class="form-error" data-error-for="phase1Note" hidden></p>
+                    </div>
+                </fieldset>
+
+                <fieldset class="build-submit-phase">
+                    <legend>Cuối trận</legend>
+                    <div class="build-submit-field">
+                        <label>Trang bị</label>
+                        <div id="bs-phase-2-items"></div>
+                        <small class="form-hint">Chọn các trang bị giai đoạn cuối trận.</small>
+                    </div>
+                    <div class="build-submit-field">
+                        <label for="bs-phase-2-note">Ghi chú</label>
+                        <textarea id="bs-phase-2-note" name="phase2Note" maxlength="200" rows="2"></textarea>
+                        <small class="form-hint">Tối đa 200 ký tự.</small>
+                        <p class="form-error" data-error-for="phase2Note" hidden></p>
+                    </div>
+                </fieldset>
+
+                <div id="bs-items-preview" class="build-submit-preview"></div>
+
+                <fieldset class="build-submit-phase">
+                    <legend>Mẹo chơi</legend>
+                    <div id="bs-tips-list"></div>
+                    <button type="button" id="bs-tip-add">Thêm mẹo</button>
+                    <small class="form-hint">Tối đa 5 mẹo.</small>
+                </fieldset>
+
+                <div class="build-submit-actions">
+                    <button type="submit">Gửi build</button>
+                    <a href="builds.html">Hủy</a>
+                </div>
+            </form>
+
+            <div id="build-submit-result" hidden role="status"></div>
+        </section>
+    </main>
+
+    <div id="app-footer" class="app-footer"></div>
+
+    <script src="/src/js/config.js"></script>
+    <script src="/src/js/dataStore.js"></script>
+    <script src="/src/js/loadData.js"></script>
+    <script src="/src/js/components.js"></script>
+    <script src="/src/js/auth.js"></script>
+    <script src="/src/js/search.js"></script>
+    <script src="/src/js/layout.js"></script>
+    <script src="/src/js/storage.js"></script>
+    <script src="/src/js/heroData.js"></script>
+    <script src="/src/js/build-submit.js"></script>
+</body>
+</html>
+
+
