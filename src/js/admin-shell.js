@@ -25,9 +25,12 @@
  *   - Mọi mục đều mở trong admin.html?tab=<id>, không mục nào nhảy sang trang riêng.
  *   - Mục "Tướng" do hero-admin.js tự đăng ký (file này được nạp tĩnh sau
  *     admin-shell.js trong admin.html) nên không cần trường scripts.
- *   - admin-items.js và admin-builds.js do người khác viết sau (nạp qua trường
- *     scripts); chưa có file thì script 404 được bỏ qua êm và người dùng thấy
- *     "Mục này đang được phát triển." thay vì lỗi đỏ.
+ *   - Mục "Trang bị" do admin-items.js tự đăng ký qua trường scripts: ['admin-items.js']
+ *     (shell nạp file bằng thẻ <script> chèn động khi mở mục; file tự gọi
+ *     registerAdminSection()).
+ *   - admin-builds.js do người khác viết sau (nạp qua trường scripts); chưa có file thì
+ *     script 404 được bỏ qua êm và người dùng thấy "Mục này đang được phát triển." thay
+ *     vì lỗi đỏ.
  *
  * MENU DỌC
  *   Trang quản trị là MỘT mục "Quản lý": cột trái là menu dọc chia theo nhóm, cột phải

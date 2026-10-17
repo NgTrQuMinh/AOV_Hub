@@ -19,7 +19,9 @@
  *   4. Nội dung build + lưới trang bị
  *   5. Thanh tìm kiếm build
  *   6. Trạng thái không có kết quả
- *   7. Responsive: 1024 / 768 / 480
+ *   7. Thông tin trực quan + liên kết trong thẻ build (HD08/HD02)
+ *   8. Trang chi tiết hướng dẫn build (HD02/HD03/HD04)
+ *   9. Responsive: 1024 / 768 / 480
  * ========================================= */
 
 /* ---------- 1. BỐ CỤC DANH SÁCH BUILD ---------- */
@@ -226,9 +228,429 @@
     padding: 24px 0;
 }
 
-/* ---------- 7. RESPONSIVE ---------- */
+/* ---------- 7. THÔNG TIN TRỰC QUAN + LIÊN KẾT TRONG THẺ BUILD (HD08/HD02) ---------- */
+/* Hàng huy hiệu phụ: đường đi, số trang bị, thứ tự nâng kỹ năng */
+.build-card__facts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0 4px;
+}
+
+.build-card__lane {
+    background: var(--color-gold-soft);
+    color: var(--color-accent-strong);
+}
+
+.build-card__fact {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+    background: var(--color-gold-subtle);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+/* Thứ tự kỹ năng thường dài -> cho xuống hàng riêng cho dễ đọc */
+.build-card__skill {
+    flex-basis: 100%;
+    border-style: dashed;
+}
+
+.build-card__playstyle {
+    margin-top: 8px;
+    font-size: 16px;
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--color-text-soft);
+}
+
+.build-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.build-card__link {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text-accent);
+}
+
+.build-card__link:hover {
+    text-decoration: underline;
+}
+
+.build-card__link--muted {
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+/* ---------- 8. TRANG CHI TIẾT HƯỚNG DẪN BUILD (HD02/HD03/HD04) ---------- */
+.build-detail__breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: var(--color-text-muted);
+}
+
+.build-detail__breadcrumb a {
+    color: var(--color-text-accent);
+}
+
+.build-detail__breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.build-detail__breadcrumb-current {
+    color: var(--color-text);
+    font-weight: 700;
+}
+
+.build-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.build-detail__header {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
+}
+
+.build-detail__hero {
+    text-align: center;
+}
+
+.build-detail__hero-link {
+    display: block;
+}
+
+.build-detail__hero img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 20px;
+    border: 3px solid var(--color-gold-soft);
+    background: var(--color-surface);
+}
+
+.build-detail__hero h2 {
+    margin-top: 12px;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--color-text);
+    transition: color var(--transition);
+}
+
+.build-detail__hero-link:hover h2 {
+    color: var(--color-text-accent);
+}
+
+.build-detail__hero .badge {
+    margin-top: 8px;
+}
+
+.build-detail__name {
+    position: relative;
+    margin: 0 0 14px;
+    padding-top: 14px;
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.build-detail__name::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 48px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--color-gold);
+}
+
+.build-detail__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.build-detail__lane {
+    background: var(--color-gold-soft);
+    color: var(--color-accent-strong);
+}
+
+.build-detail__playstyle {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--color-text-soft);
+}
+
+.build-detail__desc {
+    line-height: 1.6;
+    color: var(--color-text-muted);
+}
+
+.build-detail__section {
+    padding: 28px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    box-shadow: var(--shadow-sm);
+}
+
+.build-detail__section h2 {
+    position: relative;
+    margin: 0 0 20px;
+    padding-top: 14px;
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.build-detail__section h2::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 48px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--color-gold);
+}
+
+.build-detail__items,
+.build-phase__items {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 16px;
+    counter-reset: build-item;
+}
+
+/* Lộ trình lên đồ theo giai đoạn */
+.build-phase-list {
+    display: grid;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.build-phase {
+    padding: 20px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+}
+
+.build-phase__title {
+    margin: 0 0 14px;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.build-phase__note {
+    margin-top: 14px;
+    line-height: 1.6;
+    color: var(--color-text-soft);
+}
+
+/* Thứ tự nâng kỹ năng */
+.build-detail__skill-order {
+    display: inline-block;
+    margin: 0;
+    padding: 12px 18px;
+    border: 1px dashed var(--color-gold-light);
+    border-radius: var(--radius);
+    background: var(--color-gold-subtle);
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+/* Trang bị thay thế theo tình huống (HD03) */
+.situational-list {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.situational {
+    padding: 18px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+}
+
+.situational__when {
+    margin-bottom: 12px;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.situational__swap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.situational__arrow {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--color-accent-strong);
+}
+
+.situational__reason {
+    margin-top: 12px;
+    line-height: 1.6;
+    color: var(--color-text-soft);
+}
+
+.build-mini-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 96px;
+    padding: 10px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    text-decoration: none;
+    text-align: center;
+    transition: transform var(--transition), border-color var(--transition);
+}
+
+.build-mini-item img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.build-mini-item span {
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.build-mini-item:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-gold-light);
+}
+
+/* Mẹo chơi / ghi chú (HD04) */
+.build-tips,
+.build-notes {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding-left: 20px;
+}
+
+.build-tips li,
+.build-notes li {
+    line-height: 1.6;
+    color: var(--color-text-soft);
+}
+
+/* Tướng khắc chế (HD04) */
+.counter-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.counter {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+}
+
+.counter__hero {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.counter__hero img {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 2px solid var(--color-gold-soft);
+}
+
+.counter__name {
+    font-weight: 800;
+    color: var(--color-text);
+    transition: color var(--transition);
+}
+
+.counter__hero:hover .counter__name {
+    color: var(--color-text-accent);
+}
+
+.counter__reason {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+}
+
+.build-detail__footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.build-detail-empty {
+    padding: 48px 16px;
+    text-align: center;
+}
+
+.build-detail-empty__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+/* ---------- 9. RESPONSIVE ---------- */
 @media (max-width: 1024px) {
     .build-card__items {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .build-detail__items,
+    .build-phase__items {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
@@ -253,10 +675,29 @@
     .build-card__items {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+
+    .build-detail__header {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .build-detail__hero {
+        max-width: 220px;
+        margin-inline: auto;
+    }
+
+    .build-detail__section {
+        padding: 20px;
+    }
 }
 
 @media (max-width: 480px) {
     .build-card__items {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .build-detail__items,
+    .build-phase__items {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px;
     }

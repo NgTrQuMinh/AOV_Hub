@@ -492,6 +492,7 @@ const setVal = (node, v) => { node.value = v; };
     const pages = [
         ['index.html', ''], ['src/pages/heroes.html', ''], ['src/pages/items.html', ''],
         ['src/pages/item-detail.html', '?id=101'], ['src/pages/builds.html', ''],
+        ['src/pages/build-detail.html', '?id=1'],
         ['src/pages/hero-detail.html', '?id=1'], ['src/pages/compare.html', ''],
         ['src/pages/favorite.html', ''], ['src/pages/feed.html', ''],
         ['src/pages/post-detail.html', '?id=' + postsFile[0].id], ['src/pages/profile.html', ''],
