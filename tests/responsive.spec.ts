@@ -38,6 +38,7 @@ const PAGES: PageSpec[] = [
     { name: 'item-detail', url: '/src/pages/item-detail.html?id=101', ready: '.item-detail__name' },
     { name: 'builds', url: '/src/pages/builds.html', ready: '#build-list .build-card' },
     { name: 'build-detail', url: '/src/pages/build-detail.html?id=1', ready: '.build-detail__name' },
+    { name: 'build-submit', url: '/src/pages/build-submit.html', ready: '.build-submit', account: 'user' },
     { name: 'search', url: '/src/pages/search.html?keyword=Valhein', ready: '#search-results .search-group__title' },
     { name: 'feed', url: '/src/pages/feed.html', ready: '#feed-list .post-card' },
     { name: 'post-detail', url: '/src/pages/post-detail.html?id=9001', ready: '#post-detail .post-detail__title' },

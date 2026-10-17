@@ -8,12 +8,19 @@
  *   HD03 - Trang bị thay thế theo tình huống (build.situational).
  *   HD04 - Thứ tự nâng kỹ năng (build.skillOrder), mẹo chơi (build.tips) và
  *          tướng khắc chế (build.counters).
+ *   HD05 - Bảng ngọc / phép bổ trợ (buildDetailResolveRunes từ src/data/runes.json).
+ *   HD07 - Nút bình chọn "Hữu ích" (build-vote.js + aov_build_votes).
+ *   HD09 - Sao chép / chia sẻ liên kết hướng dẫn build.
  *
  * Đọc dữ liệu động từ JSON, không hard-code build trong HTML:
  *   - src/data/builds.json  (schema HD01: id, heroId, name, lane, playstyle, items[],
  *     description, phases[], skillOrder, tips[], situational[], counters[], notes[])
+ *   - src/data/runes.json   (HD05: bảng ngọc + phép bổ trợ gợi ý theo vai trò/đường)
  *   - src/data/heroes.json  (qua loadHeroes() để lấy tên/ảnh tướng đang hiển thị)
  *   - src/data/items.json   (tra tên/ảnh trang bị theo id trong build.items / phases / situational)
+ *
+ * HD06: ngoài builds.json, trang còn tra thêm hướng dẫn build do người dùng gửi
+ * (aov_build_submissions qua storage.js) nên build cộng đồng cũng mở được ở đây.
  *
  * Xử lý lỗi giống trang chi tiết trang bị (item.js):
  *   - thiếu id trên URL            -> báo rõ ví dụ hợp lệ
@@ -22,7 +29,9 @@
  *
  * DÙNG LẠI: loadData()/DATA_PATH/BASE_PATH (loadData.js, config.js),
  * loadHeroes() (heroData.js), escapeHtml()/imageUrl()/handleImageError()/
- * renderNotFound() (components.js), getQueryParam() (search.js).
+ * renderNotFound() (components.js), getQueryParam() (search.js),
+ * getBuildSubmissions() (storage.js), renderBuildVoteButton()/refreshBuildVoteButtons()
+ * (build-vote.js).
  * (search.js cũng nạp matchKeyword/debounce nhưng trang này không cần.)
  */
 
@@ -32,12 +41,16 @@
 const BUILD_DETAIL_TITLES = {
     items: 'Trang bị chính',
     phases: 'Lộ trình lên đồ',
+    runes: 'Bảng ngọc / Phép bổ trợ',
     skill: 'Thứ tự nâng kỹ năng',
     situational: 'Trang bị thay thế theo tình huống',
     tips: 'Mẹo chơi',
     counters: 'Tướng khắc chế',
     notes: 'Ghi chú',
 };
+
+/** Build + tên tướng đang hiển thị, dùng cho nút sao chép/chia sẻ (HD09). */
+let activeBuildDetail = null;
 
 document.addEventListener('DOMContentLoaded', initBuildDetailPage);
 
@@ -49,14 +62,22 @@ async function initBuildDetailPage() {
     const container = document.getElementById('build-detail');
     if (!container) return;
 
-    const [builds, heroes, items] = await Promise.all([
+    const [builds, runes, heroes, items] = await Promise.all([
         loadData(DATA_PATH.builds),
+        loadData(DATA_PATH.runes),
         loadHeroes(),
         loadData(DATA_PATH.items),
     ]);
 
-    // 1. JSON hỏng / tải lỗi -> loadData() trả về mảng rỗng.
-    if (!Array.isArray(builds) || builds.length === 0) {
+    // HD06: gộp cả hướng dẫn build do người dùng gửi (LocalStorage) để mở được cùng trang.
+    const submissions = typeof getBuildSubmissions === 'function' ? getBuildSubmissions() : [];
+    const allBuilds = [
+        ...(Array.isArray(builds) ? builds : []),
+        ...submissions,
+    ];
+
+    // 1. JSON hỏng / tải lỗi và không có build cộng đồng -> loadData() trả về mảng rỗng.
+    if (!allBuilds.length) {
         container.innerHTML = renderBuildDetailPlaceholder(
             'Không tải được dữ liệu hướng dẫn build. Vui lòng kiểm tra kết nối rồi tải lại trang.',
             '<button type="button" class="btn btn-outline" data-reload-build-detail>Tải lại trang</button>',
@@ -77,8 +98,8 @@ async function initBuildDetailPage() {
         return;
     }
 
-    const build = (id && builds.find((row) => String(row.id) === id))
-        || (heroId && builds.find((row) => String(row.heroId) === heroId))
+    const build = (id && allBuilds.find((row) => String(row.id) === id))
+        || (heroId && allBuilds.find((row) => String(row.heroId) === heroId))
         || null;
 
     if (!build) {
@@ -90,7 +111,12 @@ async function initBuildDetailPage() {
         return;
     }
 
-    renderBuildDetail(container, build, heroes, items);
+    renderBuildDetail(container, build, heroes, items, runes);
+
+    initBuildDetailShare(container);
+
+    // Cập nhật nút bình chọn "Hữu ích" (HD07) sau khi render xong markup.
+    if (typeof refreshBuildVoteButtons === 'function') refreshBuildVoteButtons(container);
 
     // Khối trang bị có thể không có nút ♥ nhưng gọi cho chắc nếu markup đổi sau này.
     if (typeof refreshFavoriteButtons === 'function') refreshFavoriteButtons();
@@ -205,6 +231,69 @@ function buildDetailResolveSituational(build, items) {
             };
         })
         .filter(Boolean);
+}
+
+/**
+ * HD05 - Ghép bảng ngọc + phép bổ trợ gợi ý cho một build.
+ *
+ * Nguồn dữ liệu chuẩn của dự án: vai trò tướng (heroes.json) quyết định bảng ngọc,
+ * còn đường đi của build (builds.json) có thể ghi đè phép bổ trợ (vd đường Rừng
+ * cần "Trừng phạt"). Không tìm thấy vai trò thì dùng bảng mặc định (runes.fallback).
+ *
+ * @param {object} runesData - nội dung src/data/runes.json
+ * @param {object} build - object trong builds.json (hoặc build cộng đồng)
+ * @param {object|null} hero - tướng của build trong heroes.json
+ * @returns {{ role: string, lane: string, runes: Array<{color:string,name:string,effect:string}>, spells: string[], matched: boolean }}
+ */
+function buildDetailResolveRunes(runesData, build, hero) {
+    const source = runesData && typeof runesData === 'object' && !Array.isArray(runesData) ? runesData : {};
+    const roles = source.roles && typeof source.roles === 'object' ? source.roles : {};
+    const lanes = source.lanes && typeof source.lanes === 'object' ? source.lanes : {};
+    const fallback = source.fallback && typeof source.fallback === 'object' ? source.fallback : {};
+
+    const heroRoles = (hero && Array.isArray(hero.role) ? hero.role : [])
+        .map((role) => String(role || '').trim())
+        .filter(Boolean);
+
+    const roleName = heroRoles.find((role) => roles[role] && typeof roles[role] === 'object') || '';
+    const base = (roleName && roles[roleName]) || fallback;
+
+    const lane = String((build && build.lane) || '').trim();
+    const laneEntry = lane && lanes[lane] && typeof lanes[lane] === 'object' ? lanes[lane] : null;
+
+    const runes = (Array.isArray(base && base.runes) ? base.runes : [])
+        .map((rune) => ({
+            color: String((rune && rune.color) || '').trim(),
+            name: String((rune && rune.name) || '').trim(),
+            effect: String((rune && rune.effect) || '').trim(),
+        }))
+        .filter((rune) => rune.name);
+
+    const spellSource = laneEntry && Array.isArray(laneEntry.spells) && laneEntry.spells.length
+        ? laneEntry.spells
+        : (base && base.spells);
+
+    const spells = (Array.isArray(spellSource) ? spellSource : [])
+        .map((spell) => String(spell || '').trim())
+        .filter(Boolean);
+
+    return {
+        role: roleName || (heroRoles[0] || ''),
+        lane,
+        runes,
+        spells,
+        matched: Boolean(roleName || laneEntry),
+    };
+}
+
+/** Lớp CSS cho ô màu ngọc (Đỏ/Xanh dương/Xanh lá/khác). */
+function buildDetailRuneColorClass(color) {
+    switch (normalizeKeyword(color)) {
+        case 'do': return 'red';
+        case 'xanh duong': return 'blue';
+        case 'xanh la': return 'green';
+        default: return 'default';
+    }
 }
 
 /* ---------- Các mảnh HTML ---------- */
@@ -335,19 +424,238 @@ function renderBuildDetailBulletList(entries, listClass, emptyMessage) {
     `;
 }
 
+/**
+ * HD05 - Khối "Bảng ngọc / Phép bổ trợ".
+ * @param {object} runesData - nội dung src/data/runes.json
+ * @param {object} build
+ * @param {object|null} hero
+ * @returns {string}
+ */
+function renderBuildDetailRunes(runesData, build, hero) {
+    const info = buildDetailResolveRunes(runesData, build, hero);
+    if (!info.runes.length && !info.spells.length) {
+        return renderNotFound('Build này chưa có bảng ngọc / phép bổ trợ gợi ý.');
+    }
+
+    const scope = [
+        info.role ? `vai trò ${escapeHtml(info.role)}` : '',
+        info.lane ? `đường ${escapeHtml(info.lane)}` : '',
+    ].filter(Boolean).join(' · ');
+
+    return `
+        <div class="rune-block">
+            ${scope ? `<p class="rune-block__scope">Gợi ý cho ${scope}</p>` : ''}
+            ${info.runes.length ? `
+                <table class="rune-table">
+                    <caption>Bảng ngọc đề xuất</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Loại ngọc</th>
+                            <th scope="col">Đề xuất</th>
+                            <th scope="col">Tác dụng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${info.runes.map((rune) => `
+                            <tr>
+                                <th scope="row" class="rune-table__color rune-table__color--${buildDetailRuneColorClass(rune.color)}">${escapeHtml(rune.color || 'Ngọc')}</th>
+                                <td class="rune-table__name">${escapeHtml(rune.name)}</td>
+                                <td class="rune-table__effect">${escapeHtml(rune.effect)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            ` : ''}
+            ${info.spells.length ? `
+                <div class="spell-block">
+                    <h3 class="spell-block__title">Phép bổ trợ</h3>
+                    <ul class="spell-list">
+                        ${info.spells.map((spell) => `<li class="spell">${escapeHtml(spell)}</li>`).join('')}
+                    </ul>
+                </div>
+            ` : ''}
+            ${runesData && runesData.note ? `<p class="rune-block__note">${escapeHtml(runesData.note)}</p>` : ''}
+        </div>
+    `;
+}
+
+/* ---------- HD09: Sao chép / chia sẻ liên kết hướng dẫn build ---------- */
+
+/**
+ * Liên kết tới trang chi tiết của một build (dùng để sao chép / chia sẻ).
+ * @param {object} build
+ * @returns {string}
+ */
+function buildDetailShareUrl(build) {
+    const id = build && build.id !== undefined && build.id !== null ? build.id : '';
+    return `${BASE_PATH}src/pages/build-detail.html?id=${encodeURIComponent(id)}`;
+}
+
+/**
+ * Nội dung chia sẻ kèm liên kết.
+ * @param {object} build
+ * @param {string} [heroName]
+ * @returns {string}
+ */
+function buildDetailShareText(build, heroName) {
+    const name = String((build && build.name) || 'Hướng dẫn build').trim();
+    const hero = String(heroName || '').trim();
+    return `Hướng dẫn build "${name}"${hero ? ` cho ${hero}` : ''} - AOV HUB`;
+}
+
+/**
+ * Sao chép một đoạn text, ưu tiên Clipboard API rồi tới textarea + execCommand.
+ * Không ném lỗi khi trình duyệt chặn (chế độ riêng tư) — trả về false để UI báo thủ công.
+ * @param {string} text
+ * @returns {Promise<boolean>}
+ */
+async function copyTextToClipboard(text) {
+    const value = String(text === undefined || text === null ? '' : text);
+    if (!value) return false;
+
+    try {
+        if (typeof navigator !== 'undefined' && navigator.clipboard
+            && typeof navigator.clipboard.writeText === 'function') {
+            await navigator.clipboard.writeText(value);
+            return true;
+        }
+    } catch (error) {
+        // Bị chặn -> thử cách dự phòng bên dưới.
+    }
+
+    try {
+        if (typeof document === 'undefined' || typeof document.createElement !== 'function'
+            || typeof document.execCommand !== 'function') {
+            return false;
+        }
+
+        const helper = document.createElement('textarea');
+        helper.value = value;
+        helper.setAttribute('readonly', '');
+        document.body.appendChild(helper);
+        if (typeof helper.select === 'function') helper.select();
+        const copied = document.execCommand('copy');
+        document.body.removeChild(helper);
+        return Boolean(copied);
+    } catch (error) {
+        return false;
+    }
+}
+
+/**
+ * Sao chép liên kết hướng dẫn build hiện tại.
+ * @param {object} [build] bỏ trống thì lấy build đang hiển thị.
+ * @returns {Promise<boolean>}
+ */
+async function copyBuildDetailLink(build) {
+    const info = build || (activeBuildDetail && activeBuildDetail.build);
+    if (!info) return false;
+
+    return copyTextToClipboard(buildDetailShareUrl(info));
+}
+
+/**
+ * Chia sẻ hướng dẫn build: dùng Web Share API nếu có, không thì sao chép liên kết.
+ * @param {object} [build]
+ * @param {string} [heroName]
+ * @returns {Promise<'shared'|'copied'|'failed'>}
+ */
+async function shareBuildDetail(build, heroName) {
+    const info = build || (activeBuildDetail && activeBuildDetail.build);
+    if (!info) return 'failed';
+
+    const hero = heroName !== undefined
+        ? heroName
+        : ((activeBuildDetail && activeBuildDetail.heroName) || '');
+    const url = buildDetailShareUrl(info);
+    const text = buildDetailShareText(info, hero);
+
+    try {
+        if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
+            await navigator.share({ title: 'AOV HUB', text, url });
+            return 'shared';
+        }
+    } catch (error) {
+        // Người dùng huỷ hoặc trình duyệt từ chối -> rơi xuống sao chép liên kết.
+    }
+
+    return (await copyTextToClipboard(url)) ? 'copied' : 'failed';
+}
+
+/** Ghi thông báo kết quả sao chép / chia sẻ vào vùng trạng thái của khối hành động. */
+function renderBuildDetailShareStatus(container, message, ok) {
+    const status = container && typeof container.querySelector === 'function'
+        ? container.querySelector('[data-build-share-status]')
+        : null;
+    if (!status) return;
+
+    status.textContent = message;
+    if (typeof status.classList === 'object' && status.classList) {
+        status.classList.toggle('is-error', ok === false);
+    }
+}
+
+/**
+ * Gắn sự kiện cho nút "Sao chép liên kết" / "Chia sẻ" (event delegation vì nút nằm
+ * trong markup được render lại).
+ * @param {HTMLElement} container
+ */
+function initBuildDetailShare(container) {
+    if (!container || typeof container.addEventListener !== 'function') return;
+
+    container.addEventListener('click', async (event) => {
+        const target = event.target;
+        if (!target || typeof target.closest !== 'function') return;
+
+        const copyBtn = target.closest('[data-copy-build-link]');
+        const shareBtn = target.closest('[data-share-build]');
+        if (!copyBtn && !shareBtn) return;
+
+        event.preventDefault();
+
+        const build = activeBuildDetail && activeBuildDetail.build;
+        const heroName = (activeBuildDetail && activeBuildDetail.heroName) || '';
+
+        if (copyBtn) {
+            const ok = await copyBuildDetailLink(build);
+            renderBuildDetailShareStatus(
+                container,
+                ok
+                    ? 'Đã sao chép liên kết hướng dẫn build.'
+                    : 'Không sao chép được. Hãy sao chép liên kết trên thanh địa chỉ.',
+                ok,
+            );
+            return;
+        }
+
+        const result = await shareBuildDetail(build, heroName);
+        const messages = {
+            shared: 'Đã mở hộp thoại chia sẻ.',
+            copied: 'Đã sao chép liên kết để chia sẻ.',
+            failed: 'Trình duyệt này không hỗ trợ chia sẻ. Hãy sao chép liên kết thủ công.',
+        };
+
+        renderBuildDetailShareStatus(container, messages[result] || messages.failed, result !== 'failed');
+    });
+}
+
 /* ---------- Render trang ---------- */
 
 /**
  * Render toàn bộ trang chi tiết của một build.
  * @param {HTMLElement} container - #build-detail
- * @param {object} build - object trong builds.json
+ * @param {object} build - object trong builds.json (hoặc build cộng đồng HD06)
  * @param {object[]} heroes - heroes.json
  * @param {object[]} items - items.json
+ * @param {object} [runesData] - runes.json (HD05)
  */
-function renderBuildDetail(container, build, heroes, items) {
+function renderBuildDetail(container, build, heroes, items, runesData) {
     const hero = buildDetailFindHero(heroes, build.heroId);
     const heroName = hero ? hero.name : 'Tướng chưa xác định';
     const mainItems = buildDetailResolveItems(items, build.items);
+
+    // Nhớ build đang xem để nút sao chép / chia sẻ dùng lại (HD09).
+    activeBuildDetail = { build, heroName };
 
     // Đổi tiêu đề tab trình duyệt theo tên build (document.title là text, không cần escape).
     document.title = `AOV HUB - ${build.name || 'Hướng dẫn build'}`;
@@ -387,11 +695,23 @@ function renderBuildDetail(container, build, heroes, items) {
                 </div>
             </header>
 
+            <div class="build-detail__actions">
+                ${typeof renderBuildVoteButton === 'function' ? renderBuildVoteButton(build.id) : ''}
+                <button type="button" class="btn btn-outline btn-share-build" data-copy-build-link>Sao chép liên kết</button>
+                <button type="button" class="btn btn-outline btn-share-build" data-share-build>Chia sẻ</button>
+                <span class="build-detail__share-status" data-build-share-status role="status" aria-live="polite"></span>
+            </div>
+
             <section class="build-detail__section build-detail__items-section">
                 <h2>${escapeHtml(BUILD_DETAIL_TITLES.items)}</h2>
                 <div class="build-detail__items">
                     ${renderBuildDetailItemGrid(mainItems, 'Build này chưa có trang bị.')}
                 </div>
+            </section>
+
+            <section class="build-detail__section build-detail__runes-section">
+                <h2>${escapeHtml(BUILD_DETAIL_TITLES.runes)}</h2>
+                ${renderBuildDetailRunes(runesData, build, hero)}
             </section>
 
             <section class="build-detail__section build-detail__phases-section">

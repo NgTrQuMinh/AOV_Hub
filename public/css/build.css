@@ -643,6 +643,349 @@
     margin-top: 16px;
 }
 
+/* ---------- 8.5 CỘNG ĐỒNG BUILD: bình chọn, chia sẻ, ngọc, gửi build (HD05/06/07/09) ---------- */
+
+/* Thanh hành động dưới tiêu đề trang chi tiết */
+.build-detail__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 20px;
+    background: var(--color-gold-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+}
+
+.build-detail__share-status {
+    font-size: 14px;
+    color: var(--color-success-strong);
+}
+
+.build-detail__share-status:not(:empty) {
+    font-weight: 600;
+}
+
+.build-detail__share-status.is-error {
+    color: var(--color-danger-strong);
+}
+
+.btn-share-build {
+    white-space: nowrap;
+}
+
+/* Nút bình chọn "Hữu ích" */
+.btn-vote-build {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font: inherit;
+    font-weight: 700;
+    color: var(--color-text-soft);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.btn-vote-build:hover {
+    border-color: var(--color-gold);
+    color: var(--color-text-accent);
+}
+
+.btn-vote-build.is-active {
+    background: var(--gradient-gold);
+    border-color: var(--color-gold-dark);
+    color: var(--color-on-accent);
+}
+
+.btn-vote-build__count {
+    min-width: 20px;
+    padding: 0 6px;
+    font-size: 13px;
+    font-weight: 800;
+    text-align: center;
+    background: rgba(58, 47, 28, .12);
+    border-radius: var(--radius-pill);
+}
+
+.btn-vote-build--compact {
+    padding: 6px 10px;
+    font-size: 14px;
+}
+
+.btn-vote-build--compact .btn-vote-build__label {
+    display: none;
+}
+
+/* Bảng ngọc / phép bổ trợ (HD05) */
+.rune-block {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.rune-block__scope {
+    margin: 0;
+    color: var(--color-text-muted);
+}
+
+.rune-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+}
+
+.rune-table caption {
+    padding-bottom: 8px;
+    font-weight: 700;
+    color: var(--color-text-soft);
+    caption-side: top;
+    text-align: left;
+}
+
+.rune-table th,
+.rune-table td {
+    padding: 10px 14px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.rune-table thead th {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--color-text-muted);
+    background: var(--color-gold-subtle);
+}
+
+.rune-table tbody tr:last-child th,
+.rune-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.rune-table__color {
+    white-space: nowrap;
+    font-weight: 800;
+}
+
+.rune-table__color--red { color: #C0392B; }
+.rune-table__color--blue { color: #2C6FBB; }
+.rune-table__color--green { color: var(--color-success-strong); }
+.rune-table__color--default { color: var(--color-text-accent); }
+
+.rune-table__effect {
+    color: var(--color-text-muted);
+}
+
+.rune-block__note {
+    margin: 0;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--color-text-muted);
+}
+
+.spell-block__title {
+    margin: 0 0 8px;
+    font-size: 18px;
+    color: var(--color-text);
+}
+
+.spell-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.spell {
+    padding: 6px 14px;
+    font-weight: 700;
+    color: var(--color-accent-strong);
+    background: var(--color-gold-soft);
+    border-radius: var(--radius-pill);
+}
+
+/* Mục "Build cộng đồng" trên trang danh sách + "Hướng dẫn bạn đã gửi" */
+.build-community {
+    margin-top: 40px;
+}
+
+.build-community__title {
+    margin: 0 0 6px;
+    font-size: 24px;
+    color: var(--color-text);
+}
+
+.build-community__desc {
+    margin: 0 0 16px;
+    color: var(--color-text-muted);
+}
+
+.build-community-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.build-card__author {
+    background: var(--color-success-soft);
+    color: var(--color-success-strong);
+}
+
+.build-card--community {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+/* Form gửi hướng dẫn build (HD06) */
+.build-submit {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 28px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.build-submit--guest {
+    align-items: flex-start;
+    text-align: left;
+}
+
+.build-submit__message {
+    margin: 0;
+    padding: 12px 16px;
+    color: var(--color-success-strong);
+    background: var(--color-success-soft);
+    border: 1px solid var(--color-success-border);
+    border-radius: var(--radius);
+}
+
+.build-submit__errors {
+    padding: 12px 16px;
+    color: var(--color-danger-strong);
+    background: var(--color-danger-soft);
+    border: 1px solid var(--color-danger-border);
+    border-radius: var(--radius);
+}
+
+.build-submit__errors ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.build-submit__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-weight: 600;
+    color: var(--color-text-soft);
+}
+
+.build-submit__field em {
+    color: var(--color-danger-strong);
+    font-style: normal;
+}
+
+.build-submit__field select,
+.build-submit__field input,
+.build-submit__field textarea {
+    padding: 10px 12px;
+    font: inherit;
+    font-weight: 400;
+    color: var(--color-text);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+}
+
+.build-submit__field select:focus,
+.build-submit__field input:focus,
+.build-submit__field textarea:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: var(--focus-ring);
+}
+
+.build-submit__hint {
+    margin: 0;
+    font-weight: 400;
+    color: var(--color-text-muted);
+}
+
+.build-submit__item-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+}
+
+.build-submit__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    font-size: 13px;
+    font-weight: 400;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+.build-submit__item input {
+    flex: 0 0 auto;
+}
+
+.build-submit__item img {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.build-submit__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .build-detail__actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-vote-build,
+    .btn-share-build {
+        justify-content: center;
+    }
+
+    .build-submit {
+        padding: 20px;
+    }
+
+    .rune-table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .build-submit__item-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 /* ---------- 9. RESPONSIVE ---------- */
 @media (max-width: 1024px) {
     .build-card__items {

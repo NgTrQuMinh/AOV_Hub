@@ -15,10 +15,18 @@
  * NHIỆM VỤ HD02 - mỗi thẻ build có liên kết sang trang chi tiết hướng dẫn
  * (build-detail.html?id=<id>) để bấm vào là xem đầy đủ hướng dẫn.
  *
+ * NHIỆM VỤ HD07 - mỗi thẻ build có nút bình chọn "Hữu ích" (build-vote.js +
+ * aov_build_votes qua storage.js), mỗi người một lượt/build.
+ *
+ * NHIỆM VỤ HD06 - hiển thị mục "Build cộng đồng": các hướng dẫn do người dùng
+ * gửi ở build-submit.html (aov_build_submissions) và lối vào trang gửi build.
+ *
  * Dùng lại của TV1: loadData() (loadData.js), escapeHtml()/renderNotFound()/imageUrl()/
  * handleImageError() (components.js), DATA_PATH (config.js).
  * Dùng lại của TV4: matchKeyword()/debounce()/getQueryParam() (search.js),
  * refreshFavoriteButtons() (favorite.js).
+ * Dùng lại: renderBuildVoteButton()/refreshBuildVoteButtons() (build-vote.js),
+ * getBuildSubmissions() (storage.js).
  */
 
 /* ---------- Hằng số bộ lọc ---------- */
@@ -73,6 +81,7 @@ async function initBuildPage() {
 
     renderBuildFilterBar();
     renderBuildList();
+    renderBuildCommunityList();
 }
 
 /**
@@ -258,6 +267,8 @@ function renderBuildList() {
 
     syncBuildFilterUrl();
     refreshFavoriteButtons();
+
+    if (typeof refreshBuildVoteButtons === 'function') refreshBuildVoteButtons();
 }
 
 /** Câu thông báo khi không có build nào khớp bộ lọc hiện tại. */
@@ -332,10 +343,43 @@ function renderBuildCard(build) {
                         Xem hướng dẫn chi tiết <span aria-hidden="true">→</span>
                     </a>
                     ${hero ? `<a class="build-card__link build-card__link--muted" href="${heroHref}">Hồ sơ tướng ${escapeHtml(heroName)}</a>` : ''}
+                    ${typeof renderBuildVoteButton === 'function' ? renderBuildVoteButton(build.id, { compact: true }) : ''}
                 </div>
             </div>
         </article>
     `;
+}
+
+/**
+ * HD06 - Thẻ build cộng đồng: giống thẻ build thường nhưng thêm huy hiệu người gửi.
+ * @param {object} build
+ * @returns {string}
+ */
+function renderBuildCommunityCard(build) {
+    const author = String((build && build.author) || '').trim();
+    const card = renderBuildCard(build);
+    if (!author) return card;
+
+    const badge = `<span class="badge build-card__author">Người gửi: ${escapeHtml(author)}</span>`;
+    return card.replace('<div class="build-card__facts">', `<div class="build-card__facts">${badge}`);
+}
+
+/**
+ * HD06 - Mục "Build cộng đồng": hướng dẫn do người dùng gửi ở build-submit.html
+ * (aov_build_submissions). Render riêng khỏi #build-list nên không ảnh hưởng bộ lọc
+ * và số đếm của danh sách chính; ẩn cả mục khi chưa có ai gửi.
+ */
+function renderBuildCommunityList() {
+    const section = document.getElementById('build-community');
+    const listContainer = document.getElementById('build-community-list');
+    if (!listContainer) return;
+
+    const submissions = typeof getBuildSubmissions === 'function' ? getBuildSubmissions() : [];
+
+    if (section) section.hidden = submissions.length === 0;
+    listContainer.innerHTML = submissions.length
+        ? submissions.map(renderBuildCommunityCard).join('')
+        : '';
 }
 
 document.addEventListener('DOMContentLoaded', initBuildPage);

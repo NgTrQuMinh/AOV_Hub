@@ -3,6 +3,7 @@
  * Phụ trách: Người 4
  *
  * Key: aov_favorites / aov_history / aov_compare
+ *      aov_build_votes / aov_build_submissions (HD07 / HD06)
  *
  * Mọi hàm ở đây đều bọc try-catch và luôn trả về giá trị mặc định hợp lệ,
  * nên JSON hỏng / LocalStorage bị chặn (chế độ riêng tư) sẽ không làm sập trang.
@@ -19,6 +20,8 @@
 const FAVORITES_KEY = 'aov_favorites';
 const HISTORY_KEY = 'aov_history';
 const COMPARE_KEY = 'aov_compare';
+const BUILD_VOTES_KEY = 'aov_build_votes';
+const BUILD_SUBMISSIONS_KEY = 'aov_build_submissions';
 
 const HISTORY_LIMIT = 10;
 const COMPARE_LIMIT = 2;
@@ -209,6 +212,164 @@ function setCompare(ids) {
     });
 
     return setStore(COMPARE_KEY, result);
+}
+
+/* ---------- Bình chọn "Hữu ích" cho build (HD07): aov_build_votes = { buildId: [username] } ---------- */
+
+/**
+ * Đọc toàn bộ phiếu bình chọn build, tự bù và làm sạch dữ liệu hỏng.
+ * Mỗi giá trị luôn là mảng username (chuỗi), khoá luôn là chuỗi buildId.
+ * @returns {Object<string, string[]>}
+ */
+function getBuildVotes() {
+    const stored = getStore(BUILD_VOTES_KEY, {});
+
+    if (!stored || typeof stored !== 'object' || Array.isArray(stored)) return {};
+
+    const clean = {};
+    Object.keys(stored).forEach((key) => {
+        const list = stored[key];
+        if (!Array.isArray(list)) return;
+
+        const users = list.map((user) => String(user || '').trim()).filter(Boolean);
+        if (users.length) clean[String(key)] = users;
+    });
+
+    return clean;
+}
+
+/**
+ * Số lượt bình chọn "Hữu ích" của một build.
+ * @param {number|string} buildId
+ * @returns {number}
+ */
+function getBuildVoteCount(buildId) {
+    const id = toStorageId(buildId);
+    if (id === null) return 0;
+
+    const list = getBuildVotes()[String(id)];
+    return Array.isArray(list) ? list.length : 0;
+}
+
+/**
+ * Người dùng đã bình chọn build này chưa.
+ * @param {number|string} buildId
+ * @param {string} username
+ * @returns {boolean}
+ */
+function hasVotedBuild(buildId, username) {
+    const id = toStorageId(buildId);
+    const user = String(username === undefined || username === null ? '' : username).trim();
+    if (id === null || !user) return false;
+
+    const list = getBuildVotes()[String(id)] || [];
+    return list.includes(user);
+}
+
+/**
+ * Bật/tắt bình chọn "Hữu ích" của `username` cho một build.
+ * Ràng buộc mỗi người chỉ có tối đa 1 lượt cho mỗi build: nếu đã có thì bỏ phiếu,
+ * chưa có thì thêm — không bao giờ thêm trùng tên.
+ * @param {number|string} buildId
+ * @param {string} username
+ * @returns {{ voted: boolean, count: number }|null} null khi thiếu buildId/username hoặc ghi lỗi.
+ */
+function toggleBuildVote(buildId, username) {
+    const id = toStorageId(buildId);
+    const user = String(username === undefined || username === null ? '' : username).trim();
+    if (id === null || !user) return null;
+
+    const votes = getBuildVotes();
+    const key = String(id);
+    const list = Array.isArray(votes[key]) ? votes[key] : [];
+    const already = list.includes(user);
+
+    votes[key] = already ? list.filter((name) => name !== user) : list.concat(user);
+    if (!votes[key].length) delete votes[key];
+
+    if (!setStore(BUILD_VOTES_KEY, votes)) return null;
+
+    return { voted: !already, count: getBuildVoteCount(id) };
+}
+
+/* ---------- Hướng dẫn build do người dùng gửi (HD06): aov_build_submissions = [build] ---------- */
+
+/** Id build cộng đồng bắt đầu từ 9000 để không đụng id trong builds.json (1..32). */
+const BUILD_SUBMISSION_ID_START = 9000;
+
+/**
+ * Danh sách hướng dẫn build do người dùng gửi (mới nhất trước), đã lọc phần tử rác.
+ * @returns {object[]}
+ */
+function getBuildSubmissions() {
+    const stored = getStore(BUILD_SUBMISSIONS_KEY, []);
+    return Array.isArray(stored)
+        ? stored.filter((row) => row && typeof row === 'object' && !Array.isArray(row))
+        : [];
+}
+
+/**
+ * Id kế tiếp cho hướng dẫn build cộng đồng (>= BUILD_SUBMISSION_ID_START).
+ * @param {object[]} list
+ * @returns {number}
+ */
+function nextBuildSubmissionId(list) {
+    const max = (Array.isArray(list) ? list : []).reduce((current, row) => {
+        const id = Number(row && row.id);
+        return Number.isFinite(id) && id > current ? id : current;
+    }, BUILD_SUBMISSION_ID_START);
+
+    return Math.floor(max) + 1;
+}
+
+/**
+ * Lưu một hướng dẫn build do người dùng gửi. Tự cấp id cộng đồng + createdAt.
+ * Chỉ cần tối thiểu heroId và tên build; các trường còn lại chuẩn hoá về đúng kiểu.
+ * @param {object} submission
+ * @returns {object|null} bản ghi đã lưu, null nếu thiếu dữ liệu hoặc ghi lỗi.
+ */
+function addBuildSubmission(submission) {
+    const source = submission && typeof submission === 'object' && !Array.isArray(submission) ? submission : null;
+    if (!source) return null;
+
+    const heroId = toStorageId(source.heroId);
+    const name = String(source.name || '').trim();
+    if (heroId === null || !name) return null;
+
+    const list = getBuildSubmissions();
+    const row = {
+        id: nextBuildSubmissionId(list),
+        heroId,
+        name,
+        lane: String(source.lane || '').trim(),
+        playstyle: String(source.playstyle || '').trim(),
+        items: (Array.isArray(source.items) ? source.items : [])
+            .map((id) => toStorageId(id))
+            .filter((id) => id !== null),
+        description: String(source.description || '').trim(),
+        skillOrder: String(source.skillOrder || '').trim(),
+        tips: (Array.isArray(source.tips) ? source.tips : [])
+            .map((tip) => String(tip || '').trim())
+            .filter(Boolean),
+        author: String(source.author || '').trim(),
+        source: 'community',
+        createdAt: new Date().toISOString(),
+    };
+
+    list.unshift(row);
+    return setStore(BUILD_SUBMISSIONS_KEY, list) ? row : null;
+}
+
+/**
+ * Tìm một hướng dẫn build cộng đồng theo id.
+ * @param {number|string} id
+ * @returns {object|null}
+ */
+function getBuildSubmissionById(id) {
+    const wanted = toStorageId(id);
+    if (wanted === null) return null;
+
+    return getBuildSubmissions().find((row) => String(row.id) === String(wanted)) || null;
 }
 
 /* ---------- Đo dung lượng LocalStorage (task CM05) ---------- */

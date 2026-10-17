@@ -1,0 +1,64 @@
+{
+  "note": "Bảng gợi ý ngọc và phép bổ trợ cho phần hướng dẫn build. Nội dung suy ra từ vai trò tướng (src/data/heroes.json) và đường đi của build (src/data/builds.json) nên chỉ mang tính tham khảo, người chơi có thể tuỳ chỉnh theo đội hình.",
+  "roles": {
+    "Xạ thủ": {
+      "runes": [
+        { "color": "Đỏ", "name": "Ngọc Đỏ Sát Thương", "effect": "Tăng sát thương vật lý và xuyên giáp cho đòn đánh chủ lực." },
+        { "color": "Xanh dương", "name": "Ngọc Xanh Dương Tốc Đánh", "effect": "Tăng tốc độ đánh, giúp cấu rỉa và dọn lính nhanh hơn." },
+        { "color": "Xanh lá", "name": "Ngọc Xanh Lá Hút Máu", "effect": "Tăng hút máu để trụ đường và duy trì trong giao tranh." }
+      ],
+      "spells": ["Tốc biến", "Chữa lành"]
+    },
+    "Sát thủ": {
+      "runes": [
+        { "color": "Đỏ", "name": "Ngọc Đỏ Xuyên Giáp", "effect": "Tăng sát thương và xuyên giáp để dứt điểm mục tiêu mỏng." },
+        { "color": "Xanh dương", "name": "Ngọc Xanh Dương Sát Thương", "effect": "Cộng thêm sát thương để dồn dame nhanh trong tích tắc." },
+        { "color": "Xanh lá", "name": "Ngọc Xanh Lá Tốc Chạy", "effect": "Tăng tốc chạy để áp sát và rút lui linh hoạt." }
+      ],
+      "spells": ["Tốc biến", "Suy nhược"]
+    },
+    "Pháp sư": {
+      "runes": [
+        { "color": "Đỏ", "name": "Ngọc Đỏ Sát Thương Phép", "effect": "Tăng sát thương phép cho chiêu thức chủ lực." },
+        { "color": "Xanh dương", "name": "Ngọc Xanh Dương Giảm Hồi Chiêu", "effect": "Giảm thời gian hồi chiêu để dùng combo thường xuyên hơn." },
+        { "color": "Xanh lá", "name": "Ngọc Xanh Lá Xuyên Phép", "effect": "Tăng xuyên kháng phép, giúp dame không bị giảm nhiều." }
+      ],
+      "spells": ["Tốc biến", "Chữa lành"]
+    },
+    "Đấu sĩ": {
+      "runes": [
+        { "color": "Đỏ", "name": "Ngọc Đỏ Sát Thương Vật Lý", "effect": "Tăng sát thương đòn đánh để trao đổi và đẩy lính." },
+        { "color": "Xanh dương", "name": "Ngọc Xanh Dương Máu", "effect": "Tăng máu tối đa để đứng trụ lâu hơn trong giao tranh." },
+        { "color": "Xanh lá", "name": "Ngọc Xanh Lá Giáp", "effect": "Tăng giáp, giảm sát thương vật lý từ đối thủ cùng đường." }
+      ],
+      "spells": ["Tốc biến", "Suy nhược"]
+    },
+    "Đỡ đòn": {
+      "runes": [
+        { "color": "Đỏ", "name": "Ngọc Đỏ Máu", "effect": "Tăng máu tối đa để mở giao tranh và chịu sát thương." },
+        { "color": "Xanh dương", "name": "Ngọc Xanh Dương Giáp", "effect": "Tăng giáp, chống chịu sát thương vật lý của chủ lực địch." },
+        { "color": "Xanh lá", "name": "Ngọc Xanh Lá Kháng Phép", "effect": "Tăng kháng phép để chống sát thương phép diện rộng." }
+      ],
+      "spells": ["Tốc biến", "Lá chắn"]
+    },
+    "Trợ thủ": {
+      "runes": [
+        { "color": "Đỏ", "name": "Ngọc Đỏ Hồi Phục", "effect": "Tăng hồi phục để bảo kê đồng đội trên đường." },
+        { "color": "Xanh dương", "name": "Ngọc Xanh Dương Giảm Hồi Chiêu", "effect": "Giảm hồi chiêu để dùng chiêu bảo kê/khống chế nhiều lần." },
+        { "color": "Xanh lá", "name": "Ngọc Xanh Lá Tốc Chạy", "effect": "Tăng tốc chạy để di chuyển theo chủ lực và mở tầm nhìn." }
+      ],
+      "spells": ["Tốc biến", "Chữa lành"]
+    }
+  },
+  "lanes": {
+    "Rừng": { "spells": ["Trừng phạt", "Tốc biến"] }
+  },
+  "fallback": {
+    "runes": [
+      { "color": "Đỏ", "name": "Ngọc Đỏ Sát Thương", "effect": "Tăng sát thương cơ bản cho mọi vai trò." },
+      { "color": "Xanh dương", "name": "Ngọc Xanh Dương Máu", "effect": "Tăng máu tối đa để an toàn hơn trong giao tranh." },
+      { "color": "Xanh lá", "name": "Ngọc Xanh Lá Kháng Phép", "effect": "Tăng kháng phép để giảm sát thương diện rộng." }
+    ],
+    "spells": ["Tốc biến", "Chữa lành"]
+  }
+}

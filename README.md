@@ -26,7 +26,7 @@ AOV-Hub/
 ├── src/
 │   ├── pages/                    # 404, login, register, profile,
 │   │                             #   heroes, hero-detail, items, item-detail,
-│   │                             #   builds, build-detail, compare, favorite, feed,
+│   │                             #   builds, build-detail, build-submit, compare, favorite, feed,
 │   │                             #   post-detail, search, admin, hero-admin
 │   ├── data/                     # heroes.json, items.json, builds.json,
 │   │                             #   posts.json, users.json, comments.json, likes.json
@@ -108,6 +108,8 @@ aov_history        # [id, ...] tối đa 10 mục tra cứu gần nhất
 aov_compare        # [id, id] tối đa 2 tướng đang so sánh
 aov_admin_log      # nhật ký thao tác admin (tối đa 200 bản ghi)
 aov_mod_settings   # cài đặt kiểm duyệt (duyệt trước, từ cấm...)
+aov_build_votes    # { buildId: [username, ...] } - bình chọn "Hữu ích", mỗi người một lượt/build
+aov_build_submissions # [ { id >= 9000, heroId, name, lane, items, ... } ] - hướng dẫn build do người dùng gửi
 ```
 
 Các key cũ (`aov_users`, `aov_posts`, `aov_comments`, `aov_likes`, `aov_posts_seeded`) chỉ còn để **đọc và gộp một lần** vào `dataStore.js`; sau khi liên kết thư mục `src/data` thì không dùng nữa (`aov_draft_*` là bản nháp trước khi liên kết).
@@ -122,17 +124,17 @@ Không tự ý đổi tên các key cố định khi thêm tính năng — `stor
 ```bash
 npm install                 # cài phụ thuộc
 npm run dev                 # dev server (có API /api/heroes, /api/<collection>)
-npm test                    # 22 file test mini-DOM (2 file lỗi sẵn: test-auth, test-feed-page)
+npm test                    # 26 file test mini-DOM (2 file lỗi sẵn: test-auth, test-feed-page)
 npm run test:e2e:install    # cài Chromium (một lần)
 npm run test:e2e            # test trình duyệt thật (responsive + menu mobile)
-npm run build               # build 18 trang vào dist/
+npm run build               # build 19 trang vào dist/
 npm run preview             # xem bản build (vẫn có API /api/heroes, /api/<collection>)
 ```
 
 ### 6.2. Kết quả hiện tại
-- `npm test`: **20/22 file PASS** (mini-DOM; 2 file lỗi sẵn `test-auth.cjs` và `test-feed-page.cjs`). Riêng hướng dẫn build: `test-build-page.cjs` 36 test + `test-build-detail.cjs` 56 test PASS.
-- `npm run test:e2e`: **87/87 PASS** — 17 trang × 5 mốc (360 / 480 / 768 / 1024 / 1280) không tràn ngang, cộng 2 test menu mobile.
-- `npm run build`: sinh đủ **18 trang HTML** + css/js/data/ảnh vào `dist/`; chạy `npm run preview` rồi mở để kiểm tra lại.
+- `npm test`: **24/26 file PASS** (mini-DOM; 2 file lỗi sẵn `test-auth.cjs` và `test-feed-page.cjs`). Riêng hướng dẫn build: `test-build-page.cjs` 36 test + `test-build-detail.cjs` 56 test + `test-build-runes.cjs` (bảng ngọc HD05) + `test-build-vote.cjs` (bình chọn HD07) + `test-build-submit.cjs` (gửi build HD06) + `test-build-share.cjs` (chia sẻ HD09) PASS.
+- `npm run test:e2e`: **92/92 PASS** — 18 trang × 5 mốc (360 / 480 / 768 / 1024 / 1280) không tràn ngang, cộng 2 test menu mobile.
+- `npm run build`: sinh đủ **19 trang HTML** + css/js/data/ảnh vào `dist/`; chạy `npm run preview` rồi mở để kiểm tra lại.
 
 ### 6.3. Tài khoản demo
 
@@ -146,11 +148,12 @@ npm run preview             # xem bản build (vẫn có API /api/heroes, /api/<
 1. **Trang chủ** — banner, điều hướng nhanh, khối nổi bật; thu nhỏ ≤768px thấy nút menu mobile.
 2. **Tướng** — tìm kiếm (bỏ dấu), lọc vai trò/độ khó, sắp xếp A-Z/Z-A, phân trang 12/trang; chi tiết có bảng kỹ năng (kèm hồi chiêu), bảng chỉ số, build đề xuất và nút ♥.
 3. **Trang bị** — tìm kiếm, lọc theo loại, phân trang; chi tiết có nội tại, giá, trang bị liên quan.
-4. **Build đề xuất** — lọc theo đường đi/vai trò, tìm theo tên tướng/build, sắp xếp A-Z/Z-A (bộ lọc lưu trên URL). Bấm một build để mở **chi tiết hướng dẫn**: trang bị chính, lộ trình lên đồ theo giai đoạn, trang bị thay thế theo tình huống, thứ tự nâng kỹ năng, mẹo chơi và tướng khắc chế.
-5. **Yêu thích** (2 tab Yêu thích / Lịch sử) và **So sánh tướng** (tô sáng chỉ số cao hơn); bộ lọc/sắp xếp lưu trên URL nên F5 vẫn giữ.
-6. **Cộng đồng (Feed)** — lọc chuyên mục, sắp xếp, tìm kiếm; mở chi tiết, like/comment. Đăng bài khi đã đăng nhập (vào hàng chờ nếu bật duyệt trước).
-7. **Đăng ký → Đăng nhập → Profile → Đăng xuất**; Profile hiển thị thống kê và bài đã đăng.
-8. **Admin** (`admin` / `admin1`) — ẩn/hiện & xoá bài, công tắc duyệt trước; mục "Tướng" để thêm/sửa/xoá tướng.
+4. **Build đề xuất** — lọc theo đường đi/vai trò, tìm theo tên tướng/build, sắp xếp A-Z/Z-A (bộ lọc lưu trên URL). Bấm một build để mở **chi tiết hướng dẫn**: trang bị chính, lộ trình lên đồ theo giai đoạn, trang bị thay thế theo tình huống, thứ tự nâng kỹ năng, mẹo chơi và tướng khắc chế. Chi tiết còn có **bảng ngọc / phép bổ trợ gợi ý** (theo vai trò tướng, đường Rừng tự chọn Trừng phạt), nút **Hữu ích** (mỗi người một lượt) và nút **Sao chép liên kết / Chia sẻ**.
+5. **Gửi hướng dẫn build** — trang `build-submit.html`: đăng nhập rồi gửi tướng, đường đi, lối chơi, tối đa 6 trang bị, mô tả, thứ tự nâng kỹ năng và mẹo chơi. Hướng dẫn lưu vào LocalStorage, mở xem được ở trang chi tiết và hiện ở mục **Build cộng đồng** trên trang Build.
+6. **Yêu thích** (2 tab Yêu thích / Lịch sử) và **So sánh tướng** (tô sáng chỉ số cao hơn); bộ lọc/sắp xếp lưu trên URL nên F5 vẫn giữ.
+7. **Cộng đồng (Feed)** — lọc chuyên mục, sắp xếp, tìm kiếm; mở chi tiết, like/comment. Đăng bài khi đã đăng nhập (vào hàng chờ nếu bật duyệt trước).
+8. **Đăng ký → Đăng nhập → Profile → Đăng xuất**; Profile hiển thị thống kê và bài đã đăng.
+9. **Admin** (`admin` / `admin1`) — ẩn/hiện & xoá bài, công tắc duyệt trước; mục "Tướng" để thêm/sửa/xoá tướng.
 
 ### 6.5. Lưu ý khi demo
 - Phải chạy qua `npm run dev` hoặc `npm run preview` (mở thẳng file sẽ lỗi CORS khi đọc JSON).

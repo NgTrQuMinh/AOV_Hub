@@ -21,9 +21,20 @@
             <span class="page-head__count" id="build-count"></span>
         </div>
         <p>Gợi ý thứ tự lên đồ cho từng tướng, dữ liệu đọc động từ <code>data/builds.json</code>.</p>
+        <p class="build-community-cta">
+            Có build tâm đắc? Hãy chia sẻ cho cộng đồng.
+            <a class="btn btn-primary btn-sm" href="/src/pages/build-submit.html">Gửi hướng dẫn của bạn</a>
+        </p>
 
         <div id="build-filter-bar"></div>
         <div class="build-list" id="build-list"></div>
+
+        <!-- HD06: hướng dẫn do người dùng gửi (build-submit.html), do build.js vẽ vào #build-community-list -->
+        <section class="build-community" id="build-community" hidden>
+            <h2 class="build-community__title">Build cộng đồng</h2>
+            <p class="build-community__desc">Hướng dẫn do người chơi gửi qua trang Gửi build.</p>
+            <div class="build-list" id="build-community-list"></div>
+        </section>
     </main>
 
     <footer id="site-footer"></footer>
@@ -39,6 +50,7 @@
     <script src="/src/js/heroData.js"></script>
     <script src="/src/js/favorite.js"></script>
     <script src="/src/js/search.js"></script>
+    <script src="/src/js/build-vote.js"></script>
     <script src="/src/js/build.js"></script>
 </body>
 </html>

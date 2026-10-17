@@ -16,6 +16,7 @@ const PAGES = [
     'src/pages/item-detail.html',
     'src/pages/builds.html',
     'src/pages/build-detail.html',
+    'src/pages/build-submit.html',
     'src/pages/feed.html',
     'src/pages/post-detail.html',
     'src/pages/favorite.html',

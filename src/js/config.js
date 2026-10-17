@@ -24,6 +24,7 @@ const DATA_PATH = {
     heroes: BASE_PATH + 'src/data/heroes.json',
     items: BASE_PATH + 'src/data/items.json',
     builds: BASE_PATH + 'src/data/builds.json',
+    runes: BASE_PATH + 'src/data/runes.json',
     posts: BASE_PATH + 'src/data/posts.json',
     users: BASE_PATH + 'src/data/users.json',
     comments: BASE_PATH + 'src/data/comments.json',
