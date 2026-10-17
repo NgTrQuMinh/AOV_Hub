@@ -3,224 +3,2700 @@
         "id": 1,
         "heroId": 1,
         "name": "Build sát thương chuẩn",
-        "items": [101, 102, 103, 104, 105, 106],
-        "description": ""
+        "lane": "Đường Rồng",
+        "playstyle": "Valhein bám tuyến sau, tận dụng tầm đánh và tốc độ bắn để cấu rỉa, chỉ vào giao tranh khi đã có vị trí an toàn.",
+        "items": [
+            101,
+            102,
+            103,
+            104,
+            105,
+            106
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    101,
+                    102
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    103,
+                    104
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    105,
+                    106
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách tối đa và di chuyển liên tục, chỉ bắn khi đã có tầm nhìn an toàn.",
+            "Dùng Valhein dọn lính nhanh rồi đảo sang rừng hoặc đường giữa để tạo áp lực.",
+            "Để dành chiêu thoát/miễn thương cho tình huống bị áp sát thay vì dùng để mở giao tranh."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 106,
+                "with": 401,
+                "reason": "Giày Kiên Cường tăng kháng hiệu ứng giúp bắn đủ số đòn."
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 106,
+                "with": 402,
+                "reason": "Giày Hộ Vệ giảm sát thương từ đòn đánh thường."
+            },
+            {
+                "when": "Cần thêm hút máu để trụ giao tranh",
+                "replace": 106,
+                "with": 108,
+                "reason": "Cung Tà Ma tăng hút máu, giúp duy trì và lật kèo."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            }
+        ],
+        "notes": [
+            "Ưu tiên chí mạng, tốc đánh và xuyên giáp để tối ưu sát thương lên cả chủ lực lẫn tanker.",
+            "Giai đoạn đầu cần trợ thủ bảo vệ, tránh solo khi chưa có trang bị chủ lực."
+        ]
     },
     {
         "id": 2,
         "heroId": 3,
         "name": "Build hồi máu bất tử",
-        "items": [107, 501, 104, 105, 301, 302],
-        "description": "Sát thủ tận dụng hút máu từ Thương Xuyên Phá, kết hợp thêm Giáp Hộ Mệnh và Giáp Gaia để đánh lâu."
+        "lane": "Rừng",
+        "playstyle": "Nakroth đi rừng/đảo đường, tìm góc vào hợp lý để dồn sát thương lên chủ lực địch rồi rút ra an toàn.",
+        "items": [
+            107,
+            501,
+            104,
+            105,
+            301,
+            302
+        ],
+        "description": "Sát thủ tận dụng hút máu từ Thương Xuyên Phá, kết hợp thêm Giáp Hộ Mệnh và Giáp Gaia để đánh lâu.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    107,
+                    501
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    104,
+                    105
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    301,
+                    302
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Canh thời điểm chủ lực địch đã dùng chiêu thoát rồi mới lao vào dồn sát thương.",
+            "Tận dụng độ cơ động của Nakroth để ép góc rừng và kiểm soát mục tiêu lớn.",
+            "Sau khi hạ gục mục tiêu cần rút ra ngay, tránh đứng lại đánh tay đôi."
+        ],
+        "situational": [
+            {
+                "when": "Địch lên nhiều giáp",
+                "replace": 302,
+                "with": 109,
+                "reason": "Kiếm Muramasa tăng xuyên giáp theo phần trăm."
+            },
+            {
+                "when": "Cần bảo hiểm khi lao vào",
+                "replace": 302,
+                "with": 110,
+                "reason": "Liềm Đoạt Mệnh giúp miễn tử để outplay."
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 302,
+                "with": 401,
+                "reason": "Giày Kiên Cường tăng kháng hiệu ứng."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Tướng trâu bò/khống chế mạnh giữ chân khiến bạn khó dứt điểm và dễ bị phản sát thương."
+            },
+            {
+                "heroId": 23,
+                "reason": "Tướng trâu bò/khống chế mạnh giữ chân khiến bạn khó dứt điểm và dễ bị phản sát thương."
+            },
+            {
+                "heroId": 30,
+                "reason": "Tướng trâu bò/khống chế mạnh giữ chân khiến bạn khó dứt điểm và dễ bị phản sát thương."
+            }
+        ],
+        "notes": [
+            "Cần xuyên giáp sớm để dọn tanker và bán máu hiệu quả trong giao tranh.",
+            "Kiểm soát tầm nhìn và thời gian hồi chiêu để chọn thời điểm lao vào."
+        ]
     },
     {
         "id": 3,
         "heroId": 5,
         "name": "Build phép xuyên giáp",
-        "items": [502, 207, 201, 203, 401, 208],
-        "description": "Raz dồn công phép, xuyên kháng phép bằng Trượng Bùng Nổ và chí mạng phép bằng Trượng Hỗn Mang."
+        "lane": "Đường Giữa",
+        "playstyle": "Raz đứng ở tuyến giữa hoặc sau, cấu rỉa bằng chiêu tầm xa và dồn sát thương phép khi giao tranh nổ ra.",
+        "items": [
+            502,
+            207,
+            201,
+            203,
+            401,
+            208
+        ],
+        "description": "Raz dồn công phép, xuyên kháng phép bằng Trượng Bùng Nổ và chí mạng phép bằng Trượng Hỗn Mang.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    502,
+                    207
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    201,
+                    203
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    401,
+                    208
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách an toàn, cấu rỉa bằng chiêu tầm xa trước khi giao tranh tổng.",
+            "Canh thời điểm hồi chiêu của Raz để combo liên tục thay vì xả chiêu rời rạc.",
+            "Luôn giữ một chiêu khống chế hoặc thoát thân để tự cứu khi bị áp sát."
+        ],
+        "situational": [
+            {
+                "when": "Địch lên nhiều kháng phép",
+                "replace": 208,
+                "with": 203,
+                "reason": "Trượng Hỗn Mang tăng xuyên giáp phép theo phần trăm."
+            },
+            {
+                "when": "Cần sốc sát thương tối đa",
+                "replace": 208,
+                "with": 202,
+                "reason": "Vương Miện Hecate tăng mạnh công phép."
+            },
+            {
+                "when": "Bị sát thủ vật lý áp sát",
+                "replace": 208,
+                "with": 209,
+                "reason": "Băng Nhẫn Skadi tăng giáp/nháng phép và máu."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            }
+        ],
+        "notes": [
+            "Cân bằng giữa công phép, giảm hồi chiêu và một món phòng ngự khi địch nhiều sát thủ.",
+            "Đi theo đội để tận dụng lợi thế tầm xa và khống chế diện rộng."
+        ]
     },
     {
         "id": 4,
         "heroId": 6,
         "name": "Build chí mạng phép hồi máu",
-        "items": [502, 206, 202, 203, 404, 209],
-        "description": "Liliana tận dụng hồi máu theo sát thương phép, tăng tốc hồi chiêu và đảm bảo giáp phép với Băng Nhẫn Skadi."
+        "lane": "Đường Giữa",
+        "playstyle": "Liliana đứng ở tuyến giữa hoặc sau, cấu rỉa bằng chiêu tầm xa và dồn sát thương phép khi giao tranh nổ ra.",
+        "items": [
+            502,
+            206,
+            202,
+            203,
+            404,
+            209
+        ],
+        "description": "Liliana tận dụng hồi máu theo sát thương phép, tăng tốc hồi chiêu và đảm bảo giáp phép với Băng Nhẫn Skadi.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    502,
+                    206
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    202,
+                    203
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    404,
+                    209
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách an toàn, cấu rỉa bằng chiêu tầm xa trước khi giao tranh tổng.",
+            "Canh thời điểm hồi chiêu của Liliana để combo liên tục thay vì xả chiêu rời rạc.",
+            "Luôn giữ một chiêu khống chế hoặc thoát thân để tự cứu khi bị áp sát."
+        ],
+        "situational": [
+            {
+                "when": "Địch lên nhiều kháng phép",
+                "replace": 209,
+                "with": 203,
+                "reason": "Trượng Hỗn Mang tăng xuyên giáp phép theo phần trăm."
+            },
+            {
+                "when": "Cần sốc sát thương tối đa",
+                "replace": 209,
+                "with": 202,
+                "reason": "Vương Miện Hecate tăng mạnh công phép."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            }
+        ],
+        "notes": [
+            "Cân bằng giữa công phép, giảm hồi chiêu và một món phòng ngự khi địch nhiều sát thủ.",
+            "Đi theo đội để tận dụng lợi thế tầm xa và khống chế diện rộng."
+        ]
     },
     {
         "id": 5,
         "heroId": 8,
         "name": "Build đấu sĩ hồi máu",
-        "items": [504, 107, 104, 109, 304, 603],
-        "description": "Florentino bù máu bằng Thương Xuyên Phá, Phức Hợp Kiếm và Khiên Thất Truyền để trụ được trong các đấu đấu kéo dài."
+        "lane": "Đường Trên",
+        "playstyle": "Florentino đánh ở đường đơn hoặc rừng, vừa gây sát thương vừa trụ đòn, chủ động mở giao tranh khi có lợi thế.",
+        "items": [
+            504,
+            107,
+            104,
+            109,
+            304,
+            603
+        ],
+        "description": "Florentino bù máu bằng Thương Xuyên Phá, Phức Hợp Kiếm và Khiên Thất Truyền để trụ được trong các đấu đấu kéo dài.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    504,
+                    107
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    104,
+                    109
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    603
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Đè đường bằng cách trao đổi chiêu có lợi, dùng lợi thế máu để ép đối thủ về trụ.",
+            "Tận dụng khả năng chống chịu của Florentino để mở giao tranh và giữ chân chủ lực địch.",
+            "Theo dõi bản đồ để đảo đường hỗ trợ khi đã đẩy lính qua nửa sân địch."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 603,
+                "with": 304,
+                "reason": "Khiên Thất Truyền tăng giáp và giảm tốc đánh địch."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 603,
+                "with": 302,
+                "reason": "Giáp Gaia tăng kháng phép và hồi máu."
+            },
+            {
+                "when": "Cần thêm mạng trong giao tranh dài",
+                "replace": 603,
+                "with": 301,
+                "reason": "Giáp Hộ Mệnh cho hồi sinh tại chỗ."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 15,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            },
+            {
+                "heroId": 20,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            }
+        ],
+        "notes": [
+            "Kết hợp giữa sát thương, hút máu và giáp để vừa bền vừa đủ sát thương dứt điểm.",
+            "Chọn món phòng ngự theo loại sát thương chủ đạo của địch."
+        ]
     },
     {
         "id": 6,
         "heroId": 11,
         "name": "Build đỡ đòn cứng nhất",
-        "items": [501, 306, 303, 103, 302, 307],
-        "description": "Thane đánh bộc khi bị ép vào chân tướng, cần ưu tiên máu và giáp kết hợp một món công xuyên giáp."
+        "lane": "Đường Rồng",
+        "playstyle": "Thane làm tuyến đầu, chủ động mở giao tranh, hứng sát thương và bảo vệ chủ lực phía sau.",
+        "items": [
+            501,
+            306,
+            303,
+            103,
+            302,
+            307
+        ],
+        "description": "Thane đánh bộc khi bị ép vào chân tướng, cần ưu tiên máu và giáp kết hợp một món công xuyên giáp.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    501,
+                    306
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    302,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chủ động đứng trước đội hình, mở giao tranh đúng lúc và giữ chân chủ lực địch.",
+            "Dùng khống chế của Thane để tạo không gian cho xạ thủ/pháp sư dồn sát thương.",
+            "Không đuổi quá sâu khỏi đội hình, luôn giữ vị trí để che chắn đồng đội."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Giáp Thống Khổ phản sát thương vật lý."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Huân Chương Troy kháng phép và hấp thụ sát thương."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            },
+            {
+                "heroId": 15,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            },
+            {
+                "heroId": 20,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            }
+        ],
+        "notes": [
+            "Ưu tiên máu, giáp và kháng phép; chọn món phòng ngự theo loại sát thương địch gây ra.",
+            "Một món hồi sinh/khiên máu ảo giúp mở giao tranh an toàn hơn ở cuối trận."
+        ]
     },
     {
         "id": 7,
         "heroId": 12,
         "name": "Build lá chắn và hồi máu",
-        "items": [502, 305, 209, 403, 306, 602],
-        "description": "Mina đánh đầm chủ động nên chọn trang bị vừa hồi máu vừa kháng phép để chống chịu phép bất ngờ."
+        "lane": "Đường Trên",
+        "playstyle": "Mina làm tuyến đầu, chủ động mở giao tranh, hứng sát thương và bảo vệ chủ lực phía sau.",
+        "items": [
+            502,
+            305,
+            209,
+            403,
+            306,
+            602
+        ],
+        "description": "Mina đánh đầm chủ động nên chọn trang bị vừa hồi máu vừa kháng phép để chống chịu phép bất ngờ.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    502,
+                    305
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    209,
+                    403
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    306,
+                    602
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chủ động đứng trước đội hình, mở giao tranh đúng lúc và giữ chân chủ lực địch.",
+            "Dùng khống chế của Mina để tạo không gian cho xạ thủ/pháp sư dồn sát thương.",
+            "Không đuổi quá sâu khỏi đội hình, luôn giữ vị trí để che chắn đồng đội."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 602,
+                "with": 305,
+                "reason": "Giáp Thống Khổ phản sát thương vật lý."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 602,
+                "with": 303,
+                "reason": "Huân Chương Troy kháng phép và hấp thụ sát thương."
+            },
+            {
+                "when": "Cần khiên máu ảo để mở giao tranh",
+                "replace": 602,
+                "with": 307,
+                "reason": "Nham Thuẫn tạo lá chắn theo máu tối đa."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            },
+            {
+                "heroId": 15,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            },
+            {
+                "heroId": 20,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            }
+        ],
+        "notes": [
+            "Ưu tiên máu, giáp và kháng phép; chọn món phòng ngự theo loại sát thương địch gây ra.",
+            "Một món hồi sinh/khiên máu ảo giúp mở giao tranh an toàn hơn ở cuối trận."
+        ]
     },
     {
         "id": 8,
         "heroId": 15,
         "name": "Build chí mạng xuyên giáp",
-        "items": [504, 103, 102, 108, 106, 303],
-        "description": "Elsu đứng bắn từ tầm xa, ưu tiên chí mạng và xuyên giáp, chỉ cần một món giáp để tránh lật điểm cực nhanh."
+        "lane": "Đường Rồng",
+        "playstyle": "Elsu bám tuyến sau, tận dụng tầm đánh và tốc độ bắn để cấu rỉa, chỉ vào giao tranh khi đã có vị trí an toàn.",
+        "items": [
+            504,
+            103,
+            102,
+            108,
+            106,
+            303
+        ],
+        "description": "Elsu đứng bắn từ tầm xa, ưu tiên chí mạng và xuyên giáp, chỉ cần một món giáp để tránh lật điểm cực nhanh.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    504,
+                    103
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    102,
+                    108
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    106,
+                    303
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách tối đa và di chuyển liên tục, chỉ bắn khi đã có tầm nhìn an toàn.",
+            "Dùng Elsu dọn lính nhanh rồi đảo sang rừng hoặc đường giữa để tạo áp lực.",
+            "Để dành chiêu thoát/miễn thương cho tình huống bị áp sát thay vì dùng để mở giao tranh."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 303,
+                "with": 401,
+                "reason": "Giày Kiên Cường tăng kháng hiệu ứng giúp bắn đủ số đòn."
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 303,
+                "with": 402,
+                "reason": "Giày Hộ Vệ giảm sát thương từ đòn đánh thường."
+            },
+            {
+                "when": "Cần thêm hút máu để trụ giao tranh",
+                "replace": 303,
+                "with": 108,
+                "reason": "Cung Tà Ma tăng hút máu, giúp duy trì và lật kèo."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            }
+        ],
+        "notes": [
+            "Ưu tiên chí mạng, tốc đánh và xuyên giáp để tối ưu sát thương lên cả chủ lực lẫn tanker.",
+            "Giai đoạn đầu cần trợ thủ bảo vệ, tránh solo khi chưa có trang bị chủ lực."
+        ]
     },
     {
         "id": 9,
         "heroId": 20,
         "name": "Build tấn công nhanh",
-        "items": [501, 110, 107, 105, 306, 304],
-        "description": "Violet dùng tốc độ đánh và tốc chạy để áp chế ở cấp độ thấp, bổ sung hút máu để bù lại sức bền thấp."
+        "lane": "Đường Rồng",
+        "playstyle": "Violet bám tuyến sau, tận dụng tầm đánh và tốc độ bắn để cấu rỉa, chỉ vào giao tranh khi đã có vị trí an toàn.",
+        "items": [
+            501,
+            110,
+            107,
+            105,
+            306,
+            304
+        ],
+        "description": "Violet dùng tốc độ đánh và tốc chạy để áp chế ở cấp độ thấp, bổ sung hút máu để bù lại sức bền thấp.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    501,
+                    110
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    105
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    306,
+                    304
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách tối đa và di chuyển liên tục, chỉ bắn khi đã có tầm nhìn an toàn.",
+            "Dùng Violet dọn lính nhanh rồi đảo sang rừng hoặc đường giữa để tạo áp lực.",
+            "Để dành chiêu thoát/miễn thương cho tình huống bị áp sát thay vì dùng để mở giao tranh."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 304,
+                "with": 401,
+                "reason": "Giày Kiên Cường tăng kháng hiệu ứng giúp bắn đủ số đòn."
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 304,
+                "with": 402,
+                "reason": "Giày Hộ Vệ giảm sát thương từ đòn đánh thường."
+            },
+            {
+                "when": "Cần thêm hút máu để trụ giao tranh",
+                "replace": 304,
+                "with": 108,
+                "reason": "Cung Tà Ma tăng hút máu, giúp duy trì và lật kèo."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            }
+        ],
+        "notes": [
+            "Ưu tiên chí mạng, tốc đánh và xuyên giáp để tối ưu sát thương lên cả chủ lực lẫn tanker.",
+            "Giai đoạn đầu cần trợ thủ bảo vệ, tránh solo khi chưa có trang bị chủ lực."
+        ]
     },
     {
         "id": 10,
         "heroId": 23,
         "name": "Build phản công giữ team",
-        "items": [503, 104, 304, 109, 302, 307],
-        "description": "Omen phản công giữ vùng, Khiên Thất Truyền giảm sát thương mới phản lại thêm và Nham Thuẫn là lá chắn cứu thế."
+        "lane": "Đường Trên",
+        "playstyle": "Omen đánh ở đường đơn hoặc rừng, vừa gây sát thương vừa trụ đòn, chủ động mở giao tranh khi có lợi thế.",
+        "items": [
+            503,
+            104,
+            304,
+            109,
+            302,
+            307
+        ],
+        "description": "Omen phản công giữ vùng, Khiên Thất Truyền giảm sát thương mới phản lại thêm và Nham Thuẫn là lá chắn cứu thế.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    503,
+                    104
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    304,
+                    109
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    302,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Đè đường bằng cách trao đổi chiêu có lợi, dùng lợi thế máu để ép đối thủ về trụ.",
+            "Tận dụng khả năng chống chịu của Omen để mở giao tranh và giữ chân chủ lực địch.",
+            "Theo dõi bản đồ để đảo đường hỗ trợ khi đã đẩy lính qua nửa sân địch."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 304,
+                "reason": "Khiên Thất Truyền tăng giáp và giảm tốc đánh địch."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 302,
+                "reason": "Giáp Gaia tăng kháng phép và hồi máu."
+            },
+            {
+                "when": "Cần thêm mạng trong giao tranh dài",
+                "replace": 307,
+                "with": 301,
+                "reason": "Giáp Hộ Mệnh cho hồi sinh tại chỗ."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 15,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            },
+            {
+                "heroId": 20,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            },
+            {
+                "heroId": 8,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            }
+        ],
+        "notes": [
+            "Kết hợp giữa sát thương, hút máu và giáp để vừa bền vừa đủ sát thương dứt điểm.",
+            "Chọn món phòng ngự theo loại sát thương chủ đạo của địch."
+        ]
     },
     {
         "id": 11,
         "heroId": 25,
         "name": "Build pháp sư hồi máu",
-        "items": [502, 205, 209, 404, 403, 208],
-        "description": "Zill là đấu sĩ mang sát thương phép nên cần trang bị vừa xuyên kháng phép vừa hồi máu để đánh bền."
+        "lane": "Rừng",
+        "playstyle": "Zill đi rừng/đảo đường, tìm góc vào hợp lý để dồn sát thương lên chủ lực địch rồi rút ra an toàn.",
+        "items": [
+            502,
+            205,
+            209,
+            404,
+            403,
+            208
+        ],
+        "description": "Zill là đấu sĩ mang sát thương phép nên cần trang bị vừa xuyên kháng phép vừa hồi máu để đánh bền.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    502,
+                    205
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    209,
+                    404
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    403,
+                    208
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Canh thời điểm chủ lực địch đã dùng chiêu thoát rồi mới lao vào dồn sát thương.",
+            "Tận dụng độ cơ động của Zill để ép góc rừng và kiểm soát mục tiêu lớn.",
+            "Sau khi hạ gục mục tiêu cần rút ra ngay, tránh đứng lại đánh tay đôi."
+        ],
+        "situational": [
+            {
+                "when": "Địch lên nhiều giáp",
+                "replace": 208,
+                "with": 109,
+                "reason": "Kiếm Muramasa tăng xuyên giáp theo phần trăm."
+            },
+            {
+                "when": "Cần bảo hiểm khi lao vào",
+                "replace": 208,
+                "with": 110,
+                "reason": "Liềm Đoạt Mệnh giúp miễn tử để outplay."
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 404,
+                "with": 401,
+                "reason": "Giày Kiên Cường tăng kháng hiệu ứng."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Tướng trâu bò/khống chế mạnh giữ chân khiến bạn khó dứt điểm và dễ bị phản sát thương."
+            },
+            {
+                "heroId": 23,
+                "reason": "Tướng trâu bò/khống chế mạnh giữ chân khiến bạn khó dứt điểm và dễ bị phản sát thương."
+            },
+            {
+                "heroId": 30,
+                "reason": "Tướng trâu bò/khống chế mạnh giữ chân khiến bạn khó dứt điểm và dễ bị phản sát thương."
+            }
+        ],
+        "notes": [
+            "Cần xuyên giáp sớm để dọn tanker và bán máu hiệu quả trong giao tranh.",
+            "Kiểm soát tầm nhìn và thời gian hồi chiêu để chọn thời điểm lao vào."
+        ]
     },
     {
         "id": 12,
         "heroId": 27,
         "name": "Build trợ thủ bảo vệ đồng minh",
-        "items": [501, 207, 210, 402, 601, 604],
-        "description": "Aya ở tuyến sau nên tích trang bị hồi mana, kháng phép và Gươm Hiền Triết để kéo cả team về chỗ an toàn."
+        "lane": "Đường Rồng",
+        "playstyle": "Aya bám sát chủ lực, dùng khiên/khống chế để bảo vệ và mở đường cho đồng đội.",
+        "items": [
+            501,
+            207,
+            210,
+            402,
+            601,
+            604
+        ],
+        "description": "Aya ở tuyến sau nên tích trang bị hồi mana, kháng phép và Gươm Hiền Triết để kéo cả team về chỗ an toàn.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    501,
+                    207
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    210,
+                    402
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    601,
+                    604
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Luôn đi cùng chủ lực, ưu tiên bảo vệ hơn là tự dồn sát thương.",
+            "Dùng khống chế của Aya để mở giao tranh hoặc phá chiêu quan trọng của địch.",
+            "Kiểm soát tầm nhìn ở các điểm nóng và cảnh báo đồng đội khi địch vắng mặt."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 604,
+                "with": 503,
+                "reason": "Đại Địa Mở Trói giải khống chế cho cả đội."
+            },
+            {
+                "when": "Cần thêm khiên bảo vệ chủ lực",
+                "replace": 604,
+                "with": 502,
+                "reason": "Đại Địa Thần Khiên tạo lá chắn cho đồng minh ít máu."
+            },
+            {
+                "when": "Cần tăng tốc đội hình",
+                "replace": 604,
+                "with": 504,
+                "reason": "Đại Địa Thần Tốc tăng tốc chạy cho đồng đội."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ có thể vượt tuyến và hạ gục chủ lực trước khi bạn kịp bảo vệ."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ có thể vượt tuyến và hạ gục chủ lực trước khi bạn kịp bảo vệ."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ có thể vượt tuyến và hạ gục chủ lực trước khi bạn kịp bảo vệ."
+            }
+        ],
+        "notes": [
+            "Trang bị thiên về máu, giảm hồi chiêu và các hiệu ứng bảo vệ/kích hoạt cho đồng đội.",
+            "Một món giải khống chế hoặc tăng tốc đội hình giúp đảo ngược tình thế giao tranh."
+        ]
     },
     {
         "id": 13,
         "heroId": 30,
         "name": "Build hồi sinh và kháng công",
-        "items": [501, 103, 301, 302, 109, 604],
-        "description": "Maloch đánh trực diện giữa team, dựng giáp dày với Giáp Gaia rồi thêm Giáp Hộ Mệnh cho chắc chắn trong các trận kéo dài."
+        "lane": "Đường Trên",
+        "playstyle": "Maloch làm tuyến đầu, chủ động mở giao tranh, hứng sát thương và bảo vệ chủ lực phía sau.",
+        "items": [
+            501,
+            103,
+            301,
+            302,
+            109,
+            604
+        ],
+        "description": "Maloch đánh trực diện giữa team, dựng giáp dày với Giáp Gaia rồi thêm Giáp Hộ Mệnh cho chắc chắn trong các trận kéo dài.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    501,
+                    103
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    301,
+                    302
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    109,
+                    604
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chủ động đứng trước đội hình, mở giao tranh đúng lúc và giữ chân chủ lực địch.",
+            "Dùng khống chế của Maloch để tạo không gian cho xạ thủ/pháp sư dồn sát thương.",
+            "Không đuổi quá sâu khỏi đội hình, luôn giữ vị trí để che chắn đồng đội."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 604,
+                "with": 305,
+                "reason": "Giáp Thống Khổ phản sát thương vật lý."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 604,
+                "with": 303,
+                "reason": "Huân Chương Troy kháng phép và hấp thụ sát thương."
+            },
+            {
+                "when": "Cần khiên máu ảo để mở giao tranh",
+                "replace": 604,
+                "with": 307,
+                "reason": "Nham Thuẫn tạo lá chắn theo máu tối đa."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            },
+            {
+                "heroId": 15,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            },
+            {
+                "heroId": 20,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            }
+        ],
+        "notes": [
+            "Ưu tiên máu, giáp và kháng phép; chọn món phòng ngự theo loại sát thương địch gây ra.",
+            "Một món hồi sinh/khiên máu ảo giúp mở giao tranh an toàn hơn ở cuối trận."
+        ]
     },
     {
         "id": 14,
         "heroId": 2,
         "name": "Build xạ thủ chí mạng tầm xa",
-        "items": [405, 103, 102, 106, 108, 109],
-        "description": "Tel'Annas bắn xa nên ưu tiên chí mạng và tốc đánh, thêm một món xuyên giáp để dọn tanker."
+        "lane": "Đường Rồng",
+        "playstyle": "Tel'Annas bám tuyến sau, tận dụng tầm đánh và tốc độ bắn để cấu rỉa, chỉ vào giao tranh khi đã có vị trí an toàn.",
+        "items": [
+            405,
+            103,
+            102,
+            106,
+            108,
+            109
+        ],
+        "description": "Tel'Annas bắn xa nên ưu tiên chí mạng và tốc đánh, thêm một món xuyên giáp để dọn tanker.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    103
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    102,
+                    106
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    108,
+                    109
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách tối đa và di chuyển liên tục, chỉ bắn khi đã có tầm nhìn an toàn.",
+            "Dùng Tel'Annas dọn lính nhanh rồi đảo sang rừng hoặc đường giữa để tạo áp lực.",
+            "Để dành chiêu thoát/miễn thương cho tình huống bị áp sát thay vì dùng để mở giao tranh."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Giày Kiên Cường tăng kháng hiệu ứng giúp bắn đủ số đòn."
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 405,
+                "with": 402,
+                "reason": "Giày Hộ Vệ giảm sát thương từ đòn đánh thường."
+            },
+            {
+                "when": "Cần thêm hút máu để trụ giao tranh",
+                "replace": 109,
+                "with": 108,
+                "reason": "Cung Tà Ma tăng hút máu, giúp duy trì và lật kèo."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            }
+        ],
+        "notes": [
+            "Ưu tiên chí mạng, tốc đánh và xuyên giáp để tối ưu sát thương lên cả chủ lực lẫn tanker.",
+            "Giai đoạn đầu cần trợ thủ bảo vệ, tránh solo khi chưa có trang bị chủ lực."
+        ]
     },
     {
         "id": 15,
         "heroId": 4,
         "name": "Build sát thủ đi rừng",
-        "items": [602, 401, 104, 103, 109, 110],
-        "description": "Murad đi rừng cần xuyên giáp sớm để gank, kết hợp hút máu và Miễn tử để outplay."
+        "lane": "Rừng",
+        "playstyle": "Murad đi rừng/đảo đường, tìm góc vào hợp lý để dồn sát thương lên chủ lực địch rồi rút ra an toàn.",
+        "items": [
+            602,
+            401,
+            104,
+            103,
+            109,
+            110
+        ],
+        "description": "Murad đi rừng cần xuyên giáp sớm để gank, kết hợp hút máu và Miễn tử để outplay.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    602,
+                    401
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    104,
+                    103
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    109,
+                    110
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Canh thời điểm chủ lực địch đã dùng chiêu thoát rồi mới lao vào dồn sát thương.",
+            "Tận dụng độ cơ động của Murad để ép góc rừng và kiểm soát mục tiêu lớn.",
+            "Sau khi hạ gục mục tiêu cần rút ra ngay, tránh đứng lại đánh tay đôi."
+        ],
+        "situational": [
+            {
+                "when": "Địch lên nhiều giáp",
+                "replace": 110,
+                "with": 109,
+                "reason": "Kiếm Muramasa tăng xuyên giáp theo phần trăm."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Tướng trâu bò/khống chế mạnh giữ chân khiến bạn khó dứt điểm và dễ bị phản sát thương."
+            },
+            {
+                "heroId": 23,
+                "reason": "Tướng trâu bò/khống chế mạnh giữ chân khiến bạn khó dứt điểm và dễ bị phản sát thương."
+            },
+            {
+                "heroId": 30,
+                "reason": "Tướng trâu bò/khống chế mạnh giữ chân khiến bạn khó dứt điểm và dễ bị phản sát thương."
+            }
+        ],
+        "notes": [
+            "Cần xuyên giáp sớm để dọn tanker và bán máu hiệu quả trong giao tranh.",
+            "Kiểm soát tầm nhìn và thời gian hồi chiêu để chọn thời điểm lao vào."
+        ]
     },
     {
         "id": 16,
         "heroId": 7,
         "name": "Build phép sư dồn công phép",
-        "items": [404, 201, 202, 203, 205, 208],
-        "description": "Krixi dồn công phép và xuyên phép, Quả Cầu Băng Sương bảo hiểm khi bị áp sát."
+        "lane": "Đường Giữa",
+        "playstyle": "Krixi đứng ở tuyến giữa hoặc sau, cấu rỉa bằng chiêu tầm xa và dồn sát thương phép khi giao tranh nổ ra.",
+        "items": [
+            404,
+            201,
+            202,
+            203,
+            205,
+            208
+        ],
+        "description": "Krixi dồn công phép và xuyên phép, Quả Cầu Băng Sương bảo hiểm khi bị áp sát.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    404,
+                    201
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    202,
+                    203
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    205,
+                    208
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách an toàn, cấu rỉa bằng chiêu tầm xa trước khi giao tranh tổng.",
+            "Canh thời điểm hồi chiêu của Krixi để combo liên tục thay vì xả chiêu rời rạc.",
+            "Luôn giữ một chiêu khống chế hoặc thoát thân để tự cứu khi bị áp sát."
+        ],
+        "situational": [
+            {
+                "when": "Địch lên nhiều kháng phép",
+                "replace": 208,
+                "with": 203,
+                "reason": "Trượng Hỗn Mang tăng xuyên giáp phép theo phần trăm."
+            },
+            {
+                "when": "Cần sốc sát thương tối đa",
+                "replace": 208,
+                "with": 202,
+                "reason": "Vương Miện Hecate tăng mạnh công phép."
+            },
+            {
+                "when": "Bị sát thủ vật lý áp sát",
+                "replace": 208,
+                "with": 209,
+                "reason": "Băng Nhẫn Skadi tăng giáp/nháng phép và máu."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            }
+        ],
+        "notes": [
+            "Cân bằng giữa công phép, giảm hồi chiêu và một món phòng ngự khi địch nhiều sát thủ.",
+            "Đi theo đội để tận dụng lợi thế tầm xa và khống chế diện rộng."
+        ]
     },
     {
         "id": 17,
         "heroId": 9,
         "name": "Build đấu sĩ hút máu trụ lâu",
-        "items": [401, 104, 107, 304, 302, 301],
-        "description": "Lu Bu vào giao tranh trực diện, vừa hút máu vừa lên giáp để trụ lâu trong các trận kéo dài."
+        "lane": "Đường Trên",
+        "playstyle": "Lu Bu đánh ở đường đơn hoặc rừng, vừa gây sát thương vừa trụ đòn, chủ động mở giao tranh khi có lợi thế.",
+        "items": [
+            401,
+            104,
+            107,
+            304,
+            302,
+            301
+        ],
+        "description": "Lu Bu vào giao tranh trực diện, vừa hút máu vừa lên giáp để trụ lâu trong các trận kéo dài.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    104
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    304
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    302,
+                    301
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Đè đường bằng cách trao đổi chiêu có lợi, dùng lợi thế máu để ép đối thủ về trụ.",
+            "Tận dụng khả năng chống chịu của Lu Bu để mở giao tranh và giữ chân chủ lực địch.",
+            "Theo dõi bản đồ để đảo đường hỗ trợ khi đã đẩy lính qua nửa sân địch."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 301,
+                "with": 304,
+                "reason": "Khiên Thất Truyền tăng giáp và giảm tốc đánh địch."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 301,
+                "with": 302,
+                "reason": "Giáp Gaia tăng kháng phép và hồi máu."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 15,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            },
+            {
+                "heroId": 20,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            },
+            {
+                "heroId": 8,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            }
+        ],
+        "notes": [
+            "Kết hợp giữa sát thương, hút máu và giáp để vừa bền vừa đủ sát thương dứt điểm.",
+            "Chọn món phòng ngự theo loại sát thương chủ đạo của địch."
+        ]
     },
     {
         "id": 18,
         "heroId": 10,
         "name": "Build sát thủ rừng xuyên giáp",
-        "items": [602, 401, 104, 103, 304, 110],
-        "description": "Zuka đi rừng tốc độ, xuyên giáp và hút máu giúp dọn gank nhanh rồi rút an toàn."
+        "lane": "Rừng",
+        "playstyle": "Zuka đánh ở đường đơn hoặc rừng, vừa gây sát thương vừa trụ đòn, chủ động mở giao tranh khi có lợi thế.",
+        "items": [
+            602,
+            401,
+            104,
+            103,
+            304,
+            110
+        ],
+        "description": "Zuka đi rừng tốc độ, xuyên giáp và hút máu giúp dọn gank nhanh rồi rút an toàn.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    602,
+                    401
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    104,
+                    103
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    110
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Đè đường bằng cách trao đổi chiêu có lợi, dùng lợi thế máu để ép đối thủ về trụ.",
+            "Tận dụng khả năng chống chịu của Zuka để mở giao tranh và giữ chân chủ lực địch.",
+            "Theo dõi bản đồ để đảo đường hỗ trợ khi đã đẩy lính qua nửa sân địch."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 110,
+                "with": 304,
+                "reason": "Khiên Thất Truyền tăng giáp và giảm tốc đánh địch."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 110,
+                "with": 302,
+                "reason": "Giáp Gaia tăng kháng phép và hồi máu."
+            },
+            {
+                "when": "Cần thêm mạng trong giao tranh dài",
+                "replace": 110,
+                "with": 301,
+                "reason": "Giáp Hộ Mệnh cho hồi sinh tại chỗ."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 15,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            },
+            {
+                "heroId": 20,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            },
+            {
+                "heroId": 8,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            }
+        ],
+        "notes": [
+            "Kết hợp giữa sát thương, hút máu và giáp để vừa bền vừa đủ sát thương dứt điểm.",
+            "Chọn món phòng ngự theo loại sát thương chủ đạo của địch."
+        ]
     },
     {
         "id": 19,
         "heroId": 13,
         "name": "Build tường chắn tuyến đầu",
-        "items": [401, 301, 302, 303, 304, 307],
-        "description": "Arum làm tường chắn tuyến đầu, ưu tiên máu, giáp và kháng phép để mở giao tranh."
+        "lane": "Đường Trên",
+        "playstyle": "Arum làm tuyến đầu, chủ động mở giao tranh, hứng sát thương và bảo vệ chủ lực phía sau.",
+        "items": [
+            401,
+            301,
+            302,
+            303,
+            304,
+            307
+        ],
+        "description": "Arum làm tường chắn tuyến đầu, ưu tiên máu, giáp và kháng phép để mở giao tranh.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    301
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    302,
+                    303
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chủ động đứng trước đội hình, mở giao tranh đúng lúc và giữ chân chủ lực địch.",
+            "Dùng khống chế của Arum để tạo không gian cho xạ thủ/pháp sư dồn sát thương.",
+            "Không đuổi quá sâu khỏi đội hình, luôn giữ vị trí để che chắn đồng đội."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Giáp Thống Khổ phản sát thương vật lý."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Huân Chương Troy kháng phép và hấp thụ sát thương."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            },
+            {
+                "heroId": 15,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            },
+            {
+                "heroId": 20,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            }
+        ],
+        "notes": [
+            "Ưu tiên máu, giáp và kháng phép; chọn món phòng ngự theo loại sát thương địch gây ra.",
+            "Một món hồi sinh/khiên máu ảo giúp mở giao tranh an toàn hơn ở cuối trận."
+        ]
     },
     {
         "id": 20,
         "heroId": 14,
         "name": "Build xạ thủ tốc đánh cơ động",
-        "items": [405, 103, 102, 106, 108, 109],
-        "description": "Capheny di chuyển liên tục nên cần tốc đánh, chí mạng và hút máu để giữ vị trí bắn."
+        "lane": "Đường Rồng",
+        "playstyle": "Capheny bám tuyến sau, tận dụng tầm đánh và tốc độ bắn để cấu rỉa, chỉ vào giao tranh khi đã có vị trí an toàn.",
+        "items": [
+            405,
+            103,
+            102,
+            106,
+            108,
+            109
+        ],
+        "description": "Capheny di chuyển liên tục nên cần tốc đánh, chí mạng và hút máu để giữ vị trí bắn.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    103
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    102,
+                    106
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    108,
+                    109
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách tối đa và di chuyển liên tục, chỉ bắn khi đã có tầm nhìn an toàn.",
+            "Dùng Capheny dọn lính nhanh rồi đảo sang rừng hoặc đường giữa để tạo áp lực.",
+            "Để dành chiêu thoát/miễn thương cho tình huống bị áp sát thay vì dùng để mở giao tranh."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Giày Kiên Cường tăng kháng hiệu ứng giúp bắn đủ số đòn."
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 405,
+                "with": 402,
+                "reason": "Giày Hộ Vệ giảm sát thương từ đòn đánh thường."
+            },
+            {
+                "when": "Cần thêm hút máu để trụ giao tranh",
+                "replace": 109,
+                "with": 108,
+                "reason": "Cung Tà Ma tăng hút máu, giúp duy trì và lật kèo."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            }
+        ],
+        "notes": [
+            "Ưu tiên chí mạng, tốc đánh và xuyên giáp để tối ưu sát thương lên cả chủ lực lẫn tanker.",
+            "Giai đoạn đầu cần trợ thủ bảo vệ, tránh solo khi chưa có trang bị chủ lực."
+        ]
     },
     {
         "id": 21,
         "heroId": 16,
         "name": "Build phép sư hồi chiêu hút máu",
-        "items": [403, 201, 206, 203, 205, 208],
-        "description": "Lauriel đánh liên tục nhờ hồi chiêu và hút máu, Băng Sương cứu nguy khi bị dồn."
+        "lane": "Đường Giữa",
+        "playstyle": "Lauriel đứng ở tuyến giữa hoặc sau, cấu rỉa bằng chiêu tầm xa và dồn sát thương phép khi giao tranh nổ ra.",
+        "items": [
+            403,
+            201,
+            206,
+            203,
+            205,
+            208
+        ],
+        "description": "Lauriel đánh liên tục nhờ hồi chiêu và hút máu, Băng Sương cứu nguy khi bị dồn.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    201
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    206,
+                    203
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    205,
+                    208
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách an toàn, cấu rỉa bằng chiêu tầm xa trước khi giao tranh tổng.",
+            "Canh thời điểm hồi chiêu của Lauriel để combo liên tục thay vì xả chiêu rời rạc.",
+            "Luôn giữ một chiêu khống chế hoặc thoát thân để tự cứu khi bị áp sát."
+        ],
+        "situational": [
+            {
+                "when": "Địch lên nhiều kháng phép",
+                "replace": 208,
+                "with": 203,
+                "reason": "Trượng Hỗn Mang tăng xuyên giáp phép theo phần trăm."
+            },
+            {
+                "when": "Cần sốc sát thương tối đa",
+                "replace": 208,
+                "with": 202,
+                "reason": "Vương Miện Hecate tăng mạnh công phép."
+            },
+            {
+                "when": "Bị sát thủ vật lý áp sát",
+                "replace": 208,
+                "with": 209,
+                "reason": "Băng Nhẫn Skadi tăng giáp/nháng phép và máu."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            }
+        ],
+        "notes": [
+            "Cân bằng giữa công phép, giảm hồi chiêu và một món phòng ngự khi địch nhiều sát thủ.",
+            "Đi theo đội để tận dụng lợi thế tầm xa và khống chế diện rộng."
+        ]
     },
     {
         "id": 22,
         "heroId": 17,
         "name": "Build phép sư xuyên phép",
-        "items": [404, 201, 203, 202, 205, 208],
-        "description": "Tulen sốc sát thương phép nên dồn xuyên phép và công phép tối đa cho combos."
+        "lane": "Đường Giữa",
+        "playstyle": "Tulen đứng ở tuyến giữa hoặc sau, cấu rỉa bằng chiêu tầm xa và dồn sát thương phép khi giao tranh nổ ra.",
+        "items": [
+            404,
+            201,
+            203,
+            202,
+            205,
+            208
+        ],
+        "description": "Tulen sốc sát thương phép nên dồn xuyên phép và công phép tối đa cho combos.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    404,
+                    201
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    203,
+                    202
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    205,
+                    208
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách an toàn, cấu rỉa bằng chiêu tầm xa trước khi giao tranh tổng.",
+            "Canh thời điểm hồi chiêu của Tulen để combo liên tục thay vì xả chiêu rời rạc.",
+            "Luôn giữ một chiêu khống chế hoặc thoát thân để tự cứu khi bị áp sát."
+        ],
+        "situational": [
+            {
+                "when": "Địch lên nhiều kháng phép",
+                "replace": 208,
+                "with": 203,
+                "reason": "Trượng Hỗn Mang tăng xuyên giáp phép theo phần trăm."
+            },
+            {
+                "when": "Cần sốc sát thương tối đa",
+                "replace": 208,
+                "with": 202,
+                "reason": "Vương Miện Hecate tăng mạnh công phép."
+            },
+            {
+                "when": "Bị sát thủ vật lý áp sát",
+                "replace": 208,
+                "with": 209,
+                "reason": "Băng Nhẫn Skadi tăng giáp/nháng phép và máu."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            }
+        ],
+        "notes": [
+            "Cân bằng giữa công phép, giảm hồi chiêu và một món phòng ngự khi địch nhiều sát thủ.",
+            "Đi theo đội để tận dụng lợi thế tầm xa và khống chế diện rộng."
+        ]
     },
     {
         "id": 23,
         "heroId": 18,
         "name": "Build đấu sĩ sát thủ cân bằng",
-        "items": [401, 104, 107, 103, 304, 301],
-        "description": "Ryoma đấu sĩ/sát thủ cần xuyên giáp, hút máu và một món giáp để chịu đòn."
+        "lane": "Đường Trên",
+        "playstyle": "Ryoma đánh ở đường đơn hoặc rừng, vừa gây sát thương vừa trụ đòn, chủ động mở giao tranh khi có lợi thế.",
+        "items": [
+            401,
+            104,
+            107,
+            103,
+            304,
+            301
+        ],
+        "description": "Ryoma đấu sĩ/sát thủ cần xuyên giáp, hút máu và một món giáp để chịu đòn.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    104
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    103
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    301
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Đè đường bằng cách trao đổi chiêu có lợi, dùng lợi thế máu để ép đối thủ về trụ.",
+            "Tận dụng khả năng chống chịu của Ryoma để mở giao tranh và giữ chân chủ lực địch.",
+            "Theo dõi bản đồ để đảo đường hỗ trợ khi đã đẩy lính qua nửa sân địch."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 301,
+                "with": 304,
+                "reason": "Khiên Thất Truyền tăng giáp và giảm tốc đánh địch."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 301,
+                "with": 302,
+                "reason": "Giáp Gaia tăng kháng phép và hồi máu."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 15,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            },
+            {
+                "heroId": 20,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            },
+            {
+                "heroId": 8,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            }
+        ],
+        "notes": [
+            "Kết hợp giữa sát thương, hút máu và giáp để vừa bền vừa đủ sát thương dứt điểm.",
+            "Chọn món phòng ngự theo loại sát thương chủ đạo của địch."
+        ]
     },
     {
         "id": 24,
         "heroId": 19,
         "name": "Build xạ thủ tốc độ đánh",
-        "items": [405, 106, 105, 102, 108, 103],
-        "description": "Hayate bắn liên tục nên tối ưu tốc đánh và chí mạng, thêm hút máu bù lại lượng máu thấp."
+        "lane": "Đường Rồng",
+        "playstyle": "Hayate bám tuyến sau, tận dụng tầm đánh và tốc độ bắn để cấu rỉa, chỉ vào giao tranh khi đã có vị trí an toàn.",
+        "items": [
+            405,
+            106,
+            105,
+            102,
+            108,
+            103
+        ],
+        "description": "Hayate bắn liên tục nên tối ưu tốc đánh và chí mạng, thêm hút máu bù lại lượng máu thấp.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    106
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    105,
+                    102
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    108,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách tối đa và di chuyển liên tục, chỉ bắn khi đã có tầm nhìn an toàn.",
+            "Dùng Hayate dọn lính nhanh rồi đảo sang rừng hoặc đường giữa để tạo áp lực.",
+            "Để dành chiêu thoát/miễn thương cho tình huống bị áp sát thay vì dùng để mở giao tranh."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Giày Kiên Cường tăng kháng hiệu ứng giúp bắn đủ số đòn."
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 405,
+                "with": 402,
+                "reason": "Giày Hộ Vệ giảm sát thương từ đòn đánh thường."
+            },
+            {
+                "when": "Cần thêm hút máu để trụ giao tranh",
+                "replace": 103,
+                "with": 108,
+                "reason": "Cung Tà Ma tăng hút máu, giúp duy trì và lật kèo."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            }
+        ],
+        "notes": [
+            "Ưu tiên chí mạng, tốc đánh và xuyên giáp để tối ưu sát thương lên cả chủ lực lẫn tanker.",
+            "Giai đoạn đầu cần trợ thủ bảo vệ, tránh solo khi chưa có trang bị chủ lực."
+        ]
     },
     {
         "id": 25,
         "heroId": 21,
         "name": "Build lao vào vừa công vừa thủ",
-        "items": [401, 104, 302, 304, 301, 307],
-        "description": "Superman vừa lao vào vừa chịu đòn nên cân bằng công và giáp, ưu tiên máu tối đa."
+        "lane": "Đường Trên",
+        "playstyle": "Superman đánh ở đường đơn hoặc rừng, vừa gây sát thương vừa trụ đòn, chủ động mở giao tranh khi có lợi thế.",
+        "items": [
+            401,
+            104,
+            302,
+            304,
+            301,
+            307
+        ],
+        "description": "Superman vừa lao vào vừa chịu đòn nên cân bằng công và giáp, ưu tiên máu tối đa.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    104
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    302,
+                    304
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    301,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Đè đường bằng cách trao đổi chiêu có lợi, dùng lợi thế máu để ép đối thủ về trụ.",
+            "Tận dụng khả năng chống chịu của Superman để mở giao tranh và giữ chân chủ lực địch.",
+            "Theo dõi bản đồ để đảo đường hỗ trợ khi đã đẩy lính qua nửa sân địch."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 304,
+                "reason": "Khiên Thất Truyền tăng giáp và giảm tốc đánh địch."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 302,
+                "reason": "Giáp Gaia tăng kháng phép và hồi máu."
+            },
+            {
+                "when": "Cần thêm mạng trong giao tranh dài",
+                "replace": 307,
+                "with": 301,
+                "reason": "Giáp Hộ Mệnh cho hồi sinh tại chỗ."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 15,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            },
+            {
+                "heroId": 20,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            },
+            {
+                "heroId": 8,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            }
+        ],
+        "notes": [
+            "Kết hợp giữa sát thương, hút máu và giáp để vừa bền vừa đủ sát thương dứt điểm.",
+            "Chọn món phòng ngự theo loại sát thương chủ đạo của địch."
+        ]
     },
     {
         "id": 26,
         "heroId": 22,
         "name": "Build đấu sĩ giữ vùng",
-        "items": [401, 104, 107, 304, 302, 301],
-        "description": "Richter đấu sĩ giữ vùng, lên giáp và xuyên giáp để vừa chịu đòn vừa phản công."
+        "lane": "Đường Trên",
+        "playstyle": "Richter đánh ở đường đơn hoặc rừng, vừa gây sát thương vừa trụ đòn, chủ động mở giao tranh khi có lợi thế.",
+        "items": [
+            401,
+            104,
+            107,
+            304,
+            302,
+            301
+        ],
+        "description": "Richter đấu sĩ giữ vùng, lên giáp và xuyên giáp để vừa chịu đòn vừa phản công.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    104
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    304
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    302,
+                    301
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Đè đường bằng cách trao đổi chiêu có lợi, dùng lợi thế máu để ép đối thủ về trụ.",
+            "Tận dụng khả năng chống chịu của Richter để mở giao tranh và giữ chân chủ lực địch.",
+            "Theo dõi bản đồ để đảo đường hỗ trợ khi đã đẩy lính qua nửa sân địch."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 301,
+                "with": 304,
+                "reason": "Khiên Thất Truyền tăng giáp và giảm tốc đánh địch."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 301,
+                "with": 302,
+                "reason": "Giáp Gaia tăng kháng phép và hồi máu."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 15,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            },
+            {
+                "heroId": 20,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            },
+            {
+                "heroId": 8,
+                "reason": "Tướng tầm xa hoặc sát thương theo % máu có thể thả diều và bào mòn bạn."
+            }
+        ],
+        "notes": [
+            "Kết hợp giữa sát thương, hút máu và giáp để vừa bền vừa đủ sát thương dứt điểm.",
+            "Chọn món phòng ngự theo loại sát thương chủ đạo của địch."
+        ]
     },
     {
         "id": 27,
         "heroId": 24,
         "name": "Build phép sư sốc sát thương",
-        "items": [404, 201, 202, 203, 205, 208],
-        "description": "Veera dồn công phép vào một điểm, xuyên phép và Băng Sương để thoát khi bị áp sát."
+        "lane": "Đường Giữa",
+        "playstyle": "Veera đứng ở tuyến giữa hoặc sau, cấu rỉa bằng chiêu tầm xa và dồn sát thương phép khi giao tranh nổ ra.",
+        "items": [
+            404,
+            201,
+            202,
+            203,
+            205,
+            208
+        ],
+        "description": "Veera dồn công phép vào một điểm, xuyên phép và Băng Sương để thoát khi bị áp sát.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    404,
+                    201
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    202,
+                    203
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    205,
+                    208
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách an toàn, cấu rỉa bằng chiêu tầm xa trước khi giao tranh tổng.",
+            "Canh thời điểm hồi chiêu của Veera để combo liên tục thay vì xả chiêu rời rạc.",
+            "Luôn giữ một chiêu khống chế hoặc thoát thân để tự cứu khi bị áp sát."
+        ],
+        "situational": [
+            {
+                "when": "Địch lên nhiều kháng phép",
+                "replace": 208,
+                "with": 203,
+                "reason": "Trượng Hỗn Mang tăng xuyên giáp phép theo phần trăm."
+            },
+            {
+                "when": "Cần sốc sát thương tối đa",
+                "replace": 208,
+                "with": 202,
+                "reason": "Vương Miện Hecate tăng mạnh công phép."
+            },
+            {
+                "when": "Bị sát thủ vật lý áp sát",
+                "replace": 208,
+                "with": 209,
+                "reason": "Băng Nhẫn Skadi tăng giáp/nháng phép và máu."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            }
+        ],
+        "notes": [
+            "Cân bằng giữa công phép, giảm hồi chiêu và một món phòng ngự khi địch nhiều sát thủ.",
+            "Đi theo đội để tận dụng lợi thế tầm xa và khống chế diện rộng."
+        ]
     },
     {
         "id": 28,
         "heroId": 26,
         "name": "Build trợ thủ bảo vệ đồng đội",
-        "items": [401, 502, 210, 302, 303, 301],
-        "description": "Alice trợ thủ tuyến sau, lên kháng phép, hồi chiêu và đồ giải khống chế cho đồng đội."
+        "lane": "Đường Rồng",
+        "playstyle": "Alice bám sát chủ lực, dùng khiên/khống chế để bảo vệ và mở đường cho đồng đội.",
+        "items": [
+            401,
+            502,
+            210,
+            302,
+            303,
+            301
+        ],
+        "description": "Alice trợ thủ tuyến sau, lên kháng phép, hồi chiêu và đồ giải khống chế cho đồng đội.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    502
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    210,
+                    302
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    301
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Luôn đi cùng chủ lực, ưu tiên bảo vệ hơn là tự dồn sát thương.",
+            "Dùng khống chế của Alice để mở giao tranh hoặc phá chiêu quan trọng của địch.",
+            "Kiểm soát tầm nhìn ở các điểm nóng và cảnh báo đồng đội khi địch vắng mặt."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 301,
+                "with": 503,
+                "reason": "Đại Địa Mở Trói giải khống chế cho cả đội."
+            },
+            {
+                "when": "Cần thêm khiên bảo vệ chủ lực",
+                "replace": 301,
+                "with": 502,
+                "reason": "Đại Địa Thần Khiên tạo lá chắn cho đồng minh ít máu."
+            },
+            {
+                "when": "Cần tăng tốc đội hình",
+                "replace": 301,
+                "with": 504,
+                "reason": "Đại Địa Thần Tốc tăng tốc chạy cho đồng đội."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ có thể vượt tuyến và hạ gục chủ lực trước khi bạn kịp bảo vệ."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ có thể vượt tuyến và hạ gục chủ lực trước khi bạn kịp bảo vệ."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ có thể vượt tuyến và hạ gục chủ lực trước khi bạn kịp bảo vệ."
+            }
+        ],
+        "notes": [
+            "Trang bị thiên về máu, giảm hồi chiêu và các hiệu ứng bảo vệ/kích hoạt cho đồng đội.",
+            "Một món giải khống chế hoặc tăng tốc đội hình giúp đảo ngược tình thế giao tranh."
+        ]
     },
     {
         "id": 29,
         "heroId": 28,
         "name": "Build đỡ đòn mở giao tranh",
-        "items": [402, 301, 302, 304, 307, 306],
-        "description": "Baldum mở giao tranh, cần giáp dày và khiên máu ảo để trụ vững tuyến đầu."
+        "lane": "Đường Rồng",
+        "playstyle": "Baldum làm tuyến đầu, chủ động mở giao tranh, hứng sát thương và bảo vệ chủ lực phía sau.",
+        "items": [
+            402,
+            301,
+            302,
+            304,
+            307,
+            306
+        ],
+        "description": "Baldum mở giao tranh, cần giáp dày và khiên máu ảo để trụ vững tuyến đầu.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    402,
+                    301
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    302,
+                    304
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    307,
+                    306
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chủ động đứng trước đội hình, mở giao tranh đúng lúc và giữ chân chủ lực địch.",
+            "Dùng khống chế của Baldum để tạo không gian cho xạ thủ/pháp sư dồn sát thương.",
+            "Không đuổi quá sâu khỏi đội hình, luôn giữ vị trí để che chắn đồng đội."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 306,
+                "with": 305,
+                "reason": "Giáp Thống Khổ phản sát thương vật lý."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 306,
+                "with": 303,
+                "reason": "Huân Chương Troy kháng phép và hấp thụ sát thương."
+            },
+            {
+                "when": "Cần khiên máu ảo để mở giao tranh",
+                "replace": 306,
+                "with": 307,
+                "reason": "Nham Thuẫn tạo lá chắn theo máu tối đa."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            },
+            {
+                "heroId": 15,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            },
+            {
+                "heroId": 20,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            }
+        ],
+        "notes": [
+            "Ưu tiên máu, giáp và kháng phép; chọn món phòng ngự theo loại sát thương địch gây ra.",
+            "Một món hồi sinh/khiên máu ảo giúp mở giao tranh an toàn hơn ở cuối trận."
+        ]
     },
     {
         "id": 30,
         "heroId": 29,
         "name": "Build đỡ đòn chủ lực",
-        "items": [401, 301, 302, 303, 307, 304],
-        "description": "Cresht đỡ đòn chủ lực, ưu tiên máu, kháng phép và khiên để mở giao tranh an toàn."
+        "lane": "Đường Trên",
+        "playstyle": "Cresht làm tuyến đầu, chủ động mở giao tranh, hứng sát thương và bảo vệ chủ lực phía sau.",
+        "items": [
+            401,
+            301,
+            302,
+            303,
+            307,
+            304
+        ],
+        "description": "Cresht đỡ đòn chủ lực, ưu tiên máu, kháng phép và khiên để mở giao tranh an toàn.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    301
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    302,
+                    303
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    307,
+                    304
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chủ động đứng trước đội hình, mở giao tranh đúng lúc và giữ chân chủ lực địch.",
+            "Dùng khống chế của Cresht để tạo không gian cho xạ thủ/pháp sư dồn sát thương.",
+            "Không đuổi quá sâu khỏi đội hình, luôn giữ vị trí để che chắn đồng đội."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 304,
+                "with": 305,
+                "reason": "Giáp Thống Khổ phản sát thương vật lý."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 304,
+                "with": 303,
+                "reason": "Huân Chương Troy kháng phép và hấp thụ sát thương."
+            },
+            {
+                "when": "Cần khiên máu ảo để mở giao tranh",
+                "replace": 304,
+                "with": 307,
+                "reason": "Nham Thuẫn tạo lá chắn theo máu tối đa."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            },
+            {
+                "heroId": 15,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            },
+            {
+                "heroId": 20,
+                "reason": "Xuyên giáp và sát thương theo % máu khắc chế lượng máu lớn của bạn."
+            }
+        ],
+        "notes": [
+            "Ưu tiên máu, giáp và kháng phép; chọn món phòng ngự theo loại sát thương địch gây ra.",
+            "Một món hồi sinh/khiên máu ảo giúp mở giao tranh an toàn hơn ở cuối trận."
+        ]
     },
     {
         "id": 31,
         "heroId": 31,
         "name": "Build xạ thủ chí mạng cuối trận",
-        "items": [405, 103, 102, 106, 108, 109],
-        "description": "Trần Gia Bảo xạ thủ tầm xa, chí mạng và tốc đánh là ưu tiên, thêm xuyên giáp cuối trận."
+        "lane": "Đường Rồng",
+        "playstyle": "Trần Gia Bảo bám tuyến sau, tận dụng tầm đánh và tốc độ bắn để cấu rỉa, chỉ vào giao tranh khi đã có vị trí an toàn.",
+        "items": [
+            405,
+            103,
+            102,
+            106,
+            108,
+            109
+        ],
+        "description": "Trần Gia Bảo xạ thủ tầm xa, chí mạng và tốc đánh là ưu tiên, thêm xuyên giáp cuối trận.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    103
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    102,
+                    106
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    108,
+                    109
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách tối đa và di chuyển liên tục, chỉ bắn khi đã có tầm nhìn an toàn.",
+            "Dùng Trần Gia Bảo dọn lính nhanh rồi đảo sang rừng hoặc đường giữa để tạo áp lực.",
+            "Để dành chiêu thoát/miễn thương cho tình huống bị áp sát thay vì dùng để mở giao tranh."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Giày Kiên Cường tăng kháng hiệu ứng giúp bắn đủ số đòn."
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 405,
+                "with": 402,
+                "reason": "Giày Hộ Vệ giảm sát thương từ đòn đánh thường."
+            },
+            {
+                "when": "Cần thêm hút máu để trụ giao tranh",
+                "replace": 109,
+                "with": 108,
+                "reason": "Cung Tà Ma tăng hút máu, giúp duy trì và lật kèo."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ có thể áp sát và dồn sát thương trước khi bạn kịp phản ứng."
+            }
+        ],
+        "notes": [
+            "Ưu tiên chí mạng, tốc đánh và xuyên giáp để tối ưu sát thương lên cả chủ lực lẫn tanker.",
+            "Giai đoạn đầu cần trợ thủ bảo vệ, tránh solo khi chưa có trang bị chủ lực."
+        ]
     },
     {
         "id": 32,
         "heroId": 32,
         "name": "Build phép sư xuyên phép sinh tồn",
-        "items": [404, 201, 202, 203, 205, 208],
-        "description": "Sky pháp sư sốc sát thương, dồn công phép, xuyên phép và một món sinh tồn."
+        "lane": "Đường Giữa",
+        "playstyle": "Sky đứng ở tuyến giữa hoặc sau, cấu rỉa bằng chiêu tầm xa và dồn sát thương phép khi giao tranh nổ ra.",
+        "items": [
+            404,
+            201,
+            202,
+            203,
+            205,
+            208
+        ],
+        "description": "Sky pháp sư sốc sát thương, dồn công phép, xuyên phép và một món sinh tồn.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    404,
+                    201
+                ],
+                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    202,
+                    203
+                ],
+                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    205,
+                    208
+                ],
+                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách an toàn, cấu rỉa bằng chiêu tầm xa trước khi giao tranh tổng.",
+            "Canh thời điểm hồi chiêu của Sky để combo liên tục thay vì xả chiêu rời rạc.",
+            "Luôn giữ một chiêu khống chế hoặc thoát thân để tự cứu khi bị áp sát."
+        ],
+        "situational": [
+            {
+                "when": "Địch lên nhiều kháng phép",
+                "replace": 208,
+                "with": 203,
+                "reason": "Trượng Hỗn Mang tăng xuyên giáp phép theo phần trăm."
+            },
+            {
+                "when": "Cần sốc sát thương tối đa",
+                "replace": 208,
+                "with": 202,
+                "reason": "Vương Miện Hecate tăng mạnh công phép."
+            },
+            {
+                "when": "Bị sát thủ vật lý áp sát",
+                "replace": 208,
+                "with": 209,
+                "reason": "Băng Nhẫn Skadi tăng giáp/nháng phép và máu."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi bạn kịp thoát."
+            }
+        ],
+        "notes": [
+            "Cân bằng giữa công phép, giảm hồi chiêu và một món phòng ngự khi địch nhiều sát thủ.",
+            "Đi theo đội để tận dụng lợi thế tầm xa và khống chế diện rộng."
+        ]
     }
 ]
