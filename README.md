@@ -26,7 +26,7 @@ AOV-Hub/
 ├── src/
 │   ├── pages/                    # 404, login, register, profile,
 │   │                             #   heroes, hero-detail, items, item-detail,
-│   │                             #   builds, compare, favorite, feed,
+│   │                             #   builds, build-detail, compare, favorite, feed,
 │   │                             #   post-detail, search, admin, hero-admin
 │   ├── data/                     # heroes.json, items.json, builds.json,
 │   │                             #   posts.json, users.json, comments.json, likes.json
@@ -45,7 +45,8 @@ AOV-Hub/
 │       ├── home.js               # Trang chủ: Tướng/Trang bị nổi bật
 │       ├── hero.js               # Danh sách/Chi tiết Tướng
 │       ├── item.js               # Danh sách/Chi tiết Trang bị
-│       ├── build.js              # Trang Build đề xuất
+│       ├── build.js              # Trang Build đề xuất (danh sách + bộ lọc)
+│       ├── build-detail.js       # Chi tiết hướng dẫn build (HD02/HD03/HD04)
 │       ├── compare.js            # So sánh Tướng
 │       ├── feed.js               # Feed, bài viết, like, comment, kiểm duyệt
 │       ├── admin.js              # Quản trị bài viết
@@ -121,17 +122,17 @@ Không tự ý đổi tên các key cố định khi thêm tính năng — `stor
 ```bash
 npm install                 # cài phụ thuộc
 npm run dev                 # dev server (có API /api/heroes, /api/<collection>)
-npm test                    # 17 file test mini-DOM
+npm test                    # 22 file test mini-DOM (2 file lỗi sẵn: test-auth, test-feed-page)
 npm run test:e2e:install    # cài Chromium (một lần)
 npm run test:e2e            # test trình duyệt thật (responsive + menu mobile)
-npm run build               # build 17 trang vào dist/
+npm run build               # build 18 trang vào dist/
 npm run preview             # xem bản build (vẫn có API /api/heroes, /api/<collection>)
 ```
 
 ### 6.2. Kết quả hiện tại
-- `npm test`: **17/17 file PASS** (mini-DOM).
-- `npm run test:e2e`: **82/82 PASS** — 16 trang × 5 mốc (360 / 480 / 768 / 1024 / 1280) không tràn ngang, cộng 2 test menu mobile.
-- `npm run build`: sinh đủ **17 trang HTML** + css/js/data/ảnh vào `dist/`; chạy `npm run preview` rồi mở để kiểm tra lại.
+- `npm test`: **20/22 file PASS** (mini-DOM; 2 file lỗi sẵn `test-auth.cjs` và `test-feed-page.cjs`). Riêng hướng dẫn build: `test-build-page.cjs` 36 test + `test-build-detail.cjs` 56 test PASS.
+- `npm run test:e2e`: **87/87 PASS** — 17 trang × 5 mốc (360 / 480 / 768 / 1024 / 1280) không tràn ngang, cộng 2 test menu mobile.
+- `npm run build`: sinh đủ **18 trang HTML** + css/js/data/ảnh vào `dist/`; chạy `npm run preview` rồi mở để kiểm tra lại.
 
 ### 6.3. Tài khoản demo
 
@@ -145,10 +146,11 @@ npm run preview             # xem bản build (vẫn có API /api/heroes, /api/<
 1. **Trang chủ** — banner, điều hướng nhanh, khối nổi bật; thu nhỏ ≤768px thấy nút menu mobile.
 2. **Tướng** — tìm kiếm (bỏ dấu), lọc vai trò/độ khó, sắp xếp A-Z/Z-A, phân trang 12/trang; chi tiết có bảng kỹ năng (kèm hồi chiêu), bảng chỉ số, build đề xuất và nút ♥.
 3. **Trang bị** — tìm kiếm, lọc theo loại, phân trang; chi tiết có nội tại, giá, trang bị liên quan.
-4. **Yêu thích** (2 tab Yêu thích / Lịch sử) và **So sánh tướng** (tô sáng chỉ số cao hơn); bộ lọc/sắp xếp lưu trên URL nên F5 vẫn giữ.
-5. **Cộng đồng (Feed)** — lọc chuyên mục, sắp xếp, tìm kiếm; mở chi tiết, like/comment. Đăng bài khi đã đăng nhập (vào hàng chờ nếu bật duyệt trước).
-6. **Đăng ký → Đăng nhập → Profile → Đăng xuất**; Profile hiển thị thống kê và bài đã đăng.
-7. **Admin** (`admin` / `admin1`) — ẩn/hiện & xoá bài, công tắc duyệt trước; mục "Tướng" để thêm/sửa/xoá tướng.
+4. **Build đề xuất** — lọc theo đường đi/vai trò, tìm theo tên tướng/build, sắp xếp A-Z/Z-A (bộ lọc lưu trên URL). Bấm một build để mở **chi tiết hướng dẫn**: trang bị chính, lộ trình lên đồ theo giai đoạn, trang bị thay thế theo tình huống, thứ tự nâng kỹ năng, mẹo chơi và tướng khắc chế.
+5. **Yêu thích** (2 tab Yêu thích / Lịch sử) và **So sánh tướng** (tô sáng chỉ số cao hơn); bộ lọc/sắp xếp lưu trên URL nên F5 vẫn giữ.
+6. **Cộng đồng (Feed)** — lọc chuyên mục, sắp xếp, tìm kiếm; mở chi tiết, like/comment. Đăng bài khi đã đăng nhập (vào hàng chờ nếu bật duyệt trước).
+7. **Đăng ký → Đăng nhập → Profile → Đăng xuất**; Profile hiển thị thống kê và bài đã đăng.
+8. **Admin** (`admin` / `admin1`) — ẩn/hiện & xoá bài, công tắc duyệt trước; mục "Tướng" để thêm/sửa/xoá tướng.
 
 ### 6.5. Lưu ý khi demo
 - Phải chạy qua `npm run dev` hoặc `npm run preview` (mở thẳng file sẽ lỗi CORS khi đọc JSON).

@@ -364,7 +364,7 @@ function collectionApiMiddleware(resource) {
 /**
  * Danh sách đầu vào cho build nhiều trang.
  *
- * Mặc định Vite chỉ lấy `index.html` làm điểm vào nên 15 trang trong `src/pages/`
+ * Mặc định Vite chỉ lấy `index.html` làm điểm vào nên 18 trang trong `src/pages/`
  * không được sinh ra ở `dist/`. Liệt kê từng trang để bản build có đủ, giữ nguyên
  * đường dẫn `/src/pages/...` mà các link trong trang đang trỏ tới.
  */
