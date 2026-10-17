@@ -1,15 +1,15 @@
-﻿/**
+/**
  * HD06-b - build-submit.js
- * Phá»¥ trÃ¡ch: Logic trang gá»­i build hÆ°á»›ng dáº«n (src/pages/build-submit.html)
- * - Kiá»ƒm tra Ä‘Äƒng nháº­p/banned, táº£i tÆ°á»›ng/trang bá»‹, chá»n giai Ä‘oáº¡n, máº¹o chÆ¡i
- * - Validate, kiá»ƒm duyá»‡t ná»™i dung (náº¿u hÃ m cÃ³ sáºµn), lÆ°u vÃ o localStorage 'aov_build_submissions'
- * - KhÃ´ng ghi src/data/*.json, khÃ´ng Ä‘á»¥ng CSS
+ * Phụ trách: Logic trang gửi build hướng dẫn (src/pages/build-submit.html)
+ * - Kiểm tra đăng nhập/banned, tải tướng/trang bị, chọn giai đoạn, mẹo chơi
+ * - Validate, kiểm duyệt nội dung (nếu hàm có sẵn), lưu vào localStorage 'aov_build_submissions'
+ * - Không ghi src/data/*.json, không đụng CSS
  *
- * HÃ m dÃ¹ng láº¡i: getCurrentUser/isLoggedIn/isUserBanned (auth.js), escapeHtml/imageUrl (components.js),
+ * Hàm dùng lại: getCurrentUser/isLoggedIn/isUserBanned (auth.js), escapeHtml/imageUrl (components.js),
  * loadHeroes() (heroData.js), loadData(DATA_PATH.items) (loadData.js/config.js).
  */
 (function () {
-    const PHASE_NAMES = ['Äáº§u tráº­n', 'Giá»¯a tráº­n', 'Cuá»‘i tráº­n'];
+    const PHASE_NAMES = ['Đầu trận', 'Giữa trận', 'Cuối trận'];
     const MAX_ITEMS_PER_PHASE = 3;
     const MAX_ITEMS_TOTAL = 6;
     const MAX_TIPS = 5;
@@ -162,7 +162,7 @@
             cont.innerHTML = '';
             const filterInput = document.createElement('input');
             filterInput.type = 'text';
-            filterInput.placeholder = 'Lá»c trang bá»‹...';
+            filterInput.placeholder = 'Lọc trang bị...';
             filterInput.className = 'build-submit-filter';
             cont.appendChild(filterInput);
             const grid = document.createElement('div');
@@ -232,7 +232,7 @@
             wrap.appendChild(inp);
             const del = document.createElement('button');
             del.type = 'button';
-            del.textContent = 'XÃ³a';
+            del.textContent = 'Xóa';
             del.addEventListener('click', function () {
                 wrap.remove();
                 updateAddTip();
@@ -252,7 +252,7 @@
                 wrap.appendChild(inp);
                 const del = document.createElement('button');
                 del.type = 'button';
-                del.textContent = 'XÃ³a';
+                del.textContent = 'Xóa';
                 del.addEventListener('click', function () {
                     wrap.remove();
                     updateAddTip();
@@ -300,49 +300,49 @@
         const phase1Note = q('bs-phase-1-note');
         const phase2Note = q('bs-phase-2-note');
         if (!heroSel || !heroSel.value) {
-            const el = showError('hero', 'Vui lÃ²ng chá»n tÆ°á»›ng.');
+            const el = showError('hero', 'Vui lòng chọn tướng.');
             if (el) el.focus();
             return false;
         }
         const nameVal = nameInp && nameInp.value ? nameInp.value.trim() : '';
         if (nameVal.length < MIN_NAME || nameVal.length > MAX_NAME) {
-            const el = showError('name', 'TÃªn build pháº£i tá»« 2 Ä‘áº¿n 60 kÃ½ tá»±.');
+            const el = showError('name', 'Tên build phải từ 2 đến 60 ký tự.');
             if (el) el.focus();
             return false;
         }
         if (!laneSel || !laneSel.value) {
-            const el = showError('lane', 'Vui lÃ²ng chá»n Ä‘Æ°á»ng.');
+            const el = showError('lane', 'Vui lòng chọn đường.');
             if (el) el.focus();
             return false;
         }
         const playVal = playstyle && playstyle.value ? playstyle.value.trim() : '';
         if (playVal.length < MIN_PLAYSTYLE || playVal.length > MAX_PLAYSTYLE) {
-            const el = showError('playstyle', 'Lá»‘i chÆ¡i pháº£i tá»« 10 Ä‘áº¿n 500 kÃ½ tá»±.');
+            const el = showError('playstyle', 'Lối chơi phải từ 10 đến 500 ký tự.');
             if (el) el.focus();
             return false;
         }
         const skillVal = skillOrder && skillOrder.value ? skillOrder.value.trim() : '';
         if (skillVal.length > MAX_SKILLORDER) {
-            const el = showError('skillOrder', 'Thá»© tá»± nÃ¢ng ká»¹ nÄƒng tá»‘i Ä‘a 120 kÃ½ tá»±.');
+            const el = showError('skillOrder', 'Thứ tự nâng kỹ năng tối đa 120 ký tự.');
             if (el) el.focus();
             return false;
         }
         const total = countTotalSelected();
         if (total < 3 || total > MAX_ITEMS_TOTAL) {
-            alert('Cáº§n chá»n tá»« 3 Ä‘áº¿n 6 trang bá»‹ tá»•ng cá»™ng.');
+            alert('Cần chọn từ 3 đến 6 trang bị tổng cộng.');
             return false;
         }
         const p0n = phase0Note && phase0Note.value ? phase0Note.value.trim() : '';
         const p1n = phase1Note && phase1Note.value ? phase1Note.value.trim() : '';
         const p2n = phase2Note && phase2Note.value ? phase2Note.value.trim() : '';
         if (p0n.length > MAX_PHASENOTE || p1n.length > MAX_PHASENOTE || p2n.length > MAX_PHASENOTE) {
-            showError('phase0Note', p0n.length > MAX_PHASENOTE ? 'Ghi chÃº tá»‘i Ä‘a 200 kÃ½ tá»±.' : '');
-            showError('phase1Note', p1n.length > MAX_PHASENOTE ? 'Ghi chÃº tá»‘i Ä‘a 200 kÃ½ tá»±.' : '');
-            showError('phase2Note', p2n.length > MAX_PHASENOTE ? 'Ghi chÃº tá»‘i Ä‘a 200 kÃ½ tá»±.' : '');
+            showError('phase0Note', p0n.length > MAX_PHASENOTE ? 'Ghi chú tối đa 200 ký tự.' : '');
+            showError('phase1Note', p1n.length > MAX_PHASENOTE ? 'Ghi chú tối đa 200 ký tự.' : '');
+            showError('phase2Note', p2n.length > MAX_PHASENOTE ? 'Ghi chú tối đa 200 ký tự.' : '');
             return false;
         }
         if (!passesModeration()) {
-            alert('Ná»™i dung chá»©a tá»« ngá»¯ khÃ´ng phÃ¹ há»£p. Vui lÃ²ng chá»‰nh sá»­a láº¡i.');
+            alert('Nội dung chứa từ ngữ không phù hợp. Vui lòng chỉnh sửa lại.');
             return false;
         }
         return true;
@@ -381,7 +381,7 @@
         }
         const heroSel = q('bs-hero');
         if (heroSel) {
-            heroSel.innerHTML = '<option value="">-- Chá»n tÆ°á»›ng --</option>';
+            heroSel.innerHTML = '<option value="">-- Chọn tướng --</option>';
             heroesList
                 .slice()
                 .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'vi'))
@@ -394,11 +394,11 @@
         }
         const laneSel = q('bs-lane');
         if (laneSel && laneSel.options.length <= 1) {
-            laneSel.innerHTML = '<option value="">-- Chá»n Ä‘Æ°á»ng --</option>' +
-                '<option value="ÄÆ°á»ng Rá»“ng">ÄÆ°á»ng Rá»“ng</option>' +
-                '<option value="Rá»«ng">Rá»«ng</option>' +
-                '<option value="ÄÆ°á»ng Giá»¯a">ÄÆ°á»ng Giá»¯a</option>' +
-                '<option value="ÄÆ°á»ng TrÃªn">ÄÆ°á»ng TrÃªn</option>';
+            laneSel.innerHTML = '<option value="">-- Chọn đường --</option>' +
+                '<option value="Đường Rồng">Đường Rồng</option>' +
+                '<option value="Rừng">Rừng</option>' +
+                '<option value="Đường Giữa">Đường Giữa</option>' +
+                '<option value="Đường Trên">Đường Trên</option>';
         }
         renderItems();
         renderTips();
@@ -410,7 +410,7 @@
                 const subs = loadSubmissions();
                 const pendingCount = subs.filter((s) => s.author === username && s.status === 'pending').length;
                 if (pendingCount >= MAX_PENDING_PER_USER) {
-                    alert('Báº¡n Ä‘Ã£ cÃ³ 3 build Ä‘ang chá» duyá»‡t. Vui lÃ²ng chá» duyá»‡t xong trÆ°á»›c khi gá»­i thÃªm.');
+                    alert('Bạn đã có 3 build đang chờ duyệt. Vui lòng chờ duyệt xong trước khi gửi thêm.');
                     return;
                 }
                 const nameVal = (q('bs-name') && q('bs-name').value) ? q('bs-name').value.trim() : '';
@@ -449,14 +449,14 @@
                 };
                 subs.push(record);
                 if (!saveSubmissions(subs)) {
-                    alert('KhÃ´ng thá»ƒ lÆ°u build. Vui lÃ²ng thá»­ láº¡i.');
+                    alert('Không thể lưu build. Vui lòng thử lại.');
                     return;
                 }
                 form.hidden = true;
                 const res = q('build-submit-result');
                 if (res) {
                     res.hidden = false;
-                    res.innerHTML = '<p>ÄÃ£ gá»­i, chá» admin duyá»‡t</p><p><a href="builds.html">Xem danh sÃ¡ch build</a> | <button type="button" id="bs-resend">Gá»­i build khÃ¡c</button></p>';
+                    res.innerHTML = '<p>Đã gửi, chờ admin duyệt</p><p><a href="builds.html">Xem danh sách build</a> | <button type="button" id="bs-resend">Gửi build khác</button></p>';
                     const resend = q('bs-resend');
                     if (resend) {
                         resend.onclick = function () {
