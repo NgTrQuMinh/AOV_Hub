@@ -337,10 +337,29 @@ async function getAdminBadgeCounts() {
         // Không đọc được bài viết: coi như 0, không làm sập menu dọc.
     }
 
-    // pending: cộng thêm số build đang chờ duyệt (nếu tab Build cung cấp hàm này).
+    // pending: cộng thêm số build đang chờ duyệt (nếu tab Build cung cấp hàm này, không thì đọc trực tiếp từ localStorage).
     try {
         if (typeof getPendingBuildCount === 'function') {
             counts.pending += adminShellCount(await getPendingBuildCount());
+        } else {
+            try {
+                if (typeof localStorage !== 'undefined') {
+                    const raw = localStorage.getItem('aov_build_submissions');
+                    if (raw) {
+                        const list = JSON.parse(raw);
+                        if (Array.isArray(list)) {
+                            let c = 0;
+                            for (let i = 0; i < list.length; i++) {
+                                const entry = list[i];
+                                if (entry && entry.status === 'pending') c++;
+                            }
+                            counts.pending += c;
+                        }
+                    }
+                }
+            } catch (lsError) {
+                // Bỏ qua lỗi đọc localStorage.
+            }
         }
     } catch (error) {
         // Bỏ qua.
