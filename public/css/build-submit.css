@@ -1,0 +1,418 @@
+/**
+ * HD06-c - build-submit.css
+ * Trang áp dụng: src/pages/build-submit.html
+ * CSS giao diện nhẹ nhàng, dùng biến trong public/css/variables.css khi có.
+ * Các nhóm class đã style: build-submit-page, build-submit-container, build-submit-header,
+ * build-submit-desc, build-submit-field, form-hint, form-error, build-submit-phase,
+ * build-submit-filter, build-submit-items-grid, build-submit-item, build-submit-preview,
+ * build-submit-preview__item, build-submit-tip, build-submit-actions.
+ */
+.build-submit-page {
+    background-color: var(--color-bg, #FAF3E1);
+    color: var(--color-text, #3A2F1C);
+    font-family: var(--font-base, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+    font-size: var(--fs-base, 18px);
+    line-height: 1.6;
+}
+
+.build-submit-container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    width: 100%;
+}
+
+.build-submit-header {
+    text-align: center;
+    margin: 2rem 0 1.5rem;
+}
+
+.build-submit-header h1 {
+    margin: 0 0 0.5rem;
+    color: var(--color-text, #3A2F1C);
+}
+
+.build-submit-desc {
+    color: var(--color-text-soft, #5A4A2E);
+    font-size: var(--fs-md, 16px);
+    margin: 0;
+}
+
+#build-submit-gate {
+    background-color: var(--color-gold-soft, #FAF1DE);
+    border: 1px solid var(--color-border, #EFE3C6);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(122, 90, 20, 0.08);
+}
+
+#build-submit-gate a {
+    color: var(--color-text-accent, #9C6F10);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+#build-submit-gate a:hover {
+    text-decoration: underline;
+}
+
+#build-submit-form {
+    background-color: var(--color-surface, #FFFFFF);
+    border: 1px solid var(--color-border, #EFE3C6);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(122, 90, 20, 0.08);
+    margin-bottom: 2rem;
+}
+
+.build-submit-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.build-submit-field label {
+    font-weight: 600;
+    color: var(--color-text, #3A2F1C);
+}
+
+.build-submit-field input,
+.build-submit-field select,
+.build-submit-field textarea {
+    border: 1px solid var(--color-border, #EFE3C6);
+    border-radius: 12px;
+    padding: 0.625rem 0.875rem;
+    background-color: var(--color-bg-elevated, #FFFDF8);
+    color: var(--color-text, #3A2F1C);
+    font-size: var(--fs-base, 18px);
+    line-height: 1.5;
+    min-height: 44px;
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.build-submit-field input::placeholder,
+.build-submit-field textarea::placeholder {
+    color: var(--color-text-placeholder, #B5A27A);
+}
+
+.build-submit-field input:focus,
+.build-submit-field select:focus,
+.build-submit-field textarea:focus {
+    outline: none;
+    border-color: var(--color-gold, #DDA532);
+    box-shadow: 0 0 0 3px rgba(221, 165, 50, 0.15);
+}
+
+.build-submit-field textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-hint {
+    font-size: var(--fs-sm, 14px);
+    color: var(--color-text-muted, #7A6A4A);
+}
+
+.form-error {
+    font-size: var(--fs-sm, 14px);
+    color: var(--color-danger-strong, #A93226);
+}
+
+.form-error[hidden],
+[hidden] {
+    display: none !important;
+}
+
+.build-submit-phase {
+    background-color: var(--color-gold-subtle, #FAF1DE);
+    border: 1px solid var(--color-border, #EFE3C6);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.build-submit-phase legend {
+    font-weight: 600;
+    font-size: var(--fs-md, 16px);
+    color: var(--color-text-accent, #9C6F10);
+    padding: 0 0.5rem;
+}
+
+.build-submit-filter {
+    border: 1px solid var(--color-border, #EFE3C6);
+    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--color-bg-elevated, #FFFDF8);
+    color: var(--color-text, #3A2F1C);
+    margin-bottom: 0.75rem;
+    min-height: 44px;
+    width: 100%;
+}
+
+.build-submit-filter:focus {
+    outline: none;
+    border-color: var(--color-gold, #DDA532);
+    box-shadow: 0 0 0 3px rgba(221, 165, 50, 0.15);
+}
+
+.build-submit-items-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+.build-submit-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.625rem;
+    border: 1px solid var(--color-border, #EFE3C6);
+    border-radius: 12px;
+    background-color: var(--color-surface, #FFFFFF);
+    cursor: pointer;
+    min-height: 44px;
+    transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.build-submit-item:hover {
+    background-color: var(--color-gold-soft, #FAF1DE);
+}
+
+.build-submit-item input[type="checkbox"] {
+    accent-color: var(--color-gold, #DDA532);
+    min-width: 18px;
+    min-height: 18px;
+    margin: 0;
+}
+
+.build-submit-item img {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.build-submit-item span {
+    font-size: var(--fs-sm, 14px);
+    color: var(--color-text, #3A2F1C);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.build-submit-item:has(input:checked) {
+    background-color: var(--color-gold-light, #F5E5C3);
+    border-color: var(--color-gold-dark, #C98F1E);
+}
+
+.build-submit-item input:focus-visible {
+    outline: 2px solid var(--color-gold, #DDA532);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.build-submit-item input:disabled {
+    opacity: 0.4;
+}
+
+.build-submit-item input:disabled + img,
+.build-submit-item input:disabled ~ span {
+    opacity: 0.5;
+}
+
+.build-submit-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.5rem;
+    background-color: var(--color-bg-elevated, #FFFDF8);
+    border: 1px dashed var(--color-border, #EFE3C6);
+    border-radius: 12px;
+    min-height: 48px;
+}
+
+.build-submit-preview__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    background-color: var(--color-surface, #FFFFFF);
+    border: 1px solid var(--color-border, #EFE3C6);
+    font-size: var(--fs-xs, 12px);
+    color: var(--color-text, #3A2F1C);
+}
+
+.build-submit-preview__item img {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.build-submit-tip {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.build-submit-tip input {
+    flex: 1;
+    min-height: 44px;
+}
+
+.build-submit-tip button {
+    border: 1px solid var(--color-gold, #DDA532);
+    background-color: transparent;
+    color: var(--color-text-accent, #9C6F10);
+    border-radius: 12px;
+    padding: 0 0.875rem;
+    font-weight: 600;
+    min-height: 44px;
+    cursor: pointer;
+    transition: background-color 180ms ease, color 180ms ease;
+}
+
+.build-submit-tip button:hover {
+    background-color: var(--color-gold-soft, #FAF1DE);
+}
+
+#bs-tip-add {
+    border: 1px solid var(--color-gold, #DDA532);
+    background-color: transparent;
+    color: var(--color-text-accent, #9C6F10);
+    border-radius: 12px;
+    padding: 0.625rem 1rem;
+    font-weight: 600;
+    min-height: 44px;
+    cursor: pointer;
+    transition: background-color 180ms ease, color 180ms ease;
+}
+
+#bs-tip-add:hover {
+    background-color: var(--color-gold-soft, #FAF1DE);
+}
+
+#bs-tip-add:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.build-submit-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 2rem;
+}
+
+.build-submit-actions button[type="submit"] {
+    background: var(--gradient-gold, linear-gradient(135deg, #EFCC72, #DDA532));
+    color: var(--color-on-accent, #3A2F1C);
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: var(--fs-base, 18px);
+    min-height: 44px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(122, 90, 20, 0.12);
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.build-submit-actions button[type="submit"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(122, 90, 20, 0.12);
+}
+
+.build-submit-actions a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border, #EFE3C6);
+    background-color: var(--color-bg-elevated, #FFFDF8);
+    color: var(--color-text, #3A2F1C);
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    min-height: 44px;
+    transition: background-color 180ms ease;
+}
+
+.build-submit-actions a:hover {
+    background-color: var(--color-gold-soft, #FAF1DE);
+}
+
+#build-submit-result {
+    background-color: var(--color-success-soft, #E8F5EC);
+    border: 1px solid var(--color-success-border, #BFE3CC);
+    color: var(--color-success-strong, #2E7D4F);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(46, 125, 79, 0.08);
+}
+
+#build-submit-result a {
+    color: var(--color-success-strong, #2E7D4F);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+#build-submit-result a:hover {
+    text-decoration: underline;
+}
+
+#build-submit-result button {
+    border: 1px solid var(--color-success-border, #BFE3CC);
+    background-color: var(--color-surface, #FFFFFF);
+    color: var(--color-success-strong, #2E7D4F);
+    border-radius: 12px;
+    padding: 0.5rem 1rem;
+    margin-top: 0.75rem;
+    font-weight: 600;
+    min-height: 44px;
+    cursor: pointer;
+}
+
+@media (min-width: 768px) {
+    .build-submit-items-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 992px) {
+    .build-submit-items-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 375px) {
+    .build-submit-container {
+        padding: 0 0.75rem;
+    }
+    .build-submit-items-grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .build-submit-item,
+    .build-submit-tip button,
+    #bs-tip-add,
+    .build-submit-actions button[type="submit"],
+    .build-submit-actions a {
+        transition: none;
+    }
+}
+
+
+#bs-items-preview { min-height: 40px; margin-bottom: 1rem; }
+
+
