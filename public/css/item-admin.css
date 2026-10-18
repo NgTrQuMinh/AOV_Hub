@@ -154,16 +154,63 @@
     gap: var(--space-2);
 }
 
-#item-admin-list .btn-sm {
+#item-admin-list .btn-sm,
+.btn-sm {
     padding: var(--space-1) var(--space-3);
     font-size: var(--fs-xs);
     line-height: 1.4;
     cursor: pointer;
 }
 
-#item-admin-list .btn-sm:hover {
+#item-admin-list .btn-sm:hover,
+.btn-sm:hover {
     border-color: var(--color-crimson);
     color: var(--color-crimson);
+}
+
+.item-related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-2);
+    max-height: 260px;
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: var(--space-2);
+    background: var(--color-bg-elevated);
+}
+
+.item-related-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface);
+    cursor: pointer;
+}
+
+.item-related-item input {
+    margin: 0;
+}
+
+.item-related-item label {
+    margin: 0;
+    font-size: 13px;
+    cursor: pointer;
+    word-break: break-word;
+}
+
+.btn-ghost {
+    background: transparent;
+    border-color: transparent;
+    color: var(--color-text-muted);
+}
+
+.btn-ghost:hover {
+    color: var(--color-crimson);
+    border-color: transparent;
 }
 
 /* ---------- Màn hình hẹp ---------- */

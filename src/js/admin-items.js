@@ -1001,15 +1001,20 @@ function renderItemAdminForm(editingItem) {
             </div>
 
             <div class="form-group">
-                <label for="item-price">Giá (Bạc) *</label>
+                <label for="item-price">Giá (Vàng) *</label>
                 <input type="number" min="0" step="1" id="item-price" placeholder="Ví dụ: 2040" value="${escapeHtml(values.price)}">
             </div>
 
             <div class="form-group">
                 <label for="item-image">Ảnh trang bị</label>
-                <input type="text" id="item-image" placeholder="items/kiem-fafnir.png" value="${escapeHtml(values.image)}" aria-describedby="item-image-hint">
+                <div class="item-image-controls" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+                    <input type="text" id="item-image" placeholder="items/kiem-fafnir.png" value="${escapeHtml(values.image)}" aria-describedby="item-image-hint" style="flex:1 1 240px; min-width:200px;">
+                    <input type="file" id="item-image-file" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="display:none;">
+                    <button type="button" class="btn btn-sm btn-outline" id="item-image-pick">Chọn file ảnh</button>
+                    <button type="button" class="btn btn-sm btn-ghost" id="item-image-clear">Xóa</button>
+                </div>
                 <div id="item-image-preview">${values.image ? `<img src="${escapeHtml(imageUrl(values.image))}" alt="Ảnh xem trước">` : ''}</div>
-                <p class="feed-form__hint" id="item-image-hint">Điền đường dẫn ảnh tới file trong public/assets/images/items/ (vd: items/kiem-fafnir.png). Ảnh này dùng chung cho trang Danh sách và Chi tiết Trang bị. Để trống nếu chưa có ảnh.</p>
+                <p class="feed-form__hint" id="item-image-hint">Chọn file ảnh (sẽ tự điền đường dẫn dạng <code>items/tên-file</code>). Ảnh lưu dạng đường dẫn chung cho toàn trang.</p>
             </div>
 
             <div class="form-group">
@@ -1029,8 +1034,14 @@ function renderItemAdminForm(editingItem) {
             </div>
 
             <div class="form-group">
-                <label for="item-related">Trang bị liên quan</label>
-                <input type="text" id="item-related" placeholder="102, 103, 104 (mã trang bị, cách nhau dấu phẩy)" value="${escapeHtml((values.related || []).join(', '))}">
+                <label>Trang bị liên quan</label>
+                <input type="hidden" id="item-related" value="${escapeHtml((values.related || []).join(', '))}">
+                <div class="item-related-toolbar" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:8px;">
+                    <input type="text" id="item-related-filter" placeholder="Tìm kiếm theo mã hoặc tên...">
+                    <button type="button" class="btn btn-sm btn-ghost" id="item-related-clear">Bỏ chọn tất cả</button>
+                </div>
+                <div id="item-related-list" class="item-related-grid"></div>
+                <p class="feed-form__hint">Chọn các trang bị liên quan (hiển thị Mã – Tên). Có thể tìm kiếm để lọc nhanh.</p>
             </div>
 
             <div class="form-group">
@@ -1057,6 +1068,89 @@ function renderItemAdminForm(editingItem) {
             renderItemAdminImagePreview(form, imageInput.value);
         });
     }
+
+    // File ảnh: chọn file -> tự điền đường dẫn items/xxx
+    const imageFileInput = form.querySelector('#item-image-file');
+    const imagePickBtn = form.querySelector('#item-image-pick');
+    const imageClearBtn = form.querySelector('#item-image-clear');
+    if (imagePickBtn && imageFileInput) {
+        imagePickBtn.addEventListener('click', () => imageFileInput.click());
+        imageFileInput.addEventListener('change', (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const name = file.name || 'image.png';
+            let ext = name.split('.').pop().toLowerCase();
+            if (!['png','jpg','jpeg','webp','svg'].includes(ext)) ext = 'png';
+            let base = name.replace(/\.[^.]+$/, '').toLowerCase();
+            base = base.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            base = base.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'item';
+            const pathImg = 'items/' + base + '.' + ext;
+            if (imageInput) {
+                imageInput.value = pathImg;
+                renderItemAdminImagePreview(form, pathImg);
+            }
+            imageFileInput.value = '';
+        });
+    }
+    if (imageClearBtn && imageInput) {
+        imageClearBtn.addEventListener('click', () => {
+            imageInput.value = '';
+            renderItemAdminImagePreview(form, '');
+        });
+    }
+
+    function renderRelatedList() {
+        const listBox = form.querySelector('#item-related-list');
+        const filterInput = form.querySelector('#item-related-filter');
+        const hiddenInput = form.querySelector('#item-related');
+        if (!listBox) return;
+        let all = Array.isArray(window.__itemsCache) ? window.__itemsCache : [];
+        if (!all.length && typeof getCachedItems === 'function') all = getCachedItems();
+        if (all.length && !window.__itemsCache) window.__itemsCache = all;
+        const currentStr = hiddenInput ? hiddenInput.value : '';
+        const currentIds = currentStr.split(',').map(x => parseInt(x.trim())).filter(n => Number.isFinite(n));
+        const editingId = form.dataset.editId ? parseInt(form.dataset.editId) : null;
+        const term = filterInput ? filterInput.value.toLowerCase().trim() : '';
+        listBox.innerHTML = '';
+        const sorted = all.slice().sort((a, b) => (a.id - b.id));
+        sorted.forEach(it => {
+            if (editingId && it.id === editingId) return;
+            const labelText = '#' + it.id + ' – ' + (it.name || '');
+            const key = (labelText + ' ' + it.id).toLowerCase();
+            if (term && key.indexOf(term) === -1) return;
+            const wrap = document.createElement('label');
+            wrap.className = 'item-related-item';
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.value = it.id;
+            cb.checked = currentIds.indexOf(it.id) !== -1;
+            cb.addEventListener('change', () => {
+                const vals = [];
+                listBox.querySelectorAll('input[type="checkbox"]:checked').forEach(c => {
+                    const v = parseInt(c.value);
+                    if (Number.isFinite(v)) vals.push(v);
+                });
+                const uniq = [...new Set(vals)].sort((a, b) => (a - b));
+                if (hiddenInput) hiddenInput.value = uniq.join(', ');
+            });
+            const span = document.createElement('span');
+            span.textContent = labelText;
+            wrap.appendChild(cb);
+            wrap.appendChild(span);
+            listBox.appendChild(wrap);
+        });
+    }
+    const relClear = form.querySelector('#item-related-clear');
+    if (relClear) {
+        relClear.addEventListener('click', () => {
+            const h = form.querySelector('#item-related');
+            if (h) h.value = '';
+            form.querySelectorAll('#item-related-list input[type="checkbox"]').forEach(c => c.checked = false);
+        });
+    }
+    const relFilter = form.querySelector('#item-related-filter');
+    if (relFilter) relFilter.addEventListener('input', renderRelatedList);
+    renderRelatedList();
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
