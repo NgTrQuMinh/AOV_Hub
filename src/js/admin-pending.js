@@ -8,6 +8,10 @@
  *   - "Duyệt"  -> approvePost()  : status chuyển sang "approved", ghi ai duyệt / lúc nào;
  *   - "Từ chối" -> rejectPost()  : status chuyển sang "rejected", lý do KHÔNG bắt buộc
  *     (gửi kèm lý do thì lưu rejectReason);
+ *   - bài bị gắn cờ (post.flagged === true, do nội dung chạm từ cấm mức 1) được đánh
+ *     dấu data-flagged="1" + nhãn "Bị gắn cờ" cạnh tiêu đề và sắp lên đầu hàng đợi
+ *     (sắp ổn định, cùng nhóm giữ nguyên thứ tự cũ); chỉ hiện cờ, KHÔNG hiện từ cấm
+ *     hay đoạn trích (nội dung đó nằm ở aov_mod_alerts cho banner admin);
  *   - sau mỗi thao tác vẽ lại danh sách và gọi refreshAdminBadges() (admin-shell.js)
  *     để số trên mục "Chờ duyệt" ở menu dọc đổi ngay.
  *
@@ -29,18 +33,28 @@
  * Mọi dữ liệu từ aov_posts đều đi qua escapeHtml() trước khi ghép vào innerHTML.
  * Ô lý do từ chối nằm ngay trong dòng (không bắt buộc) để "Từ chối" kèm lý do
  * mà không cần hộp thoại prompt.
+ * Bài bị gắn cờ (post.flagged === true): thêm data-flagged="1" + class
+ * admin-row--flagged (admin.css) trên <tr> và nhãn "Bị gắn cờ" (admin-badge
+ * admin-badge--pending) cạnh tiêu đề. Bài thường giữ nguyên markup như cũ.
  * @param {object} post
  * @returns {string} HTML string
  */
 function renderPendingRow(post) {
     const id = escapeHtml(post.id);
 
+    // Chỉ coi là gắn cờ khi cờ đúng là boolean true; bài cũ thiếu cờ vẫn chạy bình thường.
+    const flagged = post.flagged === true;
+    const flagAttr = flagged ? ' data-flagged="1" class="admin-row--flagged"' : '';
+    const flagLabel = flagged
+        ? ' <span class="admin-badge admin-badge--pending">Bị gắn cờ</span>'
+        : '';
+
     return `
-        <tr data-pending-post-id="${id}">
+        <tr data-pending-post-id="${id}"${flagAttr}>
             <td>${escapeHtml(post.id)}</td>
             <td>${escapeHtml(post.author)}</td>
             <td>
-                <a href="${BASE_PATH}src/pages/post-detail.html?id=${encodeURIComponent(post.id)}">${escapeHtml(post.title)}</a>
+                <a href="${BASE_PATH}src/pages/post-detail.html?id=${encodeURIComponent(post.id)}">${escapeHtml(post.title)}</a>${flagLabel}
             </td>
             <td>${escapeHtml(getPostCategory(post))}</td>
             <td>${escapeHtml(formatDateTime(post.createdAt))}</td>
@@ -82,6 +96,11 @@ async function renderPendingSection(container) {
         return;
     }
 
+    // Bài bị gắn cờ nổi lên đầu để admin xem kỹ trước. Array.sort của JS là ổn định:
+    // trong cùng nhóm (có cờ / không cờ) giữ nguyên thứ tự cũ getPendingPosts() trả về.
+    const ordered = posts.slice()
+        .sort((a, b) => Number(b.flagged === true) - Number(a.flagged === true));
+
     container.innerHTML = `
         <table>
             <thead>
@@ -96,7 +115,7 @@ async function renderPendingSection(container) {
                 </tr>
             </thead>
             <tbody>
-                ${posts.map(renderPendingRow).join('')}
+                ${ordered.map(renderPendingRow).join('')}
             </tbody>
         </table>
     `;
