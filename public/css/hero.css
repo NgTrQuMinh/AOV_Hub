@@ -5,12 +5,13 @@
  *
  * Mục lục:
  *   1. Trang danh sách (heroes.html)
- *   2. Trang chi tiết (hero-detail.html): link quay lại + header (ảnh lớn | thông tin)
+ *   2. Trang chi tiết BẢN CŨ (hero-detail.html): link quay lại + header
+ *   2B. Trang chi tiết MỚI: .crumb + .detail-head + .detail-grid + responsive
  *   3. Chỉ số cơ bản (.hero-stats-table)
- *   4. Bộ kỹ năng (.hero-skills-table + .skill-item)
  *   5. Trang bị đề xuất (.hero-build, .build-items, .build-item)
  *   6. Responsive: 1024 / 768 / 480
  *   7. Thanh lọc & sắp xếp
+ *   (Khối "Bộ kỹ năng" cũ đã bị xóa - hero-detail.html không còn render khối này)
  *
  * Quy ước: chỉ dùng biến trong variables.css, không !important,
  * không đụng vào rule đã có ở common.css (.badge, .btn-favorite, .grid, .filter-bar).
@@ -152,6 +153,468 @@
     border: 1px solid var(--color-border);
 }
 
+/* ---------- 2B. TRANG CHI TIẾT MỚI (KHUNG TRONG HERO-DETAIL.HTML) ---------- */
+/* Khung tĩnh: nav.crumb -> section.detail-head -> div.detail-grid.
+   hero.js điền dữ liệu vào các hook id: #hero-crumb-name, #hero-img,
+   #hero-role-badge, #hero-eyebrow, #hero-name, #hero-desc, #hero-facts,
+   #hero-compare-link, #hero-build-link, #hero-stats, #hero-builds,
+   #hero-quick-list, #hero-counters-list, #hero-similar-list. */
+
+/* 2B.1 Breadcrumb "Trang chủ / Tướng / <tên tướng>" */
+.crumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    font-size: var(--fs-sm);
+    color: var(--color-text-muted);
+}
+
+.crumb a {
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+.crumb a:hover {
+    color: var(--color-text-accent);
+    text-decoration: underline;
+}
+
+.crumb b {
+    color: var(--color-text);
+    font-weight: 700;
+    overflow-wrap: break-word;
+}
+
+/* 2B.2 Đầu trang: .detail-media (ảnh + badge vai trò + ♥) | .detail-info.
+   min-width: 0 trong cột 2 để tên/mô tả dài co lại thay vì đẩy tràn ngang. */
+.detail-head {
+    display: grid;
+    grid-template-columns: 330px minmax(0, 1fr);
+    gap: 32px;
+    padding: 26px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    box-shadow: var(--shadow-sm);
+}
+
+.detail-media {
+    position: relative;
+    height: 370px;
+    overflow: hidden;
+    background: var(--color-gold-soft);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+}
+
+.detail-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Badge vai trò dạng viên thuốc tối, đè lên góc trên trái ảnh */
+.detail-role {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--color-text);
+    color: var(--color-gold-soft);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Chưa có dữ liệu vai trò thì ẩn badge, không để viên thuốc rỗng trên ảnh */
+.detail-role:empty {
+    display: none;
+}
+
+/* Nút ♥ góc trên phải: .btn-favorite (common.css) đã tròn + trắng + absolute,
+   neo trong .detail-media để treo đúng góc ảnh */
+.detail-media .btn-favorite {
+    z-index: 1;
+}
+
+.detail-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+/* Nhãn nhỏ in hoa phía trên tên tướng */
+.eyebrow {
+    font-size: var(--fs-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-accent);
+}
+
+.detail-info h1 {
+    margin: 0;
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--color-text);
+    overflow-wrap: break-word;
+}
+
+.detail-desc {
+    margin: 0;
+    color: var(--color-text-soft);
+    line-height: 1.6;
+}
+
+/* Lưới 4 ô tỉ lệ/thông số; auto-fit để ít ô hơn thì các ô tự rộng ra */
+.detail-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--space-3);
+}
+
+.fact {
+    padding: var(--space-3) var(--space-4);
+    background: #FBF4E4;
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+}
+
+.fact small {
+    display: block;
+    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+}
+
+.fact b {
+    font-size: var(--fs-lg);
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+/* Ô tỉ lệ thắng (.fact.win): nền vàng nhạt hơn, viền vàng, số lớn vàng sẫm */
+.fact.win {
+    background: var(--color-gold-subtle);
+    border-color: #EBCF8A;
+}
+
+.fact.win b {
+    font-size: var(--fs-xl);
+    color: var(--color-text-accent);
+}
+
+/* Hàng nút: tự xuống hàng khi chật, không tràn ngang */
+.detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.detail-actions .btn-outline {
+    background: var(--color-surface);
+    border-color: var(--color-gold);
+    color: var(--color-text);
+}
+
+.detail-actions .btn-outline:hover {
+    background: var(--color-gold-subtle);
+    border-color: var(--color-gold);
+    color: var(--color-text);
+}
+
+/* Nút ♥ trong .detail-actions là nút chính vàng: trả .btn-favorite về static,
+   bỏ kích thước tròn 34px của common.css, tô gradient vàng + bóng vàng */
+.detail-actions .btn-favorite {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: 12px 24px;
+    border-radius: var(--radius-pill);
+    background: var(--gradient-gold);
+    color: var(--color-on-accent);
+    box-shadow: var(--shadow-gold);
+    font-weight: 600;
+}
+
+.link-gold {
+    color: var(--color-text-accent);
+    font-weight: 700;
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+.link-gold:hover {
+    color: var(--color-accent-strong);
+    text-decoration: underline;
+}
+
+/* 2B.3 Lưới nội dung: .detail-main (1fr) | .detail-side (320px) */
+.detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    align-items: start;
+    gap: 22px;
+    margin-top: 22px;
+}
+
+.detail-main,
+.detail-side {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    min-width: 0;
+}
+
+/* Card trang chi tiết: bo 20px, padding 22px */
+.detail-grid .card {
+    border-radius: 20px;
+    padding: 22px;
+}
+
+/* h3 trong card: vạch vàng 4px bên trái */
+.detail-grid .card h3 {
+    margin: 0 0 var(--space-4);
+    padding-left: var(--space-3);
+    border-left: 4px solid var(--color-gold);
+    font-size: var(--fs-lg);
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+/* 2B.4 Chỉ số: .stat-row = (150px nhãn | bar | 64px giá trị căn phải) */
+.stat-row {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr) 64px;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+}
+
+.stat-row + .stat-row {
+    border-top: 1px solid var(--color-border);
+}
+
+.stat-row span {
+    font-weight: 600;
+    color: var(--color-text-soft);
+}
+
+.stat-row .bar {
+    height: 7px;
+    overflow: hidden;
+    background: var(--color-gold-soft);
+    border-radius: var(--radius-pill);
+}
+
+.stat-row .bar i {
+    display: block;
+    height: 100%;
+    background: var(--color-gold);
+    border-radius: inherit;
+}
+
+.stat-row b {
+    color: var(--color-text);
+    font-weight: 800;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+/* 2B.5 Bản lên đồ: lưới 6 cột, ô .item-tile = ảnh vuông bo 12px + tên nhỏ */
+#hero-builds {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.item-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    min-width: 0;
+    text-align: center;
+    text-decoration: none;
+}
+
+.item-tile img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    transition: transform var(--transition), border-color var(--transition);
+}
+
+.item-tile:hover img {
+    transform: translateY(-2px);
+    border-color: var(--color-gold-light);
+}
+
+.item-tile span {
+    max-width: 100%;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: var(--color-text-soft);
+    overflow-wrap: break-word;
+}
+
+/* 2B.6 Thông tin nhanh: .kv giãn 2 đầu, viền dưới mảnh (bỏ viền ô cuối) */
+.kv {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: var(--fs-base);
+}
+
+.kv:last-child {
+    border-bottom: none;
+}
+
+.kv span {
+    color: var(--color-text-muted);
+}
+
+.kv b {
+    color: var(--color-text);
+    font-weight: 700;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+/* 2B.7 Tướng cùng vai trò: .mini hàng ngang, ảnh 40px bo 10px,
+   tỉ lệ thắng đẩy sang phải, màu vàng sẫm */
+.mini {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border);
+    text-decoration: none;
+    color: inherit;
+}
+
+.mini:last-child {
+    border-bottom: none;
+}
+
+.mini img {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+}
+
+.mini-name {
+    min-width: 0;
+    font-weight: 700;
+    color: var(--color-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mini-role {
+    font-size: var(--fs-xs);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+}
+
+.mini-win {
+    margin-left: auto;
+    color: var(--color-text-accent);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Fallback khi JS chỉ dùng span/b thay vì class riêng */
+.mini > span {
+    min-width: 0;
+    font-weight: 700;
+    color: var(--color-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mini > b,
+.mini > strong {
+    margin-left: auto;
+    color: var(--color-text-accent);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* 2B.8 Responsive trang chi tiết: 900px xếp 1 cột, 480px thu gọn */
+@media (max-width: 900px) {
+    .detail-head,
+    .detail-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .detail-media {
+        width: 100%;
+        max-width: 420px;
+        margin-inline: auto;
+    }
+
+    .detail-info h1 {
+        font-size: var(--fs-2xl);
+    }
+}
+
+@media (max-width: 480px) {
+    .detail-head {
+        gap: var(--space-4);
+        padding: var(--space-4);
+    }
+
+    .detail-media {
+        height: 300px;
+    }
+
+    .detail-info h1 {
+        font-size: var(--fs-xl);
+    }
+
+    /* Điện thoại: bản lên đồ 3 cột, facts 2 cột */
+    #hero-builds {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .detail-facts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stat-row {
+        grid-template-columns: 100px minmax(0, 1fr) 56px;
+        gap: var(--space-2);
+    }
+
+    .detail-grid .card {
+        padding: var(--space-4);
+    }
+}
+
 /* ---------- 3. CHỈ SỐ CƠ BẢN ---------- */
 /* Khối bọc có overflow-x:auto để bảng cuộn ngang thay vì tràn ngang trang. */
 .hero-stats {
@@ -165,10 +628,9 @@
     -webkit-overflow-scrolling: touch;
 }
 
-/* Tiêu đề khối dùng chung cho cả 3 khối: chỉ số / kỹ năng / trang bị.
+/* Tiêu đề khối dùng chung cho 2 khối: chỉ số / trang bị.
    Vạch vàng dọc 4px bên trái để tách tiêu đề khỏi nền card trắng. */
 .hero-stats h2,
-.hero-skills h2,
 .hero-build h2 {
     margin: 0 0 var(--space-3);
     padding-left: var(--space-3);
@@ -209,92 +671,6 @@
     color: var(--color-text);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
-}
-
-/* ---------- 4. BỘ KỸ NĂNG ---------- */
-.hero-skills {
-    margin-top: 24px;
-    margin-bottom: var(--space-6);
-    padding: 28px;
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 20px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-.hero-skills-table {
-    width: 100%;
-    border: 1px solid var(--color-border);
-    border-spacing: 0;
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    background: var(--color-surface);
-}
-
-/* Hàng tiêu đề cột: nền vàng nhạt, chữ nhỏ, không đổi dòng. */
-.hero-skills-table thead th {
-    padding: var(--space-3) var(--space-4);
-    background: var(--color-gold-soft);
-    color: var(--color-text-accent);
-    font-size: var(--fs-sm);
-    font-weight: 700;
-    text-align: left;
-    white-space: nowrap;
-}
-
-/* Ngăn cách giữa các kỹ năng bằng đường viền, không bo góc từng ô để khung
-   bảng thành 1 khối liền mạch. */
-.skill-item th,
-.skill-item td {
-    padding: 16px;
-    border-top: 1px solid var(--color-border);
-    vertical-align: top;
-    text-align: left;
-}
-
-/* Cột tên kỹ năng: gọn, không xuống dòng khi tên dài. */
-.skill-item__name {
-    min-width: 160px;
-    color: var(--color-text);
-    font-size: 18px;
-    font-weight: 700;
-}
-
-/* Cột "Loại" (Chiêu 1/2/3): nhãn nền vàng nhạt, chữ vàng sẫm. */
-.skill-item__type {
-    min-width: 110px;
-    color: var(--color-accent-strong);
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-/* Mô tả là cột rộng nhất, chữ vừa phải cho dễ đọc đoạn văn. */
-.skill-item__desc {
-    min-width: 320px;
-    color: var(--color-text-soft);
-    font-size: 17px;
-    line-height: 1.6;
-}
-
-/* Cột hồi chiêu: căn giữa, số liệu dễ so sánh giữa các kỹ năng. */
-.skill-item__cooldown {
-    min-width: 96px;
-    text-align: center;
-    white-space: nowrap;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-}
-
-/* Tướng chưa có kỹ năng trong JSON: chỉ hiện dòng báo trống. */
-.hero-skills__empty {
-    margin: 0;
-    padding: var(--space-4);
-    background: var(--color-surface);
-    border: 1px dashed var(--color-border);
-    border-radius: var(--radius-md);
-    font-size: var(--fs-sm);
-    font-style: italic;
 }
 
 /* ---------- 5. TRANG BỊ ĐỀ XUẤT ---------- */
@@ -426,12 +802,6 @@
         white-space: normal;
     }
 
-    /* Bảng kỹ năng đặt min-width: nhỏ hơn thế cột Mô tả sẽ bị dồn quá chật,
-       .hero-skills (overflow-x:auto) lo phần cuộn ngang. */
-    .hero-skills-table {
-        min-width: 560px;
-    }
-
     /* Mỗi ô trang bị nhỏ hơn cho vừa 3 cột trên màn hình tablet. */
     .build-items {
         grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
@@ -448,7 +818,6 @@
     }
 
     .hero-stats h2,
-    .hero-skills h2,
     .hero-build h2 {
         font-size: var(--fs-md);
     }
@@ -496,28 +865,15 @@
     }
 
     .hero-stats,
-    .hero-skills,
     .hero-build {
         padding: 16px;
         border-radius: var(--radius);
     }
 
     .hero-stats h2,
-    .hero-skills h2,
     .hero-build h2 {
         margin-bottom: var(--space-4);
         font-size: 20px;
-    }
-
-    .skill-item {
-        gap: var(--space-3);
-        padding: 16px 0;
-    }
-
-    .skill-item img {
-        flex-basis: 48px;
-        width: 48px;
-        height: 48px;
     }
 
     /* Không phần tử nào tràn ngang ở màn hình hẹp nhất */
@@ -526,17 +882,14 @@
     .hero-detail-header,
     .hero-info,
     .hero-stats,
-    .hero-skills,
     .hero-build,
     .hero-card,
-    .hero-card__body,
-    .skill-item > div {
+    .hero-card__body {
         min-width: 0;
         max-width: 100%;
     }
 
     .hero-card__name,
-    .skill-item h4,
     .hero-build .build-item span {
         overflow-wrap: anywhere;
     }
