@@ -15,10 +15,66 @@
     <header id="site-header"></header>
 
     <main class="container section">
-        <!-- hero.js (initHeroDetailPage) đọc id từ URL, tìm tướng theo id,
-             render ảnh/tên/vai trò/độ khó, bảng chỉ số, bảng kỹ năng và
-             build đề xuất; id sai hoặc thiếu -> renderNotFound(). -->
-        <div id="hero-detail"></div>
+        <!-- Khung tĩnh trang Chi tiết tướng. hero.js (initHeroDetailPage) đọc id
+             từ URL, tìm tướng rồi điền nội dung vào các hook sẵn có bên trong
+             #hero-detail (#hero-crumb-name, #hero-img, #hero-name, #hero-facts,
+             #hero-stats, #hero-builds...); id sai hoặc thiếu -> renderNotFound(). -->
+        <div id="hero-detail">
+            <nav class="crumb" aria-label="Đường dẫn trang">
+                <a href="/">Trang chủ</a>
+                <span aria-hidden="true">/</span>
+                <a href="/src/pages/heroes.html">Tướng</a>
+                <span aria-hidden="true">/</span>
+                <b id="hero-crumb-name"></b>
+            </nav>
+
+            <section class="detail-head" id="hero-head">
+                <div class="detail-media">
+                    <img id="hero-img" alt="">
+                    <span class="detail-role" id="hero-role-badge"></span>
+                    <button type="button" class="btn-favorite" data-type="hero" data-id="" aria-label="Thêm/bỏ yêu thích"><span aria-hidden="true">♥</span></button>
+                </div>
+                <div class="detail-info">
+                    <span class="eyebrow" id="hero-eyebrow"></span>
+                    <h1 id="hero-name"></h1>
+                    <p class="detail-desc" id="hero-desc"></p>
+                    <div class="detail-facts" id="hero-facts"></div>
+                    <div class="detail-actions">
+                        <button type="button" class="btn-favorite" data-type="hero" data-id="" aria-label="Thêm/bỏ yêu thích"><span aria-hidden="true">♥</span></button>
+                        <a class="btn btn-outline" id="hero-compare-link" href="#">So sánh với tướng khác</a>
+                        <a class="link-gold" id="hero-build-link" href="#">Xem bản lên đồ →</a>
+                    </div>
+                </div>
+            </section>
+
+            <div class="detail-grid">
+                <div class="detail-main">
+                    <section class="card" id="hero-stats-card">
+                        <h3>Chỉ số cơ bản</h3>
+                        <div id="hero-stats"></div>
+                    </section>
+                    <section class="card" id="hero-builds-card">
+                        <h3>Bản lên đồ gợi ý</h3>
+                        <div id="hero-builds"></div>
+                        <a class="btn btn-primary" id="hero-build-cta" href="#">Tạo bản lên đồ của bạn →</a>
+                    </section>
+                </div>
+                <aside class="detail-side">
+                    <section class="card" id="hero-quick">
+                        <h3>Thông tin nhanh</h3>
+                        <div id="hero-quick-list"></div>
+                    </section>
+                    <section class="card" id="hero-counters">
+                        <h3>Khắc chế &amp; bị khắc chế</h3>
+                        <div id="hero-counters-list"></div>
+                    </section>
+                    <section class="card" id="hero-similar">
+                        <h3>Tướng cùng vai trò</h3>
+                        <div id="hero-similar-list"></div>
+                    </section>
+                </aside>
+            </div>
+        </div>
     </main>
 
     <footer id="site-footer"></footer>
