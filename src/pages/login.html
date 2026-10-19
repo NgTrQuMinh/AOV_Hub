@@ -69,6 +69,31 @@
             const success = await loginUser(username, password);
 
             if (!success) {
+                // KD09-h: mật khẩu ĐÚNG nhưng tài khoản đang bị khóa -> thông báo riêng
+                // kèm lý do. Chỉ hiển thị khi getLastLoginError() === 'banned' (auth.js chỉ
+                // đặt giá trị này SAU khi xác minh đúng mật khẩu) nên không lộ thông tin
+                // khi SAI mật khẩu; không hiện bannedBy / passwordHash / salt.
+                // renderErrors() tự escapeHtml() từng mục -> lý do không tạo markup thật.
+                if (getLastLoginError() === 'banned') {
+                    let moderation = null;
+                    if (typeof getUserModeration === 'function') {
+                        try {
+                            moderation = getUserModeration(username.trim());
+                        } catch (error) {
+                            moderation = null;
+                        }
+                    }
+
+                    const reason = moderation && typeof moderation.bannedReason === 'string'
+                        ? moderation.bannedReason.trim()
+                        : '';
+
+                    renderErrors(errorBox, [
+                        'Tài khoản của bạn đang bị khóa.' + (reason ? ' Lý do: ' + reason : ''),
+                    ]);
+                    return;
+                }
+
                 renderErrors(errorBox, ['Username hoặc mật khẩu không chính xác.']);
                 return;
             }

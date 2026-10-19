@@ -34,6 +34,16 @@
 
         <ul class="profile-stats" id="profile-stats"></ul>
 
+        <!-- KD04-b: hộp thông báo kết quả duyệt bài (dữ liệu từ feed.js) -->
+        <section class="profile-notices" id="profile-notices" aria-labelledby="profile-notices-title" hidden>
+            <div class="profile-notices__head">
+                <h2 id="profile-notices-title">Thông báo</h2>
+                <span class="profile-notices__count" id="profile-notices-count"></span>
+                <button type="button" class="btn btn-outline profile-notices__mark" id="profile-notices-mark">Đánh dấu đã xem</button>
+            </div>
+            <ul class="profile-notices__list" id="profile-notices-list"></ul>
+        </section>
+
         <div class="section__header">
             <h2>Bài viết của bạn</h2>
             <a class="section__link" href="feed.html">Tới trang Cộng đồng &rarr;</a>
@@ -53,5 +63,171 @@
     <script src="/src/js/feed.js"></script>
     <!-- profile.js: thông tin tài khoản, thống kê và bài viết của người đang đăng nhập (L19/STT 13) -->
     <script src="/src/js/profile.js"></script>
+    <!-- KD04-b: hộp "Thông báo" kết quả duyệt bài (vẽ vào #profile-notices) -->
+    <script>
+        /* Bật/tắt attribute hidden (DOM thật có removeAttribute; test mini-dom thì tự xóa attrs). */
+        function kd04SetHidden(el, hidden) {
+            if (!el) return;
+            if (hidden) {
+                el.setAttribute('hidden', '');
+                return;
+            }
+            if (typeof el.removeAttribute === 'function') el.removeAttribute('hidden');
+            else delete el.attrs.hidden;
+        }
+
+        /* Thoát HTML cho mọi chữ chèn vào innerHTML (ưu tiên escapeHtml của components.js). */
+        function kd04Escape(value) {
+            if (typeof escapeHtml === 'function') return escapeHtml(value);
+            return String(value === null || value === undefined ? '' : value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        /* Nhóm thứ tự: 0 = từ chối chưa xem, 1 = duyệt chưa xem, 2 = còn lại. */
+        function kd04Group(notice) {
+            const unseen = notice.seen === false && notice.status !== 'pending';
+            if (unseen && notice.status === 'rejected') return 0;
+            if (unseen && notice.status === 'approved') return 1;
+            return 2;
+        }
+
+        /* Nhãn trạng thái hiển thị. */
+        function kd04Label(notice, status) {
+            if (status === 'rejected') return 'Bài bị từ chối';
+            if (status === 'approved') return 'Bài đã được duyệt';
+            if (notice.flagged) return 'Đang chờ duyệt (có nội dung cần xem xét)';
+            return 'Đang chờ duyệt';
+        }
+
+        /* Một mục <li>; title cắt 80 ký tự, mọi chữ đều escape. */
+        function kd04NoticeHtml(notice) {
+            const status = (notice.status === 'rejected' || notice.status === 'approved')
+                ? notice.status
+                : 'pending';
+            const unseen = notice.seen === false && status !== 'pending';
+            const classes = ['profile-notice', 'profile-notice--' + status];
+            if (unseen) classes.push('profile-notice--unseen');
+
+            let title = String(notice.title || '');
+            if (title.length > 80) title = title.slice(0, 80) + '…';
+
+            let html = '<li class="' + classes.join(' ') + '">'
+                + '<strong class="profile-notice__label">' + kd04Escape(kd04Label(notice, status)) + '</strong>'
+                + '<span class="profile-notice__title">' + kd04Escape(title) + '</span>'
+                + '<time class="profile-notice__time">'
+                + (typeof formatDateTime === 'function' ? kd04Escape(formatDateTime(notice.at)) : '')
+                + '</time>';
+
+            if (status === 'rejected') {
+                const reason = String(notice.reason || '');
+                if (reason) {
+                    html += '<p class="profile-notice__reason">Lý do: ' + kd04Escape(reason) + '</p>';
+                }
+                html += '<p class="profile-notice__hint">Xuống mục "Bài viết của tôi" để sửa bài hoặc gửi lại duyệt.</p>'
+                    + '<a class="profile-notice__link" href="#profile-posts">Đến bài viết</a>';
+            }
+
+            return html + '</li>';
+        }
+
+        /* Vẽ hộp thông báo; ẩn vùng khi không có gì để hiện. Không tự đánh dấu đã xem. */
+        function renderReviewNotices() {
+            try {
+                const section = document.getElementById('profile-notices');
+                const list = document.getElementById('profile-notices-list');
+                const countEl = document.getElementById('profile-notices-count');
+                const markBtn = document.getElementById('profile-notices-mark');
+                if (!section || !list) return;
+
+                const hide = () => {
+                    kd04SetHidden(section, true);
+                    list.innerHTML = '';
+                    if (countEl) countEl.textContent = '';
+                    kd04SetHidden(markBtn, true);
+                };
+
+                // feed.js chưa nạp / không có thông báo -> ẩn vùng
+                if (typeof getMyReviewNotices !== 'function') {
+                    hide();
+                    return;
+                }
+
+                let items = getMyReviewNotices();
+                if (!Array.isArray(items) || !items.length) {
+                    hide();
+                    return;
+                }
+
+                // Nhóm chưa xem trước, mỗi nhóm mới nhất trước (sort ổn định)
+                items = items.slice().sort((a, b) => kd04Group(a) - kd04Group(b));
+
+                const visible = items.slice(0, 8);
+                const rest = items.length - visible.length;
+
+                list.innerHTML = visible.map(kd04NoticeHtml).join('')
+                    + (rest > 0
+                        ? '<li class="profile-notice profile-notice--more">và còn ' + rest + ' thông báo khác</li>'
+                        : '');
+                kd04SetHidden(section, false);
+
+                const unseen = typeof countUnseenReviewNotices === 'function' ? countUnseenReviewNotices() : 0;
+                if (countEl) countEl.textContent = unseen > 0 ? unseen + ' mới' : '';
+                kd04SetHidden(markBtn, unseen <= 0);
+            } catch (error) {
+                // Lỗi render không được làm sập trang
+            }
+        }
+
+        /* Bọc renderProfilePosts (profile.js) để thông báo cập nhật ở cuối mỗi lần vẽ bài. */
+        (function kd04WrapRenderProfilePosts() {
+            try {
+                if (typeof renderProfilePosts !== 'function') return;
+                const original = renderProfilePosts;
+                if (original.__kd04Wrapped) return;
+
+                const wrapped = function () {
+                    const result = original.apply(this, arguments);
+                    if (result && typeof result.then === 'function') {
+                        return result.then((value) => {
+                            renderReviewNotices();
+                            return value;
+                        });
+                    }
+                    renderReviewNotices();
+                    return result;
+                };
+                wrapped.__kd04Wrapped = true;
+                window.renderProfilePosts = wrapped;
+            } catch (error) {
+                // Bọc lỗi -> giữ nguyên hàm cũ
+            }
+        })();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                // Cùng thời điểm renderProfileStats/renderProfilePosts của profile.js
+                renderReviewNotices();
+
+                const markBtn = document.getElementById('profile-notices-mark');
+                if (markBtn) {
+                    markBtn.addEventListener('click', () => {
+                        try {
+                            if (typeof markReviewNoticesSeen === 'function') markReviewNoticesSeen();
+                            renderReviewNotices();
+                            if (typeof renderProfileStats === 'function') renderProfileStats();
+                        } catch (error) {
+                            // Bỏ qua lỗi khi bấm nút
+                        }
+                    });
+                }
+            } catch (error) {
+                // Bỏ qua lỗi khởi tạo
+            }
+        });
+    </script>
 </body>
 </html>

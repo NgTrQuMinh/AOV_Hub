@@ -314,6 +314,168 @@
     opacity: .6;
 }
 
+/* ---------- admin-log.js (tab Nhật ký) ---------- */
+.admin-log__detail {
+    max-width: 360px;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.5;
+}
+
+[data-admin-log-view] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.admin-stats {
+    margin-bottom: var(--space-2);
+}
+
+.admin-stat {
+    box-shadow: var(--shadow-sm);
+}
+
+#admin-log-toolbar .filter-bar__keyword,
+#admin-log-toolbar .filter-bar__select {
+    height: 40px;
+    padding: 8px 12px;
+    font-size: 15px;
+    border-radius: var(--radius);
+}
+
+#admin-log-toolbar .btn-sm {
+    height: 40px;
+    padding: 8px 14px;
+    font-size: 15px;
+}
+
+#admin-log-toolbar .btn-danger {
+    border-width: 1.5px;
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table-wrap {
+    overflow-x: auto;
+    border-radius: 14px;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table thead th {
+    background: var(--color-bg-elevated);
+    color: var(--color-text-muted);
+    font-weight: 700;
+    text-transform: none;
+    font-size: var(--fs-sm);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table tbody td {
+    vertical-align: top;
+    line-height: 1.55;
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table tbody tr:nth-child(even) {
+    background: color-mix(in srgb, var(--color-bg-elevated) 60%, transparent);
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table tbody tr:hover {
+    background: var(--color-bg-elevated);
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table td:nth-child(1) {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table td:nth-child(2),
+#admin-panel [data-admin-section="admin-log"] .admin-table td:nth-child(5) {
+    white-space: nowrap;
+}
+
+/* ---------- admin-log.js (tab Nhật ký) ---------- */
+.admin-log__detail {
+    max-width: 360px;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.5;
+}
+
+[data-admin-log-view] {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.admin-stats {
+    margin-bottom: var(--space-2);
+}
+
+.admin-stat {
+    box-shadow: var(--shadow-sm);
+}
+
+#admin-log-toolbar .filter-bar__keyword,
+#admin-log-toolbar .filter-bar__select {
+    height: 40px;
+    padding: 8px 12px;
+    font-size: 15px;
+    border-radius: var(--radius);
+}
+
+#admin-log-toolbar .btn-sm {
+    height: 40px;
+    padding: 8px 14px;
+    font-size: 15px;
+}
+
+#admin-log-toolbar .btn-danger {
+    border-width: 1.5px;
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table-wrap {
+    overflow-x: auto;
+    border-radius: 14px;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-sm);
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table thead th {
+    background: var(--color-bg-elevated);
+    color: var(--color-text-muted);
+    font-weight: 700;
+    text-transform: none;
+    font-size: var(--fs-sm);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table tbody td {
+    vertical-align: top;
+    line-height: 1.55;
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table tbody tr:nth-child(even) {
+    background: color-mix(in srgb, var(--color-bg-elevated) 60%, transparent);
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table tbody tr:hover {
+    background: var(--color-bg-elevated);
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table td:nth-child(1) {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+#admin-panel [data-admin-section="admin-log"] .admin-table td:nth-child(2),
+#admin-panel [data-admin-section="admin-log"] .admin-table td:nth-child(5) {
+    white-space: nowrap;
+}
+
 /* ---------- 8. Nhãn trạng thái ---------- */
 .admin-badge {
     display: inline-block;

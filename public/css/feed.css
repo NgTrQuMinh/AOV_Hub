@@ -14,6 +14,13 @@
  *                                  guest-note, .comment-list__empty
  *   renderPostDetailPlaceholder()/admin.js denied -> .post-detail-empty,
  *                                  .post-detail-empty__actions, .post-detail-empty .not-found
+ *   KD04-c (thông báo kết quả duyệt + gửi lại bài bị từ chối):
+ *     .post-review-note, .post-review-note--pending/--rejected/--approved,
+ *     .post-card__resubmit, .post-card__resubmit-note, [data-post-notice],
+ *     [data-comment-notice], .profile-notices, .profile-notices__head/__count/
+ *     __mark/__list, .profile-notice, .profile-notice--pending/--rejected/
+ *     --approved/--unseen/--more, .profile-notice__label/__title/__time/
+ *     __reason/__hint/__link
  * ========================================= */
 
 /* ---------- Tiêu đề trang ---------- */
@@ -288,6 +295,7 @@
 .post-card__owner-actions {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: var(--space-2);
     margin-left: auto;
 }
@@ -743,6 +751,281 @@ a.post-action {
     }
 }
 
+/* ============================================================
+ * KD04-c: Thông báo kết quả duyệt bài + gửi lại bài bị từ chối
+ * ============================================================ */
+
+/* ---------- 1. Ghi chú duyệt bài trên thẻ bài (.post-review-note) ---------- */
+.post-review-note {
+    margin: var(--space-2) 0 var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-gold-subtle);
+    border-left: 4px solid var(--color-gold);
+    border-radius: 12px;
+    color: var(--color-text);
+    font-size: 0.95em;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+
+.post-review-note p {
+    margin: 0;
+    color: inherit;
+}
+
+.post-review-note p + p {
+    margin-top: var(--space-1);
+}
+
+.post-review-note strong {
+    font-weight: 700;
+}
+
+/* Bài bị từ chối: tông đỏ */
+.post-review-note--rejected {
+    background: #FDECEA;
+    border-left-color: #C0392B;
+    color: #A93226;
+}
+
+/* Bài đang chờ duyệt: tông vàng */
+.post-review-note--pending {
+    background: #FFF4D6;
+    border-left-color: #DDA532;
+    color: #7A5508;
+}
+
+/* Bài đã được duyệt: tông xanh lá */
+.post-review-note--approved {
+    background: #E8F5EC;
+    border-left-color: #2E7D4F;
+    color: #2E7D4F;
+}
+
+/* ---------- 2. Nút "Gửi lại duyệt" (.post-card__resubmit) ---------- */
+.post-card__resubmit {
+    padding: 6px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #3A2F1C;
+    background: linear-gradient(135deg, #EFCC72, #DDA532);
+    border: 1px solid var(--color-gold);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: filter var(--transition), box-shadow var(--transition), opacity var(--transition);
+}
+
+.post-card__resubmit:hover {
+    filter: brightness(0.95);
+    box-shadow: 0 4px 12px rgba(122, 90, 20, .12);
+}
+
+.post-card__resubmit:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    filter: none;
+    box-shadow: none;
+}
+
+/* Câu nhắc khi đã gửi lại tối đa số lần */
+.post-card__resubmit-note {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+/* ---------- 3. Thông báo gửi lại / kiểm duyệt trong thẻ bài & bình luận ---------- */
+/* [data-post-notice] (thẻ bài) và [data-comment-notice] (dưới ô bình luận) nằm
+   NGOÀI .feed-form nên chưa có style; form-errors = danger, form-success = info. */
+[data-post-notice] {
+    margin-top: var(--space-2);
+}
+
+[data-post-notice] .form-errors,
+[data-post-notice] .form-success,
+[data-comment-notice] .form-errors,
+[data-comment-notice] .form-success {
+    margin: var(--space-2) 0 0;
+    padding: var(--space-3) var(--space-4);
+    border-radius: 12px;
+    font-size: 15px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+[data-post-notice] .form-errors,
+[data-comment-notice] .form-errors {
+    background: #FDECEA;
+    border: 1px solid #F5C6C0;
+    color: #A93226;
+}
+
+[data-post-notice] .form-success,
+[data-comment-notice] .form-success {
+    background: #FFF4D6;
+    border: 1px solid #F3DE9C;
+    color: #7A5508;
+}
+
+[data-post-notice] .form-errors li,
+[data-comment-notice] .form-errors li {
+    margin: 0 0 var(--space-1);
+    list-style: none;
+}
+
+[data-post-notice] .form-errors li:last-child,
+[data-comment-notice] .form-errors li:last-child {
+    margin-bottom: 0;
+}
+
+[data-post-notice] .form-errors strong,
+[data-post-notice] .form-success strong,
+[data-comment-notice] .form-errors strong,
+[data-comment-notice] .form-success strong {
+    font-weight: 700;
+}
+
+/* ---------- 4. Hộp "Thông báo" ở Profile (#profile-notices) ---------- */
+.profile-notices {
+    margin-bottom: var(--space-5);
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(122, 90, 20, .08);
+}
+
+/* Chắc chắn ẩn hẳn khi chưa có thông báo */
+.profile-notices[hidden] {
+    display: none;
+}
+
+.profile-notices__head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.profile-notices__head h2 {
+    margin: 0;
+    font-size: var(--fs-lg);
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.profile-notices__count {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    background: #F5E5C3;
+    color: #7A5508;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: var(--radius-pill);
+}
+
+.profile-notices__count:empty {
+    display: none;
+}
+
+.profile-notices__mark {
+    margin-left: auto;
+    padding: 8px 16px;
+    font-size: 15px;
+}
+
+.profile-notices__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.profile-notice {
+    padding: var(--space-3) var(--space-4);
+    background: #FFFDF8;
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-border);
+    border-radius: 14px;
+    color: var(--color-text);
+    overflow-wrap: anywhere;
+}
+
+.profile-notice--rejected { border-left-color: #C0392B; }
+.profile-notice--approved { border-left-color: #2E7D4F; }
+.profile-notice--pending  { border-left-color: #DDA532; }
+
+.profile-notice--unseen {
+    background: #FFF8E6;
+}
+
+.profile-notice--more {
+    border-left-color: transparent;
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.profile-notice__label {
+    display: inline-block;
+    margin-right: var(--space-2);
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.profile-notice--unseen .profile-notice__label {
+    font-weight: 800;
+    color: var(--color-accent-strong);
+}
+
+/* Chấm vàng báo chưa xem (không dùng ảnh) */
+.profile-notice--unseen .profile-notice__label::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: #DDA532;
+    vertical-align: middle;
+}
+
+.profile-notice__title {
+    color: var(--color-text);
+    overflow-wrap: anywhere;
+}
+
+.profile-notice__time {
+    margin-left: var(--space-2);
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+.profile-notice__reason {
+    margin: var(--space-2) 0 0;
+    color: #A93226;
+}
+
+.profile-notice__hint {
+    margin: var(--space-1) 0 0;
+    font-size: 15px;
+    color: var(--color-text-soft);
+}
+
+.profile-notice__link {
+    display: inline-block;
+    margin-top: var(--space-1);
+    color: #9C6F10;
+    font-weight: 600;
+}
+
+.profile-notice__link:hover {
+    text-decoration: underline;
+}
+
 /* ---------- Responsive 768 ---------- */
 @media (max-width: 768px) {
     .feed-layout {
@@ -821,5 +1104,17 @@ a.post-action {
 
     .comment-form .btn {
         width: 100%;
+    }
+}
+
+/* ---------- KD04-c: Responsive 640 (hộp Thông báo ở Profile) ---------- */
+@media (max-width: 640px) {
+    .profile-notices {
+        padding: var(--space-4);
+    }
+
+    .profile-notices__mark {
+        width: 100%;
+        margin-left: 0;
     }
 }

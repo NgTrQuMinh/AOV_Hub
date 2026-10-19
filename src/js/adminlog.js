@@ -19,6 +19,9 @@
  *     trong feed.js kiểm tra quyền ở tầng dữ liệu.
  *   - Giữ tối đa ADMIN_LOG_MAX (200) bản mới nhất; getAdminLog() luôn trả
  *     mảng đã chuẩn hoá (bỏ phần tử hỏng), mới nhất trước.
+ *   - clearAdminLog() xoá sạch nhật ký; cũng chỉ admin gọi được (canAdminWrite()).
+ *   - Trang xem nhật ký: admin-log.js (mục "Nhật ký thao tác" trong tab Nhật ký),
+ *     nạp động bởi admin-shell.js.
  *   - feed.js trước khi gọi logAdminAction() luôn bọc
  *     if (typeof logAdminAction === 'function') nên trang không nạp file này
  *     (Feed, Profile, Home...) không bao giờ lỗi ReferenceError.
@@ -170,4 +173,17 @@ function logAdminAction(action, targetType, targetId, detail) {
     log.sort(compareAdminLogDesc);
 
     return setStore(ADMIN_LOG_KEY, log.slice(0, ADMIN_LOG_MAX));
+}
+
+/**
+ * Xoá TOÀN BỘ nhật ký thao tác admin (đưa aov_admin_log về mảng rỗng).
+ *
+ * Chỉ admin mới xoá được: kiểm tra canAdminWrite() như logAdminAction(), user
+ * thường hoặc khách gọi thẳng từ console cũng trả về false và KHÔNG đụng gì.
+ *
+ * @returns {boolean} true nếu đã ghi mảng rỗng thành công.
+ */
+function clearAdminLog() {
+    if (!canAdminWrite()) return false;
+    return setStore(ADMIN_LOG_KEY, []);
 }
