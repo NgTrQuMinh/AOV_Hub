@@ -23,9 +23,20 @@
             - #compare-table:  bảng so sánh HP/Attack/Defense/Speed/Difficulty,
                                chỉ số cao hơn được tô nổi
             Cặp tướng đang so sánh lưu ở aov_compare (js/storage.js) nên F5 không mất.
+
+            Bảng (thead + tbody) do compare.js dựng hoàn toàn bằng innerHTML nên
+            huy hiệu role (.hero-role-badge) và các ô chỉ số (.stat-bar /
+            .stat-bar-fill / .stat-diff) nằm trong template của compare.js.
+
+            2 khối dưới đây do compare.js đổ nội dung vào (tự tạo nếu thiếu):
+            - #score-summary:   điểm tổng hợp Sống sót / Sát thương / Cơ động
+            - #compare-summary: nhận xét tự động sinh từ dữ liệu 2 tướng
         -->
         <div id="compare-select"></div>
         <div id="compare-table"></div>
+
+        <section id="score-summary" class="compare-score" aria-label="Điểm tổng hợp của 2 tướng"></section>
+        <section id="compare-summary" class="compare-summary" aria-label="Nhận xét so sánh 2 tướng"></section>
     </main>
 
     <footer id="site-footer"></footer>
