@@ -771,6 +771,224 @@
     color: var(--color-text-accent);
 }
 
+/* ---------- 5B. BUILD ĐỀ XUẤT (CARD CHI TIẾT) ---------- */
+/* Card build do hero.js sinh thêm sau khối .hero-build cũ.
+   Toàn bộ style được scope dưới .hero-build-guide để không đụng .hero-build. */
+.hero-build-guide {
+    margin-top: 24px;
+    margin-bottom: var(--space-6);
+    padding: 28px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+}
+
+/* Tiêu đề cùng cỡ/margin với h2 của .hero-build. */
+.hero-build-guide h2 {
+    margin: 0 0 var(--space-3);
+    padding-left: var(--space-3);
+    border-left: 4px solid var(--color-gold);
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.hero-build-card {
+    display: block;
+    padding: 20px;
+    color: inherit;
+    text-decoration: none;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    transition: transform var(--transition), border-color var(--transition),
+        box-shadow var(--transition);
+}
+
+.hero-build-card:hover,
+.hero-build-card:focus-visible {
+    transform: translateY(-3px);
+    border-color: var(--color-gold-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.hero-build-card:focus-visible {
+    outline: 3px solid var(--color-gold);
+    outline-offset: 2px;
+}
+
+.hero-build-card__head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.hero-build-card__name {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+/* Counter đặt ở đây để số thứ tự chạy liên tục 1..6 qua 3 giai đoạn. */
+.hero-build-card__phases {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    counter-reset: build-item;
+}
+
+.hero-build-card__phase {
+    min-width: 0;
+    padding: 14px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+}
+
+.hero-build-card__phase-name {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--color-text-accent);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* .build-items toàn cục có counter-reset riêng; tắt tại đây để counter
+   của .hero-build-card__phases không bị reset lại ở từng giai đoạn. */
+.hero-build-guide .build-items {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    counter-reset: none;
+}
+
+.hero-build-guide .build-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    padding: 8px;
+    color: inherit;
+    text-align: center;
+    text-decoration: none;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    counter-increment: build-item;
+}
+
+.hero-build-guide .build-item img {
+    display: block;
+    width: 100%;
+    max-width: 72px;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    margin-inline: auto;
+    background: var(--color-surface);
+    border-radius: 8px;
+}
+
+.hero-build-guide .build-item span {
+    display: -webkit-box;
+    width: 100%;
+    margin-top: 6px;
+    overflow: hidden;
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* Số thứ tự nhỏ hơn .hero-build .build-item::before (22px so với 26px). */
+.hero-build-guide .build-item::before {
+    content: counter(build-item);
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--color-gold);
+    color: var(--color-text);
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.hero-build-card__note {
+    margin: 10px 0 0;
+    color: var(--color-text-muted);
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.hero-build-card__skill {
+    margin: 16px 0 0;
+    color: var(--color-text-muted);
+    font-size: 14px;
+}
+
+.hero-build-card__skill::before {
+    content: "Nâng kỹ năng: ";
+    color: var(--color-text);
+    font-weight: 800;
+}
+
+.hero-build-card__cta {
+    display: inline-block;
+    margin-top: 16px;
+    color: var(--color-text-accent);
+    font-weight: 800;
+    transition: transform var(--transition);
+}
+
+.hero-build-card:hover .hero-build-card__cta,
+.hero-build-card:focus-visible .hero-build-card__cta {
+    transform: translateX(3px);
+}
+
+@media (max-width: 768px) {
+    .hero-build-guide {
+        padding: 20px;
+    }
+
+    .hero-build-card {
+        padding: 16px;
+    }
+
+    .hero-build-card__phases {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-build-guide h2 {
+        margin-bottom: var(--space-4);
+        font-size: 20px;
+    }
+
+    .hero-build-guide .build-items {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero-build-guide .build-item img {
+        max-width: 64px;
+    }
+}
+
 /* ---------- 6. RESPONSIVE ---------- */
 @media (max-width: 1024px) {
     /* Ảnh nhỏ lại còn 240px, phần thông tin lấy phần rộng còn lại. */
