@@ -422,10 +422,69 @@ async function initHeroDetailPage(heroes) {
 
     // 6. recommendedBuild trong heroes.json là mảng id trang bị, cần tra items.json.
     //    items.json lỗi thì loadData trả [] => buildItems rỗng => hiện "chưa có trang bị đề xuất".
-    const items = await loadData(DATA_PATH.items);
+    //    Tải thêm builds.json để gợi ý build chi tiết (nếu tướng có build).
+    const [items, builds] = await Promise.all([
+        loadData(DATA_PATH.items),
+        loadData(DATA_PATH.builds),
+    ]);
     const buildItems = (hero.recommendedBuild || [])
         .map((itemId) => items.find((item) => item.id === itemId))
         .filter(Boolean);
+
+    // Build đầu tiên của tướng trong builds.json (nếu có).
+    const heroBuild = (Array.isArray(builds) ? builds : [])
+        .find((build) => String(build.heroId) === String(hero.id)) || null;
+
+    // Ô trang bị dùng <span> (không lồng <a>) vì cả thẻ build là 1 <a>.
+    const renderGuideItem = (itemId) => {
+        const item = items.find((row) => String(row.id) === String(itemId));
+        if (!item) {
+            console.warn(`Không tìm thấy trang bị id ${itemId} của build ${heroBuild.id}.`);
+            return "";
+        }
+
+        return `
+            <span class="build-item">
+                <img src="${escapeHtml(imageUrl(item.image))}" alt="${escapeHtml(item.name)}" onerror="handleImageError(this)">
+                <span>${escapeHtml(item.name)}</span>
+            </span>
+        `;
+    };
+
+    const renderGuideItems = (ids) => (Array.isArray(ids) ? ids : [])
+        .map(renderGuideItem)
+        .join("");
+
+    const guidePhases = heroBuild && Array.isArray(heroBuild.phases) && heroBuild.phases.length
+        ? heroBuild.phases.map((phase) => `
+            <div class="hero-build-card__phase">
+                <span class="hero-build-card__phase-name">${escapeHtml(phase?.name || "")}</span>
+                <div class="build-items">${renderGuideItems(phase?.items)}</div>
+                ${phase?.note ? `<p class="hero-build-card__note">${escapeHtml(phase.note)}</p>` : ""}
+            </div>
+        `).join("")
+        : (heroBuild ? `
+            <div class="hero-build-card__phase">
+                <div class="build-items">${renderGuideItems(heroBuild.items)}</div>
+            </div>
+        ` : "");
+
+    const guideHtml = heroBuild ? `
+        <section class="hero-build-guide">
+            <h2>Build đề xuất</h2>
+            <a class="hero-build-card" href="${BASE_PATH}src/pages/build-detail.html?id=${escapeHtml(heroBuild.id)}">
+                <div class="hero-build-card__head">
+                    <span class="hero-build-card__name">${escapeHtml(heroBuild.name || "")}</span>
+                    ${heroBuild.lane ? `<span class="badge">${escapeHtml(heroBuild.lane)}</span>` : ""}
+                </div>
+                <div class="hero-build-card__phases">
+                    ${guidePhases}
+                </div>
+                ${heroBuild.skillOrder ? `<p class="hero-build-card__skill">${escapeHtml(heroBuild.skillOrder)}</p>` : ""}
+                <span class="hero-build-card__cta">Xem hướng dẫn chi tiết →</span>
+            </a>
+        </section>
+    ` : "";
 
     // 7. Đổi tiêu đề tab trình duyệt theo tên tướng (document.title là text nên không cần escapeHtml).
     document.title = "AOV HUB - " + hero.name;
@@ -499,6 +558,8 @@ async function initHeroDetailPage(heroes) {
                     : renderNotFound("Tướng này chưa có trang bị đề xuất.")}
             </div>
         </div>
+
+        ${guideHtml}
     `;
 
     // 9. Nút yêu thích vừa được vẽ ra cần đồng bộ trạng thái ♥ (đã yêu thích hay chưa).
