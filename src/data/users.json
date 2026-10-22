@@ -5,7 +5,14 @@
     "salt": "2e443de02a0d2915f712986e3f0efd69",
     "displayName": "Người dùng Demo",
     "role": "user",
-    "joinedAt": "2025-01-10T08:00:00.000Z"
+    "joinedAt": "2025-01-10T08:00:00.000Z",
+    "warnings": [
+      {
+        "at": "2026-10-21T03:00:31.596Z",
+        "reason": "Vi phạm nội dung (Vi phạm): mẹ mày, con mẹ mày",
+        "by": "system"
+      }
+    ]
   },
   {
     "username": "aovfan",
