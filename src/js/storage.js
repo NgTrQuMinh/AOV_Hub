@@ -354,3 +354,16 @@ function formatStorageNumber(value) {
         return '0,0';
     }
 }
+
+/**
+ * Danh sách hướng dẫn build do người dùng gửi, đọc từ LocalStorage.
+ * Chỉ lọc phần tử rác; việc lọc trạng thái duyệt thuộc về trang hiển thị.
+ *
+ * @returns {object[]}
+ */
+function getBuildSubmissions() {
+    const stored = getStore('aov_build_submissions', []);
+    return Array.isArray(stored)
+        ? stored.filter((row) => row && typeof row === 'object' && !Array.isArray(row))
+        : [];
+}

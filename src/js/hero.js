@@ -606,7 +606,7 @@ async function initHeroDetailPage(heroes) {
 
     // Build đầu tiên của tướng trong builds.json (nếu có).
     const heroBuild = (Array.isArray(builds) ? builds : [])
-        .find((build) => String(build.heroId) === String(hero.id)) || null;
+        .find((build) => build && String(build.heroId) === String(hero.id)) || null;
 
     // Ô trang bị dùng <span> (không lồng <a>) vì cả thẻ build là 1 <a>.
     const renderGuideItem = (itemId) => {
