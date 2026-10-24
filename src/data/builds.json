@@ -2698,5 +2698,349 @@
             "Cân bằng giữa công phép, giảm hồi chiêu và một món phòng ngự khi địch nhiều sát thủ.",
             "Đi theo đội để tận dụng lợi thế tầm xa và khống chế diện rộng."
         ]
+    },
+    {
+        "id": 33,
+        "heroId": 1,
+        "name": "Build thử nghiệm — xạ thủ bán phòng thủ",
+        "lane": "Đường Rồng",
+        "playstyle": "Valhein vẫn đứng tuyến sau nhưng ưu tiên thêm máu và giáp để chịu được đợt lao vào của sát thủ, sau đó mới dồn sát thương.",
+        "items": [
+            405,
+            101,
+            105,
+            108,
+            301,
+            302
+        ],
+        "description": "Bản thử nghiệm bán phòng thủ cho Valhein: vẫn giữ tốc đánh và hút máu nhưng đổi hai ô cuối sang trang bị sống sót.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    101
+                ],
+                "note": "Lên giày tốc đánh và Kiếm Fafnir để giữ đường, ưu tiên farm an toàn."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    105,
+                    108
+                ],
+                "note": "Bổ sung tốc đánh, chí mạng và hút máu để trao đổi chiêu tốt hơn."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    301,
+                    302
+                ],
+                "note": "Thêm giáp và kháng phép để sống sót qua đợt lao vào của sát thủ."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Đứng sau tuyến trước và chỉ bước lên bắn khi đã xác định được vị trí sát thủ địch.",
+            "Giữ Giáp Hộ Mệnh cho giao tranh tổng thay vì dùng sớm khi bị bắt lẻ.",
+            "Đổi món phòng ngự theo loại sát thương đang đe dọa nhiều nhất, không cố định một bộ cho mọi trận."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 301,
+                "with": 303,
+                "reason": "Huân Chương Troy tăng kháng phép và tạo lớp hấp thụ sát thương phép."
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Giày Kiên Cường tăng kháng hiệu ứng để có thêm thời gian bắn."
+            },
+            {
+                "when": "Cần thêm hút máu để trụ giao tranh",
+                "replace": 302,
+                "with": 104,
+                "reason": "Phức Hợp Kiếm bổ sung hút máu và máu, đổi lại giảm kháng phép."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ cơ động có thể vượt tuyến và dồn sát thương trước khi Valhein kịp lùi."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ cơ động có thể vượt tuyến và dồn sát thương trước khi Valhein kịp lùi."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ cơ động có thể vượt tuyến và dồn sát thương trước khi Valhein kịp lùi."
+            }
+        ],
+        "notes": [
+            "Đây là build thử nghiệm để kiểm tra nhiều build cùng tướng, không phải bản tối ưu cho mọi trận.",
+            "Đổi hai ô phòng ngự cuối theo đội hình địch; nếu đang thắng thế có thể quay lại hướng sát thương."
+        ]
+    },
+    {
+        "id": 34,
+        "heroId": 3,
+        "name": "Build thử nghiệm — sát thủ dồn sát thương",
+        "lane": "Rừng",
+        "playstyle": "Nakroth đi rừng, tìm góc vào từ bên hông để dứt điểm chủ lực địch trong thời gian ngắn rồi rút ra bằng chiêu cơ động.",
+        "items": [
+            602,
+            401,
+            103,
+            109,
+            110,
+            105
+        ],
+        "description": "Bản thử nghiệm dồn sát thương đơn mục tiêu cho Nakroth, kết hợp xuyên giáp và một món bảo hiểm thay vì nhiều trang bị phòng ngự.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    602,
+                    401
+                ],
+                "note": "Lên Kiếm Truy Hồn để dọn rừng nhanh, sau đó hoàn thiện giày kháng khống chế."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    103,
+                    109
+                ],
+                "note": "Tăng sát thương dứt điểm và xuyên giáp để áp lực lên chủ lực địch."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    110,
+                    105
+                ],
+                "note": "Thêm miễn tử và tốc đánh/chí mạng cho các pha vào sâu cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Dùng Kiếm Truy Hồn để giữ nhịp dọn rừng, tránh đánh tay đôi khi chưa có lợi thế.",
+            "Chờ chủ lực địch dùng chiêu thoát rồi mới lao vào, tránh vào trước khi đội hình địch còn đủ chiêu.",
+            "Liềm Đoạt Mệnh chỉ là phao cứu sinh, không nên dùng để mở giao tranh từ đầu."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 110,
+                "with": 301,
+                "reason": "Giáp Hộ Mệnh cho thêm một lần sống lại nếu bị giữ chân."
+            },
+            {
+                "when": "Địch lên nhiều giáp",
+                "replace": 105,
+                "with": 107,
+                "reason": "Thương Xuyên Phá bổ sung xuyên giáp và giảm hồi chiêu."
+            },
+            {
+                "when": "Cần thêm độ bền khi bị dồn",
+                "replace": 110,
+                "with": 302,
+                "reason": "Giáp Gaia tăng kháng phép và hồi phục sau khi nhận sát thương."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Tướng đỡ đòn nhiều khống chế có thể giữ chân Nakroth đủ lâu để đồng đội phản công."
+            },
+            {
+                "heroId": 23,
+                "reason": "Tướng đỡ đòn nhiều khống chế có thể giữ chân Nakroth đủ lâu để đồng đội phản công."
+            },
+            {
+                "heroId": 30,
+                "reason": "Tướng đỡ đòn nhiều khống chế có thể giữ chân Nakroth đủ lâu để đồng đội phản công."
+            }
+        ],
+        "notes": [
+            "Đây là build thử nghiệm thiên về dồn sát thương, không phải bản tối ưu cho mọi đội hình.",
+            "Nếu đội địch nhiều khống chế, ưu tiên đổi một món sát thương sang trang bị phòng ngự."
+        ]
+    },
+    {
+        "id": 35,
+        "heroId": 11,
+        "name": "Build thử nghiệm — hỗ trợ bảo vệ đồng đội",
+        "lane": "Đường Rồng",
+        "playstyle": "Thane làm tuyến đầu nhưng nghiêng về tạo khiên và giảm sát thương cho đồng đội thay vì chỉ đứng chịu đòn một mình.",
+        "items": [
+            401,
+            502,
+            303,
+            304,
+            307,
+            305
+        ],
+        "description": "Bản thử nghiệm hỗ trợ cho Thane: kết hợp khiên, kháng phép và giáp để bảo vệ chủ lực trong các pha giao tranh kéo dài.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    502
+                ],
+                "note": "Lên giày kháng khống chế và Đại Địa Thần Khiên để bảo vệ chủ lực sớm."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    303,
+                    304
+                ],
+                "note": "Bổ sung kháng phép và giáp để giữ vị trí tuyến đầu ổn định hơn."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    307,
+                    305
+                ],
+                "note": "Thêm khiên theo máu và phản sát thương vật lý cho giao tranh tổng."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Bám sát chủ lực và dùng khiên đúng lúc địch lao vào, không dùng khiên khi đồng đội còn đầy máu.",
+            "Mở giao tranh bằng khống chế khi đội hình địch đã lộ vị trí, tránh lao vào một mình.",
+            "Giữ một món giải khống chế hoặc tăng tốc để cứu đội khi bị bắt chéo đội hình."
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 502,
+                "with": 503,
+                "reason": "Đại Địa Mở Trói giải khống chế cho bản thân và đồng minh xung quanh."
+            },
+            {
+                "when": "Cần tăng tốc đội hình",
+                "replace": 305,
+                "with": 504,
+                "reason": "Đại Địa Thần Tốc giúp đội hình rút ra hoặc áp sát nhanh hơn."
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 305,
+                "with": 302,
+                "reason": "Giáp Gaia tăng kháng phép và hồi phục sau khi chịu sát thương."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Tướng đấu sĩ có sát thương duy trì và xuyên giáp có thể bào mòn tuyến trước của Thane."
+            },
+            {
+                "heroId": 15,
+                "reason": "Xạ thủ tầm xa có thể thả diều và bào mòn lượng máu lớn của Thane."
+            },
+            {
+                "heroId": 20,
+                "reason": "Xạ thủ tầm xa có thể thả diều và bào mòn lượng máu lớn của Thane."
+            }
+        ],
+        "notes": [
+            "Đây là build thử nghiệm thiên về hỗ trợ, không phải bản tối ưu cho mọi đội hình.",
+            "Nếu đội cần người mở giao tranh trực diện, đổi bớt một món hỗ trợ sang trang bị phòng ngự thuần."
+        ]
+    },
+    {
+        "id": 36,
+        "heroId": 5,
+        "name": "Build thử nghiệm — phép sư kiểm soát",
+        "lane": "Đường Giữa",
+        "playstyle": "Raz giữ khoảng cách, dùng hồi chiêu và độ bền để kiểm soát giao tranh nhiều đợt thay vì chỉ dồn sát thương một lần.",
+        "items": [
+            403,
+            204,
+            205,
+            203,
+            209,
+            208
+        ],
+        "description": "Bản thử nghiệm phép sư kiểm soát cho Raz: tăng hồi chiêu, máu và khả năng sống sót để giữ vị trí trong giao tranh dài.",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    204
+                ],
+                "note": "Lên giày giảm hồi chiêu và Mặt Nạ Berith để giữ đường an toàn."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    205,
+                    203
+                ],
+                "note": "Bổ sung máu và xuyên phép để chịu được trao đổi chiêu kéo dài."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    209,
+                    208
+                ],
+                "note": "Thêm giáp/nháng phép và một lần bất tử để sống qua đợt lao vào."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách an toàn và dùng chiêu kiểm soát để chia cắt đội hình địch trước khi dồn sát thương.",
+            "Không xả toàn bộ chiêu vào một mục tiêu đã có khiên; chờ hiệu ứng bảo vệ của địch hết trước.",
+            "Quả Cầu Băng Sương nên để dành cho đợt lao vào của sát thủ thay vì dùng để mở giao tranh."
+        ],
+        "situational": [
+            {
+                "when": "Địch lên nhiều kháng phép",
+                "replace": 209,
+                "with": 210,
+                "reason": "Gươm Hiền Triết cộng dồn xuyên giáp phép khi đánh trúng tướng địch."
+            },
+            {
+                "when": "Cần sốc sát thương hơn",
+                "replace": 209,
+                "with": 202,
+                "reason": "Vương Miện Hecate tăng mạnh công phép để dứt điểm nhanh hơn."
+            },
+            {
+                "when": "Cần thêm khiên chống đợt lao vào",
+                "replace": 208,
+                "with": 307,
+                "reason": "Nham Thuẫn tạo lá chắn theo máu tối đa để chịu đợt mở giao tranh."
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi Raz kịp rút."
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi Raz kịp rút."
+            },
+            {
+                "heroId": 10,
+                "reason": "Sát thủ cơ động có thể vượt qua tầm chiêu và dồn sát thương trước khi Raz kịp rút."
+            }
+        ],
+        "notes": [
+            "Đây là build thử nghiệm thiên về kiểm soát và độ bền, không phải bản tối ưu cho mọi trận.",
+            "Nếu đội đang thiếu sát thương, đổi một món phòng ngự sang trang bị công phép thuần."
+        ]
     }
 ]
