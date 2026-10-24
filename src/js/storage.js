@@ -367,3 +367,32 @@ function getBuildSubmissions() {
         ? stored.filter((row) => row && typeof row === 'object' && !Array.isArray(row))
         : [];
 }
+
+/**
+ * Build cộng đồng được phép hiển thị công khai.
+ *
+ * - Bỏ build đang chờ duyệt hoặc đã bị từ chối.
+ * - Bỏ build đã duyệt nhưng đã được ghi vào builds.json (trùng buildId),
+ *   tránh hiện cùng một build hai lần với hai id khác nhau.
+ * - Build cũ không có trường status được coi là hợp lệ để tương thích dữ liệu cũ.
+ *
+ * @param {object[]} officialBuilds danh sách build chính thức từ builds.json
+ * @returns {object[]}
+ */
+function getApprovedBuildSubmissions(officialBuilds) {
+    const officialIds = new Set(
+        (Array.isArray(officialBuilds) ? officialBuilds : [])
+            .map((build) => String(build && build.id))
+    );
+
+    return getBuildSubmissions().filter((submission) => {
+        const status = String(submission.status || '').trim().toLowerCase();
+        if (status === 'pending' || status === 'rejected') return false;
+
+        if (submission.buildId !== undefined && submission.buildId !== null && submission.buildId !== '') {
+            if (officialIds.has(String(submission.buildId))) return false;
+        }
+
+        return true;
+    });
+}

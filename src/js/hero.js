@@ -593,7 +593,7 @@ async function initHeroDetailPage(heroes) {
     // 6. recommendedBuild trong heroes.json là mảng id trang bị, cần tra items.json.
     //    items.json lỗi thì loadData trả [] => buildItems rỗng => hiện "chưa có trang bị đề xuất".
     //    builds.json là danh sách hướng dẫn build thật (KHÁC recommendedBuild) nên nạp
-    //    song song; build cộng đồng đọc thêm từ LocalStorage qua getBuildSubmissions().
+    //    song song; build cộng đồng chỉ lấy bản đã duyệt qua getApprovedBuildSubmissions().
     const [items, builds] = await Promise.all([
         loadData(DATA_PATH.items),
         loadData(DATA_PATH.builds),
@@ -601,7 +601,9 @@ async function initHeroDetailPage(heroes) {
     const buildItems = (hero.recommendedBuild || [])
         .map((itemId) => items.find((item) => item.id === itemId))
         .filter(Boolean);
-    const submissions = typeof getBuildSubmissions === "function" ? getBuildSubmissions() : [];
+    const submissions = typeof getApprovedBuildSubmissions === "function"
+        ? getApprovedBuildSubmissions(builds)
+        : [];
     const heroBuilds = getHeroBuilds(hero.id, builds, submissions);
 
     // Build đầu tiên của tướng trong builds.json (nếu có).
