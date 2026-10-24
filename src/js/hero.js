@@ -385,6 +385,85 @@ function renderHeroSkillsTable(hero) {
 }
 
 /**
+ * Lấy toàn bộ build thuộc một tướng.
+ *
+ * Build chính thức nằm trong builds.json, build cộng đồng nằm trong
+ * `aov_build_submissions` (đọc qua getBuildSubmissions() của storage.js).
+ * Một tướng có thể có nhiều build nên KHÔNG giới hạn số lượng ở đây.
+ *
+ * Bỏ qua bản ghi hỏng, bản ghi không có id (không mở được trang chi tiết),
+ * bản ghi không có heroId hoặc heroId không khớp. Id trùng giữa hai nguồn
+ * chỉ hiện một lần.
+ *
+ * @param {number|string} heroId id tướng đang xem.
+ * @param {Array} builds danh sách từ builds.json.
+ * @param {Array} submissions danh sách build cộng đồng.
+ * @returns {Array} build của tướng, giữ thứ tự: build chính thức trước, cộng đồng sau.
+ */
+function getHeroBuilds(heroId, builds, submissions) {
+    const wanted = String(heroId ?? "").trim();
+    if (!wanted) return [];
+
+    const rows = [
+        ...(Array.isArray(builds) ? builds : []),
+        ...(Array.isArray(submissions) ? submissions : []),
+    ];
+
+    const seen = new Set();
+
+    return rows.filter((build) => {
+        if (!build || typeof build !== "object" || Array.isArray(build)) return false;
+        if (build.heroId === undefined || build.heroId === null || build.heroId === "") return false;
+        if (String(build.heroId) !== wanted) return false;
+
+        // Không có id thì không dựng được link build-detail.html?id=...
+        if (build.id === undefined || build.id === null || build.id === "") return false;
+
+        const id = String(build.id);
+        if (seen.has(id)) return false;
+
+        seen.add(id);
+        return true;
+    });
+}
+
+/**
+ * Một thẻ build trong khu "Build của tướng" ở trang Chi tiết tướng.
+ * Chỉ dùng các trường có thật trong builds.json (name, lane, playstyle, items)
+ * và trường author của build cộng đồng; thiếu trường nào thì ẩn phần đó.
+ *
+ * @param {object} build
+ * @returns {string} HTML string.
+ */
+function renderHeroBuildCard(build) {
+    const name = String(build?.name || "").trim() || "Hướng dẫn build";
+    const lane = String(build?.lane || "").trim();
+    const playstyle = String(build?.playstyle || build?.description || "").trim();
+    const author = String(build?.author || "").trim();
+    const itemCount = Array.isArray(build?.items) ? build.items.length : 0;
+    const href = `${BASE_PATH}src/pages/build-detail.html?id=${encodeURIComponent(build.id)}`;
+
+    return `
+        <article class="hero-build-list-card">
+            <div class="hero-build-list-card__head">
+                <h3 class="hero-build-list-card__name">
+                    <a href="${escapeHtml(href)}">${escapeHtml(name)}</a>
+                </h3>
+                ${lane ? `<span class="badge hero-build-list-card__lane">${escapeHtml(lane)}</span>` : ""}
+            </div>
+            ${playstyle ? `<p class="hero-build-list-card__playstyle">${escapeHtml(playstyle)}</p>` : ""}
+            <p class="hero-build-list-card__meta">
+                <span>${itemCount} trang bị</span>
+                ${author ? `<span class="hero-build-list-card__author">Người gửi: ${escapeHtml(author)}</span>` : ""}
+            </p>
+            <a class="hero-build-list-card__link" href="${escapeHtml(href)}">
+                Xem hướng dẫn chi tiết <span aria-hidden="true">→</span>
+            </a>
+        </article>
+    `;
+}
+
+/**
  * Trang Chi tiết tướng (hero-detail.html)
  *
  * @param {Array} heroes - toàn bộ dữ liệu heroes.json đã nạp ở DOMContentLoaded.
@@ -422,7 +501,8 @@ async function initHeroDetailPage(heroes) {
 
     // 6. recommendedBuild trong heroes.json là mảng id trang bị, cần tra items.json.
     //    items.json lỗi thì loadData trả [] => buildItems rỗng => hiện "chưa có trang bị đề xuất".
-    //    Tải thêm builds.json để gợi ý build chi tiết (nếu tướng có build).
+    //    builds.json là danh sách hướng dẫn build thật (KHÁC recommendedBuild) nên nạp
+    //    song song; build cộng đồng đọc thêm từ LocalStorage qua getBuildSubmissions().
     const [items, builds] = await Promise.all([
         loadData(DATA_PATH.items),
         loadData(DATA_PATH.builds),
@@ -430,6 +510,8 @@ async function initHeroDetailPage(heroes) {
     const buildItems = (hero.recommendedBuild || [])
         .map((itemId) => items.find((item) => item.id === itemId))
         .filter(Boolean);
+    const submissions = typeof getBuildSubmissions === "function" ? getBuildSubmissions() : [];
+    const heroBuilds = getHeroBuilds(hero.id, builds, submissions);
 
     // Build đầu tiên của tướng trong builds.json (nếu có).
     const heroBuild = (Array.isArray(builds) ? builds : [])
@@ -560,6 +642,13 @@ async function initHeroDetailPage(heroes) {
         </div>
 
         ${guideHtml}
+
+        <div class="hero-builds">
+            <h2>Build của tướng</h2>
+            ${heroBuilds.length
+                ? `<div class="hero-build-list">${heroBuilds.map(renderHeroBuildCard).join("")}</div>`
+                : renderNotFound("Tướng này chưa có build nào.")}
+        </div>
     `;
 
     // 9. Nút yêu thích vừa được vẽ ra cần đồng bộ trạng thái ♥ (đã yêu thích hay chưa).
