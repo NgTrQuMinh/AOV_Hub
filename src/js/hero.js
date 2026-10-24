@@ -385,6 +385,7 @@ function renderHeroSkillsTable(hero) {
 }
 
 /**
+/**
  * Lấy toàn bộ build thuộc một tướng.
  *
  * Build chính thức nằm trong builds.json, build cộng đồng nằm trong
@@ -460,6 +461,96 @@ function renderHeroBuildCard(build) {
                 Xem hướng dẫn chi tiết <span aria-hidden="true">→</span>
             </a>
         </article>
+    `;
+}
+
+/**
+ * Đoạn trích ngắn của bài viết để hiển thị trong thẻ ở trang Chi tiết tướng.
+ * Gộp khoảng trắng/xuống dòng thành một dòng và cắt bớt nếu quá dài.
+ *
+ * @param {*} content nội dung bài viết.
+ * @param {number} maxLength số ký tự tối đa.
+ * @returns {string}
+ */
+function heroPostExcerpt(content, maxLength = 180) {
+    const text = String(content || "").replace(/\s+/g, " ").trim();
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+
+    return text.slice(0, maxLength).trimEnd() + "…";
+}
+
+/**
+ * Một thẻ bài viết trong khu "Bài viết về tướng này".
+ *
+ * Chỉ dùng các trường có thật của bài viết (title, author, content, createdAt,
+ * category) và các hàm hiển thị sẵn có của Feed (formatDateTime, getPostCategory,
+ * isPostHidden, renderPostStatusBadge). Mọi chuỗi đều qua escapeHtml().
+ *
+ * @param {object} post
+ * @returns {string} HTML string.
+ */
+function renderHeroPostCard(post) {
+    const postId = String(post && post.id != null ? post.id : "").trim();
+    const title = String(post && post.title || "").trim() || "Bài viết chưa có tiêu đề";
+    const author = String(post && post.author || "").trim() || "Ẩn danh";
+    const createdAt = typeof formatDateTime === "function" ? formatDateTime(post && post.createdAt) : "";
+    const category = typeof getPostCategory === "function" ? getPostCategory(post) : "";
+    const excerpt = heroPostExcerpt(post && post.content);
+    const href = `${BASE_PATH}src/pages/post-detail.html?id=${encodeURIComponent(postId)}`;
+
+    // Bài bị ẩn / chờ duyệt / bị từ chối chỉ tác giả mới thấy, giữ nhãn giống Feed.
+    const hiddenBadge = typeof isPostHidden === "function" && isPostHidden(post)
+        ? '<span class="badge hero-post-card__badge">Đã bị ẩn</span>'
+        : "";
+    const statusBadge = typeof renderPostStatusBadge === "function"
+        ? renderPostStatusBadge(post)
+        : "";
+
+    return `
+        <article class="hero-post-card" data-post-id="${escapeHtml(postId)}">
+            <span class="hero-post-card__avatar" aria-hidden="true">👤</span>
+            <div class="hero-post-card__body">
+                <h3 class="hero-post-card__title">
+                    <a href="${escapeHtml(href)}">${escapeHtml(title)}</a>
+                </h3>
+                <p class="hero-post-card__meta">
+                    <span class="hero-post-card__author">${escapeHtml(author)}</span>
+                    ${createdAt
+                        ? `<time class="hero-post-card__time" datetime="${escapeHtml(post.createdAt)}">${escapeHtml(createdAt)}</time>`
+                        : ""}
+                    ${category ? `<span class="hero-post-card__category">${escapeHtml(category)}</span>` : ""}
+                </p>
+                ${excerpt ? `<p class="hero-post-card__excerpt">${escapeHtml(excerpt)}</p>` : ""}
+                ${hiddenBadge}${statusBadge}
+                <a class="hero-post-card__link" href="${escapeHtml(href)}">Đọc bài viết →</a>
+            </div>
+        </article>
+    `;
+}
+
+/**
+ * Khu "Bài viết về tướng này" ở cuối trang Chi tiết tướng.
+ * Có bài thì vẽ danh sách; chưa có thì vẫn giữ khu vực và hiện thông báo thân thiện.
+ *
+ * @param {Array} posts danh sách đã lọc theo tướng và quyền hiển thị.
+ * @returns {string} HTML string.
+ */
+function renderHeroPosts(posts) {
+    const list = Array.isArray(posts) ? posts : [];
+
+    return `
+        <section class="hero-posts" aria-labelledby="hero-posts-title">
+            <h2 id="hero-posts-title">Bài viết về tướng này</h2>
+            ${list.length
+                ? `<div class="hero-post-list">${list.map(renderHeroPostCard).join("")}</div>`
+                : `
+                    <div class="hero-posts__empty" role="status">
+                        <p>Chưa có bài viết nào về tướng này.</p>
+                        <a class="hero-posts__cta" href="${BASE_PATH}src/pages/feed.html">Chia sẻ bài viết đầu tiên →</a>
+                    </div>
+                `}
+        </section>
     `;
 }
 
@@ -568,6 +659,17 @@ async function initHeroDetailPage(heroes) {
         </section>
     ` : "";
 
+    // 6b. Bài viết cộng đồng của tướng: nạp đúng nguồn dữ liệu của Feed rồi lọc
+    //      qua getPostsByHero() (bên trong đã dùng isPostVisibleForViewer()).
+    //      Lỗi tải bài viết không làm hỏng phần còn lại của trang Chi tiết tướng.
+    let heroPosts = [];
+    try {
+        if (typeof seedPostsFromJson === "function") await seedPostsFromJson();
+        if (typeof getPostsByHero === "function") heroPosts = getPostsByHero(hero.id);
+    } catch (error) {
+        console.error("Không tải được bài viết của tướng:", error);
+    }
+
     // 7. Đổi tiêu đề tab trình duyệt theo tên tướng (document.title là text nên không cần escapeHtml).
     document.title = "AOV HUB - " + hero.name;
 
@@ -649,6 +751,8 @@ async function initHeroDetailPage(heroes) {
                 ? `<div class="hero-build-list">${heroBuilds.map(renderHeroBuildCard).join("")}</div>`
                 : renderNotFound("Tướng này chưa có build nào.")}
         </div>
+
+        ${renderHeroPosts(heroPosts)}
     `;
 
     // 9. Nút yêu thích vừa được vẽ ra cần đồng bộ trạng thái ♥ (đã yêu thích hay chưa).
