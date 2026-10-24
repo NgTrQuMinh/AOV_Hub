@@ -2329,6 +2329,41 @@ function syncFeedFilterUrl(state) {
 }
 
 /**
+ * Các bài viết đang hiển thị của một tướng, mới nhất trước.
+ *
+ * Dùng đúng nguồn dữ liệu của Feed (getPosts() -> aov_posts, đã gộp posts.json
+ * và bản nháp LocalStorage) và đúng hàm kiểm soát hiển thị isPostVisibleForViewer().
+ * Nhờ vậy bài bị ẩn, bài chờ duyệt hoặc bài bị từ chối không lọt ra chỉ vì có
+ * cùng heroId; tác giả vẫn thấy bài của mình theo quy tắc sẵn có.
+ *
+ * Bỏ qua bài hỏng, bài không có heroId và bài có heroId không khớp.
+ * So khớp qua normalizeId() để "1" trên URL và 1 trong dữ liệu là một.
+ *
+ * @param {number|string} heroId id tướng đang xem.
+ * @returns {Array} bài viết của tướng, mới nhất trước.
+ */
+function getPostsByHero(heroId) {
+    const wanted = normalizeId(heroId);
+    if (!wanted) return [];
+
+    // createdAt là chuỗi ISO nên dùng Date.parse để xử lý được giá trị thiếu.
+    const timeOf = (post) => {
+        const time = Date.parse(post.createdAt);
+        return Number.isNaN(time) ? 0 : time;
+    };
+
+    return getPosts()
+        .filter((post) => {
+            if (!post || post.heroId === undefined || post.heroId === null) return false;
+            if (String(post.heroId).trim() === '') return false;
+            if (normalizeId(post.heroId) !== wanted) return false;
+
+            return isPostVisibleForViewer(post);
+        })
+        .sort((a, b) => timeOf(b) - timeOf(a));
+}
+
+/**
  * Lọc (chuyên mục + từ khoá trong tiêu đề) rồi sắp xếp danh sách bài viết.
  * Lọc dùng phép AND: bài phải thỏa cả chuyên mục lẫn từ khoá.
  * @param {object} state trạng thái lọc hiện tại.
