@@ -11,6 +11,8 @@
  *   HD05 - Bảng ngọc / phép bổ trợ (buildDetailResolveRunes từ src/data/runes.json).
  *   HD07 - Nút bình chọn "Hữu ích" (build-vote.js + aov_build_votes).
  *   HD09 - Sao chép / chia sẻ liên kết hướng dẫn build.
+ *   Build khác - Gợi ý các build cùng heroId ở cuối trang (gồm build cộng đồng
+ *          đang hiển thị được), bỏ chính build đang xem theo id thật của build.
  *
  * Đọc dữ liệu động từ JSON, không hard-code build trong HTML:
  *   - src/data/builds.json  (schema HD01: id, heroId, name, lane, playstyle, items[],
@@ -47,6 +49,7 @@ const BUILD_DETAIL_TITLES = {
     tips: 'Mẹo chơi',
     counters: 'Tướng khắc chế',
     notes: 'Ghi chú',
+    related: 'Build khác của tướng này',
 };
 
 /** Build + tên tướng đang hiển thị, dùng cho nút sao chép/chia sẻ (HD09). */
@@ -111,7 +114,7 @@ async function initBuildDetailPage() {
         return;
     }
 
-    renderBuildDetail(container, build, heroes, items, runes);
+    renderBuildDetail(container, build, allBuilds, heroes, items, runes);
 
     initBuildDetailShare(container);
 
@@ -231,6 +234,34 @@ function buildDetailResolveSituational(build, items) {
             };
         })
         .filter(Boolean);
+}
+
+/**
+ * Các build khác của cùng tướng: trùng heroId với build đang xem và khác id
+ * thật của build đang xem. Không dựa vào tên build, không nhầm heroId với id.
+ * @param {object[]} builds - toàn bộ builds.json + build cộng đồng đang hiển thị
+ * @param {object} currentBuild
+ * @returns {object[]}
+ */
+function buildDetailResolveRelatedBuilds(builds, currentBuild) {
+    if (!Array.isArray(builds) || !currentBuild) return [];
+
+    const heroId = currentBuild.heroId;
+    if (heroId === null || heroId === undefined || String(heroId).trim() === '') return [];
+
+    const currentId = String(currentBuild.id);
+    const seen = new Set();
+
+    return builds.filter((row) => {
+        if (!row || typeof row !== 'object') return false;
+        if (String(row.heroId) !== String(heroId)) return false;
+        if (String(row.id) === currentId) return false;
+
+        const key = String(row.id);
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
 }
 
 /**
@@ -639,17 +670,76 @@ function initBuildDetailShare(container) {
     });
 }
 
+/**
+ * Thẻ gợi ý một build khác của cùng tướng. Toàn bộ thẻ là link sang đúng
+ * build-detail.html?id=<id thật của build>.
+ * @param {object} relatedBuild
+ * @param {object[]} items
+ * @returns {string}
+ */
+function renderBuildDetailRelatedCard(relatedBuild, items) {
+    const relatedItems = buildDetailResolveItems(items, relatedBuild.items);
+    const itemCount = relatedItems.length;
+    const itemIcons = relatedItems.slice(0, 6).map((item) => `
+        <img src="${imageUrl(item.image)}" alt="${escapeHtml(item.name)}"
+            title="${escapeHtml(item.name)}" loading="lazy" onerror="handleImageError(this)">
+    `).join('');
+
+    return `
+        <li class="related-build">
+            <a class="related-build__link" href="${BASE_PATH}src/pages/build-detail.html?id=${escapeHtml(relatedBuild.id)}">
+                <span class="related-build__name">${escapeHtml(relatedBuild.name || 'Build chưa đặt tên')}</span>
+                <span class="related-build__meta">
+                    ${relatedBuild.lane ? `<span class="badge">${escapeHtml(relatedBuild.lane)}</span>` : ''}
+                    <span class="related-build__count">${itemCount} trang bị</span>
+                    ${relatedBuild.skillOrder ? `<span class="related-build__skill">${escapeHtml(relatedBuild.skillOrder)}</span>` : ''}
+                </span>
+                ${relatedBuild.playstyle ? `<span class="related-build__playstyle">${escapeHtml(relatedBuild.playstyle)}</span>` : ''}
+                ${itemIcons ? `<span class="related-build__items" aria-hidden="true">${itemIcons}</span>` : ''}
+                <span class="related-build__cta">Xem hướng dẫn <span aria-hidden="true">→</span></span>
+            </a>
+        </li>
+    `;
+}
+
+/**
+ * Khối "Build khác của tướng này". Trả về chuỗi rỗng khi không có build nào
+ * khác để tránh hiển thị một danh sách trống gây khó hiểu.
+ * @param {object[]} builds
+ * @param {object} currentBuild
+ * @param {object|null} hero
+ * @param {object[]} items
+ * @returns {string}
+ */
+function renderBuildDetailRelatedBuilds(builds, currentBuild, hero, items) {
+    const related = buildDetailResolveRelatedBuilds(builds, currentBuild);
+    if (!related.length) return '';
+
+    const heroName = hero ? hero.name : 'tướng này';
+
+    return `
+        <section class="build-detail__section build-detail__related-section">
+            <h2>${escapeHtml(BUILD_DETAIL_TITLES.related)}</h2>
+            <p class="related-build__intro">Cùng tướng <strong>${escapeHtml(heroName)}</strong> nhưng khác hướng lên đồ.</p>
+            <ul class="related-build-list">
+                ${related.map((row) => renderBuildDetailRelatedCard(row, items)).join('')}
+            </ul>
+        </section>
+    `;
+}
+
 /* ---------- Render trang ---------- */
 
 /**
  * Render toàn bộ trang chi tiết của một build.
  * @param {HTMLElement} container - #build-detail
  * @param {object} build - object trong builds.json (hoặc build cộng đồng HD06)
+ * @param {object[]} builds - toàn bộ builds.json + build cộng đồng (để tìm build cùng tướng)
  * @param {object[]} heroes - heroes.json
  * @param {object[]} items - items.json
  * @param {object} [runesData] - runes.json (HD05)
  */
-function renderBuildDetail(container, build, heroes, items, runesData) {
+function renderBuildDetail(container, build, builds, heroes, items, runesData) {
     const hero = buildDetailFindHero(heroes, build.heroId);
     const heroName = hero ? hero.name : 'Tướng chưa xác định';
     const mainItems = buildDetailResolveItems(items, build.items);
@@ -747,6 +837,8 @@ function renderBuildDetail(container, build, heroes, items, runesData) {
                     ${renderBuildDetailBulletList(build.notes, 'build-notes', 'Build này chưa có ghi chú.')}
                 </section>
             ` : ''}
+
+            ${renderBuildDetailRelatedBuilds(builds, build, hero, items)}
 
             <footer class="build-detail__footer">
                 <a class="btn btn-outline" href="${BASE_PATH}src/pages/builds.html">← Về danh sách build</a>
