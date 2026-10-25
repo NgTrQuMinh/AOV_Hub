@@ -37,6 +37,7 @@ const BUILD_DETAIL_TITLES = {
     tips: 'Mẹo chơi',
     counters: 'Tướng khắc chế',
     notes: 'Ghi chú',
+    related: 'Build khác của tướng này',
 };
 
 document.addEventListener('DOMContentLoaded', initBuildDetailPage);
@@ -55,8 +56,18 @@ async function initBuildDetailPage() {
         loadData(DATA_PATH.items),
     ]);
 
+    // Build cộng đồng chỉ được hiển thị khi đã duyệt. Bản đã duyệt cũng đã
+    // được ghi vào builds.json nên loại bản ghi có buildId trùng để không lặp.
+    const submissions = typeof getApprovedBuildSubmissions === 'function'
+        ? getApprovedBuildSubmissions(builds)
+        : [];
+    const allBuilds = [
+        ...(Array.isArray(builds) ? builds : []),
+        ...submissions,
+    ];
+
     // 1. JSON hỏng / tải lỗi -> loadData() trả về mảng rỗng.
-    if (!Array.isArray(builds) || builds.length === 0) {
+    if (!allBuilds.length) {
         container.innerHTML = renderBuildDetailPlaceholder(
             'Không tải được dữ liệu hướng dẫn build. Vui lòng kiểm tra kết nối rồi tải lại trang.',
             '<button type="button" class="btn btn-outline" data-reload-build-detail>Tải lại trang</button>',
@@ -77,8 +88,8 @@ async function initBuildDetailPage() {
         return;
     }
 
-    const build = (id && builds.find((row) => String(row.id) === id))
-        || (heroId && builds.find((row) => String(row.heroId) === heroId))
+    const build = (id && allBuilds.find((row) => String(row.id) === id))
+        || (heroId && allBuilds.find((row) => String(row.heroId) === heroId))
         || null;
 
     if (!build) {
@@ -90,7 +101,7 @@ async function initBuildDetailPage() {
         return;
     }
 
-    renderBuildDetail(container, build, heroes, items);
+    renderBuildDetail(container, build, allBuilds, heroes, items);
 
     // Khối trang bị có thể không có nút ♥ nhưng gọi cho chắc nếu markup đổi sau này.
     if (typeof refreshFavoriteButtons === 'function') refreshFavoriteButtons();
@@ -161,6 +172,92 @@ function buildDetailResolveItems(items, ids) {
             used.add(String(item.id));
             return true;
         });
+}
+
+/**
+ * Các build khác của cùng tướng: trùng heroId với build đang xem và khác id
+ * thật của build đang xem. Không dựa vào tên build, không nhầm heroId với id.
+ * @param {object[]} builds - toàn bộ builds.json + build cộng đồng đang hiển thị
+ * @param {object} currentBuild
+ * @returns {object[]}
+ */
+function buildDetailResolveRelatedBuilds(builds, currentBuild) {
+    if (!Array.isArray(builds) || !currentBuild) return [];
+
+    const heroId = currentBuild.heroId;
+    if (heroId === null || heroId === undefined || String(heroId).trim() === '') return [];
+
+    const currentId = String(currentBuild.id);
+    const seen = new Set();
+
+    return builds.filter((row) => {
+        if (!row || typeof row !== 'object') return false;
+        if (String(row.heroId) !== String(heroId)) return false;
+        if (String(row.id) === currentId) return false;
+
+        const key = String(row.id);
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+}
+
+/**
+ * Thẻ gợi ý một build khác của cùng tướng. Toàn bộ thẻ là link sang đúng
+ * build-detail.html?id=<id thật của build>.
+ * @param {object} relatedBuild
+ * @param {object[]} items
+ * @returns {string}
+ */
+function renderBuildDetailRelatedCard(relatedBuild, items) {
+    const relatedItems = buildDetailResolveItems(items, relatedBuild.items);
+    const itemCount = relatedItems.length;
+    const itemIcons = relatedItems.slice(0, 6).map((item) => `
+        <img src="${imageUrl(item.image)}" alt="${escapeHtml(item.name)}"
+            title="${escapeHtml(item.name)}" loading="lazy" onerror="handleImageError(this)">
+    `).join('');
+
+    return `
+        <li class="related-build">
+            <a class="related-build__link" href="${BASE_PATH}src/pages/build-detail.html?id=${escapeHtml(relatedBuild.id)}">
+                <span class="related-build__name">${escapeHtml(relatedBuild.name || 'Build chưa đặt tên')}</span>
+                <span class="related-build__meta">
+                    ${relatedBuild.lane ? `<span class="badge">${escapeHtml(relatedBuild.lane)}</span>` : ''}
+                    <span class="related-build__count">${itemCount} trang bị</span>
+                    ${relatedBuild.skillOrder ? `<span class="related-build__skill">${escapeHtml(relatedBuild.skillOrder)}</span>` : ''}
+                </span>
+                ${relatedBuild.playstyle ? `<span class="related-build__playstyle">${escapeHtml(relatedBuild.playstyle)}</span>` : ''}
+                ${itemIcons ? `<span class="related-build__items" aria-hidden="true">${itemIcons}</span>` : ''}
+                <span class="related-build__cta">Xem hướng dẫn <span aria-hidden="true">→</span></span>
+            </a>
+        </li>
+    `;
+}
+
+/**
+ * Khối "Build khác của tướng này". Trả về chuỗi rỗng khi không có build nào
+ * khác để tránh hiển thị một danh sách trống gây khó hiểu.
+ * @param {object[]} builds
+ * @param {object} currentBuild
+ * @param {object|null} hero
+ * @param {object[]} items
+ * @returns {string}
+ */
+function renderBuildDetailRelatedBuilds(builds, currentBuild, hero, items) {
+    const related = buildDetailResolveRelatedBuilds(builds, currentBuild);
+    if (!related.length) return '';
+
+    const heroName = hero ? hero.name : 'tướng này';
+
+    return `
+        <section class="build-detail__section build-detail__related-section">
+            <h2>${escapeHtml(BUILD_DETAIL_TITLES.related)}</h2>
+            <p class="related-build__intro">Cùng tướng <strong>${escapeHtml(heroName)}</strong> nhưng khác hướng lên đồ.</p>
+            <ul class="related-build-list">
+                ${related.map((row) => renderBuildDetailRelatedCard(row, items)).join('')}
+            </ul>
+        </section>
+    `;
 }
 
 /**
@@ -340,11 +437,12 @@ function renderBuildDetailBulletList(entries, listClass, emptyMessage) {
 /**
  * Render toàn bộ trang chi tiết của một build.
  * @param {HTMLElement} container - #build-detail
- * @param {object} build - object trong builds.json
+ * @param {object} build - object trong builds.json hoặc build cộng đồng đã duyệt
+ * @param {object[]} builds - toàn bộ build đang được phép hiển thị
  * @param {object[]} heroes - heroes.json
  * @param {object[]} items - items.json
  */
-function renderBuildDetail(container, build, heroes, items) {
+function renderBuildDetail(container, build, builds, heroes, items) {
     const hero = buildDetailFindHero(heroes, build.heroId);
     const heroName = hero ? hero.name : 'Tướng chưa xác định';
     const mainItems = buildDetailResolveItems(items, build.items);
@@ -427,6 +525,8 @@ function renderBuildDetail(container, build, heroes, items) {
                     ${renderBuildDetailBulletList(build.notes, 'build-notes', 'Build này chưa có ghi chú.')}
                 </section>
             ` : ''}
+
+            ${renderBuildDetailRelatedBuilds(builds, build, hero, items)}
 
             <footer class="build-detail__footer">
                 <a class="btn btn-outline" href="${BASE_PATH}src/pages/builds.html">← Về danh sách build</a>
