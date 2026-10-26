@@ -1351,6 +1351,11 @@ function deletePost(postId) {
         setLikes(likes);
     }
 
+    // Báo cáo đang mở của bài (và bình luận trong bài) không còn đối tượng để xử lý.
+    if (typeof closeReportsForPost === 'function') {
+        closeReportsForPost(id, 'Bài viết đã bị xoá');
+    }
+
     // Nhật ký thao tác admin (adminlog.js): logAdminAction() tự kiểm tra quyền
     // nên chỉ admin xoá bài mới được ghi — tác giả xoá bài của chính mình thì
     // lời gọi này là no-op (trả false, không ghi). Bọc typeof như trên để trang
@@ -1452,6 +1457,10 @@ function setPostHidden(postId, hidden) {
     posts[index] = updated;
 
     if (!setPosts(posts)) return false;
+
+    if (hidden && typeof closeReportsForPost === 'function') {
+        closeReportsForPost(id, 'Bài viết đã bị ẩn');
+    }
 
     // Nhật ký thao tác admin (adminlog.js): bọc typeof để trang không nạp file
     // này (Feed, Profile...) gọi setPostHidden cũng không lỗi ReferenceError;
@@ -1999,7 +2008,13 @@ function deleteComment(commentId) {
 
     if (!target || !canDeleteComment(target)) return false;
 
-    return setComments(comments.filter((comment) => normalizeId(comment.id) !== id));
+    const removed = setComments(comments.filter((comment) => normalizeId(comment.id) !== id));
+
+    if (removed && typeof closeReportForComment === 'function') {
+        closeReportForComment(id, 'Bình luận đã bị xoá');
+    }
+
+    return removed;
 }
 
 /* ---------- Giao diện trang Feed ---------- */
@@ -2855,6 +2870,7 @@ function renderPostDetailView(focusPostId) {
             <strong>${escapeHtml(comment.author)}</strong>
             <span class="comment__time">${formatDateTime(comment.createdAt)}</span>
             <p>${escapeHtml(comment.content)}</p>
+            ${typeof renderReportControl === 'function' ? renderReportControl('comment', comment.id) : ''}
             ${canDeleteComment(comment)
                 ? `<button type="button" class="comment__delete" data-comment-delete="${escapeHtml(comment.id)}">Xoá</button>`
                 : ''}
@@ -2883,6 +2899,7 @@ function renderPostDetailView(focusPostId) {
             <div class="post-detail__content">${escapeHtml(post.content)}</div>
 
             <div class="post-detail__actions">
+                ${typeof renderReportControl === 'function' ? renderReportControl('post', post.id) : ''}
                 <button type="button"
                     class="post-action ${liked ? 'is-active' : ''}"
                     data-post-like="${escapeHtml(post.id)}"

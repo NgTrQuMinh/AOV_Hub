@@ -32,6 +32,7 @@ const DATASTORE_SCHEMA = {
     posts: { file: 'posts.json', type: 'array' },
     comments: { file: 'comments.json', type: 'array' },
     likes: { file: 'likes.json', type: 'object' },
+    reports: { file: 'reports.json', type: 'array' },
 };
 
 /**

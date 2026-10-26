@@ -1,0 +1,222 @@
+/* =========================================
+ * report.css - Báo cáo bài viết / bình luận
+ * Trang dùng: post-detail.html, admin.html
+ * (nạp sau reset.css + variables.css + common.css)
+ * ========================================= */
+
+/* ---------- Nút báo cáo ở trang chi tiết ---------- */
+.report-control {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    min-width: 0;
+}
+
+.report-control__login,
+.report-control__trigger {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 6px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg-elevated);
+    color: var(--color-text-muted);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color var(--transition), background var(--transition), border-color var(--transition);
+}
+
+.report-control__login:hover,
+.report-control__trigger:hover {
+    color: var(--color-danger);
+    border-color: var(--color-danger-border);
+    background: var(--color-danger-soft);
+}
+
+.report-control__login:focus-visible,
+.report-control__trigger:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.report-control--done,
+.report-control__done {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    background: var(--color-success-soft);
+    color: var(--color-success-strong);
+    font-size: var(--fs-sm);
+    font-weight: 700;
+}
+
+.report-control.is-open {
+    flex-basis: 100%;
+    width: 100%;
+}
+
+/* Trong hàng thao tác bài viết, form chiếm trọn dòng để dễ đọc. */
+.post-detail__actions .report-control.is-open {
+    order: 10;
+}
+
+/* ---------- Form báo cáo ---------- */
+.report-form-slot {
+    display: block;
+    width: 100%;
+}
+
+.report-form-slot:empty {
+    display: none;
+}
+
+.report-form {
+    display: grid;
+    gap: var(--space-3);
+    width: 100%;
+    padding: var(--space-4);
+    background: var(--color-surface);
+    border: 1px solid var(--color-warning-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.report-form__label {
+    display: grid;
+    gap: 6px;
+    color: var(--color-text);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+}
+
+.report-form__select,
+.report-form__note {
+    width: 100%;
+    min-width: 0;
+    padding: 10px 12px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font: inherit;
+    font-size: var(--fs-base);
+}
+
+.report-form__note {
+    min-height: 82px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.report-form__select:focus,
+.report-form__note:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: var(--focus-ring);
+}
+
+.report-form__error {
+    margin: 0;
+    color: var(--color-danger-strong);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+}
+
+.report-form__error:empty {
+    display: none;
+}
+
+.report-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+/* ---------- Bảng quản trị báo cáo ---------- */
+.admin-reports__toolbar .filter-bar__keyword {
+    flex: 1 1 260px;
+    min-width: 0;
+}
+
+.admin-reports__table {
+    min-width: 1040px;
+}
+
+.admin-reports__table td {
+    vertical-align: top;
+}
+
+.admin-reports__table td:nth-child(1) {
+    white-space: nowrap;
+}
+
+.admin-reports__table td:nth-child(2) {
+    min-width: 220px;
+    max-width: 320px;
+}
+
+.admin-reports__table td:nth-child(5) {
+    min-width: 190px;
+    max-width: 300px;
+}
+
+.admin-reports__excerpt,
+.admin-reports__note {
+    margin-top: 4px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.admin-reports__confirm {
+    margin-top: var(--space-2);
+    max-width: 360px;
+}
+
+.admin-reports__confirm .admin-field {
+    margin-top: var(--space-2);
+}
+
+.admin-reports__confirm textarea {
+    min-height: 64px;
+    resize: vertical;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+    .admin-reports__table {
+        min-width: 920px;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-reports__toolbar > * {
+        flex: 1 1 100%;
+    }
+
+    .admin-reports__confirm {
+        max-width: none;
+    }
+
+    .report-form {
+        padding: var(--space-3);
+    }
+}
+
+@media (max-width: 480px) {
+    .report-control__login,
+    .report-control__trigger {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    .report-form__actions .btn {
+        flex: 1 1 auto;
+    }
+}

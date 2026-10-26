@@ -4,7 +4,7 @@ Website tra cứu tướng, trang bị, build đề xuất và cộng đồng b�
 
 - Công nghệ: **HTML5 + CSS3 + Vanilla JavaScript**, dữ liệu **JSON tĩnh**, không framework, không database.
 - Đóng gói / dev server: **Vite**. Quản lý tướng ghi thẳng vào `src/data/heroes.json` qua API nội bộ `/api/heroes` do `vite.config.js` cung cấp (chỉ chạy khi `npm run dev` / `npm run preview`).
-- Dữ liệu dùng chung (`users`, `posts`, `comments`, `likes`) đi qua `src/js/dataStore.js`. Khi có dev/preview server, chúng được ghi thẳng vào `src/data/<collection>.json` qua API nội bộ `/api/<collection>`; không có server thì dự phòng File System Access API + LocalStorage/tải file.
+- Dữ liệu dùng chung (`users`, `posts`, `comments`, `likes`, `reports`) đi qua `src/js/dataStore.js`. Khi có dev/preview server, chúng được ghi thẳng vào `src/data/<collection>.json` qua API nội bộ `/api/<collection>`; không có server thì dự phòng File System Access API + LocalStorage/tải file.
 - Lưu tạm yêu thích / lịch sử / so sánh / phiên đăng nhập bằng **LocalStorage**.
 - Nhóm 4 thành viên.
 
@@ -20,7 +20,7 @@ AOV-Hub/
 │   ├── partials/                 # header.html, footer.html (nạp bằng layout.js)
 │   ├── css/                      # reset, variables, common, home, hero, item,
 │   │   │                         #   build, compare, favorite, feed, auth,
-│   │   │                         #   admin, hero-admin, search
+│   │   │                         #   admin, hero-admin, search, report
 │   └── assets/images/            # ảnh tướng, trang bị, banner...
 │
 ├── src/
@@ -29,10 +29,10 @@ AOV-Hub/
 │   │                             #   builds, build-detail, compare, favorite, feed,
 │   │                             #   post-detail, search, admin, hero-admin
 │   ├── data/                     # heroes.json, items.json, builds.json,
-│   │                             #   posts.json, users.json, comments.json, likes.json
+│   │                             #   posts.json, users.json, comments.json, likes.json, reports.json
 │   └── js/
 │       ├── config.js             # BASE_PATH / DATA_PATH
-│       ├── dataStore.js          # lớp dữ liệu dùng chung (users/posts/comments/likes)
+│       ├── dataStore.js          # lớp dữ liệu dùng chung (users/posts/comments/likes/reports)
 │       ├── loadData.js           # loadData(path) đọc JSON (trả [] khi lỗi)
 │       ├── components.js         # renderHeroCard/renderItemCard/renderNotFound
 │       ├── layout.js             # nạp header/footer, menu mobile, account UI
@@ -49,7 +49,9 @@ AOV-Hub/
 │       ├── build-detail.js       # Chi tiết hướng dẫn build (HD02/HD03/HD04)
 │       ├── compare.js            # So sánh Tướng
 │       ├── feed.js               # Feed, bài viết, like, comment, kiểm duyệt
+│       ├── report.js             # Báo cáo bài viết/bình luận + nút/form trang chi tiết
 │       ├── admin.js              # Quản trị bài viết
+│       ├── admin-reports.js      # Tab Báo cáo vi phạm
 │       ├── adminlog.js           # Nhật ký thao tác admin
 │       └── hero-admin.js         # Quản lý tướng (CRUD qua /api/heroes)
 │
@@ -122,7 +124,7 @@ Không tự ý đổi tên các key cố định khi thêm tính năng — `stor
 ```bash
 npm install                 # cài phụ thuộc
 npm run dev                 # dev server (có API /api/heroes, /api/<collection>)
-npm test                    # 22 file test mini-DOM (2 file lỗi sẵn: test-auth, test-feed-page)
+npm test                    # 30 file test mini-DOM (10 file lỗi sẵn, không liên quan báo cáo)
 npm run test:e2e:install    # cài Chromium (một lần)
 npm run test:e2e            # test trình duyệt thật (responsive + menu mobile)
 npm run build               # build 18 trang vào dist/
@@ -130,7 +132,7 @@ npm run preview             # xem bản build (vẫn có API /api/heroes, /api/<
 ```
 
 ### 6.2. Kết quả hiện tại
-- `npm test`: **20/22 file PASS** (mini-DOM; 2 file lỗi sẵn `test-auth.cjs` và `test-feed-page.cjs`). Riêng hướng dẫn build: `test-build-page.cjs` 36 test + `test-build-detail.cjs` 56 test PASS.
+- `npm test`: **20/30 file PASS** (mini-DOM; 10 file lỗi sẵn không liên quan tính năng báo cáo). Riêng báo cáo: `test-report.cjs` **56/56 PASS**; hướng dẫn build: `test-build-page.cjs` 36 test + `test-build-detail.cjs` 56 test PASS.
 - `npm run test:e2e`: **87/87 PASS** — 17 trang × 5 mốc (360 / 480 / 768 / 1024 / 1280) không tràn ngang, cộng 2 test menu mobile.
 - `npm run build`: sinh đủ **18 trang HTML** + css/js/data/ảnh vào `dist/`; chạy `npm run preview` rồi mở để kiểm tra lại.
 
@@ -148,12 +150,12 @@ npm run preview             # xem bản build (vẫn có API /api/heroes, /api/<
 3. **Trang bị** — tìm kiếm, lọc theo loại, phân trang; chi tiết có nội tại, giá, trang bị liên quan.
 4. **Build đề xuất** — lọc theo đường đi/vai trò, tìm theo tên tướng/build, sắp xếp A-Z/Z-A (bộ lọc lưu trên URL). Bấm một build để mở **chi tiết hướng dẫn**: trang bị chính, lộ trình lên đồ theo giai đoạn, trang bị thay thế theo tình huống, thứ tự nâng kỹ năng, mẹo chơi và tướng khắc chế.
 5. **Yêu thích** (2 tab Yêu thích / Lịch sử) và **So sánh tướng** (tô sáng chỉ số cao hơn); bộ lọc/sắp xếp lưu trên URL nên F5 vẫn giữ.
-6. **Cộng đồng (Feed)** — lọc chuyên mục, sắp xếp, tìm kiếm; mở chi tiết, like/comment. Đăng bài khi đã đăng nhập (vào hàng chờ nếu bật duyệt trước).
+6. **Cộng đồng (Feed)** — lọc chuyên mục, sắp xếp, tìm kiếm; mở chi tiết, like/comment. Đăng bài khi đã đăng nhập (vào hàng chờ nếu bật duyệt trước). Tại trang chi tiết có thể báo cáo bài viết/bình luận; khách thấy liên kết đăng nhập, báo cáo trùng bị chặn.
 7. **Đăng ký → Đăng nhập → Profile → Đăng xuất**; Profile hiển thị thống kê và bài đã đăng.
-8. **Admin** (`admin` / `admin1`) — ẩn/hiện & xoá bài, công tắc duyệt trước; mục "Tướng" để thêm/sửa/xoá tướng.
+8. **Admin** (`admin` / `admin1`) — ẩn/hiện & xoá bài, công tắc duyệt trước; mục "Tướng" để thêm/sửa/xoá tướng. Tab "Báo cáo" để bỏ qua, ẩn bài, xoá bình luận, cảnh cáo hoặc cấm tài khoản vi phạm.
 
 ### 6.5. Lưu ý khi demo
 - Phải chạy qua `npm run dev` hoặc `npm run preview` (mở thẳng file sẽ lỗi CORS khi đọc JSON).
 - Trang Quản lý tướng chỉ lưu khi có API `/api/heroes` (chạy dev hoặc preview).
-- Dữ liệu cộng đồng (users/posts/comments/likes) ghi thẳng vào `src/data/*.json` qua API `/api/<collection>` khi chạy dev/preview; không có server thì lưu tạm bằng LocalStorage (hoặc liên kết thư mục ở Chrome/Edge).
+- Dữ liệu cộng đồng (users/posts/comments/likes/reports) ghi thẳng vào `src/data/*.json` qua API `/api/<collection>` khi chạy dev/preview; không có server thì lưu tạm bằng LocalStorage (hoặc liên kết thư mục ở Chrome/Edge).
 - "admin" chỉ là quy ước phía trình duyệt, không phải bảo mật thật; dự án không có backend.
