@@ -5,6 +5,8 @@ const items = require('../src/data/items.json');
 const builds = require('../src/data/builds.json');
 const heroes = require('../src/data/heroes.json');
 const posts = require('../src/data/posts.json');
+const comments = require('../src/data/comments.json');
+const reports = require('../src/data/reports.json');
 
 const line = (s) => console.log('\n===== ' + s + ' =====');
 
@@ -138,8 +140,29 @@ console.log('post heroId hop le       :', posts.filter((p) => !require('../src/d
 const pImgMiss = posts.filter((p) => p.image && !fs.existsSync(path.join(ROOT, 'public', String(p.image).replace(/^\//, ''))));
 console.log('post image thieu file   :', pImgMiss.length, 'post:', pImgMiss.map((p) => p.id + ':' + p.image).join(', ') || '0');
 
+line('REPORTS - reports.json');
+console.log('so report                :', reports.length);
+const reportIds = reports.map((report) => report.id);
+console.log('report ID trung          :', reportIds.filter((v, i, a) => a.indexOf(v) !== i).join(',') || 'PASS (0)');
+const reportReasons = ['spam', 'offensive', 'misleading', 'off_topic', 'other'];
+const reportStatuses = ['open', 'resolved', 'dismissed'];
+const badReportType = reports.filter((report) => report.targetType !== 'post' && report.targetType !== 'comment');
+console.log('report sai loai          :', badReportType.length ? 'FAIL ' + badReportType.map((report) => report.id).join(', ') : 'PASS (0)');
+const badReportReason = reports.filter((report) => !reportReasons.includes(report.reason));
+console.log('report sai ly do         :', badReportReason.length ? 'FAIL ' + badReportReason.map((report) => report.id).join(', ') : 'PASS (0)');
+const badReportStatus = reports.filter((report) => !reportStatuses.includes(report.status));
+console.log('report sai trang thai    :', badReportStatus.length ? 'FAIL ' + badReportStatus.map((report) => report.id).join(', ') : 'PASS (0)');
+const badReportTime = reports.filter((report) => Number.isNaN(Date.parse(report.createdAt)));
+console.log('report sai createdAt     :', badReportTime.length ? 'FAIL ' + badReportTime.map((report) => report.id).join(', ') : 'PASS (0)');
+const pIdSet = new Set(posts.map((post) => String(post.id)));
+const cIdSet = new Set(comments.map((comment) => String(comment.id)));
+const badOpenTarget = reports.filter((report) => report.status === 'open' && (report.targetType === 'post'
+    ? !pIdSet.has(String(report.targetId))
+    : report.targetType === 'comment' && !cIdSet.has(String(report.targetId))));
+console.log('report mo thieu target   :', badOpenTarget.length ? 'FAIL ' + badOpenTarget.map((report) => report.id).join(', ') : 'PASS (0)');
+
 line('JSON PARSE');
-['items','builds','heroes','posts','users'].forEach((f) => {
+['items','builds','heroes','posts','users','comments','likes','reports'].forEach((f) => {
     try { require('../src/data/' + f + '.json'); console.log('  src/data/' + f + '.json : PASS'); }
     catch (e) { console.log('  src/data/' + f + '.json : FAIL ' + e.message); }
 });
