@@ -14,5 +14,21 @@
     "handledBy": "admin",
     "handledAt": "2026-10-26T08:07:42.600Z",
     "resolution": "Bỏ qua báo cáo"
+  },
+  {
+    "id": 1793111384095,
+    "targetType": "post",
+    "targetId": "9009",
+    "postId": "9009",
+    "targetAuthor": "demo",
+    "reporter": "admin",
+    "reason": "offensive",
+    "note": "",
+    "excerpt": "Maloch nên lên đồ chống lại phép không?",
+    "createdAt": "2026-10-27T14:29:44.095Z",
+    "status": "open",
+    "handledBy": "",
+    "handledAt": "",
+    "resolution": ""
   }
 ]

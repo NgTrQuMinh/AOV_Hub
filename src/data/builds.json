@@ -6,38 +6,38 @@
         "lane": "Đường Rồng",
         "playstyle": "Valhein bám tuyến sau, tận dụng tầm đánh và tốc độ bắn để cấu rỉa, chỉ vào giao tranh khi đã có vị trí an toàn.",
         "items": [
+            405,
             101,
             102,
             103,
             104,
-            105,
-            106
+            105
         ],
         "description": "",
         "phases": [
             {
                 "name": "Đầu trận",
                 "items": [
-                    101,
-                    102
+                    405,
+                    101
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
                 "items": [
-                    103,
-                    104
+                    102,
+                    103
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
-                    105,
-                    106
+                    104,
+                    105
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -49,19 +49,19 @@
         "situational": [
             {
                 "when": "Địch nhiều khống chế",
-                "replace": 106,
+                "replace": 105,
                 "with": 401,
-                "reason": "Giày Kiên Cường tăng kháng hiệu ứng giúp bắn đủ số đòn."
+                "reason": "Giày Kiên Cường tăng kháng hiệu ứng khi cần thay đổi linh hoạt."
             },
             {
                 "when": "Địch nhiều sát thương vật lý",
-                "replace": 106,
+                "replace": 105,
                 "with": 402,
                 "reason": "Giày Hộ Vệ giảm sát thương từ đòn đánh thường."
             },
             {
                 "when": "Cần thêm hút máu để trụ giao tranh",
-                "replace": 106,
+                "replace": 105,
                 "with": 108,
                 "reason": "Cung Tà Ma tăng hút máu, giúp duy trì và lật kèo."
             }
@@ -92,22 +92,22 @@
         "lane": "Rừng",
         "playstyle": "Nakroth đi rừng/đảo đường, tìm góc vào hợp lý để dồn sát thương lên chủ lực địch rồi rút ra an toàn.",
         "items": [
+            401,
             107,
-            501,
             104,
             105,
             301,
-            302
+            103
         ],
         "description": "Sát thủ tận dụng hút máu từ Thương Xuyên Phá, kết hợp thêm Giáp Hộ Mệnh và Giáp Gaia để đánh lâu.",
         "phases": [
             {
                 "name": "Đầu trận",
                 "items": [
-                    107,
-                    501
+                    401,
+                    107
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -115,15 +115,15 @@
                     104,
                     105
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
                     301,
-                    302
+                    103
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -135,21 +135,21 @@
         "situational": [
             {
                 "when": "Địch lên nhiều giáp",
-                "replace": 302,
+                "replace": 301,
                 "with": 109,
                 "reason": "Kiếm Muramasa tăng xuyên giáp theo phần trăm."
             },
             {
                 "when": "Cần bảo hiểm khi lao vào",
-                "replace": 302,
+                "replace": 301,
                 "with": 110,
                 "reason": "Liềm Đoạt Mệnh giúp miễn tử để outplay."
             },
             {
-                "when": "Địch nhiều khống chế",
-                "replace": 302,
-                "with": 401,
-                "reason": "Giày Kiên Cường tăng kháng hiệu ứng."
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 301,
+                "with": 402,
+                "reason": "Giày Hộ Vệ giảm sát thương từ đòn đánh thường."
             }
         ],
         "counters": [
@@ -178,22 +178,22 @@
         "lane": "Đường Giữa",
         "playstyle": "Raz đứng ở tuyến giữa hoặc sau, cấu rỉa bằng chiêu tầm xa và dồn sát thương phép khi giao tranh nổ ra.",
         "items": [
-            502,
+            401,
             207,
             201,
             203,
-            401,
-            208
+            208,
+            103
         ],
         "description": "Raz dồn công phép, xuyên kháng phép bằng Trượng Bùng Nổ và chí mạng phép bằng Trượng Hỗn Mang.",
         "phases": [
             {
                 "name": "Đầu trận",
                 "items": [
-                    502,
+                    401,
                     207
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -201,15 +201,15 @@
                     201,
                     203
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
-                    401,
-                    208
+                    208,
+                    103
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -264,22 +264,22 @@
         "lane": "Đường Giữa",
         "playstyle": "Liliana đứng ở tuyến giữa hoặc sau, cấu rỉa bằng chiêu tầm xa và dồn sát thương phép khi giao tranh nổ ra.",
         "items": [
-            502,
+            404,
             206,
             202,
             203,
-            404,
-            209
+            209,
+            103
         ],
         "description": "Liliana tận dụng hồi máu theo sát thương phép, tăng tốc hồi chiêu và đảm bảo giáp phép với Băng Nhẫn Skadi.",
         "phases": [
             {
                 "name": "Đầu trận",
                 "items": [
-                    502,
+                    404,
                     206
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -287,15 +287,15 @@
                     202,
                     203
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
-                    404,
-                    209
+                    209,
+                    103
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -344,22 +344,22 @@
         "lane": "Đường Trên",
         "playstyle": "Florentino đánh ở đường đơn hoặc rừng, vừa gây sát thương vừa trụ đòn, chủ động mở giao tranh khi có lợi thế.",
         "items": [
-            504,
+            402,
             107,
             104,
             109,
             304,
-            603
+            103
         ],
         "description": "Florentino bù máu bằng Thương Xuyên Phá, Phức Hợp Kiếm và Khiên Thất Truyền để trụ được trong các đấu đấu kéo dài.",
         "phases": [
             {
                 "name": "Đầu trận",
                 "items": [
-                    504,
+                    402,
                     107
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -367,15 +367,15 @@
                     104,
                     109
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
                     304,
-                    603
+                    103
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -387,19 +387,19 @@
         "situational": [
             {
                 "when": "Địch nhiều sát thương vật lý",
-                "replace": 603,
-                "with": 304,
-                "reason": "Khiên Thất Truyền tăng giáp và giảm tốc đánh địch."
+                "replace": 304,
+                "with": 402,
+                "reason": "Giày Hộ Vệ giảm sát thương từ đòn đánh thường."
             },
             {
                 "when": "Địch nhiều sát thương phép",
-                "replace": 603,
+                "replace": 304,
                 "with": 302,
                 "reason": "Giáp Gaia tăng kháng phép và hồi máu."
             },
             {
                 "when": "Cần thêm mạng trong giao tranh dài",
-                "replace": 603,
+                "replace": 304,
                 "with": 301,
                 "reason": "Giáp Hộ Mệnh cho hồi sinh tại chỗ."
             }
@@ -427,11 +427,11 @@
         "playstyle": "Thane làm tuyến đầu, chủ động mở giao tranh, hứng sát thương và bảo vệ chủ lực phía sau.",
         "items": [
             501,
+            401,
             306,
             303,
             103,
-            302,
-            307
+            302
         ],
         "description": "Thane đánh bộc khi bị ép vào chân tướng, cần ưu tiên máu và giáp kết hợp một món công xuyên giáp.",
         "phases": [
@@ -439,25 +439,25 @@
                 "name": "Đầu trận",
                 "items": [
                     501,
-                    306
+                    401
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
                 "items": [
-                    303,
-                    103
+                    306,
+                    303
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
-                    302,
-                    307
+                    103,
+                    302
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -469,13 +469,13 @@
         "situational": [
             {
                 "when": "Địch nhiều sát thương vật lý",
-                "replace": 307,
+                "replace": 302,
                 "with": 305,
                 "reason": "Giáp Thống Khổ phản sát thương vật lý."
             },
             {
                 "when": "Địch nhiều sát thương phép",
-                "replace": 307,
+                "replace": 302,
                 "with": 303,
                 "reason": "Huân Chương Troy kháng phép và hấp thụ sát thương."
             }
@@ -507,9 +507,9 @@
         "playstyle": "Mina làm tuyến đầu, chủ động mở giao tranh, hứng sát thương và bảo vệ chủ lực phía sau.",
         "items": [
             502,
+            403,
             305,
             209,
-            403,
             306,
             602
         ],
@@ -519,17 +519,17 @@
                 "name": "Đầu trận",
                 "items": [
                     502,
-                    305
+                    403
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
                 "items": [
-                    209,
-                    403
+                    305,
+                    209
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -537,7 +537,7 @@
                     306,
                     602
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -592,22 +592,22 @@
         "lane": "Đường Rồng",
         "playstyle": "Elsu bám tuyến sau, tận dụng tầm đánh và tốc độ bắn để cấu rỉa, chỉ vào giao tranh khi đã có vị trí an toàn.",
         "items": [
-            504,
+            405,
             103,
             102,
             108,
             106,
-            303
+            104
         ],
         "description": "Elsu đứng bắn từ tầm xa, ưu tiên chí mạng và xuyên giáp, chỉ cần một món giáp để tránh lật điểm cực nhanh.",
         "phases": [
             {
                 "name": "Đầu trận",
                 "items": [
-                    504,
+                    405,
                     103
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -615,15 +615,15 @@
                     102,
                     108
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
                     106,
-                    303
+                    104
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -635,19 +635,19 @@
         "situational": [
             {
                 "when": "Địch nhiều khống chế",
-                "replace": 303,
+                "replace": 106,
                 "with": 401,
                 "reason": "Giày Kiên Cường tăng kháng hiệu ứng giúp bắn đủ số đòn."
             },
             {
                 "when": "Địch nhiều sát thương vật lý",
-                "replace": 303,
+                "replace": 106,
                 "with": 402,
                 "reason": "Giày Hộ Vệ giảm sát thương từ đòn đánh thường."
             },
             {
                 "when": "Cần thêm hút máu để trụ giao tranh",
-                "replace": 303,
+                "replace": 106,
                 "with": 108,
                 "reason": "Cung Tà Ma tăng hút máu, giúp duy trì và lật kèo."
             }
@@ -678,22 +678,22 @@
         "lane": "Đường Rồng",
         "playstyle": "Violet bám tuyến sau, tận dụng tầm đánh và tốc độ bắn để cấu rỉa, chỉ vào giao tranh khi đã có vị trí an toàn.",
         "items": [
-            501,
+            405,
             110,
             107,
             105,
             306,
-            304
+            103
         ],
         "description": "Violet dùng tốc độ đánh và tốc chạy để áp chế ở cấp độ thấp, bổ sung hút máu để bù lại sức bền thấp.",
         "phases": [
             {
                 "name": "Đầu trận",
                 "items": [
-                    501,
+                    405,
                     110
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -701,15 +701,15 @@
                     107,
                     105
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
                     306,
-                    304
+                    103
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -721,19 +721,19 @@
         "situational": [
             {
                 "when": "Địch nhiều khống chế",
-                "replace": 304,
+                "replace": 306,
                 "with": 401,
                 "reason": "Giày Kiên Cường tăng kháng hiệu ứng giúp bắn đủ số đòn."
             },
             {
                 "when": "Địch nhiều sát thương vật lý",
-                "replace": 304,
+                "replace": 306,
                 "with": 402,
                 "reason": "Giày Hộ Vệ giảm sát thương từ đòn đánh thường."
             },
             {
                 "when": "Cần thêm hút máu để trụ giao tranh",
-                "replace": 304,
+                "replace": 306,
                 "with": 108,
                 "reason": "Cung Tà Ma tăng hút máu, giúp duy trì và lật kèo."
             }
@@ -764,22 +764,22 @@
         "lane": "Đường Trên",
         "playstyle": "Omen đánh ở đường đơn hoặc rừng, vừa gây sát thương vừa trụ đòn, chủ động mở giao tranh khi có lợi thế.",
         "items": [
-            503,
+            402,
             104,
             304,
             109,
             302,
-            307
+            103
         ],
         "description": "Omen phản công giữ vùng, Khiên Thất Truyền giảm sát thương mới phản lại thêm và Nham Thuẫn là lá chắn cứu thế.",
         "phases": [
             {
                 "name": "Đầu trận",
                 "items": [
-                    503,
+                    402,
                     104
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -787,15 +787,15 @@
                     304,
                     109
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
                     302,
-                    307
+                    103
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -807,19 +807,19 @@
         "situational": [
             {
                 "when": "Địch nhiều sát thương vật lý",
-                "replace": 307,
-                "with": 304,
-                "reason": "Khiên Thất Truyền tăng giáp và giảm tốc đánh địch."
+                "replace": 302,
+                "with": 402,
+                "reason": "Giày Hộ Vệ giảm sát thương từ đòn đánh thường."
             },
             {
                 "when": "Địch nhiều sát thương phép",
-                "replace": 307,
+                "replace": 302,
                 "with": 302,
-                "reason": "Giáp Gaia tăng kháng phép và hồi máu."
+                "reason": "Giữ Giáp Gaia nếu cần kháng phép."
             },
             {
                 "when": "Cần thêm mạng trong giao tranh dài",
-                "replace": 307,
+                "replace": 302,
                 "with": 301,
                 "reason": "Giáp Hộ Mệnh cho hồi sinh tại chỗ."
             }
@@ -850,38 +850,38 @@
         "lane": "Rừng",
         "playstyle": "Zill đi rừng/đảo đường, tìm góc vào hợp lý để dồn sát thương lên chủ lực địch rồi rút ra an toàn.",
         "items": [
-            502,
+            404,
             205,
             209,
-            404,
-            403,
-            208
+            203,
+            208,
+            103
         ],
         "description": "Zill là đấu sĩ mang sát thương phép nên cần trang bị vừa xuyên kháng phép vừa hồi máu để đánh bền.",
         "phases": [
             {
                 "name": "Đầu trận",
                 "items": [
-                    502,
+                    404,
                     205
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
                 "items": [
                     209,
-                    404
+                    203
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
-                    403,
-                    208
+                    208,
+                    103
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -892,22 +892,16 @@
         ],
         "situational": [
             {
-                "when": "Địch lên nhiều giáp",
+                "when": "Địch nhiều kháng phép",
                 "replace": 208,
-                "with": 109,
-                "reason": "Kiếm Muramasa tăng xuyên giáp theo phần trăm."
-            },
-            {
-                "when": "Cần bảo hiểm khi lao vào",
-                "replace": 208,
-                "with": 110,
-                "reason": "Liềm Đoạt Mệnh giúp miễn tử để outplay."
+                "with": 203,
+                "reason": "Tăng xuyên giáp phép"
             },
             {
                 "when": "Địch nhiều khống chế",
                 "replace": 404,
                 "with": 401,
-                "reason": "Giày Kiên Cường tăng kháng hiệu ứng."
+                "reason": "Tăng kháng hiệu ứng"
             }
         ],
         "counters": [
@@ -937,11 +931,11 @@
         "playstyle": "Aya bám sát chủ lực, dùng khiên/khống chế để bảo vệ và mở đường cho đồng đội.",
         "items": [
             501,
+            402,
             207,
             210,
-            402,
             601,
-            604
+            303
         ],
         "description": "Aya ở tuyến sau nên tích trang bị hồi mana, kháng phép và Gươm Hiền Triết để kéo cả team về chỗ an toàn.",
         "phases": [
@@ -949,25 +943,25 @@
                 "name": "Đầu trận",
                 "items": [
                     501,
-                    207
+                    402
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
                 "items": [
-                    210,
-                    402
+                    207,
+                    210
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
                     601,
-                    604
+                    303
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -979,21 +973,15 @@
         "situational": [
             {
                 "when": "Địch nhiều khống chế",
-                "replace": 604,
-                "with": 503,
-                "reason": "Đại Địa Mở Trói giải khống chế cho cả đội."
+                "replace": 402,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
             },
             {
-                "when": "Cần thêm khiên bảo vệ chủ lực",
-                "replace": 604,
+                "when": "Cần thêm khiên",
+                "replace": 303,
                 "with": 502,
-                "reason": "Đại Địa Thần Khiên tạo lá chắn cho đồng minh ít máu."
-            },
-            {
-                "when": "Cần tăng tốc đội hình",
-                "replace": 604,
-                "with": 504,
-                "reason": "Đại Địa Thần Tốc tăng tốc chạy cho đồng đội."
+                "reason": "Tạo lá chắn cho đồng đội"
             }
         ],
         "counters": [
@@ -1023,11 +1011,11 @@
         "playstyle": "Maloch làm tuyến đầu, chủ động mở giao tranh, hứng sát thương và bảo vệ chủ lực phía sau.",
         "items": [
             501,
+            401,
             103,
             301,
             302,
-            109,
-            604
+            109
         ],
         "description": "Maloch đánh trực diện giữa team, dựng giáp dày với Giáp Gaia rồi thêm Giáp Hộ Mệnh cho chắc chắn trong các trận kéo dài.",
         "phases": [
@@ -1035,25 +1023,25 @@
                 "name": "Đầu trận",
                 "items": [
                     501,
-                    103
+                    401
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
                 "items": [
-                    301,
-                    302
+                    103,
+                    301
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
-                    109,
-                    604
+                    302,
+                    109
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -1065,19 +1053,19 @@
         "situational": [
             {
                 "when": "Địch nhiều sát thương vật lý",
-                "replace": 604,
+                "replace": 109,
                 "with": 305,
                 "reason": "Giáp Thống Khổ phản sát thương vật lý."
             },
             {
                 "when": "Địch nhiều sát thương phép",
-                "replace": 604,
+                "replace": 109,
                 "with": 303,
                 "reason": "Huân Chương Troy kháng phép và hấp thụ sát thương."
             },
             {
                 "when": "Cần khiên máu ảo để mở giao tranh",
-                "replace": 604,
+                "replace": 109,
                 "with": 307,
                 "reason": "Nham Thuẫn tạo lá chắn theo máu tối đa."
             }
@@ -1123,7 +1111,7 @@
                     405,
                     103
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -1131,7 +1119,7 @@
                     102,
                     106
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -1139,7 +1127,7 @@
                     108,
                     109
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -1194,8 +1182,8 @@
         "lane": "Rừng",
         "playstyle": "Murad đi rừng/đảo đường, tìm góc vào hợp lý để dồn sát thương lên chủ lực địch rồi rút ra an toàn.",
         "items": [
-            602,
             401,
+            602,
             104,
             103,
             109,
@@ -1206,10 +1194,10 @@
             {
                 "name": "Đầu trận",
                 "items": [
-                    602,
-                    401
+                    401,
+                    602
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -1217,7 +1205,7 @@
                     104,
                     103
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -1225,7 +1213,7 @@
                     109,
                     110
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -1283,7 +1271,7 @@
                     404,
                     201
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -1291,7 +1279,7 @@
                     202,
                     203
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -1299,7 +1287,7 @@
                     205,
                     208
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -1369,7 +1357,7 @@
                     401,
                     104
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -1377,7 +1365,7 @@
                     107,
                     304
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -1385,7 +1373,7 @@
                     302,
                     301
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -1434,8 +1422,8 @@
         "lane": "Rừng",
         "playstyle": "Zuka đánh ở đường đơn hoặc rừng, vừa gây sát thương vừa trụ đòn, chủ động mở giao tranh khi có lợi thế.",
         "items": [
-            602,
             401,
+            602,
             104,
             103,
             304,
@@ -1446,10 +1434,10 @@
             {
                 "name": "Đầu trận",
                 "items": [
-                    602,
-                    401
+                    401,
+                    602
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -1457,7 +1445,7 @@
                     104,
                     103
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -1465,7 +1453,7 @@
                     304,
                     110
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -1520,38 +1508,38 @@
         "lane": "Đường Trên",
         "playstyle": "Arum làm tuyến đầu, chủ động mở giao tranh, hứng sát thương và bảo vệ chủ lực phía sau.",
         "items": [
+            501,
             401,
             301,
             302,
             303,
-            304,
-            307
+            304
         ],
         "description": "Arum làm tường chắn tuyến đầu, ưu tiên máu, giáp và kháng phép để mở giao tranh.",
         "phases": [
             {
                 "name": "Đầu trận",
                 "items": [
-                    401,
-                    301
+                    501,
+                    401
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
                 "items": [
-                    302,
-                    303
+                    301,
+                    302
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
-                    304,
-                    307
+                    303,
+                    304
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -1615,7 +1603,7 @@
                     405,
                     103
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -1623,7 +1611,7 @@
                     102,
                     106
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -1631,7 +1619,7 @@
                     108,
                     109
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -1701,7 +1689,7 @@
                     403,
                     201
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -1709,7 +1697,7 @@
                     206,
                     203
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -1717,7 +1705,7 @@
                     205,
                     208
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -1787,7 +1775,7 @@
                     404,
                     201
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -1795,7 +1783,7 @@
                     203,
                     202
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -1803,7 +1791,7 @@
                     205,
                     208
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -1873,7 +1861,7 @@
                     401,
                     104
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -1881,7 +1869,7 @@
                     107,
                     103
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -1889,7 +1877,7 @@
                     304,
                     301
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -1953,7 +1941,7 @@
                     405,
                     106
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -1961,7 +1949,7 @@
                     105,
                     102
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -1969,7 +1957,7 @@
                     108,
                     103
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -2024,38 +2012,38 @@
         "lane": "Đường Trên",
         "playstyle": "Superman đánh ở đường đơn hoặc rừng, vừa gây sát thương vừa trụ đòn, chủ động mở giao tranh khi có lợi thế.",
         "items": [
+            501,
             401,
             104,
             302,
             304,
-            301,
-            307
+            301
         ],
         "description": "Superman vừa lao vào vừa chịu đòn nên cân bằng công và giáp, ưu tiên máu tối đa.",
         "phases": [
             {
                 "name": "Đầu trận",
                 "items": [
-                    401,
-                    104
+                    501,
+                    401
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
                 "items": [
-                    302,
-                    304
+                    104,
+                    302
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
-                    301,
-                    307
+                    304,
+                    301
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -2125,7 +2113,7 @@
                     401,
                     104
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -2133,7 +2121,7 @@
                     107,
                     304
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -2141,7 +2129,7 @@
                     302,
                     301
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -2205,7 +2193,7 @@
                     404,
                     201
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -2213,7 +2201,7 @@
                     202,
                     203
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -2221,7 +2209,7 @@
                     205,
                     208
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -2276,8 +2264,8 @@
         "lane": "Đường Rồng",
         "playstyle": "Alice bám sát chủ lực, dùng khiên/khống chế để bảo vệ và mở đường cho đồng đội.",
         "items": [
-            401,
             502,
+            401,
             210,
             302,
             303,
@@ -2288,10 +2276,10 @@
             {
                 "name": "Đầu trận",
                 "items": [
-                    401,
-                    502
+                    502,
+                    401
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -2299,7 +2287,7 @@
                     210,
                     302
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -2307,7 +2295,7 @@
                     303,
                     301
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -2362,38 +2350,38 @@
         "lane": "Đường Rồng",
         "playstyle": "Baldum làm tuyến đầu, chủ động mở giao tranh, hứng sát thương và bảo vệ chủ lực phía sau.",
         "items": [
+            501,
             402,
             301,
             302,
             304,
-            307,
-            306
+            307
         ],
         "description": "Baldum mở giao tranh, cần giáp dày và khiên máu ảo để trụ vững tuyến đầu.",
         "phases": [
             {
                 "name": "Đầu trận",
                 "items": [
-                    402,
-                    301
+                    501,
+                    402
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
                 "items": [
-                    302,
-                    304
+                    301,
+                    302
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
-                    307,
-                    306
+                    304,
+                    307
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -2448,38 +2436,38 @@
         "lane": "Đường Trên",
         "playstyle": "Cresht làm tuyến đầu, chủ động mở giao tranh, hứng sát thương và bảo vệ chủ lực phía sau.",
         "items": [
+            501,
             401,
             301,
             302,
             303,
-            307,
-            304
+            307
         ],
         "description": "Cresht đỡ đòn chủ lực, ưu tiên máu, kháng phép và khiên để mở giao tranh an toàn.",
         "phases": [
             {
                 "name": "Đầu trận",
                 "items": [
-                    401,
-                    301
+                    501,
+                    401
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
                 "items": [
-                    302,
-                    303
+                    301,
+                    302
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
                 "items": [
-                    307,
-                    304
+                    303,
+                    307
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -2549,7 +2537,7 @@
                     405,
                     103
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -2557,7 +2545,7 @@
                     102,
                     106
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -2565,7 +2553,7 @@
                     108,
                     109
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -2635,7 +2623,7 @@
                     404,
                     201
                 ],
-                "note": "Mua trang bị rẻ, giữ lính và giành lợi thế đường, hạn chế chết sớm."
+                "note": "Mua trang bị khởi đầu."
             },
             {
                 "name": "Giữa trận",
@@ -2643,7 +2631,7 @@
                     202,
                     203
                 ],
-                "note": "Hoàn thiện giày và trang bị chủ lực, tham gia giao tranh nhỏ và kiểm soát mục tiêu."
+                "note": "Hoàn thiện trang bị chủ lực."
             },
             {
                 "name": "Cuối trận",
@@ -2651,7 +2639,7 @@
                     205,
                     208
                 ],
-                "note": "Bổ sung trang bị cuối, giữ vị trí trong giao tranh tổng và kết thúc trận."
+                "note": "Bổ sung trang bị cuối trận."
             }
         ],
         "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
@@ -2697,6 +2685,4816 @@
         "notes": [
             "Cân bằng giữa công phép, giảm hồi chiêu và một món phòng ngự khi địch nhiều sát thủ.",
             "Đi theo đội để tận dụng lợi thế tầm xa và khống chế diện rộng."
+        ]
+    },
+    {
+        "id": 33,
+        "heroId": 1,
+        "name": "Build chống chịu và trụ lâu",
+        "lane": "Đường Rồng",
+        "playstyle": "Valhein ưu tiên sinh tồn, cấu rỉa từ xa và giữ vị trí an toàn trong giao tranh dài.",
+        "items": [
+            405,
+            107,
+            108,
+            104,
+            304,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    107
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    108,
+                    104
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn hơn dồn sát thương",
+            "Tận dụng tầm đánh để cấu rỉa"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 304,
+                "with": 402,
+                "reason": "Tăng giáp"
+            },
+            {
+                "when": "Cần thêm sát thương",
+                "replace": 304,
+                "with": 103,
+                "reason": "Tăng sát thương kết liễu"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 10,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ hơn sát thương"
+        ]
+    },
+    {
+        "id": 34,
+        "heroId": 1,
+        "name": "Build linh hoạt theo tình huống",
+        "lane": "Đường Rồng",
+        "playstyle": "Valhein đa năng, có thể thích ứng theo đội hình địch.",
+        "items": [
+            405,
+            102,
+            105,
+            107,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    102
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    105,
+                    107
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3",
+        "tips": [
+            "Linh hoạt thay đổi vị trí",
+            "Chọn mục tiêu hợp lý",
+            "Tận dụng độ cơ động"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Khó xử lý sát thủ"
+            },
+            {
+                "heroId": 4,
+                "reason": "Khó xử lý sát thủ"
+            }
+        ],
+        "notes": [
+            "Build cân bằng giữa công và thủ"
+        ]
+    },
+    {
+        "id": 35,
+        "heroId": 2,
+        "name": "Build tốc đánh liên tục",
+        "lane": "Đường Rồng",
+        "playstyle": "Tel'Annas bắn liên tục, ưu tiên tốc đánh để gây sát thương ổn định.",
+        "items": [
+            405,
+            106,
+            105,
+            108,
+            104,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    106
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    105,
+                    108
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    104,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3",
+        "tips": [
+            "Giữ khoảng cách",
+            "Dồn sát thương lên mục tiêu đơn lẻ",
+            "Di chuyển liên tục"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 104,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Thiên về tốc đánh"
+        ]
+    },
+    {
+        "id": 36,
+        "heroId": 2,
+        "name": "Build chí mạng kết liễu",
+        "lane": "Đường Rồng",
+        "playstyle": "Tel'Annas tập trung chí mạng, kết liễu mục tiêu máu thấp.",
+        "items": [
+            405,
+            102,
+            103,
+            107,
+            303,
+            104
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    102
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    103,
+                    107
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    104
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3",
+        "tips": [
+            "Tìm cơ hội kết liễu",
+            "Tránh giao tranh dài",
+            "Chọn vị trí an toàn"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Cần hút máu",
+                "replace": 303,
+                "with": 108,
+                "reason": "Tăng hút máu"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Thiên về kết liễu"
+        ]
+    },
+    {
+        "id": 37,
+        "heroId": 3,
+        "name": "Build sát thương linh hoạt Nakroth",
+        "lane": "Đường Trên",
+        "playstyle": "Nakroth cân bằng công và thủ.",
+        "items": [
+            401,
+            104,
+            107,
+            304,
+            302,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    104
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    302,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Tìm cơ hội giao tranh",
+            "Rút lui kịp thời"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 302,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 38,
+        "heroId": 3,
+        "name": "Build sát thương mạnh Nakroth",
+        "lane": "Đường Trên",
+        "playstyle": "Nakroth ưu tiên sát thương, tìm cơ hội kết liễu.",
+        "items": [
+            401,
+            103,
+            107,
+            109,
+            110,
+            104
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    103
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    109
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    110,
+                    104
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chọn thời điểm lao vào",
+            "Kết liễu mục tiêu quan trọng",
+            "Rút lui sau khi hạ gục"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 110,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Hướng build sát thương"
+        ]
+    },
+    {
+        "id": 39,
+        "heroId": 4,
+        "name": "Build sát thương linh hoạt Murad",
+        "lane": "Đường Trên",
+        "playstyle": "Murad cân bằng công và thủ.",
+        "items": [
+            401,
+            104,
+            107,
+            304,
+            302,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    104
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    302,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Tìm cơ hội giao tranh",
+            "Rút lui kịp thời"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 302,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 40,
+        "heroId": 4,
+        "name": "Build sát thương mạnh Murad",
+        "lane": "Đường Trên",
+        "playstyle": "Murad ưu tiên sát thương, tìm cơ hội kết liễu.",
+        "items": [
+            401,
+            103,
+            107,
+            109,
+            110,
+            104
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    103
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    109
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    110,
+                    104
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chọn thời điểm lao vào",
+            "Kết liễu mục tiêu quan trọng",
+            "Rút lui sau khi hạ gục"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 110,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Hướng build sát thương"
+        ]
+    },
+    {
+        "id": 41,
+        "heroId": 5,
+        "name": "Build pháp sư chống chịu Raz",
+        "lane": "Đường Giữa",
+        "playstyle": "Raz ưu tiên sinh tồn, gây sát thương an toàn.",
+        "items": [
+            403,
+            206,
+            204,
+            209,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    206
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    204,
+                    209
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn",
+            "Dùng chiêu hợp lý"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ"
+        ]
+    },
+    {
+        "id": 42,
+        "heroId": 5,
+        "name": "Build pháp sư linh hoạt Raz",
+        "lane": "Đường Giữa",
+        "playstyle": "Raz cân bằng công và thủ.",
+        "items": [
+            403,
+            207,
+            203,
+            304,
+            306,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    207
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    203,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    306,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Chọn thời điểm",
+            "Tận dụng tầm chiêu"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 306,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 43,
+        "heroId": 6,
+        "name": "Build pháp sư chống chịu Liliana",
+        "lane": "Đường Giữa",
+        "playstyle": "Liliana ưu tiên sinh tồn, gây sát thương an toàn.",
+        "items": [
+            403,
+            206,
+            204,
+            209,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    206
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    204,
+                    209
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn",
+            "Dùng chiêu hợp lý"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ"
+        ]
+    },
+    {
+        "id": 44,
+        "heroId": 6,
+        "name": "Build pháp sư linh hoạt Liliana",
+        "lane": "Đường Giữa",
+        "playstyle": "Liliana cân bằng công và thủ.",
+        "items": [
+            403,
+            207,
+            203,
+            304,
+            306,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    207
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    203,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    306,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Chọn thời điểm",
+            "Tận dụng tầm chiêu"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 306,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 45,
+        "heroId": 7,
+        "name": "Build pháp sư chống chịu Krixi",
+        "lane": "Đường Giữa",
+        "playstyle": "Krixi ưu tiên sinh tồn, gây sát thương an toàn.",
+        "items": [
+            403,
+            206,
+            204,
+            209,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    206
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    204,
+                    209
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn",
+            "Dùng chiêu hợp lý"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ"
+        ]
+    },
+    {
+        "id": 46,
+        "heroId": 7,
+        "name": "Build pháp sư linh hoạt Krixi",
+        "lane": "Đường Giữa",
+        "playstyle": "Krixi cân bằng công và thủ.",
+        "items": [
+            403,
+            207,
+            203,
+            304,
+            306,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    207
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    203,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    306,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Chọn thời điểm",
+            "Tận dụng tầm chiêu"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 306,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 47,
+        "heroId": 8,
+        "name": "Build sát thương linh hoạt Florentino",
+        "lane": "Đường Trên",
+        "playstyle": "Florentino cân bằng công và thủ.",
+        "items": [
+            401,
+            104,
+            107,
+            304,
+            302,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    104
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    302,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Tìm cơ hội giao tranh",
+            "Rút lui kịp thời"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 302,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 48,
+        "heroId": 8,
+        "name": "Build sát thương mạnh Florentino",
+        "lane": "Đường Trên",
+        "playstyle": "Florentino ưu tiên sát thương, tìm cơ hội kết liễu.",
+        "items": [
+            401,
+            103,
+            107,
+            109,
+            110,
+            104
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    103
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    109
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    110,
+                    104
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chọn thời điểm lao vào",
+            "Kết liễu mục tiêu quan trọng",
+            "Rút lui sau khi hạ gục"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 110,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Hướng build sát thương"
+        ]
+    },
+    {
+        "id": 49,
+        "heroId": 9,
+        "name": "Build sát thương linh hoạt Lu Bu",
+        "lane": "Đường Trên",
+        "playstyle": "Lu Bu cân bằng công và thủ.",
+        "items": [
+            401,
+            104,
+            107,
+            304,
+            302,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    104
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    302,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Tìm cơ hội giao tranh",
+            "Rút lui kịp thời"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 302,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 50,
+        "heroId": 9,
+        "name": "Build sát thương mạnh Lu Bu",
+        "lane": "Đường Trên",
+        "playstyle": "Lu Bu ưu tiên sát thương, tìm cơ hội kết liễu.",
+        "items": [
+            401,
+            103,
+            107,
+            109,
+            110,
+            104
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    103
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    109
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    110,
+                    104
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chọn thời điểm lao vào",
+            "Kết liễu mục tiêu quan trọng",
+            "Rút lui sau khi hạ gục"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 110,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Hướng build sát thương"
+        ]
+    },
+    {
+        "id": 51,
+        "heroId": 10,
+        "name": "Build sát thương linh hoạt Zuka",
+        "lane": "Đường Trên",
+        "playstyle": "Zuka cân bằng công và thủ.",
+        "items": [
+            401,
+            104,
+            107,
+            304,
+            302,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    104
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    302,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Tìm cơ hội giao tranh",
+            "Rút lui kịp thời"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 302,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 52,
+        "heroId": 10,
+        "name": "Build sát thương mạnh Zuka",
+        "lane": "Đường Trên",
+        "playstyle": "Zuka ưu tiên sát thương, tìm cơ hội kết liễu.",
+        "items": [
+            401,
+            103,
+            107,
+            109,
+            110,
+            104
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    103
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    109
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    110,
+                    104
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chọn thời điểm lao vào",
+            "Kết liễu mục tiêu quan trọng",
+            "Rút lui sau khi hạ gục"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 110,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Hướng build sát thương"
+        ]
+    },
+    {
+        "id": 53,
+        "heroId": 11,
+        "name": "Build đỡ đòn mở giao tranh Thane",
+        "lane": "Đường Rồng",
+        "playstyle": "Thane chủ động mở giao tranh, bảo vệ đồng đội.",
+        "items": [
+            501,
+            402,
+            306,
+            304,
+            301,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    501,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    306,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    301,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chủ động mở giao tranh",
+            "Bảo vệ đồng đội",
+            "Giữ vị trí đúng"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build mở giao tranh"
+        ]
+    },
+    {
+        "id": 54,
+        "heroId": 11,
+        "name": "Build đỡ đòn kháng cự Thane",
+        "lane": "Đường Rồng",
+        "playstyle": "Thane tập trung chống chịu cực mạnh.",
+        "items": [
+            503,
+            402,
+            302,
+            303,
+            304,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    503,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    302,
+                    303
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Hứng sát thương",
+            "Bảo vệ tuyến sau",
+            "Kiên trì giao tranh"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build chống chịu"
+        ]
+    },
+    {
+        "id": 55,
+        "heroId": 12,
+        "name": "Build đỡ đòn mở giao tranh Mina",
+        "lane": "Đường Rồng",
+        "playstyle": "Mina chủ động mở giao tranh, bảo vệ đồng đội.",
+        "items": [
+            501,
+            402,
+            306,
+            304,
+            301,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    501,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    306,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    301,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chủ động mở giao tranh",
+            "Bảo vệ đồng đội",
+            "Giữ vị trí đúng"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build mở giao tranh"
+        ]
+    },
+    {
+        "id": 56,
+        "heroId": 12,
+        "name": "Build đỡ đòn kháng cự Mina",
+        "lane": "Đường Rồng",
+        "playstyle": "Mina tập trung chống chịu cực mạnh.",
+        "items": [
+            503,
+            402,
+            302,
+            303,
+            304,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    503,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    302,
+                    303
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Hứng sát thương",
+            "Bảo vệ tuyến sau",
+            "Kiên trì giao tranh"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build chống chịu"
+        ]
+    },
+    {
+        "id": 57,
+        "heroId": 13,
+        "name": "Build đỡ đòn mở giao tranh Arum",
+        "lane": "Đường Rồng",
+        "playstyle": "Arum chủ động mở giao tranh, bảo vệ đồng đội.",
+        "items": [
+            501,
+            402,
+            306,
+            304,
+            301,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    501,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    306,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    301,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chủ động mở giao tranh",
+            "Bảo vệ đồng đội",
+            "Giữ vị trí đúng"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build mở giao tranh"
+        ]
+    },
+    {
+        "id": 58,
+        "heroId": 13,
+        "name": "Build đỡ đòn kháng cự Arum",
+        "lane": "Đường Rồng",
+        "playstyle": "Arum tập trung chống chịu cực mạnh.",
+        "items": [
+            503,
+            402,
+            302,
+            303,
+            304,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    503,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    302,
+                    303
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Hứng sát thương",
+            "Bảo vệ tuyến sau",
+            "Kiên trì giao tranh"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build chống chịu"
+        ]
+    },
+    {
+        "id": 59,
+        "heroId": 14,
+        "name": "Build xạ thủ chống chịu Capheny",
+        "lane": "Đường Rồng",
+        "playstyle": "Capheny ưu tiên sinh tồn, cấu rỉa an toàn.",
+        "items": [
+            405,
+            107,
+            108,
+            104,
+            304,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    107
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    108,
+                    104
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn",
+            "Cấu rỉa từ xa"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 304,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ"
+        ]
+    },
+    {
+        "id": 60,
+        "heroId": 14,
+        "name": "Build xạ thủ linh hoạt Capheny",
+        "lane": "Đường Rồng",
+        "playstyle": "Capheny đa năng, thích ứng theo tình huống.",
+        "items": [
+            405,
+            102,
+            105,
+            107,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    102
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    105,
+                    107
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Chọn vị trí tốt",
+            "Tận dụng tầm đánh"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 61,
+        "heroId": 15,
+        "name": "Build xạ thủ chống chịu Elsu",
+        "lane": "Đường Rồng",
+        "playstyle": "Elsu ưu tiên sinh tồn, cấu rỉa an toàn.",
+        "items": [
+            405,
+            107,
+            108,
+            104,
+            304,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    107
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    108,
+                    104
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn",
+            "Cấu rỉa từ xa"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 304,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ"
+        ]
+    },
+    {
+        "id": 62,
+        "heroId": 15,
+        "name": "Build xạ thủ linh hoạt Elsu",
+        "lane": "Đường Rồng",
+        "playstyle": "Elsu đa năng, thích ứng theo tình huống.",
+        "items": [
+            405,
+            102,
+            105,
+            107,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    102
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    105,
+                    107
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Chọn vị trí tốt",
+            "Tận dụng tầm đánh"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 63,
+        "heroId": 16,
+        "name": "Build pháp sư chống chịu Lauriel",
+        "lane": "Đường Giữa",
+        "playstyle": "Lauriel ưu tiên sinh tồn, gây sát thương an toàn.",
+        "items": [
+            403,
+            206,
+            204,
+            209,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    206
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    204,
+                    209
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn",
+            "Dùng chiêu hợp lý"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ"
+        ]
+    },
+    {
+        "id": 64,
+        "heroId": 16,
+        "name": "Build pháp sư linh hoạt Lauriel",
+        "lane": "Đường Giữa",
+        "playstyle": "Lauriel cân bằng công và thủ.",
+        "items": [
+            403,
+            207,
+            203,
+            304,
+            306,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    207
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    203,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    306,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Chọn thời điểm",
+            "Tận dụng tầm chiêu"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 306,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 65,
+        "heroId": 17,
+        "name": "Build pháp sư chống chịu Tulen",
+        "lane": "Đường Giữa",
+        "playstyle": "Tulen ưu tiên sinh tồn, gây sát thương an toàn.",
+        "items": [
+            403,
+            206,
+            204,
+            209,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    206
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    204,
+                    209
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn",
+            "Dùng chiêu hợp lý"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ"
+        ]
+    },
+    {
+        "id": 66,
+        "heroId": 17,
+        "name": "Build pháp sư linh hoạt Tulen",
+        "lane": "Đường Giữa",
+        "playstyle": "Tulen cân bằng công và thủ.",
+        "items": [
+            403,
+            207,
+            203,
+            304,
+            306,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    207
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    203,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    306,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Chọn thời điểm",
+            "Tận dụng tầm chiêu"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 306,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 67,
+        "heroId": 18,
+        "name": "Build sát thương linh hoạt Ryoma",
+        "lane": "Đường Trên",
+        "playstyle": "Ryoma cân bằng công và thủ.",
+        "items": [
+            401,
+            104,
+            107,
+            304,
+            302,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    104
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    302,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Tìm cơ hội giao tranh",
+            "Rút lui kịp thời"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 302,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 68,
+        "heroId": 18,
+        "name": "Build sát thương mạnh Ryoma",
+        "lane": "Đường Trên",
+        "playstyle": "Ryoma ưu tiên sát thương, tìm cơ hội kết liễu.",
+        "items": [
+            401,
+            103,
+            107,
+            109,
+            110,
+            104
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    103
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    109
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    110,
+                    104
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chọn thời điểm lao vào",
+            "Kết liễu mục tiêu quan trọng",
+            "Rút lui sau khi hạ gục"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 110,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Hướng build sát thương"
+        ]
+    },
+    {
+        "id": 69,
+        "heroId": 19,
+        "name": "Build xạ thủ chống chịu Hayate",
+        "lane": "Đường Rồng",
+        "playstyle": "Hayate ưu tiên sinh tồn, cấu rỉa an toàn.",
+        "items": [
+            405,
+            107,
+            108,
+            104,
+            304,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    107
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    108,
+                    104
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn",
+            "Cấu rỉa từ xa"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 304,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ"
+        ]
+    },
+    {
+        "id": 70,
+        "heroId": 19,
+        "name": "Build xạ thủ linh hoạt Hayate",
+        "lane": "Đường Rồng",
+        "playstyle": "Hayate đa năng, thích ứng theo tình huống.",
+        "items": [
+            405,
+            102,
+            105,
+            107,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    102
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    105,
+                    107
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Chọn vị trí tốt",
+            "Tận dụng tầm đánh"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 71,
+        "heroId": 20,
+        "name": "Build xạ thủ chống chịu Violet",
+        "lane": "Đường Rồng",
+        "playstyle": "Violet ưu tiên sinh tồn, cấu rỉa an toàn.",
+        "items": [
+            405,
+            107,
+            108,
+            104,
+            304,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    107
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    108,
+                    104
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn",
+            "Cấu rỉa từ xa"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 304,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ"
+        ]
+    },
+    {
+        "id": 72,
+        "heroId": 20,
+        "name": "Build xạ thủ linh hoạt Violet",
+        "lane": "Đường Rồng",
+        "playstyle": "Violet đa năng, thích ứng theo tình huống.",
+        "items": [
+            405,
+            102,
+            105,
+            107,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    102
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    105,
+                    107
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Chọn vị trí tốt",
+            "Tận dụng tầm đánh"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 73,
+        "heroId": 21,
+        "name": "Build đỡ đòn mở giao tranh Superman",
+        "lane": "Đường Rồng",
+        "playstyle": "Superman chủ động mở giao tranh, bảo vệ đồng đội.",
+        "items": [
+            501,
+            402,
+            306,
+            304,
+            301,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    501,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    306,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    301,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chủ động mở giao tranh",
+            "Bảo vệ đồng đội",
+            "Giữ vị trí đúng"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build mở giao tranh"
+        ]
+    },
+    {
+        "id": 74,
+        "heroId": 21,
+        "name": "Build đỡ đòn kháng cự Superman",
+        "lane": "Đường Rồng",
+        "playstyle": "Superman tập trung chống chịu cực mạnh.",
+        "items": [
+            503,
+            402,
+            302,
+            303,
+            304,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    503,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    302,
+                    303
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Hứng sát thương",
+            "Bảo vệ tuyến sau",
+            "Kiên trì giao tranh"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build chống chịu"
+        ]
+    },
+    {
+        "id": 75,
+        "heroId": 22,
+        "name": "Build sát thương linh hoạt Richter",
+        "lane": "Đường Trên",
+        "playstyle": "Richter cân bằng công và thủ.",
+        "items": [
+            401,
+            104,
+            107,
+            304,
+            302,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    104
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    302,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Tìm cơ hội giao tranh",
+            "Rút lui kịp thời"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 302,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 76,
+        "heroId": 22,
+        "name": "Build sát thương mạnh Richter",
+        "lane": "Đường Trên",
+        "playstyle": "Richter ưu tiên sát thương, tìm cơ hội kết liễu.",
+        "items": [
+            401,
+            103,
+            107,
+            109,
+            110,
+            104
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    103
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    109
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    110,
+                    104
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chọn thời điểm lao vào",
+            "Kết liễu mục tiêu quan trọng",
+            "Rút lui sau khi hạ gục"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 110,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Hướng build sát thương"
+        ]
+    },
+    {
+        "id": 77,
+        "heroId": 23,
+        "name": "Build sát thương linh hoạt Omen",
+        "lane": "Đường Trên",
+        "playstyle": "Omen cân bằng công và thủ.",
+        "items": [
+            401,
+            104,
+            107,
+            304,
+            302,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    104
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    302,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Tìm cơ hội giao tranh",
+            "Rút lui kịp thời"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 302,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 78,
+        "heroId": 23,
+        "name": "Build sát thương mạnh Omen",
+        "lane": "Đường Trên",
+        "playstyle": "Omen ưu tiên sát thương, tìm cơ hội kết liễu.",
+        "items": [
+            401,
+            103,
+            107,
+            109,
+            110,
+            104
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    401,
+                    103
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    107,
+                    109
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    110,
+                    104
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chọn thời điểm lao vào",
+            "Kết liễu mục tiêu quan trọng",
+            "Rút lui sau khi hạ gục"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều giáp",
+                "replace": 110,
+                "with": 109,
+                "reason": "Tăng xuyên giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 11,
+                "reason": "Khó dứt điểm"
+            },
+            {
+                "heroId": 23,
+                "reason": "Khó dứt điểm"
+            }
+        ],
+        "notes": [
+            "Hướng build sát thương"
+        ]
+    },
+    {
+        "id": 79,
+        "heroId": 24,
+        "name": "Build pháp sư chống chịu Veera",
+        "lane": "Đường Giữa",
+        "playstyle": "Veera ưu tiên sinh tồn, gây sát thương an toàn.",
+        "items": [
+            403,
+            206,
+            204,
+            209,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    206
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    204,
+                    209
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn",
+            "Dùng chiêu hợp lý"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ"
+        ]
+    },
+    {
+        "id": 80,
+        "heroId": 24,
+        "name": "Build pháp sư linh hoạt Veera",
+        "lane": "Đường Giữa",
+        "playstyle": "Veera cân bằng công và thủ.",
+        "items": [
+            403,
+            207,
+            203,
+            304,
+            306,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    207
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    203,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    306,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Chọn thời điểm",
+            "Tận dụng tầm chiêu"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 306,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 81,
+        "heroId": 25,
+        "name": "Build pháp sư chống chịu Zill",
+        "lane": "Đường Giữa",
+        "playstyle": "Zill ưu tiên sinh tồn, gây sát thương an toàn.",
+        "items": [
+            403,
+            206,
+            204,
+            209,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    206
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    204,
+                    209
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn",
+            "Dùng chiêu hợp lý"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ"
+        ]
+    },
+    {
+        "id": 82,
+        "heroId": 25,
+        "name": "Build pháp sư linh hoạt Zill",
+        "lane": "Đường Giữa",
+        "playstyle": "Zill cân bằng công và thủ.",
+        "items": [
+            403,
+            207,
+            203,
+            304,
+            306,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    207
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    203,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    306,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Chọn thời điểm",
+            "Tận dụng tầm chiêu"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 306,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 83,
+        "heroId": 26,
+        "name": "Build hỗ trợ bảo vệ Alice",
+        "lane": "Đường Rồng",
+        "playstyle": "Alice ưu tiên bảo vệ đồng đội, tạo khiên và khống chế.",
+        "items": [
+            501,
+            401,
+            207,
+            210,
+            303,
+            302
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    501,
+                    401
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    207,
+                    210
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    302
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Luôn đi cùng chủ lực",
+            "Ưu tiên bảo vệ",
+            "Kiểm soát tầm nhìn"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Cần thêm khiên",
+                "replace": 302,
+                "with": 502,
+                "reason": "Tạo lá chắn cho đồng đội"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ dễ vượt tuyến"
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ dễ vượt tuyến"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về bảo vệ"
+        ]
+    },
+    {
+        "id": 84,
+        "heroId": 26,
+        "name": "Build hỗ trợ linh hoạt Alice",
+        "lane": "Đường Rồng",
+        "playstyle": "Alice cân bằng giữa bảo vệ và hỗ trợ gây áp lực.",
+        "items": [
+            503,
+            401,
+            206,
+            209,
+            304,
+            306
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    503,
+                    401
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    206,
+                    209
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    306
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt theo tình huống",
+            "Tạo không gian cho đồng đội",
+            "Chọn thời điểm hợp lý"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 306,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ dễ vượt tuyến"
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ dễ vượt tuyến"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 85,
+        "heroId": 27,
+        "name": "Build hỗ trợ bảo vệ Aya",
+        "lane": "Đường Rồng",
+        "playstyle": "Aya ưu tiên bảo vệ đồng đội, tạo khiên và khống chế.",
+        "items": [
+            501,
+            401,
+            207,
+            210,
+            303,
+            302
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    501,
+                    401
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    207,
+                    210
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    302
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Luôn đi cùng chủ lực",
+            "Ưu tiên bảo vệ",
+            "Kiểm soát tầm nhìn"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Cần thêm khiên",
+                "replace": 302,
+                "with": 502,
+                "reason": "Tạo lá chắn cho đồng đội"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ dễ vượt tuyến"
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ dễ vượt tuyến"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về bảo vệ"
+        ]
+    },
+    {
+        "id": 86,
+        "heroId": 27,
+        "name": "Build hỗ trợ linh hoạt Aya",
+        "lane": "Đường Rồng",
+        "playstyle": "Aya cân bằng giữa bảo vệ và hỗ trợ gây áp lực.",
+        "items": [
+            503,
+            401,
+            206,
+            209,
+            304,
+            306
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    503,
+                    401
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    206,
+                    209
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    306
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt theo tình huống",
+            "Tạo không gian cho đồng đội",
+            "Chọn thời điểm hợp lý"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 401,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 306,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Sát thủ dễ vượt tuyến"
+            },
+            {
+                "heroId": 4,
+                "reason": "Sát thủ dễ vượt tuyến"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 87,
+        "heroId": 28,
+        "name": "Build đỡ đòn mở giao tranh Baldum",
+        "lane": "Đường Rồng",
+        "playstyle": "Baldum chủ động mở giao tranh, bảo vệ đồng đội.",
+        "items": [
+            501,
+            402,
+            306,
+            304,
+            301,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    501,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    306,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    301,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chủ động mở giao tranh",
+            "Bảo vệ đồng đội",
+            "Giữ vị trí đúng"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build mở giao tranh"
+        ]
+    },
+    {
+        "id": 88,
+        "heroId": 28,
+        "name": "Build đỡ đòn kháng cự Baldum",
+        "lane": "Đường Rồng",
+        "playstyle": "Baldum tập trung chống chịu cực mạnh.",
+        "items": [
+            503,
+            402,
+            302,
+            303,
+            304,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    503,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    302,
+                    303
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Hứng sát thương",
+            "Bảo vệ tuyến sau",
+            "Kiên trì giao tranh"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build chống chịu"
+        ]
+    },
+    {
+        "id": 89,
+        "heroId": 29,
+        "name": "Build đỡ đòn mở giao tranh Cresht",
+        "lane": "Đường Rồng",
+        "playstyle": "Cresht chủ động mở giao tranh, bảo vệ đồng đội.",
+        "items": [
+            501,
+            402,
+            306,
+            304,
+            301,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    501,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    306,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    301,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chủ động mở giao tranh",
+            "Bảo vệ đồng đội",
+            "Giữ vị trí đúng"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build mở giao tranh"
+        ]
+    },
+    {
+        "id": 90,
+        "heroId": 29,
+        "name": "Build đỡ đòn kháng cự Cresht",
+        "lane": "Đường Rồng",
+        "playstyle": "Cresht tập trung chống chịu cực mạnh.",
+        "items": [
+            503,
+            402,
+            302,
+            303,
+            304,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    503,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    302,
+                    303
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Hứng sát thương",
+            "Bảo vệ tuyến sau",
+            "Kiên trì giao tranh"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build chống chịu"
+        ]
+    },
+    {
+        "id": 91,
+        "heroId": 30,
+        "name": "Build đỡ đòn mở giao tranh Maloch",
+        "lane": "Đường Rồng",
+        "playstyle": "Maloch chủ động mở giao tranh, bảo vệ đồng đội.",
+        "items": [
+            501,
+            402,
+            306,
+            304,
+            301,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    501,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    306,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    301,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Chủ động mở giao tranh",
+            "Bảo vệ đồng đội",
+            "Giữ vị trí đúng"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build mở giao tranh"
+        ]
+    },
+    {
+        "id": 92,
+        "heroId": 30,
+        "name": "Build đỡ đòn kháng cự Maloch",
+        "lane": "Đường Rồng",
+        "playstyle": "Maloch tập trung chống chịu cực mạnh.",
+        "items": [
+            503,
+            402,
+            302,
+            303,
+            304,
+            307
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    503,
+                    402
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    302,
+                    303
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    307
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Hứng sát thương",
+            "Bảo vệ tuyến sau",
+            "Kiên trì giao tranh"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 307,
+                "with": 305,
+                "reason": "Phản sát thương"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 307,
+                "with": 303,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 8,
+                "reason": "Xuyên giáp mạnh"
+            },
+            {
+                "heroId": 15,
+                "reason": "Sát thương theo máu"
+            }
+        ],
+        "notes": [
+            "Hướng build chống chịu"
+        ]
+    },
+    {
+        "id": 93,
+        "heroId": 31,
+        "name": "Build xạ thủ chống chịu Trần Gia Bảo",
+        "lane": "Đường Rồng",
+        "playstyle": "Trần Gia Bảo ưu tiên sinh tồn, cấu rỉa an toàn.",
+        "items": [
+            405,
+            107,
+            108,
+            104,
+            304,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    107
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    108,
+                    104
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    304,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn",
+            "Cấu rỉa từ xa"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 304,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ"
+        ]
+    },
+    {
+        "id": 94,
+        "heroId": 31,
+        "name": "Build xạ thủ linh hoạt Trần Gia Bảo",
+        "lane": "Đường Rồng",
+        "playstyle": "Trần Gia Bảo đa năng, thích ứng theo tình huống.",
+        "items": [
+            405,
+            102,
+            105,
+            107,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    405,
+                    102
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    105,
+                    107
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Chọn vị trí tốt",
+            "Tận dụng tầm đánh"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 405,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương phép",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng kháng phép"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
+        ]
+    },
+    {
+        "id": 95,
+        "heroId": 32,
+        "name": "Build pháp sư chống chịu Sky",
+        "lane": "Đường Giữa",
+        "playstyle": "Sky ưu tiên sinh tồn, gây sát thương an toàn.",
+        "items": [
+            403,
+            206,
+            204,
+            209,
+            303,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    206
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    204,
+                    209
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    303,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Giữ khoảng cách",
+            "Ưu tiên sống còn",
+            "Dùng chiêu hợp lý"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 303,
+                "with": 302,
+                "reason": "Tăng giáp"
+            },
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Hướng build thiên về trụ"
+        ]
+    },
+    {
+        "id": 96,
+        "heroId": 32,
+        "name": "Build pháp sư linh hoạt Sky",
+        "lane": "Đường Giữa",
+        "playstyle": "Sky cân bằng công và thủ.",
+        "items": [
+            403,
+            207,
+            203,
+            304,
+            306,
+            103
+        ],
+        "description": "",
+        "phases": [
+            {
+                "name": "Đầu trận",
+                "items": [
+                    403,
+                    207
+                ],
+                "note": "Mua trang bị khởi đầu."
+            },
+            {
+                "name": "Giữa trận",
+                "items": [
+                    203,
+                    304
+                ],
+                "note": "Hoàn thiện trang bị chủ lực."
+            },
+            {
+                "name": "Cuối trận",
+                "items": [
+                    306,
+                    103
+                ],
+                "note": "Bổ sung trang bị cuối trận."
+            }
+        ],
+        "skillOrder": "Chiêu 1 > Chiêu 2 > Chiêu 3 (lấy Chiêu 3 ở cấp 4/8/12)",
+        "tips": [
+            "Linh hoạt",
+            "Chọn thời điểm",
+            "Tận dụng tầm chiêu"
+        ],
+        "situational": [
+            {
+                "when": "Địch nhiều khống chế",
+                "replace": 403,
+                "with": 401,
+                "reason": "Tăng kháng hiệu ứng"
+            },
+            {
+                "when": "Địch nhiều sát thương vật lý",
+                "replace": 306,
+                "with": 402,
+                "reason": "Tăng giáp"
+            }
+        ],
+        "counters": [
+            {
+                "heroId": 3,
+                "reason": "Dễ bị áp sát"
+            },
+            {
+                "heroId": 4,
+                "reason": "Dễ bị áp sát"
+            }
+        ],
+        "notes": [
+            "Build cân bằng"
         ]
     }
 ]
