@@ -455,6 +455,77 @@ function validateBuildForm(input) {
     const situational = buildAdminNormalizeSituational(source.situational, errors);
     const counters = buildAdminNormalizeCounters(source.counters, errors);
 
+    // Ràng buộc theo luật build
+    if (items.length) {
+        const bootsSet = new Set([401, 402, 403, 404, 405]);
+        const supportSet = new Set([501, 502, 503, 504]);
+        const jungleSet = new Set([601, 602, 603, 604]);
+
+        if (items.length !== 6) {
+            errors.push('Build phải có đúng 6 trang bị');
+        }
+
+        const uniqueItems = new Set(items).size === items.length;
+        if (!uniqueItems) {
+            errors.push('Trang bị không được trùng lặp');
+        }
+
+        // Kiểm tra tồn tại trong items cache
+        const itemMap = {};
+        getBuildAdminItems().forEach((it) => {
+            itemMap[normalizeBuildId(it.id)] = it;
+        });
+        items.forEach((id) => {
+            const key = normalizeBuildId(id);
+            if (!itemMap[key]) {
+                errors.push(`Trang bị mã ${id} không tồn tại trong danh sách trang bị`);
+            }
+        });
+
+        const jungleCount = items.filter((id) => jungleSet.has(id)).length;
+        if (jungleCount > 1) {
+            errors.push('Mỗi build chỉ được có tối đa 1 món Rừng');
+        }
+
+        const bootCount = items.filter((id) => bootsSet.has(id)).length;
+        if (bootCount > 1) {
+            errors.push('Mỗi build chỉ được có tối đa 1 đôi giày');
+        }
+
+        // Kiểm tra tướng đỡ đòn/trợ thủ
+        if (heroId !== null) {
+            const hero = findBuildAdminHero(heroId);
+            const roles = Array.isArray(hero && hero.role) ? hero.role : [];
+            const isTankOrSupport = roles.some((r) => String(r).includes('Đỡ đòn')) || roles.some((r) => String(r).includes('Trợ thủ'));
+            
+            if (isTankOrSupport) {
+                // Chỉ tướng đỡ đòn và trợ thủ mới được có đồ phụ trợ
+                const hasSupport = items.some((id) => supportSet.has(id));
+                if (!hasSupport) {
+                    errors.push('Tướng đỡ đòn/trợ thủ phải có trang bị phụ trợ');
+                }
+                // Slot 1 phải là đồ phụ trợ, slot 2 phải là giày
+                if (supportSet.has(items[0]) && bootsSet.has(items[1])) {
+                    // OK
+                } else {
+                    errors.push('Tướng đỡ đòn/trợ thủ: slot 1 phải là đồ phụ trợ, slot 2 phải là giày');
+                }
+            } else {
+                // Các tướng khác không được có đồ phụ trợ
+                const hasSupport = items.some((id) => supportSet.has(id));
+                if (hasSupport) {
+                    errors.push('Chỉ tướng đỡ đòn và trợ thủ mới được có đồ phụ trợ');
+                }
+                // Giày bắt buộc ở slot đầu tiên
+                if (!bootsSet.has(items[0])) {
+                    errors.push('Giày bắt buộc ở slot đầu tiên của build đồ');
+                }
+            }
+        }
+    } else {
+        errors.push('Build phải có đúng 6 trang bị');
+    }
+
     return {
         valid: !errors.length,
         errors,
@@ -551,6 +622,12 @@ async function createBuild(input) {
     if (!checked.valid) return null;
 
     const list = getCachedBuilds();
+    if (checked.values.heroId !== null && checked.values.heroId !== undefined) {
+        const count = getBuildCountForHero(checked.values.heroId);
+        if (count >= 3) {
+            return null;
+        }
+    }
     const created = Object.assign({ id: nextBuildId(list) }, checked.values);
 
     const next = list.concat(created);
@@ -1073,6 +1150,7 @@ function renderBuildAdminForm(editingBuild, preselectedHeroId) {
                     <label for="build-hero">Tướng *</label>
                     <select id="build-hero">${buildAdminHeroOptionsHtml(values.heroId, '— Chọn tướng —')}
                     </select>
+                    <p class="feed-form__hint" id="build-hero-count">Tướng này đang có 0/3 build</p>
                 </div>
 
                 <div class="form-group">
@@ -1145,9 +1223,39 @@ function renderBuildAdminForm(editingBuild, preselectedHeroId) {
     // Gõ mã trang bị là thấy ngay tên trang bị tương ứng, không cần submit.
     const itemsInput = form.querySelector('#build-items');
     if (itemsInput) {
-        itemsInput.addEventListener('input', () => renderBuildItemsPreview(form));
+        itemsInput.addEventListener('input', () => {
+            renderBuildItemsPreview(form);
+            checkBuildFormWarnings(form);
+        });
         renderBuildItemsPreview(form);
     }
+
+    const heroSelect = form.querySelector('#build-hero');
+    if (heroSelect) {
+        const updateHeroCount = () => {
+            const countEl = form.querySelector('#build-hero-count');
+            if (!countEl) return;
+            const hid = buildAdminNumberId(heroSelect.value);
+            if (hid === null) {
+                countEl.textContent = 'Tướng này đang có 0/3 build';
+                return;
+            }
+            const cnt = getBuildCountForHero(hid);
+            countEl.textContent = `Tướng này đang có ${cnt}/3 build`;
+            if (cnt >= 3 && !form.dataset.editId) {
+                countEl.style.color = '#d33';
+            } else {
+                countEl.style.color = '';
+            }
+        };
+        heroSelect.addEventListener('change', () => {
+            updateHeroCount();
+            checkBuildFormWarnings(form);
+        });
+        updateHeroCount();
+    }
+
+    checkBuildFormWarnings(form);
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -1158,6 +1266,17 @@ function renderBuildAdminForm(editingBuild, preselectedHeroId) {
 
         renderErrors(errorBox, checked.errors);
         if (!checked.valid) return;
+
+        if (!form.dataset.editId) {
+            const hid = checked.values.heroId;
+            if (hid !== null && hid !== undefined) {
+                const cnt = getBuildCountForHero(hid);
+                if (cnt >= 3) {
+                    renderErrors(errorBox, ['Mỗi tướng chỉ có tối đa 3 build']);
+                    return;
+                }
+            }
+        }
 
         const editId = form.dataset.editId;
 
@@ -1224,6 +1343,91 @@ function removeBuildAdminRow(row) {
     const parent = row.parent;
     if (parent && Array.isArray(parent.children)) {
         parent.children = parent.children.filter((child) => child !== row);
+    }
+}
+
+/**
+ * Hiển thị cảnh báo nhanh về giày/đồ phụ trợ trong form
+ */
+function checkBuildFormWarnings(form) {
+    const warnBox = form.querySelector('#build-form-warnings') || (() => {
+        const box = document.createElement('div');
+        box.id = 'build-form-warnings';
+        const errorsBox = form.querySelector('#build-form-errors');
+        if (errorsBox && errorsBox.parentNode) {
+            errorsBox.parentNode.insertBefore(box, errorsBox.nextSibling);
+        } else {
+            form.prepend(box);
+        }
+        return box;
+    })();
+
+    const itemsInput = form.querySelector('#build-items');
+    const items = buildAdminParseIdList(itemsInput ? itemsInput.value : '', '', []);
+    const bootsSet = new Set([401,402,403,404,405]);
+    const supportSet = new Set([501,502,503,504]);
+    const heroSelect = form.querySelector('#build-hero');
+    const heroId = buildAdminNumberId(heroSelect ? heroSelect.value : null);
+    const hero = heroId !== null ? findBuildAdminHero(heroId) : null;
+    const roles = Array.isArray(hero && hero.role) ? hero.role : [];
+    const isTankOrSupport = roles.some((r)=>String(r).includes('Đỡ đòn')) || roles.some((r)=>String(r).includes('Trợ thủ'));
+
+    const warnings = [];
+    if (items.length === 6) {
+        if (isTankOrSupport) {
+            if (!(supportSet.has(items[0]) && bootsSet.has(items[1]))) {
+                warnings.push('Cảnh báo: Tướng đỡ đòn/trợ thủ cần slot 1 là đồ phụ trợ, slot 2 là giày');
+            }
+        } else {
+            if (!bootsSet.has(items[0])) {
+                warnings.push('Cảnh báo: Giày phải ở slot đầu tiên');
+            }
+            if (items.some((id)=>supportSet.has(id))) {
+                warnings.push('Cảnh báo: Chỉ tướng đỡ đòn/trợ thủ mới được có đồ phụ trợ');
+            }
+        }
+    }
+
+    if (warnings.length) {
+        warnBox.innerHTML = warnings.map((w)=>`<div class="feed-form__hint" style="color:#d97706">${escapeHtml(w)}</div>`).join('');
+    } else {
+        warnBox.innerHTML = '';
+    }
+}
+function checkBuildFormWarnings(form) {
+    const warnBox = form.querySelector('#build-form-warnings') || (() => {
+        const box = document.createElement('div');
+        box.id = 'build-form-warnings';
+        const errorsBox = form.querySelector('#build-form-errors');
+        if (errorsBox && errorsBox.parentNode) {
+            errorsBox.parentNode.insertBefore(box, errorsBox.nextSibling);
+        } else {
+            form.prepend(box);
+        }
+        return box;
+    })();
+
+    const itemsInput = form.querySelector('#build-items');
+    const items = buildAdminParseIdList(itemsInput ? itemsInput.value : '', '', []);
+    const bootsSet = new Set([401,402,403,404,405]);
+    const supportSet = new Set([501,502,503,504]);
+    const heroSelect = form.querySelector('#build-hero');
+    const heroId = buildAdminNumberId(heroSelect ? heroSelect.value : null);
+    const hero = heroId !== null ? findBuildAdminHero(heroId) : null;
+    const isSupport = hero && Array.isArray(hero.role) && hero.role.some((r)=>String(r).includes('Trợ thủ'));
+
+    const warnings = [];
+    if (items.length && !items.some((id)=>bootsSet.has(id))) {
+        warnings.push('Cảnh báo: Danh sách items đang thiếu giày');
+    }
+    if (isSupport && items.length && !items.some((id)=>supportSet.has(id))) {
+        warnings.push('Cảnh báo: Tướng hỗ trợ đang thiếu đồ hỗ trợ');
+    }
+
+    if (warnings.length) {
+        warnBox.innerHTML = warnings.map((w)=>`<div class="feed-form__hint" style="color:#d97706">${escapeHtml(w)}</div>`).join('');
+    } else {
+        warnBox.innerHTML = '';
     }
 }
 
@@ -1631,30 +1835,42 @@ document.addEventListener('click', async (event) => {
     // Thêm / bớt dòng pha lên đồ.
     if (event.target.closest('[data-build-phase-add]')) {
         appendBuildAdminRow('build-phase-rows', renderBuildPhaseRow({ name: '', items: [], note: '' }));
+        const formEl = event.target.closest('#build-form');
+        if (formEl) checkBuildFormWarnings(formEl);
         return;
     }
     if (event.target.closest('[data-build-phase-remove]')) {
         removeBuildAdminRow(event.target.closest('[data-build-phase-row]'));
+        const formEl = event.target.closest('#build-form');
+        if (formEl) checkBuildFormWarnings(formEl);
         return;
     }
 
     // Thêm / bớt dòng trang bị thay thế theo tình huống.
     if (event.target.closest('[data-build-situational-add]')) {
         appendBuildAdminRow('build-situational-rows', renderBuildSituationalRow({}));
+        const formEl = event.target.closest('#build-form');
+        if (formEl) checkBuildFormWarnings(formEl);
         return;
     }
     if (event.target.closest('[data-build-situational-remove]')) {
         removeBuildAdminRow(event.target.closest('[data-build-situational-row]'));
+        const formEl = event.target.closest('#build-form');
+        if (formEl) checkBuildFormWarnings(formEl);
         return;
     }
 
     // Thêm / bớt dòng tướng khắc chế.
     if (event.target.closest('[data-build-counter-add]')) {
         appendBuildAdminRow('build-counter-rows', renderBuildCounterRow({}));
+        const formEl = event.target.closest('#build-form');
+        if (formEl) checkBuildFormWarnings(formEl);
         return;
     }
     if (event.target.closest('[data-build-counter-remove]')) {
         removeBuildAdminRow(event.target.closest('[data-build-counter-row]'));
+        const formEl = event.target.closest('#build-form');
+        if (formEl) checkBuildFormWarnings(formEl);
         return;
     }
 
