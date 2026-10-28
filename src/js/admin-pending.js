@@ -102,22 +102,24 @@ async function renderPendingSection(container) {
         .sort((a, b) => Number(b.flagged === true) - Number(a.flagged === true));
 
     container.innerHTML = `
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Tác giả</th>
-                    <th>Tiêu đề</th>
-                    <th>Chuyên mục</th>
-                    <th>Ngày đăng</th>
-                    <th>Nội dung</th>
-                    <th>Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${ordered.map(renderPendingRow).join('')}
-            </tbody>
-        </table>
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tác giả</th>
+                        <th>Tiêu đề</th>
+                        <th>Chuyên mục</th>
+                        <th>Ngày đăng</th>
+                        <th>Nội dung</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${ordered.map(renderPendingRow).join('')}
+                </tbody>
+            </table>
+        </div>
     `;
 }
 
